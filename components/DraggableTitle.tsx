@@ -16,6 +16,20 @@ export default function DraggableTitle({
   const [resetKey, setResetKey] = useState(0);
   const [dirty, setDirty] = useState(false);
 
+  // Variants for a gentle drop-in on first paint
+  const lineVariants = {
+    hidden: { opacity: 0, y: 8 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 180, damping: 22, staggerChildren: 0.02 },
+    },
+  } as const;
+  const tokenVariants = {
+    hidden: { opacity: 0, y: 6 },
+    show: { opacity: 1, y: 0 },
+  } as const;
+
   return (
     <section>
       <div className="mx-auto max-w-6xl px-4">
@@ -31,7 +45,7 @@ export default function DraggableTitle({
                 : "mt-3 max-w-4xl text-lg sm:text-xl text-zinc-600 dark:text-zinc-400";
 
               return (
-                <div key={idx} className={lineClasses}>
+                <motion.div key={idx} className={lineClasses} variants={lineVariants} initial="hidden" animate="show">
                   {tokens.map((t, i) => {
                     if (isTitle && t === ".") {
                       return (
@@ -41,11 +55,12 @@ export default function DraggableTitle({
                           dragConstraints={containerRef}
                           dragMomentum
                           dragElastic={0.2}
-                          whileHover={{ scale: 1.06 }}
+                          whileHover={{ scale: 1.06, rotate: 1 }}
                           whileTap={{ scale: 0.95 }}
-                          className="inline-block cursor-grab px-1.5 text-accent"
+                          className="inline-block cursor-grab active:cursor-grabbing px-1.5 text-accent"
                           style={{ touchAction: "none" }}
                           onDragStart={() => setDirty(true)}
+                          variants={tokenVariants}
                         >
                           .
                         </motion.span>
@@ -58,17 +73,18 @@ export default function DraggableTitle({
                         dragConstraints={containerRef}
                         dragMomentum
                         dragElastic={0.2}
-                        whileHover={{ scale: 1.06 }}
+                        whileHover={{ scale: 1.06, rotate: 0.8 }}
                         whileTap={{ scale: 0.95 }}
-                        className={isTitle ? "inline-block cursor-grab px-1.5" : "inline-block cursor-grab px-1 mr-1"}
+                        className={isTitle ? "inline-block cursor-grab active:cursor-grabbing px-1.5" : "inline-block cursor-grab active:cursor-grabbing px-1 mr-1"}
                         style={{ touchAction: "none" }}
                         onDragStart={() => setDirty(true)}
+                        variants={tokenVariants}
                       >
                         {isTitle && t === " " ? "\u00A0" : t}
                       </motion.span>
                     );
                   })}
-                </div>
+                </motion.div>
               );
             })}
           </motion.div>
