@@ -1,7 +1,53 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { animate, motion, useMotionValue } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+
+function DraggableToken({
+  children,
+  containerRef,
+  className,
+  hover,
+  onDirty,
+  resetSignal,
+}: {
+  children: React.ReactNode;
+  containerRef: React.RefObject<HTMLElement | null>;
+  className: string;
+  hover: { scale: number; rotate?: number };
+  onDirty: () => void;
+  resetSignal: number;
+}) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  useEffect(() => {
+    if (resetSignal === 0) return;
+    const transition = { type: "spring" as const, stiffness: 340, damping: 14, restDelta: 0.001 };
+    const ax = animate(x, 0, transition);
+    const ay = animate(y, 0, transition);
+    return () => {
+      ax.stop();
+      ay.stop();
+    };
+  }, [resetSignal, x, y]);
+
+  return (
+    <motion.span
+      drag
+      dragConstraints={containerRef}
+      dragMomentum
+      dragElastic={0.2}
+      whileHover={hover}
+      whileTap={{ scale: 0.95 }}
+      className={className}
+      style={{ touchAction: "none", x, y }}
+      onDragStart={onDirty}
+    >
+      {children}
+    </motion.span>
+  );
+}
 
 export default function DraggableTitle({
   lines = [
@@ -13,28 +59,22 @@ export default function DraggableTitle({
   lines?: string[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [resetKey, setResetKey] = useState(0);
   const [dirty, setDirty] = useState(false);
+  const [resetSignal, setResetSignal] = useState(0);
 
-  // Variants for a gentle drop-in on first paint
   const lineVariants = {
-    hidden: { opacity: 0, y: 8 },
+    hidden: { y: 8 },
     show: {
-      opacity: 1,
       y: 0,
       transition: { type: "spring", stiffness: 180, damping: 22, staggerChildren: 0.02 },
     },
-  } as const;
-  const tokenVariants = {
-    hidden: { opacity: 0, y: 6 },
-    show: { opacity: 1, y: 0 },
   } as const;
 
   return (
     <section>
       <div className="mx-auto max-w-6xl px-4">
         <div ref={containerRef} className="relative min-h-[80vh]">
-          <motion.div key={resetKey} className="select-none pt-24 sm:pt-32">
+          <motion.div className="select-none pt-24 sm:pt-32">
             {lines.map((line, idx) => {
               const isTitle = idx === 0;
               const tokens = isTitle ? Array.from(line) : line.split(" ");
@@ -49,39 +89,29 @@ export default function DraggableTitle({
                   {tokens.map((t, i) => {
                     if (isTitle && t === ".") {
                       return (
-                        <motion.span
+                        <DraggableToken
                           key={`${idx}-${i}-dot`}
-                          drag
-                          dragConstraints={containerRef}
-                          dragMomentum
-                          dragElastic={0.2}
-                          whileHover={{ scale: 1.06, rotate: 1 }}
-                          whileTap={{ scale: 0.95 }}
+                          containerRef={containerRef}
                           className="inline-block cursor-grab active:cursor-grabbing px-1.5 text-accent"
-                          style={{ touchAction: "none" }}
-                          onDragStart={() => setDirty(true)}
-                          variants={tokenVariants}
+                          hover={{ scale: 1.06, rotate: 1 }}
+                          onDirty={() => setDirty(true)}
+                          resetSignal={resetSignal}
                         >
                           .
-                        </motion.span>
+                        </DraggableToken>
                       );
                     }
                     return (
-                      <motion.span
+                      <DraggableToken
                         key={`${idx}-${i}-${t}`}
-                        drag
-                        dragConstraints={containerRef}
-                        dragMomentum
-                        dragElastic={0.2}
-                        whileHover={{ scale: 1.06, rotate: 0.8 }}
-                        whileTap={{ scale: 0.95 }}
+                        containerRef={containerRef}
                         className={isTitle ? "inline-block cursor-grab active:cursor-grabbing px-1.5" : "inline-block cursor-grab active:cursor-grabbing px-1 mr-1"}
-                        style={{ touchAction: "none" }}
-                        onDragStart={() => setDirty(true)}
-                        variants={tokenVariants}
+                        hover={{ scale: 1.06, rotate: 0.8 }}
+                        onDirty={() => setDirty(true)}
+                        resetSignal={resetSignal}
                       >
                         {isTitle && t === " " ? "\u00A0" : t}
-                      </motion.span>
+                      </DraggableToken>
                     );
                   })}
                 </motion.div>
@@ -93,7 +123,7 @@ export default function DraggableTitle({
             <div className="absolute right-4 top-4">
               <button
                 onClick={() => {
-                  setResetKey((k) => k + 1);
+                  setResetSignal((n) => n + 1);
                   setDirty(false);
                 }}
                 className="rounded-full border border-zinc-300 px-3 py-1 text-xs text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-900"
