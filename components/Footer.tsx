@@ -8,10 +8,10 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} Steven</p>
           <div className="flex gap-6">
             <Magnetic strength={8}>
-              <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="link-underline focus-accent rounded-md px-1 py-0.5 hover:text-accent">GitHub</a>
+              <a href="https://github.com/StevenGonzalez" target="_blank" rel="noopener noreferrer" className="link-underline focus-accent rounded-md px-1 py-0.5 hover:text-accent">GitHub</a>
             </Magnetic>
             <Magnetic strength={8}>
-              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="link-underline focus-accent rounded-md px-1 py-0.5 hover:text-accent">LinkedIn</a>
+              <a href="https://www.linkedin.com/in/sgonzalez-dev/" target="_blank" rel="noopener noreferrer" className="link-underline focus-accent rounded-md px-1 py-0.5 hover:text-accent">LinkedIn</a>
             </Magnetic>
           </div>
         </div>
