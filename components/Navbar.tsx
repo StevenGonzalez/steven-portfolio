@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import Magnetic from "./Magnetic";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/40 bg-white/70 backdrop-blur dark:border-zinc-800/50 dark:bg-black/50">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/" className="text-sm font-semibold tracking-wide text-zinc-900 dark:text-zinc-100">
-          Steven
-        </Link>
+        <Magnetic strength={6}>
+          <Link href="/" className="text-sm font-semibold tracking-wide text-zinc-900 dark:text-zinc-100">
+            Steven
+          </Link>
+        </Magnetic>
         <button
           aria-label="Toggle menu"
           className="rounded-md p-2 text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-900 sm:hidden"
@@ -21,9 +24,15 @@ export default function Navbar() {
           </svg>
         </button>
         <div className="hidden gap-8 sm:flex">
-          <Link href="/projects" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Projects</Link>
-          <Link href="/thoughts" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Thoughts</Link>
-          <Link href="/contact" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Contact</Link>
+          <Magnetic strength={8}>
+            <Link href="/projects" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Projects</Link>
+          </Magnetic>
+          <Magnetic strength={8}>
+            <Link href="/thoughts" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Thoughts</Link>
+          </Magnetic>
+          <Magnetic strength={8}>
+            <Link href="/contact" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Contact</Link>
+          </Magnetic>
         </div>
       </nav>
       {open && (

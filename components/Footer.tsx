@@ -1,3 +1,5 @@
+import Magnetic from "./Magnetic";
+
 export default function Footer() {
   return (
     <footer className="border-t border-zinc-200/40 bg-white dark:border-zinc-800/50 dark:bg-black">
@@ -5,8 +7,12 @@ export default function Footer() {
         <div className="flex items-center justify-between">
           <p>© {new Date().getFullYear()} Steven</p>
           <div className="flex gap-6">
-            <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="link-underline hover:text-accent">GitHub</a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="link-underline hover:text-accent">LinkedIn</a>
+            <Magnetic strength={8}>
+              <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="link-underline hover:text-accent">GitHub</a>
+            </Magnetic>
+            <Magnetic strength={8}>
+              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="link-underline hover:text-accent">LinkedIn</a>
+            </Magnetic>
           </div>
         </div>
       </div>

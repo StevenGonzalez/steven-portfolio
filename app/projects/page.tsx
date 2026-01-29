@@ -1,4 +1,4 @@
-import ProjectRow from "../../components/ProjectRow";
+import ProjectsWithPreview from "../../components/ProjectsWithPreview";
 import { projects } from "../../data/projects";
 
 export const metadata = {
@@ -13,11 +13,7 @@ export default function ProjectsPage() {
       <p className="mt-3 max-w-2xl text-zinc-600 dark:text-zinc-400">
         A few case studies highlighting pragmatic engineering and clear architectures.
       </p>
-      <div className="mt-6">
-        {projects.map((p) => (
-          <ProjectRow key={p.slug} project={p} />
-        ))}
-      </div>
+      <ProjectsWithPreview projects={projects} />
     </div>
   );
 }
