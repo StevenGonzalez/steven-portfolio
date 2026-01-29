@@ -1,16 +1,40 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Magnetic from "./Magnetic";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(href + "/");
+  };
+
+  const linkClass = (href: string) =>
+    (
+      "text-sm link-underline nav-underline focus-accent rounded-md px-1 py-0.5 transition " +
+      (isActive(href)
+        ? "nav-underline-active text-accent"
+        : "text-zinc-700 hover:text-accent dark:text-zinc-300")
+    );
+
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/40 bg-white/70 backdrop-blur dark:border-zinc-800/50 dark:bg-black/50">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Magnetic strength={6}>
-          <Link href="/" className="text-sm font-semibold tracking-wide text-zinc-900 dark:text-zinc-100">
+          <Link
+            href="/"
+            aria-label="Home"
+            aria-current={isActive("/") ? "page" : undefined}
+            className={
+              "focus-accent rounded-md px-1 py-0.5 text-sm font-semibold tracking-wide transition " +
+              (isActive("/") ? "text-accent" : "text-zinc-900 dark:text-zinc-100")
+            }
+          >
             Steven
           </Link>
         </Magnetic>
@@ -25,13 +49,13 @@ export default function Navbar() {
         </button>
         <div className="hidden gap-8 sm:flex">
           <Magnetic strength={8}>
-            <Link href="/projects" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Projects</Link>
+            <Link href="/projects" className={linkClass("/projects")} aria-current={isActive("/projects") ? "page" : undefined}>Projects</Link>
           </Magnetic>
           <Magnetic strength={8}>
-            <Link href="/thoughts" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Thoughts</Link>
+            <Link href="/thoughts" className={linkClass("/thoughts")} aria-current={isActive("/thoughts") ? "page" : undefined}>Thoughts</Link>
           </Magnetic>
           <Magnetic strength={8}>
-            <Link href="/contact" className="text-sm text-zinc-700 link-underline hover:text-accent dark:text-zinc-300">Contact</Link>
+            <Link href="/contact" className={linkClass("/contact")} aria-current={isActive("/contact") ? "page" : undefined}>Contact</Link>
           </Magnetic>
         </div>
       </nav>
