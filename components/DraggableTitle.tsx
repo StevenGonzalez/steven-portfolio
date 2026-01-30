@@ -10,6 +10,10 @@ function DraggableToken({
   hover,
   onDirty,
   resetSignal,
+  animateProps,
+  transitionProps,
+  onPointerDown,
+  styleProps,
 }: {
   children: React.ReactNode;
   containerRef: React.RefObject<HTMLElement | null>;
@@ -17,6 +21,10 @@ function DraggableToken({
   hover: { scale: number; rotate?: number };
   onDirty: () => void;
   resetSignal: number;
+  animateProps?: Parameters<typeof motion.span>[0]["animate"];
+  transitionProps?: Parameters<typeof motion.span>[0]["transition"];
+  onPointerDown?: () => void;
+  styleProps?: React.CSSProperties;
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -41,8 +49,11 @@ function DraggableToken({
       whileHover={hover}
       whileTap={{ scale: 0.95 }}
       className={className}
-      style={{ touchAction: "none", x, y }}
+      style={{ touchAction: "none", x, y, ...styleProps }}
       onDragStart={onDirty}
+      onPointerDown={onPointerDown}
+      animate={animateProps}
+      transition={transitionProps}
     >
       {children}
     </motion.span>
@@ -61,6 +72,7 @@ export default function DraggableTitle({
   const containerRef = useRef<HTMLDivElement>(null);
   const [dirty, setDirty] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
+  const [dotAnimating, setDotAnimating] = useState(true);
 
   const lineVariants = {
     hidden: { y: 8 },
@@ -92,12 +104,57 @@ export default function DraggableTitle({
                         <DraggableToken
                           key={`${idx}-${i}-dot`}
                           containerRef={containerRef}
-                          className="inline-block cursor-grab active:cursor-grabbing px-1.5 text-accent"
-                          hover={{ scale: 1.06, rotate: 1 }}
-                          onDirty={() => setDirty(true)}
+                          className="inline-block origin-center cursor-grab active:cursor-grabbing mx-1.5 leading-none text-accent"
+                          hover={{ scale: 1.06 }}
+                          onDirty={() => {
+                            setDirty(true);
+                            setDotAnimating(false);
+                          }}
+                          onPointerDown={() => {
+                            setDirty(true);
+                            setDotAnimating(false);
+                          }}
+                          animateProps={
+                            dotAnimating
+                              ? {
+                                  // Pulse only.
+                                  scale: [1, 1.16, 1],
+                                }
+                              : undefined
+                          }
+                          transitionProps={
+                            dotAnimating
+                              ? {
+                                  scale: {
+                                    duration: 0.7,
+                                    repeat: Infinity,
+                                    repeatDelay: 0.9,
+                                    times: [0, 0.5, 1],
+                                    ease: "easeInOut",
+                                  },
+                                }
+                              : undefined
+                          }
+                          styleProps={
+                            dotAnimating
+                              ? {
+                                  transformOrigin: "50% 50%",
+                                }
+                              : undefined
+                          }
                           resetSignal={resetSignal}
                         >
-                          .
+                          <span className="relative top-[0.08em] inline-block h-[0.24em] w-[0.24em]">
+                            <svg
+                              viewBox="0 0 10 10"
+                              className="block h-full w-full"
+                              aria-hidden="true"
+                              focusable="false"
+                            >
+                              <circle cx="5" cy="5" r="4.1" fill="currentColor" />
+                              <circle cx="3.2" cy="3.1" r="1.2" fill="white" opacity="0.45" />
+                            </svg>
+                          </span>
                         </DraggableToken>
                       );
                     }
@@ -125,6 +182,7 @@ export default function DraggableTitle({
                 onClick={() => {
                   setResetSignal((n) => n + 1);
                   setDirty(false);
+                  setDotAnimating(true);
                 }}
                 className="rounded-full border border-zinc-300 px-3 py-1 text-xs text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-900"
               >
