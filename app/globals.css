@@ -59,6 +59,12 @@ body {
   height: 2px;
 }
 
+/* Reusable: underline turns accent on hover */
+.accent-underline:hover::after {
+  background-color: var(--accent);
+  opacity: 0.9;
+}
+
 /* Accent helpers */
 .text-accent { color: var(--accent); }
 .border-accent { border-color: var(--accent); }
