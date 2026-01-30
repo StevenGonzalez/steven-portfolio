@@ -29,6 +29,96 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Blog / MDX typography (minimal, no plugin) */
+.prose {
+  color: rgb(63 63 70); /* zinc-700 */
+  line-height: 1.75;
+  font-size: 1rem;
+}
+@media (prefers-color-scheme: dark) {
+  .prose {
+    color: rgb(212 212 216); /* zinc-300 */
+  }
+}
+
+.prose :where(p, ul, ol, pre, blockquote) {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose :where(h2, h3) {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: rgb(24 24 27); /* zinc-900 */
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+@media (prefers-color-scheme: dark) {
+  .prose :where(h2, h3) {
+    color: rgb(244 244 245); /* zinc-100 */
+  }
+}
+
+.prose :where(h2) {
+  font-size: 1.25rem;
+}
+.prose :where(h3) {
+  font-size: 1.1rem;
+}
+
+.prose :where(ul, ol) {
+  padding-left: 1.25rem;
+}
+.prose :where(li) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose :where(a) {
+  color: inherit;
+  text-decoration: none;
+}
+.prose :where(a.link-underline)::after {
+  opacity: 0.35;
+}
+.prose :where(a:hover) {
+  color: var(--accent);
+}
+
+.prose :where(code) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.95em;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.4rem;
+  background: rgb(244 244 245); /* zinc-100 */
+  color: rgb(39 39 42); /* zinc-800 */
+}
+@media (prefers-color-scheme: dark) {
+  .prose :where(code) {
+    background: rgb(24 24 27); /* zinc-900 */
+    color: rgb(244 244 245); /* zinc-100 */
+  }
+}
+
+.prose :where(pre) {
+  overflow-x: auto;
+  border-radius: 1rem;
+  padding: 1rem;
+  border: 1px solid rgb(228 228 231); /* zinc-200 */
+  background: rgb(250 250 250);
+}
+@media (prefers-color-scheme: dark) {
+  .prose :where(pre) {
+    border-color: rgb(39 39 42); /* zinc-800 */
+    background: rgb(9 9 11); /* zinc-950 */
+  }
+}
+
+.prose :where(pre code) {
+  padding: 0;
+  background: transparent;
+}
+
 /* Minimal accents */
 
 /* Minimal accents */
