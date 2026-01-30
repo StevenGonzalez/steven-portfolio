@@ -79,7 +79,6 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
                     ? "text-accent"
                     : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
                 }`}
-
               >
                 <span
                   aria-hidden="true"
@@ -89,6 +88,7 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
                       : "bg-zinc-200 opacity-0 group-hover:opacity-70 dark:bg-zinc-800"
                   }`}
                 />
+                <span className="pl-2">{item.label}</span>
               </a>
             </li>
           );
