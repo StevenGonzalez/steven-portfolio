@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type SectionItem = {
   id: string;
@@ -9,6 +9,7 @@ type SectionItem = {
 
 export default function SectionRail({ items }: { items: SectionItem[] }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
+  const rafRef = useRef<number | null>(null);
 
   const ids = useMemo(() => items.map((item) => item.id), [items]);
 
@@ -19,37 +20,67 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
       const hash = window.location.hash.replace("#", "");
       if (hash && ids.includes(hash)) setActiveId(hash);
     };
-    updateFromHash();
-    window.addEventListener("hashchange", updateFromHash);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const candidates = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => {
-            if (b.intersectionRatio !== a.intersectionRatio) return b.intersectionRatio - a.intersectionRatio;
-            return a.boundingClientRect.top - b.boundingClientRect.top;
-          });
-
-        const nextId = candidates[0]?.target?.id;
-        if (nextId) setActiveId(nextId);
-      },
-      {
-        root: null,
-        rootMargin: "-35% 0px -55% 0px",
-        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
-      },
-    );
-
     const elements = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => Boolean(el));
 
-    for (const el of elements) observer.observe(el);
+    const pickActiveId = () => {
+      if (!elements.length) return;
+
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const doc = document.documentElement;
+      const maxScroll = doc.scrollHeight - window.innerHeight;
+
+      const focusY = 120;
+
+      if (scrollY <= 4) {
+        setActiveId((prev) => (prev === elements[0].id ? prev : elements[0].id));
+        return;
+      }
+
+      // Primary rule: pick the last section whose top is above a focus line.
+      // This walks in document order, so it won't skip from first to last.
+      let nextId = elements[0].id;
+      for (const el of elements) {
+        const top = el.getBoundingClientRect().top;
+        if (top <= focusY) nextId = el.id;
+        else break;
+      }
+
+      // If we're at the bottom of the page and the last section is visible,
+      // prefer the last section. Guarded to avoid "short page" jumps.
+      if (maxScroll > 200 && scrollY >= maxScroll - 4) {
+        const lastEl = elements[elements.length - 1];
+        const lastRect = lastEl.getBoundingClientRect();
+        if (lastRect.top < window.innerHeight * 0.8) nextId = lastEl.id;
+      }
+
+      setActiveId((prev) => (prev === nextId ? prev : nextId));
+    };
+
+    const schedule = () => {
+      if (rafRef.current != null) return;
+      rafRef.current = window.requestAnimationFrame(() => {
+        rafRef.current = null;
+        pickActiveId();
+      });
+    };
+
+    updateFromHash();
+    pickActiveId();
+
+    window.addEventListener("hashchange", updateFromHash);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
 
     return () => {
       window.removeEventListener("hashchange", updateFromHash);
-      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (rafRef.current != null) {
+        window.cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
     };
   }, [ids]);
 
@@ -73,6 +104,7 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
                   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
                   el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
                   history.replaceState(null, "", `#${item.id}`);
+                  setActiveId(item.id);
                 }}
                 className={`group relative block rounded-md px-3 py-1.5 transition focus-accent ${
                   isActive
