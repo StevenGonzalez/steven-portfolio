@@ -55,7 +55,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
         ))}
       </div>
 
-      <aside className="mt-10 hidden md:block">
+      <aside className="hidden md:block">
         <div className="sticky top-24">
           <AnimatePresence mode="wait" initial={false}>
             {active ? (

@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="border-t border-zinc-200/40 bg-white dark:border-zinc-800/50 dark:bg-black">
       <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-zinc-600 dark:text-zinc-400">
         <div className="flex items-center justify-between">
-          <p>© {new Date().getFullYear()} Steven</p>
+          <p>© {new Date().getFullYear()} Steven Gonzalez</p>
           <div className="flex gap-6">
             <Magnetic strength={8}>
               <a href="https://github.com/StevenGonzalez" target="_blank" rel="noopener noreferrer" className="link-underline accent-underline focus-accent rounded-md px-1 py-0.5 hover:text-accent">GitHub</a>

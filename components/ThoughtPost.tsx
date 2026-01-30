@@ -3,10 +3,12 @@ import Link from "next/link";
 export default function ThoughtPost({
   title,
   description,
+  date,
   children,
 }: {
   title: string;
   description?: string;
+  date?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -19,7 +21,10 @@ export default function ThoughtPost({
       </div>
 
       <header className="mt-10">
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{title}</h1>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{title}</h1>
+          {date ? <div className="text-sm text-zinc-500 dark:text-zinc-400">{date}</div> : null}
+        </div>
         {description ? <p className="mt-3 text-zinc-600 dark:text-zinc-400">{description}</p> : null}
       </header>
 
