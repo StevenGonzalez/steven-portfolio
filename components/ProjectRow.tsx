@@ -20,7 +20,7 @@ export default function ProjectRow({
       <Link
         href={`/projects/${project.slug}`}
         className={
-          "group block border-b border-zinc-200/60 py-4 transition hover:bg-zinc-50 dark:border-zinc-800/60 dark:hover:bg-zinc-900" +
+          "group block -mx-4 rounded-2xl border-b border-zinc-200/60 px-4 py-4 transition-colors hover:bg-zinc-50 dark:border-zinc-800/60 dark:hover:bg-zinc-900" +
           (active ? " bg-zinc-50 dark:bg-zinc-900" : "")
         }
         onMouseEnter={onHover}
