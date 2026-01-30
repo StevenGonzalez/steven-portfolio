@@ -86,15 +86,15 @@ export default function DraggableTitle({
     <section>
       <div className="mx-auto max-w-6xl px-4">
         <div ref={containerRef} className="relative min-h-[80vh]">
-          <motion.div className="select-none pt-24 sm:pt-32">
+          <motion.div className="select-none pt-20 sm:pt-32 [@media(max-height:650px)]:pt-14">
             {lines.map((line, idx) => {
               const isTitle = idx === 0;
               const tokens = isTitle ? Array.from(line) : line.split(" ");
               const lineClasses = isTitle
-                ? "text-6xl sm:text-7xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100"
+                ? "text-[clamp(2.75rem,7vw,4.5rem)] font-semibold tracking-tight leading-[1.02] text-zinc-900 dark:text-zinc-100"
                 : idx === 1
-                ? "mt-6 text-2xl sm:text-3xl font-medium text-zinc-900 dark:text-zinc-100"
-                : "mt-3 max-w-4xl text-lg sm:text-xl text-zinc-600 dark:text-zinc-400";
+                ? "mt-5 text-[clamp(1.25rem,3.2vw,2rem)] font-medium leading-snug text-zinc-900 dark:text-zinc-100"
+                : "mt-3 max-w-4xl text-[clamp(1rem,2.2vw,1.25rem)] leading-relaxed text-zinc-600 dark:text-zinc-400";
 
               return (
                 <motion.div key={idx} className={lineClasses} variants={lineVariants} initial="hidden" animate="show">
@@ -104,7 +104,7 @@ export default function DraggableTitle({
                         <DraggableToken
                           key={`${idx}-${i}-dot`}
                           containerRef={containerRef}
-                          className="inline-block origin-center cursor-grab active:cursor-grabbing mx-1.5 leading-none text-accent"
+                          className="inline-block origin-center cursor-grab active:cursor-grabbing mx-1 sm:mx-1.5 leading-none text-accent"
                           hover={{ scale: 1.06 }}
                           onDirty={() => {
                             setDirty(true);
@@ -153,7 +153,11 @@ export default function DraggableTitle({
                       <DraggableToken
                         key={`${idx}-${i}-${t}`}
                         containerRef={containerRef}
-                        className={isTitle ? "inline-block cursor-grab active:cursor-grabbing px-1.5" : "inline-block cursor-grab active:cursor-grabbing px-1 mr-1"}
+                        className={
+                          isTitle
+                            ? "inline-block cursor-grab active:cursor-grabbing px-1 sm:px-1.5"
+                            : "inline-block cursor-grab active:cursor-grabbing px-1 mr-1"
+                        }
                         hover={{ scale: 1.06, rotate: 0.8 }}
                         onDirty={() => setDirty(true)}
                         resetSignal={resetSignal}
