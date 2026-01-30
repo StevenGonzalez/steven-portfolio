@@ -2,25 +2,15 @@ import Link from "next/link";
 
 const posts = [
   {
-    slug: "engineering-tradeoffs",
-    title: "On Engineering Tradeoffs",
-    summary: "Optimizing for clarity and reliability over cleverness.",
-  },
-  {
-    slug: "architecture-as-communication",
-    title: "Architecture as Communication",
-    summary: "How good architecture accelerates teams and decisions.",
-  },
-  {
-    slug: "measuring-reliability",
-    title: "Measuring Reliability Pragmatically",
-    summary: "SLOs, error budgets, and focusing on outcomes.",
+    slug: "pull-request-playbook",
+    title: "The Pull Request Playbook",
+    summary: "A practical guide to writing clear, right-sized pull requests that get reviewed well.",
   },
 ];
 
 export const metadata = {
   title: "Thoughts | Steven",
-  description: "Short essays on engineering, architecture, and reliability.",
+  description: "Short essays on engineering and building healthy code review habits.",
 };
 
 export default function ThoughtsPage() {

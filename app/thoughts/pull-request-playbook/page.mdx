@@ -1,0 +1,160 @@
+export const metadata = {
+  title: "The Pull Request Playbook | Steven",
+  description: "A practical guide to writing clear, right-sized pull requests that get reviewed well.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost title="The Pull Request Playbook" description="A practical guide to writing clear, right-sized pull requests that get reviewed well.">
+
+Pull requests are not just code changes. They are how teams communicate intent, share context, and build trust.
+
+A great PR makes it easy for a reviewer to answer three questions: what changed, why it exists, and how to validate it.
+
+## The philosophy
+
+The best pull requests are easy to review because they do five things well.
+
+They state clear intent (problem and goal). They are right-sized (reviewable in one sitting). They are self-documenting (title, description, commits, and code tell a coherent story). They respect time (the author makes review easy). And they are review-ready (tests pass, lint is clean, conflicts are resolved, and the author has already self-reviewed).
+
+## Right-sized, in practice
+
+The hardest part of writing good PRs is not writing. It is sizing.
+
+A quick rubric that works in most teams is to ask:
+
+- Can someone understand this without context switching for 10 minutes?
+- Is it one concern, or did unrelated work sneak in?
+- Can the reviewer find the important part quickly?
+
+If you are stuck with a large change, do not force it through as a single PR. Split it.
+
+Common split strategies include:
+
+- A preparatory refactor (seams, renames, reorganizing) with no behavior change.
+- A thin vertical slice behind a feature flag.
+- Data-first migrations (schema and backfill, then flip reads, then delete old code).
+- API-first migrations (add endpoints and tests, then migrate callers).
+- Stacked PRs (a sequence of small dependent PRs).
+
+## The anatomy of a great PR
+
+### 1) Title
+
+Make it scannable and specific. A consistent format helps. For example: `[Feature] Add OAuth sign-in` or `[Bug] Fix websocket reconnect leak`.
+
+### 2) Description
+
+The description is the center of gravity. If your PR is reviewed slowly, this is usually why.
+
+Aim to cover the essentials without writing an essay:
+
+- What changed
+- Why it changed
+- How to test it
+
+Then add only what is needed for this specific change: screenshots for UI work, risks and sharp edges, any breaking changes, and links to issues or docs.
+
+<details>
+  <summary>Copy-paste description template</summary>
+
+```md
+## What
+
+## Why
+
+## How (optional)
+
+## Testing
+
+## Screenshots (UI only)
+
+## Risks / Notes
+
+## Rollout (optional)
+
+## Follow-ups (optional)
+```
+
+</details>
+
+If you want to be extra kind to reviewers, add a short "How to review" section. Two or three lines is enough:
+
+- Start with file X
+- Focus on Y (risk area)
+- Ignore Z (generated output)
+
+### 3) Commits
+
+Aim for logical, bisectable commits. If your team uses a convention (for example Conventional Commits), follow it consistently.
+
+When you are unsure, optimize for a commit that is safe to revert and a message that explains intent, not mechanics.
+
+### 4) Diff hygiene
+
+Keep the diff focused on one concern. Avoid drive-by refactors, commented-out code, debug logs, and large formatting-only churn.
+
+If you must include a mechanical change (for example linting), separate it into its own commit or its own PR.
+
+### 5) Tests
+
+Review is faster when validation is obvious. New features should include tests, bug fixes should include regression coverage, and CI should be green.
+
+If tests are hard to add quickly, say why and add a follow-up issue. Silence reads as risk.
+
+### 6) Context
+
+Add the context your reviewer would otherwise have to ask for: links to tickets and docs, constraints or tradeoffs, performance numbers when relevant, and a before/after behavior description for user-facing changes.
+
+Context can be short. The goal is to prevent guesswork.
+
+## Common anti-patterns (and fixes)
+
+Four failure modes show up again and again:
+
+- The God PR: huge change touching everything. Fix it by splitting into smaller, focused PRs.
+- The Mystery PR: vague title and no description. Fix it by writing a narrative and linking context.
+- The Kitchen Sink: mixed refactor + feature + bug fix. Fix it by separating concerns.
+- WIP forever: draft for weeks. Fix it by shipping smaller increments or closing it.
+
+## For reviewers
+
+A good review improves the code and improves the author.
+
+Review the code, not the person. Be specific and actionable. Separate must-fix from optional suggestions. Prefer questions over assumptions. If something is unclear, ask for intent and context.
+
+Two small patterns that help a lot:
+
+- Start by summarizing the PR back to the author in one sentence. It catches misunderstandings early.
+- If you request changes, explain the impact (correctness, security, performance, maintenance).
+
+If a PR is too large, say it. The right outcome is usually smaller PRs, not a heroic review.
+
+## A simple checklist
+
+<details>
+  <summary>Quick checklist</summary>
+
+Before requesting review:
+
+- The title states the change clearly.
+- The description covers what, why, and how to test.
+- The diff is focused and readable.
+- Tests are added or updated.
+- CI passes.
+- You reviewed your own changes first.
+
+Before you hit "Create" or "Request review", do a 60 second self-review:
+
+- Skim the diff like you are a stranger.
+- Delete dead code and debug output.
+- Make names and comments match the intent.
+- Add a one line note for anything surprising.
+
+</details>
+
+If you want the full playbook with templates, examples, and deeper dives, it lives here:
+
+[github.com/StevenGonzalez/pull-request-playbook](https://github.com/StevenGonzalez/pull-request-playbook)
+
+</ThoughtPost>

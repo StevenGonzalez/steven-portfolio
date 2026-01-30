@@ -54,9 +54,9 @@ export default function Navbar() {
           <Magnetic strength={8}>
             <Link href="/thoughts" className={linkClass("/thoughts")} aria-current={isActive("/thoughts") ? "page" : undefined}>Thoughts</Link>
           </Magnetic>
-          <Magnetic strength={8}>
+          {/* <Magnetic strength={8}>
             <Link href="/contact" className={linkClass("/contact")} aria-current={isActive("/contact") ? "page" : undefined}>Contact</Link>
-          </Magnetic>
+          </Magnetic> */}
         </div>
       </nav>
       {open && (
@@ -65,7 +65,7 @@ export default function Navbar() {
             <div className="flex flex-col gap-2">
               <Link href="/projects" className="py-2 text-sm" onClick={() => setOpen(false)}>Projects</Link>
               <Link href="/thoughts" className="py-2 text-sm" onClick={() => setOpen(false)}>Thoughts</Link>
-              <Link href="/contact" className="py-2 text-sm" onClick={() => setOpen(false)}>Contact</Link>
+              {/* <Link href="/contact" className="py-2 text-sm" onClick={() => setOpen(false)}>Contact</Link> */}
             </div>
           </div>
         </div>
