@@ -18,12 +18,20 @@ export default function ThoughtPost({
         </Link>
       </div>
 
-      <header className="mt-8">
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{title}</h1>
+      <header className="mt-10">
+        <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{title}</h1>
         {description ? <p className="mt-3 text-zinc-600 dark:text-zinc-400">{description}</p> : null}
       </header>
 
-      <div className="prose mt-10">{children}</div>
+      <div className="mt-10">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="text-xs font-medium tracking-wide text-zinc-500 dark:text-zinc-400">Article</div>
+          <div className="h-px flex-1 bg-zinc-200/60 dark:bg-zinc-800/60" />
+        </div>
+        <div className="rounded-2xl border border-zinc-200/70 bg-white/80 p-6 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] backdrop-blur dark:border-zinc-800/70 dark:bg-black/40 sm:p-8">
+          <div className="prose">{children}</div>
+        </div>
+      </div>
     </article>
   );
 }
