@@ -114,46 +114,37 @@ export default function DraggableTitle({
                             setDirty(true);
                             setDotAnimating(false);
                           }}
-                          animateProps={
-                            dotAnimating
-                              ? {
-                                  // Pulse only.
-                                  scale: [1, 1.16, 1],
-                                }
-                              : undefined
-                          }
-                          transitionProps={
-                            dotAnimating
-                              ? {
-                                  scale: {
-                                    duration: 0.7,
-                                    repeat: Infinity,
-                                    repeatDelay: 0.9,
-                                    times: [0, 0.5, 1],
-                                    ease: "easeInOut",
-                                  },
-                                }
-                              : undefined
-                          }
-                          styleProps={
-                            dotAnimating
-                              ? {
-                                  transformOrigin: "50% 50%",
-                                }
-                              : undefined
-                          }
                           resetSignal={resetSignal}
                         >
-                          <span className="relative top-[0.08em] inline-block h-[0.24em] w-[0.24em]">
-                            <svg
-                              viewBox="0 0 10 10"
-                              className="block h-full w-full"
-                              aria-hidden="true"
-                              focusable="false"
+                          <span className="relative top-[0.08em] inline-block align-baseline">
+                            <motion.span
+                              className="inline-block"
+                              style={{ transformOrigin: "50% 50%" }}
+                              animate={dotAnimating ? { scale: [1, 1.16, 1] } : { scale: 1 }}
+                              transition={
+                                dotAnimating
+                                  ? {
+                                      duration: 0.7,
+                                      repeat: Infinity,
+                                      repeatDelay: 0.9,
+                                      times: [0, 0.5, 1],
+                                      ease: "easeInOut",
+                                    }
+                                  : undefined
+                              }
                             >
-                              <circle cx="5" cy="5" r="4.1" fill="currentColor" />
-                              <circle cx="3.2" cy="3.1" r="1.2" fill="white" opacity="0.45" />
-                            </svg>
+                              <span className="block h-[0.24em] w-[0.24em]">
+                                <svg
+                                  viewBox="0 0 10 10"
+                                  className="block h-full w-full"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                >
+                                  <circle cx="5" cy="5" r="4.1" fill="currentColor" />
+                                  <circle cx="3.2" cy="3.1" r="1.2" fill="white" opacity="0.45" />
+                                </svg>
+                              </span>
+                            </motion.span>
                           </span>
                         </DraggableToken>
                       );
