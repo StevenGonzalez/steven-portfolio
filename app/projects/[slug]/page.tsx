@@ -34,6 +34,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     <article className="mx-auto max-w-6xl px-4 py-16">
       <header className="mb-8">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{project.title}</h1>
+        {project.timeline ? (
+          <div className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{project.timeline}</div>
+        ) : null}
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">{project.summary}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {project.tags.map((t) => (
@@ -42,6 +45,22 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </span>
           ))}
         </div>
+
+        {project.links?.length ? (
+          <div className="mt-4 flex flex-wrap gap-4 text-sm">
+            {project.links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noreferrer"
+                className="link-underline hover:text-accent focus-accent"
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+        ) : null}
       </header>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_240px]">

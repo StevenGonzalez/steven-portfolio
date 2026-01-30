@@ -1,9 +1,11 @@
 export type ProjectDetail = {
   slug: string;
   title: string;
+  timeline?: string;
   summary: string;
   image: string;
   tags: string[];
+  links?: { label: string; href: string }[];
   problem: string;
   approach: string;
   architecture: string;
@@ -13,75 +15,51 @@ export type ProjectDetail = {
 
 export const projects: ProjectDetail[] = [
   {
-    slug: "payments-platform",
-    title: "Global Payments Platform Modernization",
+    slug: "virtual-trainer",
+    title: "Virtual Trainer",
+    timeline: "2019 to present",
     summary:
-      "Re-architected a legacy monolith into an event-driven payments platform handling millions of transactions daily.",
-    image: "/globe.svg",
-    tags: ["TypeScript", "Kafka", "PostgreSQL", "Kubernetes"],
+      "A cross-platform personal training app (iOS + Android) that generates routines and workouts, visualizes progress in a polished dashboard, and includes an in-app AI Trainer.",
+    image: "/virtual-trainer.svg",
+    tags: [
+      "React Native",
+      ".NET Core",
+      "Azure",
+      "SQL Server",
+      "Cosmos DB",
+      "LLM",
+    ],
+    links: [
+      {
+        label: "App Store",
+        href: "https://apps.apple.com/us/app/virtual-trainer-ai-fitness/id6503172379",
+      },
+      {
+        label: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.virtualfitness.virtualtrainer",
+      },
+      {
+        label: "Website",
+        href: "https://virtualtrainerapp.com/",
+      },
+      {
+        label: "Privacy",
+        href: "https://virtualtrainerapp.com/privacy-policy/",
+      },
+      {
+        label: "Terms",
+        href: "https://virtualtrainerapp.com/terms-of-use/",
+      },
+    ],
     problem:
-      "A monolithic system caused scaling bottlenecks, slow releases, and fragile integrations across issuing, acquiring, and reconciliation.",
+      "My co-founder and I were frustrated by what was out there. Too many apps had questionable information or clunky UX that made consistency harder, not easier. We wanted a true personal trainer replacement: credible programming grounded in coaching knowledge, delivered through an experience that stays fast and clear during the workout.",
     approach:
-      "Interviewed stakeholders, mapped domain boundaries, defined events and SLAs; iteratively carved out bounded contexts with clear APIs.",
+      "Started with structure first: the domain model, the tables, and what we needed to persist to support history and analytics. Then I ramped up quickly on React Native and built the core loop end-to-end: generate routines and workouts, guide the session with a focused in-workout view, and review progress through a dashboard. I shipped a built-in exercise library to teach movement patterns, plus custom exercise creation for anything we did not have yet. On top, I added an AI Trainer (LLM) for coaching and fitness Q\u0026A in-context with user goals and training data. Automated workflows and progression keep the experience trainer-like without manual bookkeeping.",
     architecture:
-      "Event-driven microservices using Kafka for async workflows, CQRS for read-heavy endpoints, Postgres for transactional stores, Redis for caching.",
+      "React Native mobile clients talk to a .NET Core REST API. The API persists relational data in Microsoft SQL Server and uses Azure Cosmos DB where document-style storage fits better. Azure Service Bus coordinates asynchronous workflows, and Azure Functions trigger email workflows via an Email API. The AI Trainer experience is backed by an LLM and integrated as a first-class feature alongside workout generation, progression logic, history, and dashboard analytics.",
     tradeoffs:
-      "Accepted eventual consistency for certain flows; increased operational complexity offset by improved reliability and scalability.",
+      "Combining generated programming, an LLM coach, and automatic progression requires careful guardrails: you want users to feel momentum without unsafe jumps or confusing recommendations. Supporting both SQL Server and Cosmos DB adds operational complexity, so boundaries are explicit (what lives where, and why) and async workflows via Service Bus are used to keep the app responsive.",
     outcome:
-      "99.95% availability, p95 latency reduced by 43%, deploys >20/day with blue/green; auditability and compliance significantly improved.",
-  },
-  {
-    slug: "ml-feature-store",
-    title: "Real-time ML Feature Store",
-    summary:
-      "Built a low-latency feature store powering risk models with millisecond SLAs and versioned features.",
-    image: "/window.svg",
-    tags: ["Go", "TypeScript", "gRPC", "BigQuery", "Redis"],
-    problem:
-      "Models starved for fresh features; batch pipelines led to stale predictions and drift.",
-    approach:
-      "Unified offline/online features, introduced stream processors, versioning, and consistency checks.",
-    architecture:
-      "Streaming ingestion (Kafka), Flink processors, Redis as online store, BigQuery as offline, gRPC APIs with typed contracts.",
-    tradeoffs:
-      "Higher infra cost and operational load for strong consistency and low latency guarantees.",
-    outcome:
-      "AUC up 7%, fraud losses down double digits; engineers self-serve features in hours not weeks.",
-  },
-  {
-    slug: "observability-revamp",
-    title: "Observability Revamp",
-    summary:
-      "Implemented end-to-end tracing, SLOs, and error budgets to align engineering with business reliability goals.",
-    image: "/file.svg",
-    tags: ["OpenTelemetry", "Grafana", "Prometheus", "SLOs"],
-    problem:
-      "Multiple tools, no unified view; incidents required ad-hoc digging across logs and metrics.",
-    approach:
-      "Standardized instrumentation, propagated trace context, created SLOs per service, and set error budgets.",
-    architecture:
-      "OTel SDKs, Tempo traces, Loki logs, Prom metrics; dashboards and alerts mapped to customer journeys.",
-    tradeoffs:
-      "Initial instrumentation effort and some runtime overhead vs substantial gains in MTTR and prevention.",
-    outcome:
-      "MTTR down 54%, proactive detection up; culture shift to reliability as a product.",
-  },
-  {
-    slug: "developer-platform",
-    title: "Internal Developer Platform",
-    summary:
-      "Productized infrastructure and paved paths for services, CI/CD, and security by default.",
-    image: "/next.svg",
-    tags: ["Backstage", "Terraform", "GitHub Actions", "SAST"],
-    problem:
-      "Inconsistent service setups and drift caused slow onboarding and security risks.",
-    approach:
-      "Built golden paths with templates, guardrails, and docs; centralized service catalog and scorecards.",
-    architecture:
-      "Backstage plugins, Terraform modules, standardized CI/CD pipelines, SBOM and SAST integrations.",
-    tradeoffs:
-      "Less bespoke flexibility for dramatically improved consistency, security posture, and delivery speed.",
-    outcome:
-      "Service lead time cut by 60%; fewer incidents; developers focus on product not yak-shaving.",
+      "Shipped on the App Store and Google Play with routine/workout generation, a built-in exercise library plus custom exercises, workout history, a polished dashboard, automatic progression and workflows, and an in-app AI Trainer. The result is a trainer-style experience that helps users stay consistent and see progress without spending their session managing spreadsheets.",
   },
 ];
