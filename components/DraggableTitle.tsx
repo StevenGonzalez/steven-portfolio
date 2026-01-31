@@ -161,8 +161,15 @@ export default function DraggableTitle({
                         hover={{ scale: 1.06, rotate: 0.8 }}
                         onDirty={() => setDirty(true)}
                         resetSignal={resetSignal}
+                        styleProps={
+                          isTitle && t === " "
+                            ? {
+                                whiteSpace: "pre-wrap",
+                              }
+                            : undefined
+                        }
                       >
-                        {isTitle && t === " " ? "\u00A0" : t}
+                        {t}
                       </DraggableToken>
                     );
                   })}
