@@ -6,6 +6,10 @@ export type ProjectDetail = {
   image: string;
   tags: string[];
   links?: { label: string; href: string }[];
+  role?: string;
+  scope?: string;
+  keyDecision?: string;
+  highlights?: string[];
   problem: string;
   approach: string;
   architecture: string;
@@ -50,6 +54,14 @@ export const projects: ProjectDetail[] = [
         label: "Terms",
         href: "https://virtualtrainerapp.com/terms-of-use/",
       },
+    ],
+    role: "Co-founder • Lead engineer",
+    scope: "iOS + Android + .NET API",
+    keyDecision: "SQL for relational + Cosmos for documents; Service Bus for async workflows",
+    highlights: [
+      "Shipped on App Store + Google Play",
+      "Routine/workout generation + progression + dashboard analytics",
+      "In-app AI Trainer integrated with user context",
     ],
     problem:
       "My co-founder and I were frustrated by what was out there. Too many apps had questionable information or clunky UX that made consistency harder, not easier. We wanted a true personal trainer replacement: credible programming grounded in coaching knowledge, delivered through an experience that stays fast and clear during the workout.",
