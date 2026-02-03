@@ -43,9 +43,7 @@ export default function RootLayout({
       >
         <div className="flex min-h-screen flex-col">
           <Navbar />
-          <div className="flex-1">
-            <PageTransition>{children}</PageTransition>
-          </div>
+          <PageTransition className="flex flex-1 flex-col">{children}</PageTransition>
           <Footer />
         </div>
       </body>

@@ -2,8 +2,9 @@ import DraggableTitle from "../components/DraggableTitle";
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex flex-1 flex-col">
       <DraggableTitle
+        fill
         lines={[
           "Hi, I'm Steven.",
           "Senior Software Engineer.",

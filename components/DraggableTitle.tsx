@@ -77,12 +77,14 @@ function DraggableToken({
 
 export default function DraggableTitle({
   lines = [
-    "Hi, I'm Steven.",
-    "Senior Software Engineer, clarity-first systems.",
-    "I design reliable, performant software with pragmatic tradeoffs.",
+    "Hi, I'm Steven",
+    "Senior Software Engineer, clarity-first systems",
+    "I design reliable, performant software with pragmatic tradeoffs",
   ],
+  fill = false,
 }: {
   lines?: string[];
+  fill?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const constraintsRef = useRef<HTMLDivElement>(null);
@@ -90,6 +92,7 @@ export default function DraggableTitle({
   const dotRef = useRef<HTMLSpanElement>(null);
   const hiIGlyphRef = useRef<HTMLSpanElement>(null);
   const [dotAnchor, setDotAnchor] = useState<{ left: number; top: number } | null>(null);
+  const dotHomeRef = useRef<{ left: number; top: number } | null>(null);
   const [dirty, setDirty] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
   const [dotAnimating, setDotAnimating] = useState(true);
@@ -100,50 +103,103 @@ export default function DraggableTitle({
 
   useLayoutEffect(() => {
     let rafId = 0;
+    let settleRafId = 0;
     const HI_DOT_TUNE_X = 2;
     const HI_DOT_TUNE_Y = 32;
 
-    const compute = () => {
+    const computeAnchor = (force: boolean) => {
       const glyphEl = hiIGlyphRef.current;
       const dotEl = dotRef.current;
       if (!glyphEl || !dotEl) return;
 
-      // If the dot has been dragged away, don't auto-re-anchor on resize.
-      if (dotX.get() !== 0 || dotY.get() !== 0) return;
+      // Avoid snapping the dot back during normal resizes/font swaps if the user has dragged it away.
+      if (!force && (dotX.get() !== 0 || dotY.get() !== 0)) return;
 
       const glyphRect = glyphEl.getBoundingClientRect();
-      const dotRect = dotEl.getBoundingClientRect();
+
+      // IMPORTANT: Use layout size (offset*) so transforms (pulse scale / drag)
+      // don't affect the computed dock position.
+      const dotW = dotEl.offsetWidth || dotEl.getBoundingClientRect().width;
+      const dotH = dotEl.offsetHeight || dotEl.getBoundingClientRect().height;
 
       const iCenterX = glyphRect.left + glyphRect.width / 2;
-      const left = iCenterX - dotRect.width / 2 + HI_DOT_TUNE_X;
+      const left = iCenterX - dotW / 2 + HI_DOT_TUNE_X;
 
       // Place the dot above the top of the (dotless) i stem.
-      const top = glyphRect.top - dotRect.height * 1.05 + HI_DOT_TUNE_Y;
+      const top = glyphRect.top - dotH * 1.05 + HI_DOT_TUNE_Y;
 
-      setDotAnchor({ left, top });
+      const anchor = { left, top };
+      setDotAnchor(anchor);
+      // Record the canonical "home" position while the dot hasn't been dragged.
+      if (dotX.get() === 0 && dotY.get() === 0) dotHomeRef.current = anchor;
     };
 
-    const schedule = () => {
+    const schedule = (force: boolean) => {
       cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(compute);
+      rafId = requestAnimationFrame(() => computeAnchor(force));
     };
 
-    // Compute on mount and whenever we reset (so it re-docks perfectly).
-    schedule();
+    const scheduleAfterSettle = () => {
+      cancelAnimationFrame(settleRafId);
+
+      const glyphEl = hiIGlyphRef.current;
+      if (!glyphEl) {
+        schedule(true);
+        return;
+      }
+
+      const start = performance.now();
+      let lastLeft = Number.NaN;
+      let lastTop = Number.NaN;
+      let stableFrames = 0;
+
+      const tick = () => {
+        const rect = glyphEl.getBoundingClientRect();
+        const moved =
+          Number.isFinite(lastLeft) && Number.isFinite(lastTop)
+            ? Math.abs(rect.left - lastLeft) + Math.abs(rect.top - lastTop)
+            : Infinity;
+
+        lastLeft = rect.left;
+        lastTop = rect.top;
+
+        if (moved < 0.25) stableFrames += 1;
+        else stableFrames = 0;
+
+        // Once the glyph stops moving (spring settled), force a final anchor compute.
+        // Fallback after ~1.6s so we never get stuck.
+        if (stableFrames >= 6 || performance.now() - start > 1600) {
+          schedule(true);
+          return;
+        }
+
+        settleRafId = requestAnimationFrame(tick);
+      };
+
+      settleRafId = requestAnimationFrame(tick);
+    };
+
+    // Compute the canonical home on mount by waiting for the title to settle.
+    // Reset should use the stored home (see Reset button handler) to avoid post-reset jumps.
+    scheduleAfterSettle();
 
     // Recompute once fonts are ready (swap can shift glyph metrics).
     const fontsReady = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
-    fontsReady?.then(schedule).catch(() => {
+    fontsReady
+      ?.then(() => schedule(false))
+      .catch(() => {
       // ignore
     });
 
-    window.addEventListener("resize", schedule);
+    const onResize = () => schedule(false);
+    window.addEventListener("resize", onResize);
 
     return () => {
       cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", schedule);
+      cancelAnimationFrame(settleRafId);
+      window.removeEventListener("resize", onResize);
     };
-  }, [resetSignal, dotX, dotY]);
+  }, [dotX, dotY]);
 
   useEffect(() => {
     let secretEl: HTMLElement | null = null;
@@ -216,22 +272,8 @@ export default function DraggableTitle({
 
   const tokenizeTitle = (line: string) => {
     // Preserve spaces so the layout stays natural.
-    // We keep the trailing '.' as its own draggable accent token.
-    const parts = line.split(/(\s+)/g).filter((p) => p.length > 0);
-    const tokens: string[] = [];
-    for (const part of parts) {
-      if (/^\s+$/.test(part)) {
-        tokens.push(part);
-        continue;
-      }
-      if (part.length > 1 && part.endsWith(".")) {
-        tokens.push(part.slice(0, -1));
-        tokens.push(".");
-        continue;
-      }
-      tokens.push(part);
-    }
-    return tokens;
+    // Keep punctuation attached (e.g. "Steven." drags as one token).
+    return line.split(/(\s+)/g).filter((p) => p.length > 0);
   };
 
   const getEnterAnimation = (delay: number, isTitle: boolean) => {
@@ -264,13 +306,38 @@ export default function DraggableTitle({
     };
   };
 
+  // For the dot, match the title's fade/blur timing but avoid the vertical slide;
+  // otherwise it appears correct initially (while y is offset) and then snaps upward
+  // as the enter animation completes.
+  const dotDelay = getTokenDelay(0, 0);
+  const dotEnter = reduceMotion
+    ? { enterInitialProps: false as const, enterAnimateProps: undefined, enterTransitionProps: undefined }
+    : {
+        enterInitialProps: {
+          opacity: 0,
+          scale: 0.985,
+          filter: "blur(10px)",
+        },
+        enterAnimateProps: {
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+        },
+        enterTransitionProps: {
+          delay: dotDelay,
+          duration: 1.05,
+          ease: [0.16, 1, 0.3, 1],
+        },
+      };
+
   return (
-    <section className="relative overflow-hidden">
+    <section className={fill ? "relative flex flex-1 flex-col overflow-hidden" : "relative overflow-hidden"}>
       {/* Full-viewport drag constraints so tokens can be moved anywhere on screen */}
       <div ref={constraintsRef} className="fixed inset-0 pointer-events-none" aria-hidden="true" />
 
       {/* Draggable dot (independent from the word "Hi") */}
       <DraggableToken
+        key={dotAnchor ? "hero-dot-ready" : "hero-dot-init"}
         containerRef={constraintsRef}
         className="fixed z-30 inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
         hover={{ scale: 1.06 }}
@@ -283,6 +350,9 @@ export default function DraggableTitle({
           setDotAnimating(false);
         }}
         resetSignal={resetSignal}
+        enterInitialProps={dotEnter.enterInitialProps}
+        enterAnimateProps={dotEnter.enterAnimateProps}
+        enterTransitionProps={dotEnter.enterTransitionProps}
         motionValues={{ x: dotX, y: dotY }}
         forwardedRef={dotRef}
         styleProps={{
@@ -336,9 +406,18 @@ export default function DraggableTitle({
         )}
       </div>
 
-      <div className="mx-auto max-w-6xl px-4">
-        <div ref={containerRef} className="relative min-h-[80vh]">
-          <div className="select-none pt-20 sm:pt-32 [@media(max-height:650px)]:pt-14">
+      <div className={fill ? "mx-auto flex w-full max-w-6xl flex-1 flex-col px-4" : "mx-auto max-w-6xl px-4"}>
+        <div
+          ref={containerRef}
+          className={fill ? "relative flex min-h-full flex-1 flex-col justify-start" : "relative min-h-[80vh]"}
+        >
+          <div
+            className={
+              fill
+                ? "select-none pt-20 pb-12 sm:pt-32 sm:pb-16 [@media(max-height:650px)]:pt-14"
+                : "select-none pt-20 sm:pt-32 [@media(max-height:650px)]:pt-14"
+            }
+          >
             {lines.map((line, idx) => {
               const isTitle = idx === 0;
               const tokens = isTitle ? tokenizeTitle(line) : line.split(" ");
@@ -392,24 +471,6 @@ export default function DraggableTitle({
                       );
                     }
 
-                    // The trailing period is draggable now (separate from the purple dot).
-                    if (isTitle && t === ".") {
-                      return (
-                        <DraggableToken
-                          key={`${idx}-${i}-period`}
-                          containerRef={constraintsRef}
-                          className="inline-block cursor-grab active:cursor-grabbing"
-                          hover={{ scale: 1.06, rotate: 0.8 }}
-                          onDirty={() => setDirty(true)}
-                          resetSignal={resetSignal}
-                          enterInitialProps={enter.enterInitialProps}
-                          enterAnimateProps={enter.enterAnimateProps}
-                          enterTransitionProps={enter.enterTransitionProps}
-                        >
-                          .
-                        </DraggableToken>
-                      );
-                    }
                     return (
                       <DraggableToken
                         key={`${idx}-${i}-${t}`}
@@ -448,6 +509,7 @@ export default function DraggableTitle({
               <button
                 onClick={() => {
                   setResetSignal((n) => n + 1);
+                  if (dotHomeRef.current) setDotAnchor(dotHomeRef.current);
                   setDirty(false);
                   setDotAnimating(true);
                 }}
