@@ -1,4 +1,4 @@
-import DraggableTitle from "../../components/DraggableTitle";
+import DraggableTitle from "../../components/draggable-title";
 import ProjectsWithPreview from "../../components/ProjectsWithPreview";
 import { projects } from "../../data/projects";
 

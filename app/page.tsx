@@ -1,4 +1,4 @@
-import DraggableTitle from "../components/DraggableTitle";
+import DraggableTitle from "../components/draggable-title";
 
 export default function Home() {
   return (

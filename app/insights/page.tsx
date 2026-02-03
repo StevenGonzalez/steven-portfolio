@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DraggableTitle from "../../components/DraggableTitle";
+import DraggableTitle from "../../components/draggable-title";
 
 const posts = [
   {
