@@ -1,7 +1,7 @@
 "use client";
 
 import { animate, motion, type MotionValue, useMotionValue, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 function DraggableToken({
   children,
@@ -88,6 +88,8 @@ export default function DraggableTitle({
   const constraintsRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
+  const hiIGlyphRef = useRef<HTMLSpanElement>(null);
+  const [dotAnchor, setDotAnchor] = useState<{ left: number; top: number } | null>(null);
   const [dirty, setDirty] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
   const [dotAnimating, setDotAnimating] = useState(true);
@@ -96,12 +98,60 @@ export default function DraggableTitle({
   const dotX = useMotionValue(0);
   const dotY = useMotionValue(0);
 
+  useLayoutEffect(() => {
+    let rafId = 0;
+    const HI_DOT_TUNE_X = 2;
+    const HI_DOT_TUNE_Y = 32;
+
+    const compute = () => {
+      const glyphEl = hiIGlyphRef.current;
+      const dotEl = dotRef.current;
+      if (!glyphEl || !dotEl) return;
+
+      // If the dot has been dragged away, don't auto-re-anchor on resize.
+      if (dotX.get() !== 0 || dotY.get() !== 0) return;
+
+      const glyphRect = glyphEl.getBoundingClientRect();
+      const dotRect = dotEl.getBoundingClientRect();
+
+      const iCenterX = glyphRect.left + glyphRect.width / 2;
+      const left = iCenterX - dotRect.width / 2 + HI_DOT_TUNE_X;
+
+      // Place the dot above the top of the (dotless) i stem.
+      const top = glyphRect.top - dotRect.height * 1.05 + HI_DOT_TUNE_Y;
+
+      setDotAnchor({ left, top });
+    };
+
+    const schedule = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(compute);
+    };
+
+    // Compute on mount and whenever we reset (so it re-docks perfectly).
+    schedule();
+
+    // Recompute once fonts are ready (swap can shift glyph metrics).
+    const fontsReady = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
+    fontsReady?.then(schedule).catch(() => {
+      // ignore
+    });
+
+    window.addEventListener("resize", schedule);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [resetSignal, dotX, dotY]);
+
   useEffect(() => {
     let secretEl: HTMLElement | null = null;
     const updateSpotlight = () => {
       const dotEl = dotRef.current;
       const spotlightEl = spotlightRef.current;
       if (!dotEl || !spotlightEl) return;
+      if (!dotAnchor) return;
 
       const dotRect = dotEl.getBoundingClientRect();
       const spotRect = spotlightEl.getBoundingClientRect();
@@ -155,7 +205,7 @@ export default function DraggableTitle({
       window.removeEventListener("resize", updateSpotlight);
       window.removeEventListener("scroll", updateSpotlight);
     };
-  }, [dotX, dotY]);
+  }, [dotX, dotY, dotAnchor]);
 
   const getTokenDelay = (lineIndex: number, tokenIndex: number) => {
     // Tuned to feel "premium": the title takes its time, then supporting lines follow.
@@ -219,6 +269,55 @@ export default function DraggableTitle({
       {/* Full-viewport drag constraints so tokens can be moved anywhere on screen */}
       <div ref={constraintsRef} className="fixed inset-0 pointer-events-none" aria-hidden="true" />
 
+      {/* Draggable dot (independent from the word "Hi") */}
+      <DraggableToken
+        containerRef={constraintsRef}
+        className="fixed z-30 inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
+        hover={{ scale: 1.06 }}
+        onDirty={() => {
+          setDirty(true);
+          setDotAnimating(false);
+        }}
+        onPointerDown={() => {
+          setDirty(true);
+          setDotAnimating(false);
+        }}
+        resetSignal={resetSignal}
+        motionValues={{ x: dotX, y: dotY }}
+        forwardedRef={dotRef}
+        styleProps={{
+          left: `${dotAnchor?.left ?? 0}px`,
+          top: `${dotAnchor?.top ?? 0}px`,
+          fontSize: "clamp(2.75rem,7vw,4.5rem)",
+          lineHeight: 1,
+          opacity: dotAnchor ? 1 : 0,
+        }}
+      >
+        <motion.span
+          className="inline-block"
+          style={{ transformOrigin: "50% 50%" }}
+          animate={dotAnimating ? { scale: [1, 1.16, 1] } : { scale: 1 }}
+          transition={
+            dotAnimating
+              ? {
+                  duration: 0.7,
+                  repeat: Infinity,
+                  repeatDelay: 0.9,
+                  times: [0, 0.5, 1],
+                  ease: "easeInOut",
+                }
+              : undefined
+          }
+        >
+          <span className="block h-[0.24em] w-[0.24em]">
+            <svg viewBox="0 0 10 10" className="block h-full w-full" aria-hidden="true" focusable="false">
+              <circle cx="5" cy="5" r="4.1" fill="currentColor" />
+              <circle cx="3.2" cy="3.1" r="1.2" fill="white" opacity="0.45" />
+            </svg>
+          </span>
+        </motion.span>
+      </DraggableToken>
+
       {/* Spotlight spans full viewport width (not clipped by max-w container) */}
       <div
         className="pointer-events-none absolute inset-0 left-1/2 w-screen -translate-x-1/2 -z-10"
@@ -266,58 +365,48 @@ export default function DraggableTitle({
                       revealIndex += 1;
                     const enter = getEnterAnimation(delay, isTitle);
 
-                    if (isTitle && t === ".") {
+                    // Special case: make the draggable purple dot act as the dot on the "i" in "Hi".
+                    // We render a dotless i ("ı") and anchor the draggable dot to that glyph.
+                    if (isTitle && idx === 0 && i === 0 && (t === "Hi," || t === "Hi")) {
+                      const comma = t === "Hi," ? "," : "";
                       return (
                         <DraggableToken
-                          key={`${idx}-${i}-dot`}
+                          key={`${idx}-${i}-hi`}
                           containerRef={constraintsRef}
-                          className="inline-block origin-center cursor-grab active:cursor-grabbing mx-1 sm:mx-1.5 leading-none text-accent"
-                          hover={{ scale: 1.06 }}
-                          onDirty={() => {
-                            setDirty(true);
-                            setDotAnimating(false);
-                          }}
-                          onPointerDown={() => {
-                            setDirty(true);
-                            setDotAnimating(false);
-                          }}
+                          className="inline-block cursor-grab active:cursor-grabbing"
+                          hover={{ scale: 1.06, rotate: 0.8 }}
+                          onDirty={() => setDirty(true)}
                           resetSignal={resetSignal}
                           enterInitialProps={enter.enterInitialProps}
                           enterAnimateProps={enter.enterAnimateProps}
                           enterTransitionProps={enter.enterTransitionProps}
-                          motionValues={{ x: dotX, y: dotY }}
-                          forwardedRef={dotRef}
                         >
-                          <span className="relative top-[0.08em] inline-block align-baseline">
-                            <motion.span
-                              className="inline-block"
-                              style={{ transformOrigin: "50% 50%" }}
-                              animate={dotAnimating ? { scale: [1, 1.16, 1] } : { scale: 1 }}
-                              transition={
-                                dotAnimating
-                                  ? {
-                                      duration: 0.7,
-                                      repeat: Infinity,
-                                      repeatDelay: 0.9,
-                                      times: [0, 0.5, 1],
-                                      ease: "easeInOut",
-                                    }
-                                  : undefined
-                              }
-                            >
-                              <span className="block h-[0.24em] w-[0.24em]">
-                                <svg
-                                  viewBox="0 0 10 10"
-                                  className="block h-full w-full"
-                                  aria-hidden="true"
-                                  focusable="false"
-                                >
-                                  <circle cx="5" cy="5" r="4.1" fill="currentColor" />
-                                  <circle cx="3.2" cy="3.1" r="1.2" fill="white" opacity="0.45" />
-                                </svg>
-                              </span>
-                            </motion.span>
+                          <span className="inline-flex items-baseline">
+                            <span>H</span>
+                            <span className="relative inline-block">
+                              <span ref={hiIGlyphRef}>ı</span>
+                            </span>
+                            <span>{comma}</span>
                           </span>
+                        </DraggableToken>
+                      );
+                    }
+
+                    // The trailing period is draggable now (separate from the purple dot).
+                    if (isTitle && t === ".") {
+                      return (
+                        <DraggableToken
+                          key={`${idx}-${i}-period`}
+                          containerRef={constraintsRef}
+                          className="inline-block cursor-grab active:cursor-grabbing"
+                          hover={{ scale: 1.06, rotate: 0.8 }}
+                          onDirty={() => setDirty(true)}
+                          resetSignal={resetSignal}
+                          enterInitialProps={enter.enterInitialProps}
+                          enterAnimateProps={enter.enterAnimateProps}
+                          enterTransitionProps={enter.enterTransitionProps}
+                        >
+                          .
                         </DraggableToken>
                       );
                     }

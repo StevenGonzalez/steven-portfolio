@@ -31,7 +31,7 @@ export default function Navbar() {
             aria-label="Home"
             aria-current={isActive("/") ? "page" : undefined}
             className={
-              "type-nav focus-accent rounded-md px-1 py-0.5 text-sm font-semibold transition " +
+              "type-nav tracking-wide focus-accent rounded-md px-1 py-0.5 text-sm font-semibold transition " +
               (isActive("/") ? "text-accent" : "text-zinc-900 dark:text-zinc-100")
             }
           >
