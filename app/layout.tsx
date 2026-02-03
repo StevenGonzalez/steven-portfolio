@@ -29,7 +29,7 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Steven | Senior Software Engineer",
-  description: "Portfolio showcasing projects, insights, and contact info.",
+  description: "Portfolio showcasing projects and software engineering insights.",
 };
 
 export default function RootLayout({
