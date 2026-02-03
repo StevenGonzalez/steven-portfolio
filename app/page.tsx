@@ -2,7 +2,7 @@ import DraggableTitle from "../components/DraggableTitle";
 
 export default function Home() {
   return (
-    <div className="spotlight-accent">
+    <div>
       <DraggableTitle
         lines={[
           "Hi, I'm Steven.",

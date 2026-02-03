@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useMotionValue, useReducedMotion } from "framer-motion";
+import { animate, motion, type MotionValue, useMotionValue, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 function DraggableToken({
@@ -15,6 +15,8 @@ function DraggableToken({
   enterTransitionProps,
   onPointerDown,
   styleProps,
+  motionValues,
+  forwardedRef,
 }: {
   children: React.ReactNode;
   containerRef: React.RefObject<HTMLElement | null>;
@@ -27,9 +29,13 @@ function DraggableToken({
   enterTransitionProps?: Parameters<typeof motion.span>[0]["transition"];
   onPointerDown?: () => void;
   styleProps?: React.CSSProperties;
+  motionValues?: { x: MotionValue<number>; y: MotionValue<number> };
+  forwardedRef?: React.Ref<HTMLSpanElement>;
 }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  const internalX = useMotionValue(0);
+  const internalY = useMotionValue(0);
+  const x = motionValues?.x ?? internalX;
+  const y = motionValues?.y ?? internalY;
 
   useEffect(() => {
     if (resetSignal === 0) return;
@@ -44,6 +50,7 @@ function DraggableToken({
 
   return (
     <motion.span
+      ref={forwardedRef}
       drag
       dragConstraints={containerRef}
       dragMomentum
@@ -79,10 +86,65 @@ export default function DraggableTitle({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const constraintsRef = useRef<HTMLDivElement>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLSpanElement>(null);
   const [dirty, setDirty] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
   const [dotAnimating, setDotAnimating] = useState(true);
   const reduceMotion = useReducedMotion();
+
+  const dotX = useMotionValue(0);
+  const dotY = useMotionValue(0);
+
+  useEffect(() => {
+    const updateSpotlight = () => {
+      const dotEl = dotRef.current;
+      const spotlightEl = spotlightRef.current;
+      if (!dotEl || !spotlightEl) return;
+
+      const dotRect = dotEl.getBoundingClientRect();
+      const spotRect = spotlightEl.getBoundingClientRect();
+
+      const cx = dotRect.left + dotRect.width / 2 - spotRect.left;
+      const cy = dotRect.top + dotRect.height / 2 - spotRect.top;
+
+      const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+      // Single main spotlight: center it on the dot.
+      const w = spotRect.width;
+      const h = spotRect.height;
+
+      // Allow the gradient centers to move slightly outside the element bounds.
+      // The spotlight element is oversized (inset: -25%), so clamping tightly can make a
+      // gradient appear "stuck" against an edge.
+      const overflowX = w * 0.35;
+      const overflowY = h * 0.35;
+      const minX = -overflowX;
+      const maxX = w + overflowX;
+      const minY = -overflowY;
+      const maxY = h + overflowY;
+
+      const g1x = clamp(cx, minX, maxX);
+      const g1y = clamp(cy, minY, maxY);
+
+      // Vars for the single gradient
+      spotlightEl.style.setProperty("--spotlight-1-x", `${g1x}px`);
+      spotlightEl.style.setProperty("--spotlight-1-y", `${g1y}px`);
+    };
+
+    updateSpotlight();
+    const unsubscribeX = dotX.on("change", updateSpotlight);
+    const unsubscribeY = dotY.on("change", updateSpotlight);
+
+    window.addEventListener("resize", updateSpotlight);
+    window.addEventListener("scroll", updateSpotlight, { passive: true });
+    return () => {
+      unsubscribeX();
+      unsubscribeY();
+      window.removeEventListener("resize", updateSpotlight);
+      window.removeEventListener("scroll", updateSpotlight);
+    };
+  }, [dotX, dotY]);
 
   const getTokenDelay = (lineIndex: number, tokenIndex: number) => {
     // Tuned to feel "premium": the title takes its time, then supporting lines follow.
@@ -152,9 +214,10 @@ export default function DraggableTitle({
         aria-hidden="true"
       >
         {reduceMotion ? (
-          <div className="premium-spotlight" />
+          <div ref={spotlightRef} className="premium-spotlight" />
         ) : (
           <motion.div
+            ref={spotlightRef}
             className="premium-spotlight"
             initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -211,6 +274,8 @@ export default function DraggableTitle({
                           enterInitialProps={enter.enterInitialProps}
                           enterAnimateProps={enter.enterAnimateProps}
                           enterTransitionProps={enter.enterTransitionProps}
+                          motionValues={{ x: dotX, y: dotY }}
+                          forwardedRef={dotRef}
                         >
                           <span className="relative top-[0.08em] inline-block align-baseline">
                             <motion.span

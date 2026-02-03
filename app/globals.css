@@ -249,19 +249,16 @@ h4, h5, h6 { letter-spacing: -0.012em; }
   box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent);
 }
 
-/* Static spotlight helper (use on containers) */
-.spotlight-accent {
-  background-image: radial-gradient(600px circle at 22% 20%, rgb(var(--accent-rgb) / 0.14), transparent 60%);
-}
-
 /* Premium hero spotlight (animated via Framer or CSS) */
 .premium-spotlight {
   position: absolute;
   inset: -25%;
   background:
-    radial-gradient(700px circle at 28% 30%, rgb(var(--accent-rgb) / 0.22), transparent 62%),
-    radial-gradient(520px circle at 62% 44%, rgb(var(--accent-rgb) / 0.12), transparent 64%),
-    radial-gradient(420px circle at 52% 18%, rgb(255 255 255 / 0.08), transparent 58%);
+    radial-gradient(
+      700px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
+      rgb(var(--accent-rgb) / 0.22),
+      transparent 62%
+    );
   filter: blur(18px) saturate(1.15);
   opacity: 0;
   transform: translate3d(0, 10px, 0) scale(0.98);
@@ -271,9 +268,11 @@ h4, h5, h6 { letter-spacing: -0.012em; }
 @media (prefers-color-scheme: dark) {
   .premium-spotlight {
     background:
-      radial-gradient(760px circle at 28% 30%, rgb(var(--accent-rgb) / 0.22), transparent 62%),
-      radial-gradient(560px circle at 62% 44%, rgb(var(--accent-rgb) / 0.12), transparent 64%),
-      radial-gradient(520px circle at 52% 18%, rgb(255 255 255 / 0.05), transparent 58%);
+      radial-gradient(
+        760px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
+        rgb(var(--accent-rgb) / 0.22),
+        transparent 62%
+      );
   }
 }
 
