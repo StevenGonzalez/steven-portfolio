@@ -14,9 +14,9 @@ export default function ThoughtPost({
   return (
     <article className="mx-auto max-w-3xl px-4 py-16">
       <div className="text-sm">
-        <Link href="/thoughts" className="inline-flex items-center gap-2 link-underline hover:text-accent focus-accent">
+        <Link href="/insights" className="inline-flex items-center gap-2 link-underline hover:text-accent focus-accent">
           <span aria-hidden>←</span>
-          Thoughts
+          Insights
         </Link>
       </div>
 

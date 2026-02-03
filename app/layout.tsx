@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
+import { NavProvider } from "../components/NavProvider";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -28,7 +29,7 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Steven | Senior Software Engineer",
-  description: "Portfolio showcasing projects, thoughts, and contact info.",
+  description: "Portfolio showcasing projects, insights, and contact info.",
 };
 
 export default function RootLayout({
@@ -41,11 +42,13 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} antialiased bg-white dark:bg-black`}
       >
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <PageTransition className="flex flex-1 flex-col">{children}</PageTransition>
-          <Footer />
-        </div>
+        <NavProvider>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <PageTransition className="flex flex-1 flex-col">{children}</PageTransition>
+            <Footer />
+          </div>
+        </NavProvider>
       </body>
     </html>
   );

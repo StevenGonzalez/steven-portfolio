@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DraggableTitle from "../../components/DraggableTitle";
 
 const posts = [
   {
@@ -10,21 +11,22 @@ const posts = [
 ];
 
 export const metadata = {
-  title: "Thoughts | Steven",
+  title: "Insights | Steven",
   description: "Short essays on engineering and building healthy code review habits.",
 };
 
-export default function ThoughtsPage() {
+export default function InsightsPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-16">
-      <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">Thoughts</h1>
-      <p className="mt-3 max-w-2xl text-zinc-600 dark:text-zinc-400">Short engineering essays in MDX.</p>
-      <div className="mt-6">
+    <DraggableTitle
+      lines={["Insights", "Essays on architecture, systems, and tradeoffs."]}
+      fill={false}
+    >
+      <div className="mt-12 sm:mt-16">
         {posts.map((p) => (
           <Link
             key={p.slug}
-            href={`/thoughts/${p.slug}`}
-            className="group block -mx-4 rounded-2xl border-b border-zinc-200/60 px-4 py-4 transition-colors hover:bg-zinc-50 last:border-b-0 dark:border-zinc-800/60 dark:hover:bg-zinc-900"
+            href={`/insights/${p.slug}`}
+            className="group block -mx-4 rounded-2xl border-b border-zinc-200/60 px-4 py-4 transition-all hover:bg-zinc-50 hover:-translate-y-0.5 last:border-b-0 dark:border-zinc-800/60 dark:hover:bg-zinc-900"
           >
             <div className="flex items-start justify-between">
               <div>
@@ -39,6 +41,6 @@ export default function ThoughtsPage() {
           </Link>
         ))}
       </div>
-    </div>
+    </DraggableTitle>
   );
 }

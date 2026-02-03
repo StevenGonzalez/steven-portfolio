@@ -1,7 +1,9 @@
 "use client";
 
 import { animate, motion, type MotionValue, type PanInfo, useMotionValue, useReducedMotion } from "framer-motion";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
+import { usePreviousPath } from "./NavProvider";
 
 function DraggableToken({
   children,
@@ -58,7 +60,6 @@ function DraggableToken({
     };
   }, [resetSignal, x, y]);
 
-  // “Picked up” should feel lifted (slightly larger), not pressed down.
   const tapScale = reduceMotion ? 1 : 1.07;
   const dragScale = reduceMotion ? 1 : 1.14;
 
@@ -96,7 +97,6 @@ function DraggableToken({
       const el = placeholderRef.current;
       if (!el) return;
 
-      // Don't re-anchor the overlay after the user has moved it.
       if (!force && (x.get() !== 0 || y.get() !== 0)) return;
 
       const rect = el.getBoundingClientRect();
@@ -114,7 +114,6 @@ function DraggableToken({
     fontsReady
       ?.then(() => schedule(false))
       .catch(() => {
-        // ignore
       });
 
     const onResize = () => schedule(false);
@@ -151,7 +150,6 @@ function DraggableToken({
       }
       onDragStart={onDirty}
       onDragEnd={(_, info: PanInfo) => {
-        // For users who prefer reduced motion, skip glide and snap immediately.
         if (reduceMotion) {
           snapBackIntoViewport();
           return;
@@ -161,19 +159,17 @@ function DraggableToken({
         const vy = info.velocity.y ?? 0;
         const speed = Math.hypot(vx, vy);
 
-        // Tiny drags should just snap; only larger flicks get a glide.
         if (speed < 80) {
           snapBackIntoViewport();
           return;
         }
 
-        const momentumScale = 0.11;
+        const momentumScale = 0.45;
         const targetX = x.get() + vx * momentumScale;
         const targetY = y.get() + vy * momentumScale;
 
-        const transition = { type: "spring" as const, stiffness: 260, damping: 30, restDelta: 0.1 };
+        const transition = { type: "spring" as const, stiffness: 45, damping: 14, restDelta: 0.001 };
 
-        // Animate with a gentle glide, then snap back into the viewport once it settles.
         animate(x, targetX, {
           ...transition,
           onComplete: snapBackIntoViewport,
@@ -217,10 +213,15 @@ export default function DraggableTitle({
     "I design reliable, performant software with pragmatic tradeoffs",
   ],
   fill = false,
+  children,
 }: {
-  lines?: string[];
+  lines: string[];
   fill?: boolean;
+  children?: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const prevPath = usePreviousPath();
+
   const containerRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
   const lightingMaskRef = useRef<HTMLDivElement>(null);
@@ -236,36 +237,48 @@ export default function DraggableTitle({
   const dotX = useMotionValue(0);
   const dotY = useMotionValue(0);
 
+  const setStaticGlyphRef = useCallback((node: HTMLSpanElement | null) => {
+    if (!node) return;
+    if (node.closest('[aria-hidden="true"]')) {
+      hiIGlyphRef.current = node;
+    }
+  }, []);
+
   useLayoutEffect(() => {
     let rafId = 0;
     let settleRafId = 0;
-    const HI_DOT_TUNE_X = 2;
-    const HI_DOT_TUNE_Y = 32;
+    const HI_DOT_TUNE_X = 1;
+    const HI_DOT_TUNE_Y = 46;
 
     const computeAnchor = (force: boolean) => {
       const glyphEl = hiIGlyphRef.current;
       const dotEl = dotRef.current;
       if (!glyphEl || !dotEl) return;
 
-      // Avoid snapping the dot back during normal resizes/font swaps if the user has dragged it away.
-      if (!force && (dotX.get() !== 0 || dotY.get() !== 0)) return;
+      if (!force && (dotX.get() !== 0 || dotY.get() !== 0)) {
+         
+         const glyphRect = glyphEl.getBoundingClientRect();
+         const dotW = dotEl.offsetWidth || dotEl.getBoundingClientRect().width;
+         const dotH = dotEl.offsetHeight || dotEl.getBoundingClientRect().height;
+         const iCenterX = glyphRect.left + glyphRect.width / 2;
+         const left = iCenterX - dotW / 2 + HI_DOT_TUNE_X;
+         const top = glyphRect.top - dotH * 1.05 + HI_DOT_TUNE_Y;
+         setDotAnchor({ left, top });
+         return;
+      }
 
       const glyphRect = glyphEl.getBoundingClientRect();
 
-      // IMPORTANT: Use layout size (offset*) so transforms (pulse scale / drag)
-      // don't affect the computed dock position.
       const dotW = dotEl.offsetWidth || dotEl.getBoundingClientRect().width;
       const dotH = dotEl.offsetHeight || dotEl.getBoundingClientRect().height;
 
       const iCenterX = glyphRect.left + glyphRect.width / 2;
       const left = iCenterX - dotW / 2 + HI_DOT_TUNE_X;
 
-      // Place the dot above the top of the (dotless) i stem.
       const top = glyphRect.top - dotH * 1.05 + HI_DOT_TUNE_Y;
 
       const anchor = { left, top };
       setDotAnchor(anchor);
-      // Record the canonical "home" position while the dot hasn't been dragged.
       if (dotX.get() === 0 && dotY.get() === 0) dotHomeRef.current = anchor;
     };
 
@@ -301,8 +314,6 @@ export default function DraggableTitle({
         if (moved < 0.25) stableFrames += 1;
         else stableFrames = 0;
 
-        // Once the glyph stops moving (spring settled), force a final anchor compute.
-        // Fallback after ~1.6s so we never get stuck.
         if (stableFrames >= 6 || performance.now() - start > 1600) {
           schedule(true);
           return;
@@ -314,16 +325,12 @@ export default function DraggableTitle({
       settleRafId = requestAnimationFrame(tick);
     };
 
-    // Compute the canonical home on mount by waiting for the title to settle.
-    // Reset should use the stored home (see Reset button handler) to avoid post-reset jumps.
     scheduleAfterSettle();
 
-    // Recompute once fonts are ready (swap can shift glyph metrics).
     const fontsReady = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
     fontsReady
       ?.then(() => schedule(false))
       .catch(() => {
-      // ignore
     });
 
     const onResize = () => schedule(false);
@@ -356,13 +363,9 @@ export default function DraggableTitle({
 
       const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-      // Single main spotlight: center it on the dot.
       const w = spotRect.width;
       const h = spotRect.height;
 
-      // Allow the gradient centers to move slightly outside the element bounds.
-      // The spotlight element is oversized (inset: -25%), so clamping tightly can make a
-      // gradient appear "stuck" against an edge.
       const overflowX = w * 0.35;
       const overflowY = h * 0.35;
       const minX = -overflowX;
@@ -373,11 +376,9 @@ export default function DraggableTitle({
       const g1x = clamp(cx, minX, maxX);
       const g1y = clamp(cy, minY, maxY);
 
-      // Vars for the single gradient
       spotlightEl.style.setProperty("--spotlight-1-x", `${g1x}px`);
       spotlightEl.style.setProperty("--spotlight-1-y", `${g1y}px`);
 
-      // A subtle darkening mask above content to make text read "lit".
       if (lightingEl) {
         const maskRect = lightingEl.getBoundingClientRect();
         const mx = dotCx - maskRect.left;
@@ -386,7 +387,6 @@ export default function DraggableTitle({
         lightingEl.style.setProperty("--lighting-y", `${my}px`);
       }
 
-      // Secret message reveal (in footer). Safe no-op on pages/layouts without it.
       secretEl ??= document.getElementById("secret-message");
       if (secretEl) {
         const secretRect = secretEl.getBoundingClientRect();
@@ -401,9 +401,17 @@ export default function DraggableTitle({
     const unsubscribeX = dotX.on("change", updateSpotlight);
     const unsubscribeY = dotY.on("change", updateSpotlight);
 
+    let pollId = 0;
+    const loop = () => {
+      updateSpotlight();
+      pollId = requestAnimationFrame(loop);
+    }
+    loop();
+
     window.addEventListener("resize", updateSpotlight);
     window.addEventListener("scroll", updateSpotlight, { passive: true });
     return () => {
+      cancelAnimationFrame(pollId);
       unsubscribeX();
       unsubscribeY();
       window.removeEventListener("resize", updateSpotlight);
@@ -412,15 +420,12 @@ export default function DraggableTitle({
   }, [dotX, dotY, dotAnchor]);
 
   const getTokenDelay = (lineIndex: number, tokenIndex: number) => {
-    // Tuned to feel "premium": the title takes its time, then supporting lines follow.
     if (lineIndex === 0) return 0.12 + tokenIndex * 0.042;
     if (lineIndex === 1) return 0.78 + tokenIndex * 0.055;
     return 1.12 + tokenIndex * 0.03;
   };
 
   const tokenizeTitle = (line: string) => {
-    // Preserve spaces so the layout stays natural.
-    // Keep punctuation attached (e.g. "Steven." drags as one token).
     return line.split(/(\s+)/g).filter((p) => p.length > 0);
   };
 
@@ -454,7 +459,6 @@ export default function DraggableTitle({
     };
   };
 
-  // Fade the dot (and spotlight) in last, after all text has revealed.
   const lastRevealDelay = (() => {
     let maxDelay = 0;
     for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
@@ -468,23 +472,64 @@ export default function DraggableTitle({
     return maxDelay;
   })();
 
-  const dotDelay = lastRevealDelay + 0.18;
+  const getPageIndex = (p: string | null) => {
+    if (!p) return -1;
+    if (p === "/") return 0;
+    if (p.startsWith("/projects")) return 1;
+    if (p.startsWith("/insights")) return 2;
+    return -1;
+  };
+
+  const currIdx = getPageIndex(pathname);
+  const prevIdx = getPageIndex(prevPath);
+
+  let enterX = 0;
+  let useFlyIn = false;
+
+  if (prevPath && prevIdx !== -1 && currIdx !== -1) {
+    if (prevIdx < currIdx) {
+      enterX = -2000;
+      useFlyIn = true;
+    } else if (prevIdx > currIdx) {
+      enterX = 2000;
+      useFlyIn = true;
+    }
+  }
+
+  const dotDelay = useFlyIn ? 0.2 : lastRevealDelay + 0.18;
+
+  useEffect(() => {
+    if (useFlyIn && !reduceMotion) {
+      dotX.set(enterX);
+      const transition = { delay: 0.2, duration: 1.4, ease: [0.16, 1, 0.3, 1] as const };
+      animate(dotX, 0, transition);
+      animate(dotY, 0, transition);
+    }
+  }, [useFlyIn, enterX, dotX, dotY, reduceMotion]);
+
   const dotEnter = reduceMotion
     ? { enterInitialProps: false as const, enterAnimateProps: undefined, enterTransitionProps: undefined }
     : {
-        enterInitialProps: {
-          opacity: 0,
-          scale: 0.985,
-          filter: "blur(10px)",
-        },
+        enterInitialProps: useFlyIn
+          ? {
+              opacity: 0,
+              scale: 1,
+            }
+          : {
+              opacity: 0,
+              x: 0,
+              scale: 0.985,
+              filter: "blur(10px)",
+            },
         enterAnimateProps: {
           opacity: 1,
+          x: 0,
           scale: 1,
           filter: "blur(0px)",
         },
         enterTransitionProps: {
-          delay: dotDelay,
-          duration: 1.05,
+          delay: useFlyIn ? 0.2 : dotDelay,
+          duration: useFlyIn ? 1.4 : 1.05,
           ease: [0.16, 1, 0.3, 1],
         },
       };
@@ -494,12 +539,9 @@ export default function DraggableTitle({
       className={
         fill
           ? "relative z-0 flex flex-1 flex-col overflow-x-hidden overflow-y-visible"
-          : "relative z-0 overflow-x-hidden overflow-y-visible"
+          : "relative z-0 flex flex-1 flex-col overflow-x-hidden overflow-y-visible"
       }
     >
-      {/* Draggables can move off-screen but will snap back on release. */}
-
-      {/* Subtle falloff mask so text outside the spotlight is slightly darker. */}
       {reduceMotion ? (
         <div
           ref={lightingMaskRef}
@@ -509,7 +551,7 @@ export default function DraggableTitle({
             opacity: dotAnchor ? 1 : 0,
             transition: "opacity 200ms ease-out",
             background:
-              "radial-gradient(650px circle at var(--lighting-x, 50vw) var(--lighting-y, 50vh), rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 60%, rgba(0,0,0,0.06) 74%, rgba(0,0,0,0.14) 86%, rgba(0,0,0,0.26) 100%)",
+              "radial-gradient(900px circle at var(--lighting-x, 50vw) var(--lighting-y, 50vh), rgba(0,0,0,0) 0%, rgba(0,0,0,0.01) 60%, rgba(0,0,0,0.02) 74%, rgba(0,0,0,0.04) 86%, rgba(0,0,0,0.08) 100%)",
           }}
         />
       ) : (
@@ -522,12 +564,11 @@ export default function DraggableTitle({
           transition={{ delay: dotDelay, duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
           style={{
             background:
-              "radial-gradient(650px circle at var(--lighting-x, 50vw) var(--lighting-y, 50vh), rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 60%, rgba(0,0,0,0.06) 74%, rgba(0,0,0,0.14) 86%, rgba(0,0,0,0.26) 100%)",
+              "radial-gradient(900px circle at var(--lighting-x, 50vw) var(--lighting-y, 50vh), rgba(0,0,0,0) 0%, rgba(0,0,0,0.01) 60%, rgba(0,0,0,0.02) 74%, rgba(0,0,0,0.04) 86%, rgba(0,0,0,0.08) 100%)",
           }}
         />
       )}
 
-      {/* Draggable dot (independent from the word "Hi") */}
       <DraggableToken
         key={dotAnchor ? "hero-dot-ready" : "hero-dot-init"}
         className="fixed z-[200] inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
@@ -588,7 +629,6 @@ export default function DraggableTitle({
         </motion.span>
       </DraggableToken>
 
-      {/* Spotlight spans full viewport width (not clipped by max-w container) */}
       <div
         className="pointer-events-none absolute inset-0 left-1/2 w-screen -translate-x-1/2 -z-10"
         aria-hidden="true"
@@ -606,10 +646,10 @@ export default function DraggableTitle({
         )}
       </div>
 
-      <div className={fill ? "mx-auto flex w-full max-w-6xl flex-1 flex-col px-4" : "mx-auto max-w-6xl px-4"}>
+      <div className={fill ? "mx-auto flex w-full max-w-6xl flex-1 flex-col px-4" : "mx-auto flex w-full max-w-6xl flex-1 flex-col px-4"}>
         <div
           ref={containerRef}
-          className={fill ? "relative flex min-h-full flex-1 flex-col justify-start" : "relative min-h-[80vh]"}
+          className={fill ? "relative flex min-h-full flex-1 flex-col justify-start" : "relative flex min-h-full flex-1 flex-col justify-start"}
         >
           <div
             className={
@@ -644,8 +684,6 @@ export default function DraggableTitle({
                       revealIndex += 1;
                     const enter = getEnterAnimation(delay, isTitle);
 
-                    // Special case: make the draggable purple dot act as the dot on the "i" in "Hi".
-                    // We render a dotless i ("ı") and anchor the draggable dot to that glyph.
                     if (isTitle && idx === 0 && i === 0 && (t === "Hi," || t === "Hi")) {
                       const comma = t === "Hi," ? "," : "";
                       return (
@@ -663,9 +701,59 @@ export default function DraggableTitle({
                           <span className="inline-flex items-baseline">
                             <span>H</span>
                             <span className="relative inline-block">
-                              <span ref={hiIGlyphRef}>ı</span>
+                              <span ref={setStaticGlyphRef}>ı</span>
                             </span>
                             <span>{comma}</span>
+                          </span>
+                        </DraggableToken>
+                      );
+                    }
+
+                    if (isTitle && idx === 0 && (t === "Insights" || t === "Insights.")) {
+                      const suffix = t.replace("Insights", "");
+                      return (
+                        <DraggableToken
+                          key={`${idx}-${i}-insights`}
+                          className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
+                          overlay
+                          hover={{ scale: 1.03, rotate: 0.8 }}
+                          onDirty={() => setDirty(true)}
+                          resetSignal={resetSignal}
+                          enterInitialProps={enter.enterInitialProps}
+                          enterAnimateProps={enter.enterAnimateProps}
+                          enterTransitionProps={enter.enterTransitionProps}
+                        >
+                          <span className="inline-flex items-baseline">
+                            <span>Ins</span>
+                            <span className="relative inline-block">
+                              <span ref={setStaticGlyphRef}>ı</span>
+                            </span>
+                            <span>ghts{suffix}</span>
+                          </span>
+                        </DraggableToken>
+                      );
+                    } 
+
+                    if (isTitle && idx === 0 && (t === "Projects" || t === "Projects.")) {
+                      const suffix = t.replace("Projects", "");
+                      return (
+                        <DraggableToken
+                          key={`${idx}-${i}-projects`}
+                          className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
+                          overlay
+                          hover={{ scale: 1.03, rotate: 0.8 }}
+                          onDirty={() => setDirty(true)}
+                          resetSignal={resetSignal}
+                          enterInitialProps={enter.enterInitialProps}
+                          enterAnimateProps={enter.enterAnimateProps}
+                          enterTransitionProps={enter.enterTransitionProps}
+                        >
+                          <span className="inline-flex items-baseline">
+                            <span>Pro</span>
+                            <span className="relative inline-block">
+                              <span ref={setStaticGlyphRef}>ȷ</span>
+                            </span>
+                            <span>ects{suffix}</span>
                           </span>
                         </DraggableToken>
                       );
@@ -703,6 +791,8 @@ export default function DraggableTitle({
               );
             })}
           </div>
+
+          {children && <div className="mt-8 relative z-10">{children}</div>}
 
           {dirty && (
             <div className="absolute right-4 top-4">

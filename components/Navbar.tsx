@@ -52,11 +52,8 @@ export default function Navbar() {
             <Link href="/projects" className={linkClass("/projects")} aria-current={isActive("/projects") ? "page" : undefined}>Projects</Link>
           </Magnetic>
           <Magnetic strength={8}>
-            <Link href="/thoughts" className={linkClass("/thoughts")} aria-current={isActive("/thoughts") ? "page" : undefined}>Thoughts</Link>
+            <Link href="/insights" className={linkClass("/insights")} aria-current={isActive("/insights") ? "page" : undefined}>Insights</Link>
           </Magnetic>
-          {/* <Magnetic strength={8}>
-            <Link href="/contact" className={linkClass("/contact")} aria-current={isActive("/contact") ? "page" : undefined}>Contact</Link>
-          </Magnetic> */}
         </div>
       </nav>
       {open && (
@@ -64,8 +61,7 @@ export default function Navbar() {
           <div className="mx-auto max-w-6xl px-4 py-2">
             <div className="flex flex-col gap-2">
               <Link href="/projects" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Projects</Link>
-              <Link href="/thoughts" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Thoughts</Link>
-              {/* <Link href="/contact" className="py-2 text-sm" onClick={() => setOpen(false)}>Contact</Link> */}
+              <Link href="/insights" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Insights</Link>
             </div>
           </div>
         </div>

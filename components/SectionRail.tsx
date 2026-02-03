@@ -38,8 +38,6 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
         return;
       }
 
-      // Primary rule: pick the last section whose top is above a focus line.
-      // This walks in document order, so it won't skip from first to last.
       let nextId = elements[0].id;
       for (const el of elements) {
         const top = el.getBoundingClientRect().top;
@@ -47,8 +45,6 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
         else break;
       }
 
-      // If we're at the bottom of the page and the last section is visible,
-      // prefer the last section. Guarded to avoid "short page" jumps.
       if (maxScroll > 200 && scrollY >= maxScroll - 4) {
         const lastEl = elements[elements.length - 1];
         const lastRect = lastEl.getBoundingClientRect();
