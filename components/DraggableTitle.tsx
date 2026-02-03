@@ -215,7 +215,7 @@ export default function DraggableTitle({
   };
 
   return (
-    <section className="relative">
+    <section className="relative overflow-hidden">
       {/* Full-viewport drag constraints so tokens can be moved anywhere on screen */}
       <div ref={constraintsRef} className="fixed inset-0 pointer-events-none" aria-hidden="true" />
 

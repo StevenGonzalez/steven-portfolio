@@ -16,7 +16,7 @@ export default function Navbar() {
 
   const linkClass = (href: string) =>
     (
-      "text-sm link-underline nav-underline focus-accent rounded-md px-1 py-0.5 transition " +
+      "type-nav text-sm link-underline nav-underline focus-accent rounded-md px-1 py-0.5 transition " +
       (isActive(href)
         ? "nav-underline-active text-accent"
         : "text-zinc-700 hover:text-accent dark:text-zinc-300")
@@ -31,7 +31,7 @@ export default function Navbar() {
             aria-label="Home"
             aria-current={isActive("/") ? "page" : undefined}
             className={
-              "font-display focus-accent rounded-md px-1 py-0.5 text-sm font-semibold tracking-wide transition " +
+              "type-nav focus-accent rounded-md px-1 py-0.5 text-sm font-semibold transition " +
               (isActive("/") ? "text-accent" : "text-zinc-900 dark:text-zinc-100")
             }
           >
@@ -63,8 +63,8 @@ export default function Navbar() {
         <div className="border-t border-zinc-200/60 bg-white dark:border-zinc-800 dark:bg-black sm:hidden">
           <div className="mx-auto max-w-6xl px-4 py-2">
             <div className="flex flex-col gap-2">
-              <Link href="/projects" className="py-2 text-sm" onClick={() => setOpen(false)}>Projects</Link>
-              <Link href="/thoughts" className="py-2 text-sm" onClick={() => setOpen(false)}>Thoughts</Link>
+              <Link href="/projects" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Projects</Link>
+              <Link href="/thoughts" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Thoughts</Link>
               {/* <Link href="/contact" className="py-2 text-sm" onClick={() => setOpen(false)}>Contact</Link> */}
             </div>
           </div>

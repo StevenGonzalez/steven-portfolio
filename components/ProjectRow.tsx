@@ -31,11 +31,11 @@ export default function ProjectRow({
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{project.title}</h3>
               {project.timeline ? (
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">{project.timeline}</div>
+                <div className="type-meta text-xs text-zinc-500 dark:text-zinc-400">{project.timeline}</div>
               ) : null}
             </div>
             <p className="mt-1 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">{project.summary}</p>
-            <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">{project.tags.join(" • ")}</div>
+            <div className="type-meta mt-2 text-xs text-zinc-500 dark:text-zinc-400">{project.tags.join(" • ")}</div>
           </div>
           <span aria-hidden className="ml-4 text-zinc-400 group-hover:text-accent">→</span>
         </div>

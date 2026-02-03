@@ -34,6 +34,18 @@ body {
   text-rendering: geometricPrecision;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
   font-weight: 700;
@@ -44,6 +56,18 @@ h1, h2, h3, h4, h5, h6 {
 /* Utility: opt-in display font for non-heading elements (hero, logo, etc.) */
 .font-display {
   font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+/* Consistent typography helpers */
+.type-nav {
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.type-meta {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
 }
 
 h1 { letter-spacing: -0.03em; }

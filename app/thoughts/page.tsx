@@ -30,7 +30,7 @@ export default function ThoughtsPage() {
               <div>
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{p.title}</h3>
-                  {p.date ? <div className="text-xs text-zinc-500 dark:text-zinc-400">{p.date}</div> : null}
+                  {p.date ? <div className="type-meta text-xs text-zinc-500 dark:text-zinc-400">{p.date}</div> : null}
                 </div>
                 <p className="mt-1 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">{p.summary}</p>
               </div>

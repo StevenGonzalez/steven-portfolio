@@ -35,12 +35,12 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
       <header className="mb-8">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{project.title}</h1>
         {project.timeline ? (
-          <div className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{project.timeline}</div>
+          <div className="type-meta mt-1 text-xs text-zinc-500 dark:text-zinc-400">{project.timeline}</div>
         ) : null}
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">{project.summary}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {project.tags.map((t) => (
-            <span key={t} className="rounded-full border border-zinc-200 px-2 py-1 text-xs text-zinc-700 dark:border-zinc-700 dark:text-zinc-300">
+            <span key={t} className="type-meta rounded-full border border-zinc-200 px-2 py-1 text-[0.7rem] text-zinc-700 dark:border-zinc-700 dark:text-zinc-300">
               {t}
             </span>
           ))}
