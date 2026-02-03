@@ -97,6 +97,7 @@ export default function DraggableTitle({
   const dotY = useMotionValue(0);
 
   useEffect(() => {
+    let secretEl: HTMLElement | null = null;
     const updateSpotlight = () => {
       const dotEl = dotRef.current;
       const spotlightEl = spotlightRef.current;
@@ -130,6 +131,16 @@ export default function DraggableTitle({
       // Vars for the single gradient
       spotlightEl.style.setProperty("--spotlight-1-x", `${g1x}px`);
       spotlightEl.style.setProperty("--spotlight-1-y", `${g1y}px`);
+
+      // Secret message reveal (in footer). Safe no-op on pages/layouts without it.
+      secretEl ??= document.getElementById("secret-message");
+      if (secretEl) {
+        const secretRect = secretEl.getBoundingClientRect();
+        const rx = dotRect.left + dotRect.width / 2 - secretRect.left;
+        const ry = dotRect.top + dotRect.height / 2 - secretRect.top;
+        secretEl.style.setProperty("--reveal-x", `${rx}px`);
+        secretEl.style.setProperty("--reveal-y", `${ry}px`);
+      }
     };
 
     updateSpotlight();
@@ -359,6 +370,7 @@ export default function DraggableTitle({
           )}
         </div>
       </div>
+
     </section>
   );
 }
