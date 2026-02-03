@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import ProjectRow from "./ProjectRow";
 import ProjectPreviewCard from "./ProjectPreviewCard";
+import type { ProjectDetail } from "../data/projects";
 
 export default function ProjectsWithPreview({ projects }: { projects: ProjectDetail[] }) {
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
