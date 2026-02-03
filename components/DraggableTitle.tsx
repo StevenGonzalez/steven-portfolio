@@ -32,10 +32,15 @@ function DraggableToken({
   motionValues?: { x: MotionValue<number>; y: MotionValue<number> };
   forwardedRef?: React.Ref<HTMLSpanElement>;
 }) {
+  const reduceMotion = useReducedMotion();
   const internalX = useMotionValue(0);
   const internalY = useMotionValue(0);
   const x = motionValues?.x ?? internalX;
   const y = motionValues?.y ?? internalY;
+
+  // “Picked up” should feel lifted (slightly larger), not pressed down.
+  const tapScale = reduceMotion ? 1 : 1.07;
+  const dragScale = reduceMotion ? 1 : 1.14;
 
   useEffect(() => {
     if (resetSignal === 0) return;
@@ -56,7 +61,8 @@ function DraggableToken({
       dragMomentum
       dragElastic={0.2}
       whileHover={hover}
-      whileTap={{ scale: 0.95 }}
+      whileTap={reduceMotion ? undefined : { scale: tapScale }}
+      whileDrag={reduceMotion ? undefined : { scale: dragScale }}
       className={className}
       style={{ touchAction: "none", x, y, ...styleProps }}
       onDragStart={onDirty}
@@ -340,7 +346,7 @@ export default function DraggableTitle({
         key={dotAnchor ? "hero-dot-ready" : "hero-dot-init"}
         containerRef={constraintsRef}
         className="fixed z-30 inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
-        hover={{ scale: 1.06 }}
+        hover={{ scale: 1.03 }}
         onDirty={() => {
           setDirty(true);
           setDotAnimating(false);
@@ -453,7 +459,7 @@ export default function DraggableTitle({
                           key={`${idx}-${i}-hi`}
                           containerRef={constraintsRef}
                           className="inline-block cursor-grab active:cursor-grabbing"
-                          hover={{ scale: 1.06, rotate: 0.8 }}
+                          hover={{ scale: 1.03, rotate: 0.8 }}
                           onDirty={() => setDirty(true)}
                           resetSignal={resetSignal}
                           enterInitialProps={enter.enterInitialProps}
@@ -480,7 +486,7 @@ export default function DraggableTitle({
                             ? "inline-block cursor-grab active:cursor-grabbing"
                             : "inline-block cursor-grab active:cursor-grabbing px-1 mr-1"
                         }
-                        hover={{ scale: 1.06, rotate: 0.8 }}
+                        hover={{ scale: 1.03, rotate: 0.8 }}
                         onDirty={() => setDirty(true)}
                         resetSignal={resetSignal}
                         enterInitialProps={enter.enterInitialProps}
