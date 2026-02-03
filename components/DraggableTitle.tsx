@@ -411,10 +411,21 @@ export default function DraggableTitle({
     };
   };
 
-  // For the dot, match the title's fade/blur timing but avoid the vertical slide;
-  // otherwise it appears correct initially (while y is offset) and then snaps upward
-  // as the enter animation completes.
-  const dotDelay = getTokenDelay(0, 0);
+  // Fade the dot (and spotlight) in last, after all text has revealed.
+  const lastRevealDelay = (() => {
+    let maxDelay = 0;
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+      const isTitle = lineIndex === 0;
+      const tokens = isTitle ? tokenizeTitle(lines[lineIndex] ?? "") : (lines[lineIndex] ?? "").split(" ");
+      const revealTokens = isTitle ? tokens.filter((t) => !/^\s+$/.test(t)) : tokens.filter((t) => t.length > 0);
+      if (revealTokens.length === 0) continue;
+      const delay = getTokenDelay(lineIndex, revealTokens.length - 1);
+      maxDelay = Math.max(maxDelay, delay);
+    }
+    return maxDelay;
+  })();
+
+  const dotDelay = lastRevealDelay + 0.18;
   const dotEnter = reduceMotion
     ? { enterInitialProps: false as const, enterAnimateProps: undefined, enterTransitionProps: undefined }
     : {
@@ -512,7 +523,7 @@ export default function DraggableTitle({
             className="premium-spotlight"
             initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.65, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: dotDelay, duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
           />
         )}
       </div>
