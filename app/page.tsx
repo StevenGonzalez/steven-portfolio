@@ -6,9 +6,9 @@ export default function Home() {
       <DraggableTitle
         fill
         lines={[
-          "Hi, I'm Steven.",
-          "Senior Software Engineer.",
-          "I design reliable, performant software with pragmatic tradeoffs.",
+          "Hi, I'm Steven",
+          "Senior Software Engineer",
+          "I design reliable, performant software with pragmatic tradeoffs",
         ]}
       />
     </div>

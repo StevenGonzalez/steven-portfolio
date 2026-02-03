@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, type MotionValue, useMotionValue, useReducedMotion } from "framer-motion";
+import { animate, motion, type MotionValue, type PanInfo, useMotionValue, useReducedMotion } from "framer-motion";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 function DraggableToken({
@@ -150,7 +150,36 @@ function DraggableToken({
           : { touchAction: "none", x, y, ...styleProps }
       }
       onDragStart={onDirty}
-      onDragEnd={snapBackIntoViewport}
+      onDragEnd={(_, info: PanInfo) => {
+        // For users who prefer reduced motion, skip glide and snap immediately.
+        if (reduceMotion) {
+          snapBackIntoViewport();
+          return;
+        }
+
+        const vx = info.velocity.x ?? 0;
+        const vy = info.velocity.y ?? 0;
+        const speed = Math.hypot(vx, vy);
+
+        // Tiny drags should just snap; only larger flicks get a glide.
+        if (speed < 80) {
+          snapBackIntoViewport();
+          return;
+        }
+
+        const momentumScale = 0.11;
+        const targetX = x.get() + vx * momentumScale;
+        const targetY = y.get() + vy * momentumScale;
+
+        const transition = { type: "spring" as const, stiffness: 260, damping: 30, restDelta: 0.1 };
+
+        // Animate with a gentle glide, then snap back into the viewport once it settles.
+        animate(x, targetX, {
+          ...transition,
+          onComplete: snapBackIntoViewport,
+        });
+        animate(y, targetY, transition);
+      }}
       onPointerDown={onPointerDown}
     >
       <motion.span
@@ -194,6 +223,7 @@ export default function DraggableTitle({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
+  const lightingMaskRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
   const hiIGlyphRef = useRef<HTMLSpanElement>(null);
   const [dotAnchor, setDotAnchor] = useState<{ left: number; top: number } | null>(null);
@@ -311,14 +341,18 @@ export default function DraggableTitle({
     const updateSpotlight = () => {
       const dotEl = dotRef.current;
       const spotlightEl = spotlightRef.current;
+      const lightingEl = lightingMaskRef.current;
       if (!dotEl || !spotlightEl) return;
       if (!dotAnchor) return;
 
       const dotRect = dotEl.getBoundingClientRect();
       const spotRect = spotlightEl.getBoundingClientRect();
 
-      const cx = dotRect.left + dotRect.width / 2 - spotRect.left;
-      const cy = dotRect.top + dotRect.height / 2 - spotRect.top;
+      const dotCx = dotRect.left + dotRect.width / 2;
+      const dotCy = dotRect.top + dotRect.height / 2;
+
+      const cx = dotCx - spotRect.left;
+      const cy = dotCy - spotRect.top;
 
       const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
@@ -342,6 +376,15 @@ export default function DraggableTitle({
       // Vars for the single gradient
       spotlightEl.style.setProperty("--spotlight-1-x", `${g1x}px`);
       spotlightEl.style.setProperty("--spotlight-1-y", `${g1y}px`);
+
+      // A subtle darkening mask above content to make text read "lit".
+      if (lightingEl) {
+        const maskRect = lightingEl.getBoundingClientRect();
+        const mx = dotCx - maskRect.left;
+        const my = dotCy - maskRect.top;
+        lightingEl.style.setProperty("--lighting-x", `${mx}px`);
+        lightingEl.style.setProperty("--lighting-y", `${my}px`);
+      }
 
       // Secret message reveal (in footer). Safe no-op on pages/layouts without it.
       secretEl ??= document.getElementById("secret-message");
@@ -450,11 +493,39 @@ export default function DraggableTitle({
     <section
       className={
         fill
-          ? "relative flex flex-1 flex-col overflow-x-hidden overflow-y-visible"
-          : "relative overflow-x-hidden overflow-y-visible"
+          ? "relative z-0 flex flex-1 flex-col overflow-x-hidden overflow-y-visible"
+          : "relative z-0 overflow-x-hidden overflow-y-visible"
       }
     >
       {/* Draggables can move off-screen but will snap back on release. */}
+
+      {/* Subtle falloff mask so text outside the spotlight is slightly darker. */}
+      {reduceMotion ? (
+        <div
+          ref={lightingMaskRef}
+          className="pointer-events-none absolute inset-0 z-[150]"
+          aria-hidden="true"
+          style={{
+            opacity: dotAnchor ? 1 : 0,
+            transition: "opacity 200ms ease-out",
+            background:
+              "radial-gradient(650px circle at var(--lighting-x, 50vw) var(--lighting-y, 50vh), rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 60%, rgba(0,0,0,0.06) 74%, rgba(0,0,0,0.14) 86%, rgba(0,0,0,0.26) 100%)",
+          }}
+        />
+      ) : (
+        <motion.div
+          ref={lightingMaskRef}
+          className="pointer-events-none absolute inset-0 z-[150]"
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: dotDelay, duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            background:
+              "radial-gradient(650px circle at var(--lighting-x, 50vw) var(--lighting-y, 50vh), rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 60%, rgba(0,0,0,0.06) 74%, rgba(0,0,0,0.14) 86%, rgba(0,0,0,0.26) 100%)",
+          }}
+        />
+      )}
 
       {/* Draggable dot (independent from the word "Hi") */}
       <DraggableToken
@@ -503,8 +574,15 @@ export default function DraggableTitle({
         >
           <span className="block h-[0.24em] w-[0.24em]">
             <svg viewBox="0 0 10 10" className="block h-full w-full" aria-hidden="true" focusable="false">
+              <defs>
+                <clipPath id="hero-dot-clip" clipPathUnits="userSpaceOnUse">
+                  <circle cx="5" cy="5" r="4.1" />
+                </clipPath>
+              </defs>
               <circle cx="5" cy="5" r="4.1" fill="currentColor" />
-              <circle cx="3.2" cy="3.1" r="1.2" fill="white" opacity="0.45" />
+              <g clipPath="url(#hero-dot-clip)">
+                <circle cx="3.2" cy="3.1" r="1.2" fill="white" opacity="0.45" />
+              </g>
             </svg>
           </span>
         </motion.span>
