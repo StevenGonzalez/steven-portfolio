@@ -5,7 +5,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 function DraggableToken({
   children,
-  containerRef,
   className,
   hover,
   onDirty,
@@ -17,9 +16,9 @@ function DraggableToken({
   styleProps,
   motionValues,
   forwardedRef,
+  overlay,
 }: {
   children: React.ReactNode;
-  containerRef: React.RefObject<HTMLElement | null>;
   className: string;
   hover: { scale: number; rotate?: number };
   onDirty: () => void;
@@ -30,7 +29,8 @@ function DraggableToken({
   onPointerDown?: () => void;
   styleProps?: React.CSSProperties;
   motionValues?: { x: MotionValue<number>; y: MotionValue<number> };
-  forwardedRef?: React.Ref<HTMLSpanElement>;
+  forwardedRef?: React.RefCallback<HTMLSpanElement>;
+  overlay?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
   const internalX = useMotionValue(0);
@@ -38,9 +38,14 @@ function DraggableToken({
   const x = motionValues?.x ?? internalX;
   const y = motionValues?.y ?? internalY;
 
-  // “Picked up” should feel lifted (slightly larger), not pressed down.
-  const tapScale = reduceMotion ? 1 : 1.07;
-  const dragScale = reduceMotion ? 1 : 1.14;
+  const dragElRef = useRef<HTMLSpanElement | null>(null);
+  const placeholderRef = useRef<HTMLSpanElement | null>(null);
+  const [overlayBase, setOverlayBase] = useState<{ left: number; top: number } | null>(null);
+
+  const setRefs = (node: HTMLSpanElement | null) => {
+    dragElRef.current = node;
+    forwardedRef?.(node);
+  };
 
   useEffect(() => {
     if (resetSignal === 0) return;
@@ -53,19 +58,99 @@ function DraggableToken({
     };
   }, [resetSignal, x, y]);
 
-  return (
+  // “Picked up” should feel lifted (slightly larger), not pressed down.
+  const tapScale = reduceMotion ? 1 : 1.07;
+  const dragScale = reduceMotion ? 1 : 1.14;
+
+  const snapBackIntoViewport = () => {
+    const el = dragElRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const padding = 6;
+    const maxRight = window.innerWidth - padding;
+    const maxBottom = window.innerHeight - padding;
+
+    let dx = 0;
+    let dy = 0;
+
+    if (rect.left < padding) dx = padding - rect.left;
+    else if (rect.right > maxRight) dx = maxRight - rect.right;
+
+    if (rect.top < padding) dy = padding - rect.top;
+    else if (rect.bottom > maxBottom) dy = maxBottom - rect.bottom;
+
+    if (dx === 0 && dy === 0) return;
+
+    const transition = { type: "spring" as const, stiffness: 520, damping: 26, restDelta: 0.001 };
+    animate(x, x.get() + dx, transition);
+    animate(y, y.get() + dy, transition);
+  };
+
+  useLayoutEffect(() => {
+    if (!overlay) return;
+
+    let rafId = 0;
+
+    const measure = (force: boolean) => {
+      const el = placeholderRef.current;
+      if (!el) return;
+
+      // Don't re-anchor the overlay after the user has moved it.
+      if (!force && (x.get() !== 0 || y.get() !== 0)) return;
+
+      const rect = el.getBoundingClientRect();
+      setOverlayBase({ left: rect.left, top: rect.top });
+    };
+
+    const schedule = (force: boolean) => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => measure(force));
+    };
+
+    schedule(true);
+
+    const fontsReady = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
+    fontsReady
+      ?.then(() => schedule(false))
+      .catch(() => {
+        // ignore
+      });
+
+    const onResize = () => schedule(false);
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [overlay, x, y]);
+
+  const draggable = (
     <motion.span
-      ref={forwardedRef}
+      ref={setRefs}
       drag
-      dragConstraints={containerRef}
-      dragMomentum
-      dragElastic={0.2}
+      dragMomentum={false}
       whileHover={hover}
       whileTap={reduceMotion ? undefined : { scale: tapScale }}
       whileDrag={reduceMotion ? undefined : { scale: dragScale }}
       className={className}
-      style={{ touchAction: "none", x, y, ...styleProps }}
+      style={
+        overlay
+          ? {
+              position: "fixed",
+              zIndex: 100,
+              touchAction: "none",
+              left: overlayBase?.left ?? 0,
+              top: overlayBase?.top ?? 0,
+              opacity: overlayBase ? 1 : 0,
+              x,
+              y,
+              ...styleProps,
+            }
+          : { touchAction: "none", x, y, ...styleProps }
+      }
       onDragStart={onDirty}
+      onDragEnd={snapBackIntoViewport}
       onPointerDown={onPointerDown}
     >
       <motion.span
@@ -79,8 +164,23 @@ function DraggableToken({
       </motion.span>
     </motion.span>
   );
-}
 
+  if (!overlay) return draggable;
+
+  return (
+    <>
+      <span
+        ref={placeholderRef}
+        className={`${className} pointer-events-none`}
+        style={{ visibility: "hidden", ...styleProps }}
+        aria-hidden="true"
+      >
+        <span className="inline-block">{children}</span>
+      </span>
+      {draggable}
+    </>
+  );
+}
 export default function DraggableTitle({
   lines = [
     "Hi, I'm Steven",
@@ -93,7 +193,6 @@ export default function DraggableTitle({
   fill?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const constraintsRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
   const hiIGlyphRef = useRef<HTMLSpanElement>(null);
@@ -337,15 +436,19 @@ export default function DraggableTitle({
       };
 
   return (
-    <section className={fill ? "relative flex flex-1 flex-col overflow-hidden" : "relative overflow-hidden"}>
-      {/* Full-viewport drag constraints so tokens can be moved anywhere on screen */}
-      <div ref={constraintsRef} className="fixed inset-0 pointer-events-none" aria-hidden="true" />
+    <section
+      className={
+        fill
+          ? "relative flex flex-1 flex-col overflow-x-hidden overflow-y-visible"
+          : "relative overflow-x-hidden overflow-y-visible"
+      }
+    >
+      {/* Draggables can move off-screen but will snap back on release. */}
 
       {/* Draggable dot (independent from the word "Hi") */}
       <DraggableToken
         key={dotAnchor ? "hero-dot-ready" : "hero-dot-init"}
-        containerRef={constraintsRef}
-        className="fixed z-30 inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
+        className="fixed z-[200] inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
         hover={{ scale: 1.03 }}
         onDirty={() => {
           setDirty(true);
@@ -360,7 +463,9 @@ export default function DraggableTitle({
         enterAnimateProps={dotEnter.enterAnimateProps}
         enterTransitionProps={dotEnter.enterTransitionProps}
         motionValues={{ x: dotX, y: dotY }}
-        forwardedRef={dotRef}
+        forwardedRef={(node) => {
+          dotRef.current = node;
+        }}
         styleProps={{
           left: `${dotAnchor?.left ?? 0}px`,
           top: `${dotAnchor?.top ?? 0}px`,
@@ -457,8 +562,8 @@ export default function DraggableTitle({
                       return (
                         <DraggableToken
                           key={`${idx}-${i}-hi`}
-                          containerRef={constraintsRef}
-                          className="inline-block cursor-grab active:cursor-grabbing"
+                          className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
+                          overlay
                           hover={{ scale: 1.03, rotate: 0.8 }}
                           onDirty={() => setDirty(true)}
                           resetSignal={resetSignal}
@@ -480,12 +585,12 @@ export default function DraggableTitle({
                     return (
                       <DraggableToken
                         key={`${idx}-${i}-${t}`}
-                        containerRef={constraintsRef}
                         className={
                           isTitle
-                            ? "inline-block cursor-grab active:cursor-grabbing"
-                            : "inline-block cursor-grab active:cursor-grabbing px-1 mr-1"
+                            ? "relative z-[60] inline-block cursor-grab active:cursor-grabbing"
+                            : "relative z-[60] inline-block cursor-grab active:cursor-grabbing px-1 mr-1"
                         }
+                        overlay
                         hover={{ scale: 1.03, rotate: 0.8 }}
                         onDirty={() => setDirty(true)}
                         resetSignal={resetSignal}
