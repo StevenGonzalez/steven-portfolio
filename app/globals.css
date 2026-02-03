@@ -10,8 +10,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-roboto);
+  --font-display: var(--font-roboto-condensed);
+  --font-mono: var(--font-roboto-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,14 +27,48 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+  text-rendering: geometricPrecision;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+/* Utility: opt-in display font for non-heading elements (hero, logo, etc.) */
+.font-display {
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+h1 { letter-spacing: -0.03em; }
+h2 { letter-spacing: -0.028em; }
+h3 { letter-spacing: -0.02em; }
+h4, h5, h6 { letter-spacing: -0.012em; }
+
+@supports (text-wrap: balance) {
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
 }
 
 /* Blog / MDX typography (minimal, no plugin) */
 .prose {
   color: rgb(63 63 70); /* zinc-700 */
-  line-height: 1.8;
-  font-size: 1rem;
+  line-height: 1.75;
+  font-size: 1.05rem;
+  letter-spacing: -0.003em;
+}
+
+@supports (text-wrap: pretty) {
+  .prose {
+    text-wrap: pretty;
+  }
 }
 @media (prefers-color-scheme: dark) {
   .prose {
@@ -48,7 +83,8 @@ body {
 
 /* Lead paragraph */
 .prose > p:first-of-type {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
   color: rgb(39 39 42); /* zinc-800 */
 }
 @media (prefers-color-scheme: dark) {
@@ -61,8 +97,9 @@ body {
   margin-top: 2rem;
   margin-bottom: 0.75rem;
   color: rgb(24 24 27); /* zinc-900 */
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.01em;
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   .prose :where(h2, h3) {
@@ -71,10 +108,10 @@ body {
 }
 
 .prose :where(h2) {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
 }
 .prose :where(h3) {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .prose :where(ul, ol) {
@@ -112,8 +149,10 @@ body {
 }
 
 .prose :where(code) {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.95em;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
   padding: 0.15rem 0.35rem;
   border-radius: 0.4rem;
   background: rgb(244 244 245); /* zinc-100 */
@@ -132,6 +171,7 @@ body {
   padding: 1rem;
   border: 1px solid rgb(228 228 231); /* zinc-200 */
   background: rgb(250 250 250);
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 @media (prefers-color-scheme: dark) {
   .prose :where(pre) {
