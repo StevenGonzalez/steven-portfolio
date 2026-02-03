@@ -1,42 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Magnetic from "./Magnetic";
+import NavLink from "./NavLink";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname === href || pathname.startsWith(href + "/");
-  };
-
-  const linkClass = (href: string) =>
-    (
-      "type-nav text-sm link-underline nav-underline focus-accent rounded-md px-1 py-0.5 transition " +
-      (isActive(href)
-        ? "nav-underline-active text-accent"
-        : "text-zinc-700 hover:text-accent dark:text-zinc-300")
-    );
+  const baseStyles = "type-nav text-sm link-underline nav-underline focus-accent rounded-md px-1 py-0.5 transition";
+  const activeStyles = "nav-underline-active text-accent";
+  const inactiveStyles = "text-zinc-700 hover:text-accent dark:text-zinc-300";
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/40 bg-white/70 backdrop-blur dark:border-zinc-800/50 dark:bg-black/50">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Magnetic strength={6}>
-          <Link
+          <NavLink
             href="/"
             aria-label="Home"
-            aria-current={isActive("/") ? "page" : undefined}
-            className={
-              "type-nav tracking-wide focus-accent rounded-md px-1 py-0.5 text-sm font-semibold transition " +
-              (isActive("/") ? "text-accent" : "text-zinc-900 dark:text-zinc-100")
-            }
+            className="type-nav tracking-wide focus-accent rounded-md px-1 py-0.5 text-sm font-semibold transition"
+            activeClassName="text-accent"
+            inactiveClassName="text-zinc-900 dark:text-zinc-100"
           >
             Steven
-          </Link>
+          </NavLink>
         </Magnetic>
         <button
           aria-label="Toggle menu"
@@ -49,10 +37,24 @@ export default function Navbar() {
         </button>
         <div className="hidden gap-8 sm:flex">
           <Magnetic strength={8}>
-            <Link href="/projects" className={linkClass("/projects")} aria-current={isActive("/projects") ? "page" : undefined}>Projects</Link>
+            <NavLink
+              href="/projects"
+              className={baseStyles}
+              activeClassName={activeStyles}
+              inactiveClassName={inactiveStyles}
+            >
+              Projects
+            </NavLink>
           </Magnetic>
           <Magnetic strength={8}>
-            <Link href="/insights" className={linkClass("/insights")} aria-current={isActive("/insights") ? "page" : undefined}>Insights</Link>
+            <NavLink
+              href="/insights"
+              className={baseStyles}
+              activeClassName={activeStyles}
+              inactiveClassName={inactiveStyles}
+            >
+              Insights
+            </NavLink>
           </Magnetic>
         </div>
       </nav>
