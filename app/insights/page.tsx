@@ -1,14 +1,6 @@
 import Link from "next/link";
 import DraggableTitle from "../../components/draggable-title";
-
-const posts = [
-  {
-    slug: "pull-request-playbook",
-    title: "The Pull Request Playbook",
-    summary: "A practical guide to writing clear, right-sized pull requests that get reviewed well.",
-    date: "Jan 29, 2026",
-  },
-];
+import { insights } from "../../data/insights";
 
 export const metadata = {
   title: "Insights | Steven",
@@ -22,7 +14,7 @@ export default function InsightsPage() {
       fill={false}
     >
       <div className="mt-12 sm:mt-16">
-        {posts.map((p) => (
+        {insights.map((p) => (
           <Link
             key={p.slug}
             href={`/insights/${p.slug}`}

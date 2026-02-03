@@ -1,4 +1,4 @@
-import { DraggableToken } from "../DraggableToken";
+import { DraggableToken } from "./DraggableToken";
 import { getTokenDelay, tokenizeTitle, getEnterAnimation } from "./utils";
 
 interface TitleLineProps {

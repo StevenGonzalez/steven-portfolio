@@ -1,6 +1,6 @@
 import { motion, MotionValue } from "framer-motion";
 import { RefObject } from "react";
-import { DraggableToken } from "../DraggableToken";
+import { DraggableToken } from "./DraggableToken";
 
 interface InteractiveDotProps {
   dotAnchor: { left: number; top: number } | null;
