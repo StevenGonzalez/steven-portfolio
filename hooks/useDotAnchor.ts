@@ -22,12 +22,16 @@ export function useDotAnchor({
     let rafId = 0;
     let settleRafId = 0;
     const HI_DOT_TUNE_X = 1;
-    const HI_DOT_TUNE_Y = 46;
+    const TUNE_Y_RATIO = 0.639;
 
     const computeAnchor = (force: boolean) => {
       const glyphEl = hiIGlyphRef.current;
       const dotEl = dotRef.current;
       if (!glyphEl || !dotEl) return;
+
+      const style = window.getComputedStyle(glyphEl);
+      const fontSize = parseFloat(style.fontSize) || 72;
+      const tuneY = fontSize * TUNE_Y_RATIO;
 
       if (!force && (dotX.get() !== 0 || dotY.get() !== 0)) {
         const glyphRect = glyphEl.getBoundingClientRect();
@@ -35,7 +39,7 @@ export function useDotAnchor({
         const dotH = dotEl.offsetHeight || dotEl.getBoundingClientRect().height;
         const iCenterX = glyphRect.left + glyphRect.width / 2;
         const left = iCenterX - dotW / 2 + HI_DOT_TUNE_X;
-        const top = glyphRect.top - dotH * 1.05 + HI_DOT_TUNE_Y;
+        const top = glyphRect.top - dotH * 1.05 + tuneY;
         setDotAnchor({ left, top });
         return;
       }
@@ -48,7 +52,7 @@ export function useDotAnchor({
       const iCenterX = glyphRect.left + glyphRect.width / 2;
       const left = iCenterX - dotW / 2 + HI_DOT_TUNE_X;
 
-      const top = glyphRect.top - dotH * 1.05 + HI_DOT_TUNE_Y;
+      const top = glyphRect.top - dotH * 1.05 + tuneY;
 
       const anchor = { left, top };
       setDotAnchor(anchor);
