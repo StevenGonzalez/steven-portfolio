@@ -112,7 +112,18 @@ export function DraggableToken({
       if (!force && (x.get() !== 0 || y.get() !== 0)) return;
 
       const rect = el.getBoundingClientRect();
-      setOverlayBase({ left: rect.left, top: rect.top });
+      const parent = el.offsetParent as HTMLElement | null;
+
+      if (!parent) {
+        setOverlayBase({ left: rect.left + window.scrollX, top: rect.top + window.scrollY });
+        return;
+      }
+
+      const parentRect = parent.getBoundingClientRect();
+      setOverlayBase({
+        left: rect.left - parentRect.left + parent.scrollLeft,
+        top: rect.top - parentRect.top + parent.scrollTop,
+      });
     };
 
     const schedule = (force: boolean) => {
@@ -171,7 +182,7 @@ export function DraggableToken({
       style={
         overlay
           ? {
-              position: "fixed",
+              position: "absolute",
               zIndex: 100,
               touchAction: "none",
               left: overlayBase?.left ?? 0,

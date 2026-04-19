@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
 import { NavProvider } from "../components/NavProvider";
+import RouteTheme from "../components/RouteTheme";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -43,12 +44,13 @@ export default function RootLayout({
         className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} antialiased bg-white dark:bg-black`}
       >
         <NavProvider>
-          <div className="flex min-h-screen flex-col">
+            <RouteTheme />
+            <div className="flex min-h-screen flex-col">
             <Navbar />
-            <PageTransition className="flex flex-1 flex-col">{children}</PageTransition>
+            <PageTransition className="flex min-h-0 flex-1 flex-col">{children}</PageTransition>
             <Footer />
-          </div>
-        </NavProvider>
+            </div>
+          </NavProvider>
       </body>
     </html>
   );

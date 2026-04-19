@@ -17,7 +17,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
 
   return (
     <div
-      className="mt-6 md:grid md:grid-cols-[1fr_320px] md:gap-10"
+      className="mt-6 md:grid md:grid-cols-[1fr_320px] md:items-start md:gap-10"
       onMouseLeave={() => {
         if (mode === "hover") {
           setActiveSlug(null);
@@ -38,7 +38,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
         }
       }}
     >
-      <div>
+      <div className="overflow-hidden rounded-3xl border border-zinc-200/70 bg-white/70 dark:border-zinc-800/70 dark:bg-black/20">
         {projects.map((p) => (
           <ProjectRow
             key={p.slug}
@@ -68,7 +68,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.98 }}
                 transition={{ duration: 0.16 }}
-                className="rounded-2xl border border-zinc-200/60 bg-white/40 p-5 backdrop-blur dark:border-zinc-800/60 dark:bg-black/20"
+                className="rounded-3xl border border-zinc-200/60 bg-white/40 p-6 backdrop-blur dark:border-zinc-800/60 dark:bg-black/20"
               >
                 <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Project snapshot</div>
                 <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">

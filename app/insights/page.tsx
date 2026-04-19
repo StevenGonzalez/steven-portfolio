@@ -14,13 +14,13 @@ export default function InsightsPage() {
       fill={false}
     >
       <div className="mt-12 sm:mt-16">
-        {insights.map((p) => (
-          <Link
-            key={p.slug}
-            href={`/insights/${p.slug}`}
-            className="group block -mx-4 rounded-2xl border-b border-zinc-200/60 px-4 py-4 transition-all hover:bg-zinc-50 hover:-translate-y-0.5 last:border-b-0 dark:border-zinc-800/60 dark:hover:bg-zinc-900"
-          >
-            <div className="flex items-start justify-between">
+        <div className="rounded-3xl border border-zinc-200/70 bg-white/70 dark:border-zinc-800/70 dark:bg-black/20 overflow-hidden">
+          {insights.map((p) => (
+            <Link
+              key={p.slug}
+              href={`/insights/${p.slug}`}
+              className="group flex items-start justify-between border-b border-zinc-200/60 px-6 py-5 transition-all hover:bg-zinc-50 last:border-b-0 dark:border-zinc-800/60 dark:hover:bg-zinc-900/60"
+            >
               <div>
                 <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                   <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{p.title}</h3>
@@ -28,10 +28,10 @@ export default function InsightsPage() {
                 </div>
                 <p className="mt-1 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">{p.summary}</p>
               </div>
-              <span aria-hidden className="ml-4 text-zinc-400 group-hover:text-accent">→</span>
-            </div>
-          </Link>
-        ))}
+              <span aria-hidden className="ml-4 mt-1 shrink-0 text-zinc-400 transition group-hover:text-accent">→</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </DraggableTitle>
   );

@@ -11,6 +11,7 @@ Minimal, performance-focused portfolio. Built with Next.js (App Router), Tailwin
 
 ## Pages
 - `/`: interactive, minimal hero
+- `/experience`: senior-level focus areas and selected engineering proof
 - `/projects`: case studies + `/projects/[slug]`
 - `/thoughts`: short MDX essays
 - `/contact`: simple contact form

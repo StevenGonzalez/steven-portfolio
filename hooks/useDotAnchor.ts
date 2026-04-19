@@ -110,12 +110,15 @@ export function useDotAnchor({
       .catch(() => {});
 
     const onResize = () => schedule(false);
+    const onScroll = () => schedule(false);
     window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(settleRafId);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
     };
   }, [dotX, dotY, hiIGlyphRef, dotRef, setDotAnchor, dotHomeRef]);
 }

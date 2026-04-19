@@ -37,6 +37,7 @@ export default function DraggableTitle({
   const [dirty, setDirty] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
   const [dotAnimating, setDotAnimating] = useState(true);
+  const [internalScrollEnabled, setInternalScrollEnabled] = useState(false);
   const reduceMotion = useReducedMotion();
   const clipId = useId();
 
@@ -84,8 +85,9 @@ export default function DraggableTitle({
   const getPageIndex = (p: string | null) => {
     if (!p) return -1;
     if (p === "/") return 0;
-    if (p.startsWith("/projects")) return 1;
-    if (p.startsWith("/insights")) return 2;
+    if (p.startsWith("/experience")) return 1;
+    if (p.startsWith("/projects")) return 2;
+    if (p.startsWith("/insights")) return 3;
     return -1;
   };
 
@@ -143,12 +145,45 @@ export default function DraggableTitle({
         },
       };
 
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px) and (min-height: 700px) and (pointer: fine)");
+    const apply = () => setInternalScrollEnabled(media.matches);
+
+    apply();
+    media.addEventListener("change", apply);
+
+    return () => {
+      media.removeEventListener("change", apply);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!internalScrollEnabled) return;
+
+    const html = document.documentElement;
+    const body = document.body;
+
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    const prevBodyOverscroll = body.style.overscrollBehaviorY;
+
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.overscrollBehaviorY = "none";
+
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+      body.style.overscrollBehaviorY = prevBodyOverscroll;
+    };
+  }, [internalScrollEnabled]);
+
   return (
     <section
       className={
-        fill
-          ? "relative z-0 flex flex-1 flex-col overflow-x-hidden overflow-y-visible"
-          : "relative z-0 flex flex-1 flex-col overflow-x-hidden overflow-y-visible"
+        internalScrollEnabled
+          ? "relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden"
+          : "relative z-0 flex min-h-0 flex-1 flex-col overflow-visible"
       }
     >
       <LightingLayer
@@ -179,11 +214,10 @@ export default function DraggableTitle({
         dotDelay={dotDelay}
       />
 
-
-      <div className={fill ? "mx-auto flex w-full max-w-6xl flex-1 flex-col px-4" : "mx-auto flex w-full max-w-6xl flex-1 flex-col px-4"}>
+      <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col px-4">
         <div
           ref={containerRef}
-          className={fill ? "relative flex min-h-full flex-1 flex-col justify-start" : "relative flex min-h-full flex-1 flex-col justify-start"}
+          className="relative flex min-h-0 flex-1 flex-col justify-start"
         >
           <div
             className={
@@ -205,7 +239,14 @@ export default function DraggableTitle({
             ))}
           </div>
 
-          {children && <div className="mt-8 relative z-10">{children}</div>}
+          {children &&
+            (internalScrollEnabled ? (
+              <div className="relative z-10 mt-8 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-8">
+                {children}
+              </div>
+            ) : (
+              <div className="relative z-10 mt-8 pb-8">{children}</div>
+            ))}
 
           {dirty && (
             <div className="absolute right-4 top-4">

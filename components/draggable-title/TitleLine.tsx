@@ -119,6 +119,31 @@ export function TitleLine({
             );
           }
 
+          if (isTitle && idx === 0 && (t === "Experience" || t === "Experience.")) {
+            const suffix = t.replace("Experience", "");
+            return (
+              <DraggableToken
+                key={`${idx}-${i}-experience`}
+                className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
+                overlay
+                hover={{ scale: 1.03, rotate: 0.8 }}
+                onDirty={() => setDirty(true)}
+                resetSignal={resetSignal}
+                enterInitialProps={enter.enterInitialProps}
+                enterAnimateProps={enter.enterAnimateProps}
+                enterTransitionProps={enter.enterTransitionProps}
+              >
+                <span className="inline-flex items-baseline">
+                  <span>Exper</span>
+                  <span className="relative inline-block">
+                    <span ref={setStaticGlyphRef}>ı</span>
+                  </span>
+                  <span>ence{suffix}</span>
+                </span>
+              </DraggableToken>
+            );
+          }
+
           return (
             <DraggableToken
               key={`${idx}-${i}-${t}`}

@@ -7,6 +7,16 @@
   --accent-rgb: 99 102 241;
 }
 
+body[data-route="/projects"] {
+  --accent: #0ea5e9;
+  --accent-rgb: 14 165 233;
+}
+
+body[data-route="/insights"] {
+  --accent: #f43f5e;
+  --accent-rgb: 244 63 94;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
