@@ -8,7 +8,7 @@ export default function Footer() {
           <p className="type-meta text-xs">© {new Date().getFullYear()} Steven Gonzalez</p>
 
           <div id="secret-message" className="secret-message secret-message--in-footer" aria-hidden="true">
-            You found me. Hello from the edge cases.
+            Curiosity is an underrated engineering skill.
           </div>
 
           <div className="flex gap-6">
