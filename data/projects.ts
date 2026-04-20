@@ -23,7 +23,7 @@ export const projects: ProjectDetail[] = [
     title: "Virtual Trainer",
     timeline: "2019 to present",
     summary:
-      "Co-founded and engineered a cross-platform fitness product spanning React Native clients, a .NET API, Azure infrastructure, and an in-app AI trainer grounded in user context.",
+      "Co-founded and built a cross-platform fitness product with React Native clients, a .NET API, Azure infrastructure, and an in-app AI trainer grounded in each user's training context.",
     image: "/virtual-trainer.svg",
     tags: [
       "React Native",
@@ -67,49 +67,49 @@ export const projects: ProjectDetail[] = [
       "Event-driven supporting services with Azure Service Bus",
     ],
     problem:
-      "My co-founder and I wanted to build the kind of product we could not find in the market: something that felt like a credible personal trainer instead of a generic workout tracker. Most alternatives either had questionable programming, clumsy workout flows, or weak progress visibility. The product needed to feel fast during training, trustworthy in its recommendations, and capable of supporting long-term consistency.",
+      "My co-founder and I wanted to build the kind of product we could not find in the market: something that behaved like a credible personal trainer instead of a generic workout tracker. Most alternatives had weak programming quality, clumsy workout flows, or poor progress visibility. The product needed to feel fast during training, trustworthy in its recommendations, and usable over long training cycles.",
     approach:
-      "I led the product and engineering implementation across the mobile experience and backend platform. On the client side, I built a polished React Native experience around a strong training-domain model: routines, workouts, exercises, timers, warmups, supersets, and history. I also built a configurable dashboard with O(1) widget placement and per-user caching so personalized reporting stayed instant. For the guided workout experience, I implemented automatic progression logic modeled on real coaching heuristics. I later extended the product with an in-app AI trainer that could answer questions using the user's own training context instead of generic fitness advice.",
+      "I led product and engineering implementation across the mobile experience and backend platform. On the client side, I built the React Native experience around a training-domain model for routines, workouts, exercises, timers, warmups, supersets, and history. I also built a configurable dashboard with O(1) widget placement and per-user caching so personalized reporting stayed responsive. For guided workouts, I implemented automatic progression logic modeled on practical coaching heuristics. I later extended the product with an in-app AI trainer that answers questions using the user's own training context instead of generic fitness advice.",
     architecture:
-      "The mobile apps are built in React Native and communicate with a C# .NET API designed around responsiveness and clear domain boundaries. I set up the Azure infrastructure, using SQL Server for relational workout and account data, Cosmos DB for document-oriented use cases, and Service Bus to decouple asynchronous processing such as supporting services and notifications. The frontend architecture balances local UI state with shared global state and server-state synchronization so the app stays responsive even across more complex workout flows.",
+      "The mobile apps are built in React Native and communicate with a C# .NET API designed around clear domain boundaries and fast interaction paths. I set up Azure infrastructure using SQL Server for relational workout and account data, Cosmos DB for document-shaped use cases, and Service Bus to decouple asynchronous processing such as supporting services and notifications. The frontend balances local UI state, shared global state, and server-state synchronization so the app stays responsive across complex workout flows.",
     tradeoffs:
-      "The product sits at the intersection of training logic, personalization, and AI assistance, which means a lot of power can quickly become complexity. Automatic progression and generated programming needed guardrails so the app could feel adaptive without making unsafe jumps or muddy recommendations. Supporting both SQL Server and Cosmos DB also adds operational cost, so I kept the storage boundaries explicit and used asynchronous workflows where they improved responsiveness without hiding important user feedback.",
+      "The product sits at the intersection of training logic, personalization, and AI assistance, so capability can quickly become complexity. Automatic progression and generated programming needed guardrails so the app could adapt without making unsafe jumps or muddy recommendations. Supporting both SQL Server and Cosmos DB also adds operational cost, so I kept storage boundaries explicit and used asynchronous workflows where they improved responsiveness without hiding important user feedback.",
     outcome:
-      "Virtual Trainer shipped to the App Store and Google Play with routine and workout generation, guided training flows, progress reporting, custom exercise support, automatic progression, and an in-app AI trainer. More importantly, it proved out a full product stack I designed and operated end to end: mobile clients, backend services, cloud infrastructure, asynchronous workflows, and the product judgment required to make those systems feel cohesive to the user.",
+      "Virtual Trainer shipped to the App Store and Google Play with routine and workout generation, guided training flows, progress reporting, custom exercise support, automatic progression, and an in-app AI trainer. It also validated an end-to-end stack I designed and operated in production: mobile clients, backend services, cloud infrastructure, asynchronous workflows, and product decisions that kept those systems cohesive for users.",
   },
   {
     slug: "winforms-modernization",
     title: "WinForms Modernization",
     summary:
-      "Led the migration of a legacy WinForms application from .NET Framework 4.6 to .NET 8, navigating incompatible UI dependencies and obsolete encryption without disrupting critical business workflows.",
+      "Led migration of a business-critical WinForms application from .NET Framework 4.6 to .NET 8, resolving incompatible UI dependencies and obsolete encryption without disrupting core workflows.",
     image: "/winforms-modernization.svg",
     tags: ["C#", ".NET 8", "WinForms", "Migration", "Security", "Desktop"],
     role: "Lead engineer",
     scope: "Legacy desktop modernization",
     keyDecision:
-      "Treated the work as a staged modernization effort rather than a simple runtime upgrade",
+      "Treated the effort as phased modernization with explicit risk gates, not a one-shot runtime jump",
     highlights: [
       "Audited high-risk dependencies before touching the runtime",
       "Replaced or isolated unsupported WinForms controls",
       "Modernized obsolete encryption paths to current APIs",
-      "Preserved business-critical workflows through staged validation",
+      "Preserved business-critical workflows through staged validation and release gates",
     ],
     problem:
-      "The application was still important to the business, but it was running on .NET Framework 4.6 with aging third-party WinForms controls, older library assumptions, and encryption code that had become obsolete. The risk was not just technical debt. Staying in place increased maintenance friction, narrowed future options, and left security-sensitive areas on a stack that was becoming harder to justify.",
+      "The application was still central to operations, but it was running on .NET Framework 4.6 with aging third-party WinForms controls, brittle library assumptions, and encryption code that had become obsolete. The risk was not just technical debt. Staying in place increased maintenance friction, narrowed upgrade paths, and left security-sensitive areas on a stack that was increasingly difficult to justify.",
     approach:
-      "I started by treating the migration as a discovery and risk-management exercise, not a blind version jump. I audited dependencies, identified which controls and libraries were likely to break first, and separated direct upgrades from areas that would need replacement or redesign. From there, I worked through control compatibility issues, updated obsolete encryption flows, and resolved the runtime and API-level breaking changes that surfaced as the application moved toward .NET 8.",
+      "I treated migration as discovery plus risk management, not a blind version jump. I audited dependencies, ranked failure-prone controls and libraries, and split work into direct upgrades versus replacement tracks. I then addressed control compatibility, replaced obsolete crypto usage with supported APIs, and resolved runtime and API-level breaking changes as the app moved to .NET 8. Each phase closed with workflow-level validation before broad rollout.",
     architecture:
-      "Because the application was a mature WinForms codebase, the architecture work was mostly about reducing fragility. I preserved core workflow behavior while modernizing the runtime, dependency graph, and security-sensitive code paths. Where older controls could not move forward cleanly, I isolated or replaced them so the surrounding application could continue to evolve on supported foundations instead of staying blocked by legacy UI dependencies.",
+      "Because this was a mature WinForms codebase, the architecture work focused on reducing fragility while preserving known workflow behavior. I modernized the runtime, dependency graph, and security-sensitive paths. Where older controls could not move forward cleanly, I isolated or replaced them behind safer boundaries so the surrounding application could continue evolving on supported foundations.",
     tradeoffs:
-      "A rewrite would have created unnecessary delivery risk for a system users already depended on, but a shallow upgrade would not have addressed the real issues. The balance was to modernize aggressively where the stack was actively unsafe or unsupported, while keeping enough continuity that the application's existing behavior remained trustworthy. That required careful decisions about what to preserve, what to replace, and where to accept temporary complexity in order to get onto a healthier long-term platform.",
+      "A rewrite would have created unnecessary delivery risk for a system users already depended on, but a shallow upgrade would not fix core issues. The balance was aggressive modernization where the stack was unsafe or unsupported, while preserving enough continuity that users could trust existing behavior. That required deliberate choices about what to preserve, what to replace, and where temporary complexity was acceptable to reach a sustainable platform.",
     outcome:
-      "The result was a legacy desktop application moved onto .NET 8 with a stronger security posture, fewer unsupported dependencies, and a much better foundation for future maintenance. More than a successful migration, it turned a brittle legacy codebase into something the team could keep extending instead of merely working around.",
+      "The result was a legacy desktop application moved onto .NET 8 with stronger security, fewer unsupported dependencies, and a healthier maintenance path. The team shifted from repeatedly working around legacy blockers to delivering changes on a supported platform with lower upgrade risk.",
   },
   {
     slug: "azure-devops-pipeline-templates",
     title: "Azure DevOps Pipeline Templates",
     summary:
-      "Standardized Azure DevOps delivery workflows by converting classic pipelines to YAML and building a versioned shared template repository that multiple teams could adopt safely.",
+      "Standardized Azure DevOps delivery workflows by converting classic pipelines to YAML and building a versioned shared template repository teams could adopt safely.",
     image: "/azure-devops-templates.svg",
     tags: ["Azure DevOps", "YAML", "CI/CD", "DevEx", "Templates", "Automation"],
     role: "Lead engineer",
@@ -123,14 +123,14 @@ export const projects: ProjectDetail[] = [
       "Reduced setup time for more complex delivery workflows",
     ],
     problem:
-      "Our Azure DevOps setup had grown unevenly over time. Many pipelines were still defined through classic UI flows, which made them harder to review, harder to standardize, and harder to reuse across teams. More complex delivery tasks were often rebuilt from scratch, which slowed down onboarding and made pipeline behavior drift over time.",
+      "Our Azure DevOps setup had become inconsistent over time. Many pipelines were still defined through classic UI flows, which made them harder to review, standardize, and reuse across teams. More advanced delivery steps were frequently rebuilt from scratch, slowing onboarding and causing behavior drift.",
     approach:
-      "I converted a set of classic pipelines into YAML so they could live in source control and be treated like the rest of the codebase. But the real leverage came from going beyond one-off migrations. I built a dedicated pipeline templates repository that other teams could reference directly, giving them a clean starting point for common delivery workflows while still supporting more advanced scenarios. That let me centralize repeated patterns, remove duplication, and make improvements once instead of re-solving the same CI/CD problems in multiple places.",
+      "I converted classic pipelines into YAML so they could be versioned and reviewed like code. The bigger gain came from moving beyond one-off migrations: I built a dedicated template repository that teams could reference directly for common build, test, packaging, and deployment patterns. This centralized repeated logic, removed copy-paste drift, and let improvements ship once across many consumers.",
     architecture:
-      "The shared repository was structured around reusable YAML templates that teams could import into their own pipelines. I versioned those templates with semantic versioning and published tags that downstream pipelines referenced explicitly. That created a stable contract between template authors and consuming teams: new improvements could ship continuously, while breaking changes could be introduced in new versions without unexpectedly disrupting existing builds. The result was a lightweight internal platform for CI/CD standardization rather than a collection of disconnected pipeline files.",
+      "The shared repository was structured around reusable YAML templates that teams imported into their own pipelines. I versioned templates with semantic versioning and published tags that downstream pipelines referenced explicitly. That created a stable contract between template authors and consuming teams: improvements could ship continuously, while breaking changes landed in new versions without surprising existing builds. The result was a lightweight internal CI/CD platform instead of disconnected pipeline files.",
     tradeoffs:
-      "Centralizing pipeline logic improves consistency, but it also creates a dependency that teams need to trust. The versioned-tag approach was how I balanced those concerns. Teams could adopt the shared templates without giving up control over when they upgraded, and I could continue evolving the templates without causing surprise regressions. The main tradeoff was maintaining discipline around versioning and compatibility, but that was far less costly than leaving every team to manage fragile pipeline logic on its own.",
+      "Centralizing pipeline logic improves consistency, but it creates a shared dependency teams need to trust. The versioned-tag model balanced this: teams adopted shared templates without giving up control over upgrade timing, and I could evolve templates without surprise regressions. The tradeoff was stricter discipline around versioning and compatibility, which was still far cheaper than each team maintaining fragile pipeline logic independently.",
     outcome:
-      "The pipeline work brought more unity to how delivery workflows were defined, reduced the time required to stand up more complicated pipelines, and made common tasks easier to maintain across teams. More importantly, it shifted pipelines from ad hoc configuration toward a reusable engineering asset: versioned, reviewable, and safe to evolve over time.",
+      "The pipeline work unified how delivery workflows were defined, reduced time to stand up complex pipelines, and made common tasks easier to maintain across teams. More importantly, it shifted pipelines from ad hoc configuration to a reusable engineering asset: versioned, reviewable, and safe to evolve over time.",
   },
 ];

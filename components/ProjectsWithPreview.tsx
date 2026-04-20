@@ -57,7 +57,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
       </div>
 
       <aside className="hidden md:block">
-        <div className="sticky top-24">
+        <div className="sticky top-24 h-[32rem]">
           <AnimatePresence mode="wait" initial={false}>
             {active ? (
               <ProjectPreviewCard active={active} />
@@ -68,7 +68,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.98 }}
                 transition={{ duration: 0.16 }}
-                className="rounded-3xl border border-zinc-200/60 bg-white/40 p-6 backdrop-blur dark:border-zinc-800/60 dark:bg-black/20"
+                className="h-full overflow-y-auto rounded-3xl border border-zinc-200/60 bg-white/40 p-6 backdrop-blur dark:border-zinc-800/60 dark:bg-black/20"
               >
                 <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Project snapshot</div>
                 <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">

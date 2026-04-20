@@ -28,7 +28,7 @@ export default function ProjectPreviewCard({ active }: ProjectPreviewCardProps) 
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.98 }}
       transition={{ duration: 0.16 }}
-      className="rounded-2xl border border-zinc-200/60 bg-white/60 p-5 backdrop-blur dark:border-zinc-800/60 dark:bg-black/30"
+      className="flex h-full flex-col overflow-y-auto rounded-2xl border border-zinc-200/60 bg-white/60 p-5 backdrop-blur dark:border-zinc-800/60 dark:bg-black/30"
     >
       <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
         Project snapshot
@@ -125,7 +125,7 @@ export default function ProjectPreviewCard({ active }: ProjectPreviewCardProps) 
         ))}
       </div>
 
-      <div className="mt-5">
+      <div className="mt-auto pt-5">
         <Link
           href={`/projects/${active.slug}`}
           className="text-sm link-underline hover:text-accent"
