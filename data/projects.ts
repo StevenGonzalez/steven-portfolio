@@ -21,7 +21,6 @@ export const projects: ProjectDetail[] = [
   {
     slug: "virtual-trainer",
     title: "Virtual Trainer",
-    timeline: "2019 to present",
     summary:
       "Co-founded and built a cross-platform fitness product with React Native clients, a .NET API, Azure infrastructure, and an in-app AI trainer grounded in each user's training context.",
     image: "/virtual-trainer.svg",
