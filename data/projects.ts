@@ -77,32 +77,62 @@ export const projects: ProjectDetail[] = [
       "Virtual Trainer shipped to the App Store and Google Play with routine and workout generation, guided training flows, progress reporting, custom exercise support, automatic progression, and an in-app AI trainer. It also validated an end-to-end stack I designed and operated in production: mobile clients, backend services, cloud infrastructure, asynchronous workflows, and product decisions that kept those systems cohesive for users.",
   },
   {
-    slug: "winforms-modernization",
-    title: "WinForms Modernization",
+    slug: "industrial-saw-control-platform",
+    title: "Industrial Saw Control Platform",
     summary:
-      "Led migration of a business-critical WinForms application from .NET Framework 4.6 to .NET 8, resolving incompatible UI dependencies and obsolete encryption without disrupting core workflows.",
-    image: "/winforms-modernization.svg",
-    tags: ["C#", ".NET 8", "WinForms", "Migration", "Security", "Desktop"],
-    role: "Lead engineer",
-    scope: "Legacy desktop modernization",
+      "Build and maintain production software for industrial saw systems using an Angular frontend, C# API backend, and Electron.NET desktop packaging, with RabbitMQ messaging and PLC integration.",
+    image: "/saw-blade-minimal.svg",
+    tags: ["Angular", "C#", "Electron.NET", "RabbitMQ", "PLC", "Desktop"],
+    role: "Software engineer",
+    scope: "Frontend, backend, machine integration, and delivery process",
     keyDecision:
-      "Treated the effort as phased modernization with explicit risk gates, not a one-shot runtime jump",
+      "Used a modular desktop architecture where Angular UI, C# API, and messaging layers could evolve independently while maintaining deterministic machine communication paths",
     highlights: [
-      "Audited high-risk dependencies before touching the runtime",
-      "Replaced or isolated unsupported WinForms controls",
-      "Modernized obsolete encryption paths to current APIs",
-      "Preserved business-critical workflows through staged validation and release gates",
+      "Built and maintained Angular features for machine operation workflows",
+      "Implemented and supported C# API endpoints consumed by the desktop client",
+      "Used Electron.NET to package and ship integrated desktop releases",
+      "Integrated RabbitMQ messaging between saw software and companion systems",
+      "Implemented PLC communication flows for machine control and status",
+      "Contributed to architecture discussions, sprint planning, and estimation",
     ],
     problem:
-      "The application was still central to operations, but it was running on .NET Framework 4.6 with aging third-party WinForms controls, brittle library assumptions, and encryption code that had become obsolete. The risk was not just technical debt. Staying in place increased maintenance friction, narrowed upgrade paths, and left security-sensitive areas on a stack that was increasingly difficult to justify.",
+      "The software has to coordinate user-driven workflows, machine state, and inter-process communication in a production environment where reliability matters. The challenge is not just writing UI or API code in isolation. It is making sure desktop behavior, backend logic, messaging, and PLC interactions remain predictable under real operating conditions while still moving quickly through sprint-based delivery.",
     approach:
-      "I treated migration as discovery plus risk management, not a blind version jump. I audited dependencies, ranked failure-prone controls and libraries, and split work into direct upgrades versus replacement tracks. I then addressed control compatibility, replaced obsolete crypto usage with supported APIs, and resolved runtime and API-level breaking changes as the app moved to .NET 8. Each phase closed with workflow-level validation before broad rollout.",
+      "I work across the Angular frontend and C# API to implement and evolve operator-facing workflows and backend capabilities together. I package the combined stack with Electron.NET so desktop releases remain consistent. I also contribute to messaging and machine-integration work, including RabbitMQ flows and PLC communication paths, and collaborate closely with other engineers during architecture reviews, sprint planning, and estimation to keep implementation aligned with system constraints.",
     architecture:
-      "Because this was a mature WinForms codebase, the architecture work focused on reducing fragility while preserving known workflow behavior. I modernized the runtime, dependency graph, and security-sensitive paths. Where older controls could not move forward cleanly, I isolated or replaced them behind safer boundaries so the surrounding application could continue evolving on supported foundations.",
+      "The application is structured as an Angular UI paired with a C# API and delivered as a desktop application through Electron.NET. RabbitMQ handles messaging between the saw software and other programs, while PLC integration provides control and telemetry pathways to the machine itself. The architecture balances local desktop responsiveness with explicit service and messaging boundaries so machine interactions remain controlled and observable.",
     tradeoffs:
-      "A rewrite would have created unnecessary delivery risk for a system users already depended on, but a shallow upgrade would not fix core issues. The balance was aggressive modernization where the stack was unsafe or unsupported, while preserving enough continuity that users could trust existing behavior. That required deliberate choices about what to preserve, what to replace, and where temporary complexity was acceptable to reach a sustainable platform.",
+      "A combined desktop-plus-service stack gives strong control over deployment and operator experience, but it increases coordination costs across UI, API, machine communication, and messaging contracts. PLC integration also favors deterministic behavior over rapid experimentation, so changes require careful sequencing and validation. The practical tradeoff is choosing incremental, well-scoped improvements that preserve operational confidence while still improving architecture and developer workflow.",
     outcome:
-      "The result was a legacy desktop application moved onto .NET 8 with stronger security, fewer unsupported dependencies, and a healthier maintenance path. The team shifted from repeatedly working around legacy blockers to delivering changes on a supported platform with lower upgrade risk.",
+      "The result is a production platform that supports day-to-day machine operations with a cohesive UI, backend, desktop packaging model, and integration layer. Beyond feature work, this has strengthened cross-team engineering practices around architecture decisions, sprint execution, and estimation, helping the system evolve without losing reliability in the field.",
+  },
+  {
+    slug: "dotnet-framework-to-dotnet-8-upgrade",
+    title: ".NET Framework to .NET 8 Upgrade",
+    summary:
+      "Led a business-critical application upgrade from .NET Framework 4.6 to .NET 8, resolving breaking runtime and dependency issues without disrupting core workflows.",
+    image: "/winforms-modernization.svg",
+    tags: ["C#", ".NET 8", ".NET Framework", "Upgrade", "Compatibility", "Security"],
+    role: "Lead engineer",
+    scope: "Legacy .NET platform upgrade",
+    keyDecision:
+      "Ran the work as a compatibility-first platform upgrade with staged risk gates instead of a rewrite",
+    highlights: [
+      "Audited high-risk dependencies before changing target frameworks",
+      "Resolved runtime and package-level breaking changes during migration",
+      "Modernized obsolete encryption paths to current APIs",
+      "Preserved business-critical behavior through staged validation and release gates",
+    ],
+    problem:
+      "The application was still central to operations, but it was running on .NET Framework 4.6 with brittle library assumptions, aging dependencies, and encryption code that had become obsolete. The risk was not just technical debt. Staying in place increased maintenance friction, narrowed future upgrade paths, and left security-sensitive areas on a stack that was increasingly difficult to justify.",
+    approach:
+      "I treated migration as discovery plus risk management, not a blind version jump. I audited dependencies, mapped likely break points, and split work into direct upgrades versus replacement tracks. I then replaced obsolete crypto usage with supported APIs and resolved runtime, package, and API-level breakages as the app moved to .NET 8. Each phase closed with workflow-level validation before broad rollout.",
+    architecture:
+      "The architecture work focused on reducing fragility while preserving known behavior under a new runtime. I modernized target frameworks, dependency boundaries, and security-sensitive paths while keeping business workflows stable. Where legacy components could not move forward cleanly, I isolated or replaced them behind safer boundaries so the application could continue evolving on supported foundations.",
+    tradeoffs:
+      "A rewrite would have created unnecessary delivery risk for a system users already depended on, but a shallow version bump would not fix core issues. The balance was aggressive modernization where the stack was unsafe or unsupported, while preserving enough continuity that users could trust existing behavior. That required deliberate choices about what to preserve, what to replace, and where temporary complexity was acceptable to reach a sustainable platform.",
+    outcome:
+      "The result was a legacy application moved onto .NET 8 with stronger security, fewer unsupported dependencies, and a healthier maintenance path. The team shifted from repeatedly working around legacy blockers to delivering changes on a supported platform with lower upgrade risk.",
   },
   {
     slug: "azure-devops-pipeline-templates",

@@ -7,12 +7,12 @@
   --accent-rgb: 99 102 241;
 }
 
-body[data-route="/projects"] {
+body[data-route^="/projects"] {
   --accent: #0ea5e9;
   --accent-rgb: 14 165 233;
 }
 
-body[data-route="/insights"] {
+body[data-route^="/insights"] {
   --accent: #f43f5e;
   --accent-rgb: 244 63 94;
 }
