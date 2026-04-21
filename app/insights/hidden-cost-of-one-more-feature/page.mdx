@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "The Hidden Cost of Just One More Feature | Steven",
+  description: "Why feature work compounds, how complexity shows up later, and what engineers can do to protect product velocity.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="The Hidden Cost of Just One More Feature"
+  date="Sep 18, 2025"
+  category="Product Engineering"
+  readTime="7 min read"
+  tags={["Complexity", "Product", "Maintainability"]}
+  toc={[
+    { title: "Features create obligations", href: "#features-create-obligations" },
+    { title: "Interactions are the real cost", href: "#interactions-are-the-real-cost" },
+    { title: "UX debt is system debt", href: "#ux-debt-is-system-debt" },
+    { title: "Protect the core workflow", href: "#protect-the-core-workflow" },
+    { title: "Make complexity visible", href: "#make-complexity-visible" },
+  ]}
+  description="Why feature work compounds, how complexity shows up later, and what engineers can do to protect product velocity."
+>
+
+"Just one more feature" is rarely just one more feature.
+
+A new capability brings UI states, permissions, tests, data changes, support questions, analytics, documentation, and future compatibility. It may be small in isolation, but software does not experience features in isolation. Features interact with the rest of the product.
+
+That is why product velocity can slow down even when the team is still shipping. The issue is not that engineers stopped working hard. It is that each new change has more surface area to understand.
+
+## Features create obligations
+
+When a feature ships, it becomes part of the product contract.
+
+Users may rely on it. Support may document it. Sales may mention it. Other features may integrate with it. Data may accumulate around it. Once that happens, the cost of changing or removing it grows.
+
+This does not mean teams should be afraid to ship. It means a feature should be understood as an ongoing obligation, not a one-time delivery event. Someone has to maintain it, test it, explain it, and keep it compatible with the rest of the system.
+
+A feature that saves one customer today but slows every future release deserves a careful conversation.
+
+## Interactions are the real cost
+
+The hardest part of feature growth is not the number of features. It is the number of interactions between them.
+
+A scheduling feature interacts with permissions. Permissions interact with reporting. Reporting interacts with billing. Billing interacts with notifications. Notifications interact with customer preferences. The product becomes a network, and every new node creates possible paths through that network.
+
+This is where bugs often come from. The feature works in the obvious case, but breaks when combined with an older setting, a special role, a migration state, or a workflow the team did not test.
+
+Good engineering asks about those interactions early. What existing states does this touch? What assumptions does it add? What combinations should be tested? What old behavior does it make harder to preserve?
+
+## UX debt is system debt
+
+Complexity does not only live in code.
+
+If a product has unclear workflows, overloaded screens, inconsistent labels, or too many optional paths, the codebase usually reflects that confusion. Engineers end up encoding exceptions because the product model is not clear enough. Tests become harder because expected behavior depends on subtle context. Support gets harder because users cannot predict what should happen.
+
+UX debt and system debt reinforce each other.
+
+Sometimes the best technical improvement is simplifying the workflow. Remove an unnecessary option. Combine two concepts that users do not distinguish. Make invalid states impossible. Clarify the user's next action. Those choices reduce both interface complexity and implementation complexity.
+
+## Protect the core workflow
+
+Every product has core workflows that deserve protection.
+
+For a fitness product, starting and completing a workout should stay fast and understandable. For business management software, scheduling and billing should stay reliable. For industrial software, operator actions and machine state should remain clear.
+
+New features should make those workflows better or stay out of their way. A secondary feature that slows down the primary workflow is expensive, even if the feature itself is useful.
+
+This is where product and engineering judgment meet. The question is not only "can we build it?" The question is "what does this do to the experience people already depend on?"
+
+## Make complexity visible
+
+Complexity is manageable when it is visible.
+
+Teams can make it visible by writing down tradeoffs, tracking follow-up cleanup, limiting feature flags, deleting dead paths, testing important combinations, and naming the parts of the product that are becoming harder to change.
+
+The goal is not to say no to every new idea. The goal is to understand the real cost before the product accumulates too many small decisions that nobody remembers making.
+
+Features are how products grow. But sustainable products grow with a sense of weight. They recognize that every new capability changes the future shape of the system.
+
+The best teams do not avoid feature work. They protect the product from becoming a pile of features instead of a coherent experience.
+
+</ThoughtPost>

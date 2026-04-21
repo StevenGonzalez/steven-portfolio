@@ -1,0 +1,89 @@
+export const metadata = {
+  title: "When to Use Async Workflows | Steven",
+  description: "A grounded look at queues, retries, idempotency, observability, and the tradeoffs behind asynchronous system design.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="When to Use Async Workflows"
+  date="Jun 19, 2025"
+  category="Architecture"
+  readTime="8 min read"
+  tags={["Messaging", "Queues", "Reliability"]}
+  toc={[
+    { title: "Async is a tradeoff", href: "#async-is-a-tradeoff" },
+    { title: "Good reasons to queue", href: "#good-reasons-to-queue" },
+    { title: "Design for retries", href: "#design-for-retries" },
+    { title: "Observe the workflow", href: "#observe-the-workflow" },
+    { title: "Keep users informed", href: "#keep-users-informed" },
+  ]}
+  description="A grounded look at queues, retries, idempotency, observability, and the tradeoffs behind asynchronous system design."
+>
+
+Asynchronous workflows are powerful because they let systems decouple work. They are also dangerous when used to hide complexity the product still needs to understand.
+
+A queue can smooth spikes, improve responsiveness, isolate unreliable integrations, and let background processing happen outside the request path. But it also introduces new questions: what happens if the message is delivered twice, processed late, or never succeeds? How does the user know what happened? How does the team debug the workflow?
+
+Async is not automatically better. It is a tradeoff.
+
+## Async is a tradeoff
+
+Synchronous workflows are easier to reason about because the caller usually gets an answer immediately. The operation succeeds, fails, or times out in one visible path.
+
+Asynchronous workflows split that path. The request may succeed because work was accepted, while the actual work may fail later. That can be the right design, but the product has to represent it honestly.
+
+The system now needs status, retries, failure handling, monitoring, and often a way to reconcile state. If those pieces are missing, the queue becomes a place where uncertainty accumulates.
+
+The question is not "can this be async?" The question is "does async make the total system better?"
+
+## Good reasons to queue
+
+There are strong reasons to use asynchronous workflows.
+
+Use a queue when work is slow enough that users should not wait for it. Use it when an external system is unreliable and you need retry behavior. Use it when spikes should be absorbed instead of pushed into a database or API. Use it when separate services need to react to events without making the original workflow brittle.
+
+Async can also protect user experience. A mobile app should not freeze while supporting services process notifications or generate derived data. A web request should not block on a task that can safely happen later. A machine integration may need a controlled messaging boundary between systems with different timing expectations.
+
+The common thread is this: async should make the core workflow more reliable or responsive, not merely more distributed.
+
+## Design for retries
+
+If a workflow is asynchronous, retries are not an edge case. They are part of the design.
+
+Messages may be delivered more than once. A worker may crash after completing work but before acknowledging the message. An external API may time out even though it accepted the request. A database write may succeed while a follow-up step fails.
+
+That is why idempotency matters. The same message should not create duplicate charges, duplicate notifications, duplicate records, or inconsistent state. Sometimes that means idempotency keys. Sometimes it means checking current state before applying a transition. Sometimes it means designing commands and events with clear identity.
+
+Retries are only safe when the workflow knows how to be repeated.
+
+## Observe the workflow
+
+Async systems need visibility.
+
+A synchronous error often appears directly to the caller. An asynchronous error may happen in a worker minutes later. Without logs, metrics, correlation IDs, and dead-letter handling, the team may not know what failed or how to recover it.
+
+At minimum, the team should be able to answer:
+
+- How many messages are waiting?
+- How many are failing?
+- Which workflow produced this message?
+- Has this message been retried?
+- What state did the system reach?
+- How do we replay or repair the failure?
+
+Observability is not optional polish. It is part of the contract that makes async safe to operate.
+
+## Keep users informed
+
+The product should not pretend asynchronous work completed instantly if it did not.
+
+Sometimes the right interface is a status indicator. Sometimes it is an activity log, notification, disabled action, retry button, or clear "processing" state. The form depends on the workflow, but the principle is the same: users should not have to guess whether the system is still working.
+
+This is especially important when async work affects visible outcomes. If a generated routine, report, export, notification, or integration sync happens in the background, the UI should explain the state in language users understand.
+
+Async workflows are valuable when they make systems more resilient and responsive. They are costly when they hide failure, obscure state, or move complexity into places nobody watches.
+
+Use queues with respect. They are not just plumbing. They are part of the product's behavior.
+
+</ThoughtPost>

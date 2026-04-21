@@ -17,7 +17,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
 
   return (
     <div
-      className="mt-6 md:grid md:grid-cols-[1fr_320px] md:items-start md:gap-10"
+      className="mt-6 flex h-full min-h-0 flex-col md:grid md:grid-cols-[1fr_320px] md:items-start md:gap-10"
       onMouseLeave={() => {
         if (mode === "hover") {
           setActiveSlug(null);
@@ -38,7 +38,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
         }
       }}
     >
-      <div className="overflow-hidden rounded-3xl border border-zinc-200/70 bg-white/70 dark:border-zinc-800/70 dark:bg-black/20">
+      <div className="projects-index-panel min-h-0 overflow-y-auto overscroll-contain rounded-3xl border border-zinc-200/70 bg-white/70 dark:border-zinc-800/70 dark:bg-black/20">
         {projects.map((p) => (
           <ProjectRow
             key={p.slug}
@@ -57,7 +57,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
       </div>
 
       <aside className="hidden md:block">
-        <div className="sticky top-24 h-[36rem]">
+        <div className="projects-index-panel sticky top-24">
           <AnimatePresence mode="wait" initial={false}>
             {active ? (
               <ProjectPreviewCard active={active} />

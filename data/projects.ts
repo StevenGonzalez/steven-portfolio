@@ -77,6 +77,34 @@ export const projects: ProjectDetail[] = [
       "Virtual Trainer shipped to the App Store and Google Play with routine and workout generation, guided training flows, progress reporting, custom exercise support, automatic progression, and an in-app AI trainer. It also validated an end-to-end stack I designed and operated in production: mobile clients, backend services, cloud infrastructure, asynchronous workflows, and product decisions that kept those systems cohesive for users.",
   },
   {
+    slug: "fitness-platform",
+    title: "Fitness Business Management Platform",
+    summary:
+      "Contributed across a full-suite fitness business management SaaS platform serving studios, gyms, and multi-location operators with scheduling, billing, CRM, member experience, and reporting.",
+    image: "/fitness-platform.svg",
+    tags: ["C#", ".NET", "SaaS", "SQL", "Web", "Fitness Tech"],
+    role: "Software engineer",
+    scope: "Full-stack, cross-product platform contribution",
+    keyDecision:
+      "Designed features for multi-tenant scale while preserving operational consistency across diverse fitness operator types",
+    highlights: [
+      "Worked across scheduling, billing, CRM, and member experience domains",
+      "Built and maintained features used by national fitness operators",
+      "Contributed to both product features and underlying platform capabilities",
+      "Operated in a multi-tenant SaaS environment with real operational constraints",
+    ],
+    problem:
+      "The platform serves a wide range of fitness operators, from single-location startups to large franchises, each with different operational needs. It has to support scheduling, billing, lead management, member experience, staff workflows, and reporting in a consistent way across customers with different configurations. Delivering new capabilities without disrupting existing operators at scale is a constant engineering challenge.",
+    approach:
+      "I contributed across the breadth of the platform rather than a single vertical. That meant working on scheduling flows, billing and payment paths, CRM and lead management, member-facing experiences, and internal reporting depending on what the product needed. Working across domains gave me a wide view of how the system held together and where the real dependencies and constraints were, which informed how I approached both feature work and systemic improvements.",
+    architecture:
+      "The platform is a multi-tenant SaaS with a web frontend and a .NET backend, structured to serve many operator configurations through shared infrastructure. Supporting that breadth requires careful data isolation, configuration-driven behavior, and well-defined service boundaries so product changes in one area do not break unrelated workflows for other customers. Reporting and analytics run across a data layer that has to stay consistent despite high write volume from concurrent operator activity.",
+    tradeoffs:
+      "Breadth at a SaaS company means balancing feature velocity against operational stability across many concurrent customers. A change to billing or scheduling logic can touch a large surface area, so the tradeoff was always between moving fast and moving safely. Working across domains also means understanding cross-cutting concerns like multi-tenancy, permissions, and data integrity at a level that siloed feature work would not require.",
+    outcome:
+      "My work contributed to a platform used by national fitness operators across hundreds of locations. Beyond individual features, broad cross-domain contribution built a strong understanding of what it takes to evolve a production SaaS with real customers, operational complexity, and the kind of scale where engineering decisions have immediate visible consequences.",
+  },
+  {
     slug: "industrial-saw-control-platform",
     title: "Industrial Saw Control Platform",
     summary:

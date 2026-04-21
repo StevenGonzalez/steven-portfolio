@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "Why Estimation Is Really Risk Discovery | Steven",
+  description: "A healthier way to estimate software work by surfacing unknowns, dependencies, validation paths, and delivery risk.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="Why Estimation Is Really Risk Discovery"
+  date="Apr 24, 2025"
+  category="Delivery"
+  readTime="6 min read"
+  tags={["Estimation", "Planning", "Risk"]}
+  toc={[
+    { title: "Estimates are not promises", href: "#estimates-are-not-promises" },
+    { title: "Find the unknowns", href: "#find-the-unknowns" },
+    { title: "Separate size from uncertainty", href: "#separate-size-from-uncertainty" },
+    { title: "Plan validation", href: "#plan-validation" },
+    { title: "Communicate risk early", href: "#communicate-risk-early" },
+  ]}
+  description="A healthier way to estimate software work by surfacing unknowns, dependencies, validation paths, and delivery risk."
+>
+
+Software estimation gets healthier when teams stop treating it like fortune-telling.
+
+An estimate is not a promise about the future. It is a tool for discovering risk. The number matters less than the conversation that produces it: what do we understand, what do we not understand, what can go wrong, and what should we learn before committing too hard?
+
+Good estimation helps teams make better decisions. Bad estimation creates false confidence.
+
+## Estimates are not promises
+
+The problem with estimates is not that they are imperfect. Everyone knows they are imperfect. The problem is when organizations use them as if they are guarantees.
+
+Software work contains discovery. Requirements change when people see the product. Integrations behave differently than documentation suggests. Legacy code contains surprises. Data is messier than expected. A simple UI state turns out to depend on permissions, billing, or reporting.
+
+An estimate should leave room for that reality. If the team is punished every time uncertainty appears, people learn to hide uncertainty. That makes planning worse, not better.
+
+A healthier estimate says: based on what we know now, this is the likely size, and these are the risks that could change it.
+
+## Find the unknowns
+
+The most valuable part of estimation is naming unknowns.
+
+Do we understand the current code path? Is the dependency maintained? Are there data migrations? Does another team need to make a change? Is the design final? Are there test environments? Does the feature touch security, billing, or customer data?
+
+These questions turn a vague task into a map. Some unknowns are harmless. Some are project-shaping. Some can be answered with a short spike, a prototype, a conversation, or a closer look at production data.
+
+If estimation does not reveal new questions, the team may not be looking closely enough.
+
+## Separate size from uncertainty
+
+A task can be small but uncertain. A task can be large but well understood.
+
+Those should not be treated the same way. A large, familiar refactor may require time but have predictable steps. A small integration change may carry high risk because nobody knows how the external system behaves.
+
+Separating size from uncertainty helps planning. Size affects capacity. Uncertainty affects sequencing. High-uncertainty work should often move earlier so the team can learn before schedules depend on assumptions.
+
+This is one of the best uses of estimation: not deciding the exact date, but deciding what to investigate first.
+
+## Plan validation
+
+Every meaningful estimate should include validation thinking.
+
+How will we know the work is done? What tests should exist? What workflow should be manually checked? What metrics or logs confirm that production behavior is healthy? What rollback path exists if we are wrong?
+
+Validation is part of the work. Leaving it out makes the estimate look smaller while quietly pushing risk to the end.
+
+This is especially important for changes that affect shared behavior, migrations, billing, authentication, background processing, or integrations. Those areas deserve more than "the code is merged."
+
+## Communicate risk early
+
+The best time to communicate risk is before it becomes a surprise.
+
+If an estimate depends on an assumption, say the assumption. If a dependency could slip, name it. If a task needs discovery, make that visible. If there are two paths with different risk profiles, explain the tradeoff.
+
+This builds trust. Stakeholders may not need every implementation detail, but they do need to understand what could change the plan and what the team is doing about it.
+
+Estimation is not about pretending software can be predicted perfectly. It is about making uncertainty easier to manage.
+
+The best estimates help teams choose the next responsible action: build, investigate, split, defer, simplify, or de-risk. That is much more useful than a number that sounds precise but hides the truth.
+
+</ThoughtPost>

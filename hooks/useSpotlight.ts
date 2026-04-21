@@ -1,5 +1,6 @@
-import { useEffect, RefObject, useRef } from "react";
-import { MotionValue } from "framer-motion";
+import { useEffect, useRef } from "react";
+import type { RefObject } from "react";
+import type { MotionValue } from "framer-motion";
 
 interface UseSpotlightProps {
   dotRef: RefObject<HTMLElement | null>;
@@ -26,7 +27,7 @@ export function useSpotlight({
       const { width, height } = dotRef.current.getBoundingClientRect();
       dimensions.current = { width, height };
     }
-  }, [dotRef.current, dotAnchor]); // Re-measure when anchor changes (likely resize)
+  }, [dotRef, dotAnchor]); // Re-measure when anchor changes (likely resize)
 
   useEffect(() => {
     let secretEl: HTMLElement | null = null;

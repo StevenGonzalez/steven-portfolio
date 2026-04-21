@@ -1,0 +1,93 @@
+export const metadata = {
+  title: "Code That Other Engineers Can Safely Change | Steven",
+  description: "A practical guide to building codebases that reduce fear through clear boundaries, names, tests, and reviewable changes.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="Code That Other Engineers Can Safely Change"
+  date="Aug 14, 2025"
+  category="Engineering Practice"
+  readTime="7 min read"
+  tags={["Maintainability", "Testing", "Code Quality"]}
+  toc={[
+    { title: "Safety is a design goal", href: "#safety-is-a-design-goal" },
+    { title: "Names carry intent", href: "#names-carry-intent" },
+    { title: "Boundaries reduce fear", href: "#boundaries-reduce-fear" },
+    { title: "Tests explain behavior", href: "#tests-explain-behavior" },
+    { title: "Reviewability matters", href: "#reviewability-matters" },
+  ]}
+  description="A practical guide to building codebases that reduce fear through clear boundaries, names, tests, and reviewable changes."
+>
+
+Maintainable code is not just code that looks clean. It is code that other engineers can change without guessing.
+
+That distinction matters. A file can be tidy and still be risky. A function can be short and still hide important behavior. A clever abstraction can reduce lines while making the system harder to reason about.
+
+The codebase is healthy when engineers can understand intent, make a change, validate the result, and recover if they are wrong.
+
+## Safety is a design goal
+
+Change safety should be part of the design, not something added later.
+
+If a system has unclear ownership, hidden dependencies, weak tests, and broad side effects, every change feels dangerous. Engineers move slowly because caution is rational. They ask for extra reviews, avoid refactors, duplicate code instead of touching shared paths, and carry old assumptions forward because nobody wants to break production.
+
+Better code reduces fear. It makes the important path visible. It gives the team confidence about what will and will not change.
+
+Safety is not the opposite of speed. It is one of the things that makes speed sustainable.
+
+## Names carry intent
+
+Names are one of the cheapest forms of documentation.
+
+Good names explain the business concept, not just the mechanics. A name like `calculateEligibleSessions` tells a future engineer more than `processData`. A variable called `billableVisitCount` carries more context than `count`. A method called `applyProgressionRules` is better than one that hides domain behavior behind a vague utility name.
+
+Naming is especially important around boundaries: services, commands, events, database fields, and public APIs. Those names become the language of the system. If they are vague, the team's thinking becomes vague too.
+
+Clear names do not eliminate the need for documentation, but they reduce the number of places where engineers have to stop and reconstruct meaning.
+
+## Boundaries reduce fear
+
+Boundaries make change smaller.
+
+A good boundary lets an engineer say, "I am changing this behavior, and these are the parts of the system that should care." Without boundaries, every change feels global. UI details leak into backend logic. persistence assumptions leak into business rules. external integration behavior leaks into product workflows.
+
+Boundaries do not have to mean heavy architecture. They can be simple:
+
+- A service that owns one business rule
+- A module that hides an integration detail
+- A component that receives clear props
+- A command handler that validates one workflow
+- A migration path that isolates legacy behavior
+
+The point is not ceremony. The point is containment.
+
+## Tests explain behavior
+
+Tests are not only a correctness tool. They are also a communication tool.
+
+A good test tells a future engineer what behavior matters. It shows the inputs, the expected result, and sometimes the edge case that caused the rule to exist. When tests are written around meaningful behavior instead of implementation details, they become executable documentation.
+
+The best tests answer practical questions:
+
+- What should happen in the normal case?
+- What edge case are we protecting?
+- What should never happen?
+- What contract does another part of the system depend on?
+
+Not every line needs a test. But important behavior should not live only in someone's memory.
+
+## Reviewability matters
+
+Code that is safe to change is also easier to review.
+
+Small, focused changes help reviewers understand intent. Clear commits help future debugging. Localized diffs make risk easier to assess. Good descriptions explain what changed, why it changed, and how the author validated it.
+
+Reviewability is part of maintainability because code is changed by teams, not by isolated authors. If a change is hard to review, it is more likely to hide risk. If a codebase regularly forces huge, tangled diffs, the design may be telling the team something.
+
+The goal is not perfect code. The goal is code that invites responsible change.
+
+Healthy systems give engineers confidence. They make the next change easier to understand, easier to test, and easier to review. That is what maintainability looks like in practice: not beauty for its own sake, but software that can keep moving without making the team afraid.
+
+</ThoughtPost>

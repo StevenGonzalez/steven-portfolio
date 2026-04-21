@@ -34,7 +34,7 @@ export default function ProjectRow({
             ) : null}
           </div>
           <p className="mt-1 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">{project.summary}</p>
-          <div className="type-meta mt-2 text-xs text-zinc-500 dark:text-zinc-400">{project.tags.join(" • ")}</div>
+          <div className="type-meta mt-2 text-xs text-zinc-500 dark:text-zinc-400">{project.tags.join(" / ")}</div>
         </div>
         <span aria-hidden className="ml-4 mt-1 shrink-0 text-zinc-400 transition group-hover:text-accent">→</span>
       </Link>

@@ -13,8 +13,8 @@ export default function Navbar() {
   const inactiveStyles = "text-zinc-700 hover:text-accent dark:text-zinc-300";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-200/40 bg-white/70 backdrop-blur dark:border-zinc-800/50 dark:bg-black/50">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+    <header className="fixed inset-x-0 top-0 z-[500] h-16 border-b border-zinc-200/40 bg-white/70 backdrop-blur dark:border-zinc-800/50 dark:bg-black/50">
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Magnetic strength={6}>
           <NavLink
             href="/"

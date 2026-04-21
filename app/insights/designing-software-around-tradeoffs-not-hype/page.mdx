@@ -1,0 +1,88 @@
+export const metadata = {
+  title: "Designing Software Around Tradeoffs, Not Hype | Steven",
+  description: "A practical look at choosing technology by constraints, risks, and long-term ownership instead of novelty.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="Designing Software Around Tradeoffs, Not Hype"
+  date="Jan 15, 2026"
+  category="Engineering Judgment"
+  readTime="7 min read"
+  tags={["Architecture", "Tradeoffs", "Decision Making"]}
+  toc={[
+    { title: "Start with constraints", href: "#start-with-constraints" },
+    { title: "Hype hides cost", href: "#hype-hides-cost" },
+    { title: "Boring can be strategic", href: "#boring-can-be-strategic" },
+    { title: "Make decisions reversible", href: "#make-decisions-reversible" },
+    { title: "Write down the tradeoff", href: "#write-down-the-tradeoff" },
+  ]}
+  description="A practical look at choosing technology by constraints, risks, and long-term ownership instead of novelty."
+>
+
+Good engineering decisions are rarely about finding the most impressive tool. They are about understanding the shape of the problem well enough to choose a tool the team can operate, explain, and evolve.
+
+That sounds obvious until a new technology becomes fashionable. Then the conversation can drift away from the system in front of us. A framework is faster. A database is more scalable. A pattern is cleaner. A runtime is more modern. All of that may be true, but none of it matters until it is connected to the actual constraints of the product, the team, and the users.
+
+Software design gets healthier when tradeoffs are named directly. Every choice buys something and costs something. The job is not to avoid cost. The job is to make sure the cost is worth paying.
+
+## Start with constraints
+
+Before choosing an architecture, I want to know what the system is being asked to survive.
+
+Is the workflow latency-sensitive? Does it need offline behavior? Is correctness more important than experimentation speed? How often will the team change this area? Who debugs it at 3 PM on a normal weekday, and who debugs it during a release? What data has to remain consistent? What failures are acceptable, and which failures damage trust immediately?
+
+Those questions matter more than trend alignment. A system that controls machine behavior has different priorities than a marketing page. A mobile training app has different concerns than a multi-tenant SaaS billing flow. A legacy upgrade has different risk than a greenfield internal tool.
+
+The better the constraint map, the less architecture becomes guesswork.
+
+## Hype hides cost
+
+Hype usually describes the benefit of a tool in ideal conditions.
+
+It says the queue improves scalability. It says the document database gives flexibility. It says the new frontend framework improves developer experience. It says the AI feature creates personalization. Those claims may be true, but they are incomplete.
+
+Queues add retry behavior, dead-letter handling, idempotency requirements, and observability needs. Flexible data models can make reporting and validation harder. A new framework creates onboarding cost and upgrade responsibility. AI features introduce trust, latency, cost, safety, and evaluation questions that normal deterministic features may not have.
+
+None of those costs mean the tool is wrong. They just mean the decision is real.
+
+If a design conversation only names the upside, the team has not made an engineering decision yet. It has made a wish.
+
+## Boring can be strategic
+
+"Boring technology" is sometimes used like an insult. I usually hear it as a compliment.
+
+Boring means the failure modes are known. The documentation is mature. The team can hire for it. The operational playbook is not a mystery. The ecosystem has already made many mistakes and corrected them.
+
+That does not mean teams should never adopt newer tools. It means novelty should clear a higher bar. A new tool is worth it when it removes real complexity, enables a capability the product truly needs, or meaningfully improves the team's ability to deliver. It is weaker when it mostly makes the architecture look current.
+
+There is a difference between modernizing a foundation and collecting new parts.
+
+## Make decisions reversible
+
+Some decisions are easy to change later. Others become load-bearing quickly.
+
+A component library can often be replaced gradually. A database choice, authentication model, message contract, or domain boundary is harder to unwind. A public API can outlive the assumptions that created it. A background workflow can create downstream behavior that other teams start depending on.
+
+When a decision is reversible, it is reasonable to move faster. When it is hard to reverse, the design deserves more friction: prototypes, migration plans, failure-mode thinking, and clearer ownership.
+
+I like to ask: if we are wrong, how will we know, and how expensive will it be to recover?
+
+That question makes tradeoffs concrete. It turns architecture from preference into risk management.
+
+## Write down the tradeoff
+
+The most useful architecture notes are not long essays. They capture intent.
+
+Why did we choose this approach? What alternatives did we reject? What risk are we accepting? What would make us revisit the decision? What should future engineers avoid assuming?
+
+Those notes help because future maintainers rarely inherit the full conversation. They inherit the code. Without context, they may preserve accidental complexity or remove intentional constraints. A short decision record can prevent both.
+
+Writing down the tradeoff also keeps the current team honest. If the reasoning sounds weak in writing, the decision may not be ready.
+
+The best engineering choices are not always exciting from the outside. They are coherent. They fit the problem, the team, the product, and the operational reality. They make future work easier instead of simply making the present decision feel impressive.
+
+That is the kind of design I trust: not hype-resistant because it ignores new ideas, but because it makes every idea earn its place.
+
+</ThoughtPost>

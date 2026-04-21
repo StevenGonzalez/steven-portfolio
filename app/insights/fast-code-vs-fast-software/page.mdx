@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "The Difference Between Fast Code and Fast Software | Steven",
+  description: "Why performance is bigger than algorithms, and how perceived speed depends on data access, UI flow, caching, and feedback.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="The Difference Between Fast Code and Fast Software"
+  date="May 22, 2025"
+  category="Performance"
+  readTime="7 min read"
+  tags={["Performance", "UX", "Caching"]}
+  toc={[
+    { title: "Users feel workflows", href: "#users-feel-workflows" },
+    { title: "Latency has layers", href: "#latency-has-layers" },
+    { title: "Cache with intent", href: "#cache-with-intent" },
+    { title: "Make waiting understandable", href: "#make-waiting-understandable" },
+    { title: "Measure the path", href: "#measure-the-path" },
+  ]}
+  description="Why performance is bigger than algorithms, and how perceived speed depends on data access, UI flow, caching, and feedback."
+>
+
+Fast code and fast software are related, but they are not the same thing.
+
+A function can be optimized while the product still feels slow. A database query can be efficient while the workflow still makes users wait. A page can render quickly while the next action is unclear. Users experience the whole path, not the isolated implementation detail.
+
+Performance work gets better when it starts from the user's sense of progress.
+
+## Users feel workflows
+
+Users do not usually know whether the bottleneck is rendering, network latency, database access, serialization, cold start, or background processing. They know whether the product feels responsive.
+
+That means performance should be evaluated around workflows. How long does it take to start a workout? Load a dashboard? Save a change? Open a schedule? Generate a report? Recover from a failed request?
+
+The answer may involve code-level optimization, but it may also involve rethinking the interaction. Can data load earlier? Can the screen show partial results? Can the user continue while non-critical work happens later? Can the system avoid making the user repeat steps?
+
+Fast software often comes from removing unnecessary waiting, not just making necessary waiting shorter.
+
+## Latency has layers
+
+Latency accumulates across boundaries.
+
+The client reads local state. The UI renders. The app calls an API. The API queries a database. The database joins or filters. The server serializes a response. The client updates shared state. The screen re-renders. Each layer may look acceptable on its own, but together they can create a sluggish experience.
+
+This is why performance work needs tracing across the path. Optimizing the wrong layer can produce impressive numbers without improving the user experience.
+
+The useful question is: where does the user's time actually go?
+
+## Cache with intent
+
+Caching can make software feel dramatically faster. It can also create stale state, invalidation bugs, memory growth, and confusing behavior.
+
+Good caching starts with a specific goal. Are we avoiding repeated expensive calculations? Reducing network calls? Preserving a user's place in a workflow? Making dashboard data feel instant? Supporting offline or poor-network behavior?
+
+The cache strategy should match the answer. Some data can be stale for minutes. Some data must be refreshed immediately after mutation. Some data belongs in local UI state. Some belongs in server-state tooling. Some should not be cached because correctness matters more than speed.
+
+A cache is not just a performance trick. It is a consistency decision.
+
+## Make waiting understandable
+
+Sometimes the system really does need time.
+
+A report has to generate. A background job has to run. A model has to produce output. A deployment has to complete. A machine has to respond. In those cases, the interface should make waiting understandable.
+
+Good feedback changes how latency feels. A clear loading state is better than a frozen UI. Progress with useful labels is better than a spinner that never explains itself. A queued state is better than pretending work is done. A helpful empty state is better than a blank page.
+
+Perceived performance is not deception. It is communication.
+
+## Measure the path
+
+Performance work should be measured where possible.
+
+That does not always require a complex observability platform. It can start with basic timing around important workflows, API calls, render paths, and background jobs. The point is to turn "it feels slow" into something the team can investigate and improve.
+
+Measurements should connect to user outcomes. A faster internal function matters if it improves the workflow. A slower operation may be acceptable if it happens off the critical path and is represented honestly.
+
+Fast software is a product quality, not only a technical quality. It comes from architecture, data access, UI design, caching, feedback, and measurement working together.
+
+The goal is not to optimize everything. The goal is to make the important paths feel dependable, responsive, and respectful of the user's attention.
+
+</ThoughtPost>

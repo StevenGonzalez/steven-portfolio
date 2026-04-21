@@ -45,9 +45,9 @@ export default function RootLayout({
       >
         <NavProvider>
             <RouteTheme />
-            <div className="flex min-h-screen flex-col">
+            <div className="flex h-svh flex-col overflow-hidden pt-16">
             <Navbar />
-            <PageTransition className="flex min-h-0 flex-1 flex-col">{children}</PageTransition>
+            <PageTransition className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</PageTransition>
             <Footer />
             </div>
           </NavProvider>

@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "How I Think About Pulling AI Into Real Products | Steven",
+  description: "Where AI adds leverage, where deterministic software still matters, and how to build trust into product experiences.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="How I Think About Pulling AI Into Real Products"
+  date="Dec 18, 2025"
+  category="Product Engineering"
+  readTime="8 min read"
+  tags={["AI", "Product", "Guardrails"]}
+  toc={[
+    { title: "Start with the job", href: "#start-with-the-job" },
+    { title: "Ground it in context", href: "#ground-it-in-context" },
+    { title: "Keep deterministic logic", href: "#keep-deterministic-logic" },
+    { title: "Design for trust", href: "#design-for-trust" },
+    { title: "Evaluate the behavior", href: "#evaluate-the-behavior" },
+  ]}
+  description="Where AI adds leverage, where deterministic software still matters, and how to build trust into product experiences."
+>
+
+AI becomes useful in products when it is treated as a capability, not a spectacle.
+
+The least interesting version of an AI feature is a text box attached to a model. The more useful version understands the user's goal, has access to the right context, respects product boundaries, and knows when a deterministic path is better than a generated answer.
+
+That distinction matters because users do not care that a feature is powered by AI. They care whether it helps them make progress with less friction and more confidence.
+
+## Start with the job
+
+The first question is not "where can we add AI?" It is "what job is the user trying to get done?"
+
+If the job is repetitive interpretation, summarization, drafting, coaching, classification, or exploration, AI may be a good fit. If the job is a precise transaction, a safety-critical decision, or a workflow with strict business rules, AI may still help around the edges, but it should not become the source of truth.
+
+For example, a training product can use AI to explain a routine, answer questions about progress, or help a user reason through soreness and schedule constraints. But progression rules, workout history, timers, completed sets, and account state should remain deterministic. Users need the system to be predictable where predictability matters.
+
+AI should reduce cognitive load. It should not move important product behavior into a fog.
+
+## Ground it in context
+
+Generic AI responses are easy to build and easy to disappoint with.
+
+The value usually comes from grounding. A useful assistant needs the right slice of product context: user preferences, recent activity, relevant history, domain rules, and current workflow state. Without that, the model can sound confident while being disconnected from what the user is actually doing.
+
+Context needs boundaries too. More data is not automatically better. The product should decide what is relevant, what is sensitive, what is stale, and what should never be sent into a generated workflow. Grounding is an engineering problem as much as a prompt-writing problem.
+
+The best AI features feel less like a general chat session and more like the product has become better at explaining itself.
+
+## Keep deterministic logic
+
+Generated output is powerful because it is flexible. That flexibility is also why it should not own everything.
+
+I like to separate AI responsibilities from system responsibilities. The model can interpret, suggest, summarize, and explain. The application should validate, persist, authorize, calculate, and enforce rules. If a model suggests an action, the product still needs normal software boundaries before that action changes state.
+
+This is especially important when recommendations affect user trust. If the product has domain logic that already knows how progression should work, the model should not improvise a competing progression system. It can explain the result, answer questions about it, or help the user choose between options within safe limits.
+
+AI works best when it is surrounded by ordinary, boring, reliable software.
+
+## Design for trust
+
+Trust is not created by making the model sound polished. It is created by making the experience understandable.
+
+Users should know when they are seeing generated guidance. They should understand what information the answer is based on. When the system is uncertain, it should behave like it is uncertain. When the product cannot safely answer, it should say so instead of stretching.
+
+Good AI product design also includes escape routes. Let users inspect source data, edit generated output, choose a deterministic workflow, or ignore the suggestion entirely. The feature should feel helpful, not coercive.
+
+This is where small interface decisions matter. A recommendation that shows "based on your last four workouts" is more trustworthy than one that appears from nowhere. A generated plan that can be reviewed before it is applied is safer than one that silently changes the user's state.
+
+## Evaluate the behavior
+
+AI features need evaluation beyond "it seemed good in a demo."
+
+The team should collect examples of expected behavior, edge cases, refusal cases, and bad answers. Those examples become a test set for prompts, retrieval changes, model upgrades, and product logic. Evaluation does not need to start as a giant framework. It can start as a disciplined habit: keep the cases that matter and run them when the system changes.
+
+The important thing is to evaluate the product outcome, not just the model output. Did the answer help the user? Did it respect constraints? Did it avoid unsafe confidence? Did it preserve the product's rules? Did it fail in a way the interface could handle?
+
+AI can make software feel more personal and capable. It can also make systems harder to reason about if teams skip the boring parts: context design, validation, observability, evaluation, and product boundaries.
+
+The best AI features are not magic tricks. They are carefully integrated systems where generated intelligence has a clear job, a clear boundary, and enough surrounding structure that users can trust the result.
+
+</ThoughtPost>
