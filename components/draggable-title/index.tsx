@@ -146,7 +146,7 @@ export default function DraggableTitle({
       };
 
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px) and (min-height: 700px) and (pointer: fine)");
+    const media = window.matchMedia("(min-width: 1024px) and (pointer: fine)");
     const apply = () => setInternalScrollEnabled(media.matches);
 
     apply();
@@ -222,8 +222,8 @@ export default function DraggableTitle({
           <div
             className={
               fill
-                ? "select-none pt-20 pb-12 sm:pt-32 sm:pb-16 [@media(max-height:650px)]:pt-14"
-                : "select-none pt-20 sm:pt-32 [@media(max-height:650px)]:pt-14"
+                ? "select-none pt-20 pb-12 sm:pt-32 sm:pb-16 [@media(max-height:900px)]:pt-20 [@media(max-height:820px)]:pt-12 [@media(max-height:640px)]:pt-8 [@media(max-height:820px)]:pb-8 [@media(max-height:640px)]:pb-5"
+                : "select-none pt-20 sm:pt-32 [@media(max-height:900px)]:pt-20 [@media(max-height:820px)]:pt-12 [@media(max-height:640px)]:pt-8"
             }
           >
             {lines.map((line, idx) => (
@@ -241,11 +241,11 @@ export default function DraggableTitle({
 
           {children &&
             (internalScrollEnabled ? (
-              <div className="relative z-10 mt-8 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-8">
+              <div className="relative z-10 mt-8 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-8 [@media(max-height:820px)]:mt-5 [@media(max-height:820px)]:pb-5 [@media(max-height:640px)]:mt-4 [@media(max-height:640px)]:pb-4">
                 {children}
               </div>
             ) : (
-              <div className="relative z-10 mt-8 pb-8">{children}</div>
+              <div className="relative z-10 mt-8 pb-8 [@media(max-height:820px)]:mt-5 [@media(max-height:820px)]:pb-5 [@media(max-height:640px)]:mt-4 [@media(max-height:640px)]:pb-4">{children}</div>
             ))}
 
           {dirty && (

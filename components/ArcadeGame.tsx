@@ -107,6 +107,23 @@ const TIMER_UI_STEP = 0.1;
 const DASH_COLOR = "#22d3ee";
 const PLAYER_BASE_COLOR = "#2f7f8e";
 const PLAYER_READY_COLOR = "#67e8f9";
+const SHIP_POINTS = [
+  { x: PLAYER_RADIUS * 1.05, y: 0 },
+  { x: -PLAYER_RADIUS * 0.72, y: PLAYER_RADIUS * 0.72 },
+  { x: -PLAYER_RADIUS * 0.72, y: -PLAYER_RADIUS * 0.72 },
+  { x: PLAYER_RADIUS * 1.05, y: 0 },
+] as const;
+const DASH_SHIP_SCALE = 1.08;
+const DASH_SHIP_POINTS = SHIP_POINTS.map((point) => ({
+  x: point.x * DASH_SHIP_SCALE,
+  y: point.y * DASH_SHIP_SCALE,
+}));
+const DASH_EDGE_LENGTHS = DASH_SHIP_POINTS.slice(0, -1).map((point, index) => {
+  const next = DASH_SHIP_POINTS[index + 1];
+  return Math.hypot(point.x - next.x, point.y - next.y);
+});
+const DASH_PERIMETER = DASH_EDGE_LENGTHS.reduce((total, length) => total + length, 0);
+const LIFE_INDICES = Array.from({ length: INITIAL_LIVES }, (_, index) => index);
 
 const signalStyles = {
   gain: {
@@ -135,6 +152,7 @@ const signalStyles = {
     color: "#c084fc",
   },
 } satisfies Record<Signal["kind"], { label: string; description: string; color: string }>;
+const POWERUP_ENTRIES = Object.entries(signalStyles) as Array<[Signal["kind"], (typeof signalStyles)[Signal["kind"]]]>;
 
 const incidentStyles = {
   drift: {
@@ -168,13 +186,20 @@ const incidentStyles = {
     color: "#e11d48",
   },
 } satisfies Record<Incident["kind"], { label: string; description: string; color: string }>;
+const HAZARD_ENTRIES = Object.entries(incidentStyles) as Array<[Incident["kind"], (typeof incidentStyles)[Incident["kind"]]]>;
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-function distance(a: Vector, b: Vector) {
-  return Math.hypot(a.x - b.x, a.y - b.y);
+function distanceSquared(a: Vector, b: Vector) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return dx * dx + dy * dy;
+}
+
+function isWithinDistance(a: Vector, b: Vector, radius: number) {
+  return distanceSquared(a, b) < radius * radius;
 }
 
 function lerpAngle(from: number, to: number, amount: number) {
@@ -241,10 +266,10 @@ function createFloatingText(x: number, y: number, text: string, color: string, s
 
 function createNovaWave(origin: Vector, width: number, height: number): NovaWave {
   const maxRadius = Math.max(
-    distance(origin, { x: 0, y: 0 }),
-    distance(origin, { x: width, y: 0 }),
-    distance(origin, { x: width, y: height }),
-    distance(origin, { x: 0, y: height }),
+    Math.hypot(origin.x, origin.y),
+    Math.hypot(width - origin.x, origin.y),
+    Math.hypot(width - origin.x, height - origin.y),
+    Math.hypot(origin.x, height - origin.y),
   ) + 32;
 
   return {
@@ -538,18 +563,16 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   ctx.strokeStyle = "#22d3ee";
   ctx.lineWidth = 1;
   const grid = 32;
+  ctx.beginPath();
   for (let x = (game.elapsed * 12) % grid; x < width; x += grid) {
-    ctx.beginPath();
     ctx.moveTo(x, 0);
     ctx.lineTo(x, height);
-    ctx.stroke();
   }
   for (let y = (game.elapsed * 8) % grid; y < height; y += grid) {
-    ctx.beginPath();
     ctx.moveTo(0, y);
     ctx.lineTo(width, y);
-    ctx.stroke();
   }
+  ctx.stroke();
   ctx.restore();
 
   ctx.save();
@@ -873,12 +896,6 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   ctx.save();
   ctx.translate(game.player.x, game.player.y);
   ctx.rotate(game.playerAngle);
-  const shipPoints = [
-    { x: PLAYER_RADIUS * 1.05, y: 0 },
-    { x: -PLAYER_RADIUS * 0.72, y: PLAYER_RADIUS * 0.72 },
-    { x: -PLAYER_RADIUS * 0.72, y: -PLAYER_RADIUS * 0.72 },
-    { x: PLAYER_RADIUS * 1.05, y: 0 },
-  ];
   if (overdriveActive) {
     const trailPulse = 0.5 + Math.sin(game.elapsed * 12) * 0.5;
     ctx.strokeStyle = signalStyles.bonus.color;
@@ -906,19 +923,16 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   ctx.shadowColor = overdriveActive ? signalStyles.bonus.color : PLAYER_BASE_COLOR;
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(shipPoints[0].x, shipPoints[0].y);
-  ctx.lineTo(shipPoints[1].x, shipPoints[1].y);
-  ctx.lineTo(shipPoints[2].x, shipPoints[2].y);
+  ctx.moveTo(SHIP_POINTS[0].x, SHIP_POINTS[0].y);
+  ctx.lineTo(SHIP_POINTS[1].x, SHIP_POINTS[1].y);
+  ctx.lineTo(SHIP_POINTS[2].x, SHIP_POINTS[2].y);
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
   ctx.globalAlpha = 1;
 
   if (dashReadyPercent > 0) {
-    const dashScale = 1.08;
-    const dashPoints = shipPoints.map((point) => ({ x: point.x * dashScale, y: point.y * dashScale }));
-    const edgeLengths = dashPoints.slice(0, -1).map((point, index) => distance(point, dashPoints[index + 1]));
-    let remainingLength = edgeLengths.reduce((total, length) => total + length, 0) * dashReadyPercent;
+    let remainingLength = DASH_PERIMETER * dashReadyPercent;
 
     if (dashReady) {
       ctx.fillStyle = DASH_COLOR;
@@ -926,9 +940,9 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
       ctx.shadowBlur = 20 + readyPulse * 12;
       ctx.shadowColor = DASH_COLOR;
       ctx.beginPath();
-      ctx.moveTo(dashPoints[0].x, dashPoints[0].y);
-      ctx.lineTo(dashPoints[1].x, dashPoints[1].y);
-      ctx.lineTo(dashPoints[2].x, dashPoints[2].y);
+      ctx.moveTo(DASH_SHIP_POINTS[0].x, DASH_SHIP_POINTS[0].y);
+      ctx.lineTo(DASH_SHIP_POINTS[1].x, DASH_SHIP_POINTS[1].y);
+      ctx.lineTo(DASH_SHIP_POINTS[2].x, DASH_SHIP_POINTS[2].y);
       ctx.closePath();
       ctx.fill();
     }
@@ -941,11 +955,11 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.beginPath();
-    ctx.moveTo(dashPoints[0].x, dashPoints[0].y);
-    for (let index = 0; index < edgeLengths.length && remainingLength > 0; index += 1) {
-      const from = dashPoints[index];
-      const to = dashPoints[index + 1];
-      const edgeLength = edgeLengths[index];
+    ctx.moveTo(DASH_SHIP_POINTS[0].x, DASH_SHIP_POINTS[0].y);
+    for (let index = 0; index < DASH_EDGE_LENGTHS.length && remainingLength > 0; index += 1) {
+      const from = DASH_SHIP_POINTS[index];
+      const to = DASH_SHIP_POINTS[index + 1];
+      const edgeLength = DASH_EDGE_LENGTHS[index];
       if (remainingLength >= edgeLength) {
         ctx.lineTo(to.x, to.y);
       } else {
@@ -964,9 +978,9 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
       ctx.shadowColor = PLAYER_READY_COLOR;
       ctx.lineWidth = 1.6;
       ctx.beginPath();
-      ctx.moveTo(shipPoints[0].x * readyScale, shipPoints[0].y * readyScale);
-      ctx.lineTo(shipPoints[1].x * readyScale, shipPoints[1].y * readyScale);
-      ctx.lineTo(shipPoints[2].x * readyScale, shipPoints[2].y * readyScale);
+      ctx.moveTo(SHIP_POINTS[0].x * readyScale, SHIP_POINTS[0].y * readyScale);
+      ctx.lineTo(SHIP_POINTS[1].x * readyScale, SHIP_POINTS[1].y * readyScale);
+      ctx.lineTo(SHIP_POINTS[2].x * readyScale, SHIP_POINTS[2].y * readyScale);
       ctx.closePath();
       ctx.stroke();
     }
@@ -1037,12 +1051,7 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
           age: game.novaWave.age + dt,
         }
       : null,
-    floatingTexts: game.floatingTexts
-      .map((floatingText) => ({
-        ...floatingText,
-        age: floatingText.age + dt,
-      }))
-      .filter((floatingText) => floatingText.age < floatingText.duration),
+    floatingTexts: game.floatingTexts,
     combo: decayedCombo,
     comboTimer: comboExpired && decayedCombo > BASE_COMBO_MULTIPLIER ? COMBO_DURATION : Math.max(0, game.comboTimer - dt),
     phaseTimer: Math.max(0, game.phaseTimer - dt),
@@ -1058,6 +1067,20 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
     spawnTimer: game.spawnTimer - dt,
     signalTimer: game.signalTimer - dt,
   };
+
+  if (next.floatingTexts.length > 0) {
+    const activeFloatingTexts: FloatingText[] = [];
+    for (const floatingText of next.floatingTexts) {
+      const agedText = {
+        ...floatingText,
+        age: floatingText.age + dt,
+      };
+      if (agedText.age < agedText.duration) {
+        activeFloatingTexts.push(agedText);
+      }
+    }
+    next.floatingTexts = activeFloatingTexts;
+  }
 
   let keyVelocityX = 0;
   let keyVelocityY = 0;
@@ -1139,7 +1162,10 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
   }
 
   if (next.signalTimer <= 0) {
-    const powerupCount = next.signals.filter((signal) => signal.kind !== "gain").length;
+    let powerupCount = 0;
+    for (const signal of next.signals) {
+      if (signal.kind !== "gain") powerupCount += 1;
+    }
     if (powerupCount < 2 && Math.random() < 0.52) {
       next.signals.push(createPowerupSignal(next.width, next.height));
     }
@@ -1254,7 +1280,8 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
     let cleared = 0;
     let clearScoreTotal = 0;
     next.incidents = next.incidents.filter((incident) => {
-      const hit = distance(incident, next.novaWave as NovaWave) <= (next.novaWave as NovaWave).radius + getIncidentCollisionRadius(incident);
+      const collisionRadius = (next.novaWave as NovaWave).radius + getIncidentCollisionRadius(incident);
+      const hit = distanceSquared(incident, next.novaWave as NovaWave) <= collisionRadius * collisionRadius;
       if (hit) {
         cleared += 1;
         const clearScore = Math.round(NOVA_CLEAR_SCORE[incident.kind] * next.combo * (next.multiplierTimer > 0 ? 2 : 1));
@@ -1274,7 +1301,7 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
   }
 
   next.signals = next.signals.filter((signal) => {
-    if (distance(signal, next.player) < signal.radius + PLAYER_RADIUS) {
+    if (isWithinDistance(signal, next.player, signal.radius + PLAYER_RADIUS)) {
       if (signal.kind === "gain") {
         const nextCombo = clamp(next.combo + getComboGain(next.combo), BASE_COMBO_MULTIPLIER, MAX_COMBO_MULTIPLIER);
         next.combo = nextCombo;
@@ -1312,7 +1339,7 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
   }
 
   for (const incident of next.incidents) {
-    if (next.invulnerableTimer <= 0 && next.phaseTimer <= 0 && distance(incident, next.player) < getIncidentCollisionRadius(incident) + PLAYER_RADIUS - 2) {
+    if (next.invulnerableTimer <= 0 && next.phaseTimer <= 0 && isWithinDistance(incident, next.player, getIncidentCollisionRadius(incident) + PLAYER_RADIUS - 2)) {
       next.lives = Math.max(0, next.lives - 1);
       next.invulnerableTimer = HIT_INVULNERABLE_DURATION;
       next.shakeTimer = 0.22;
@@ -1348,6 +1375,7 @@ export default function ArcadeGame() {
   const [multiplierTimer, setMultiplierTimer] = useState(0);
   const [scoreBump, setScoreBump] = useState(0);
   const [livesBump, setLivesBump] = useState(0);
+  const [lostLifeIndex, setLostLifeIndex] = useState<number | null>(null);
   const previousScoreRef = useRef(0);
   const previousComboRef = useRef(BASE_COMBO_MULTIPLIER);
   const previousComboTimerRef = useRef(0);
@@ -1398,18 +1426,34 @@ export default function ArcadeGame() {
     const ratio = window.devicePixelRatio || 1;
     const width = Math.max(320, Math.floor(rect.width));
     const height = Math.max(360, Math.floor(rect.height));
+    const pixelWidth = Math.floor(width * ratio);
+    const pixelHeight = Math.floor(height * ratio);
 
-    canvas.width = Math.floor(width * ratio);
-    canvas.height = Math.floor(height * ratio);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-
-    const ctx = canvas.getContext("2d");
+    const ctx = ctxRef.current ?? canvas.getContext("2d");
     if (!ctx) return;
     ctxRef.current = ctx;
+
+    const dimensionsChanged =
+      canvas.width !== pixelWidth ||
+      canvas.height !== pixelHeight ||
+      canvas.style.width !== `${width}px` ||
+      canvas.style.height !== `${height}px`;
+
+    if (dimensionsChanged) {
+      canvas.width = pixelWidth;
+      canvas.height = pixelHeight;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+    }
+
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
     const current = gameRef.current;
+    if (current && !dimensionsChanged) {
+      drawGame(ctx, current, modeRef.current);
+      return;
+    }
+
     if (current) {
       const scaleX = current.width > 0 ? width / current.width : 1;
       const scaleY = current.height > 0 ? height / current.height : 1;
@@ -1457,8 +1501,8 @@ export default function ArcadeGame() {
       gameRef.current = createGameState(width, height);
     }
 
-    drawGame(ctx, gameRef.current, mode);
-  }, [mode]);
+    drawGame(ctx, gameRef.current, modeRef.current);
+  }, []);
 
   const restart = useCallback(() => {
     const canvas = canvasRef.current;
@@ -1481,6 +1525,7 @@ export default function ArcadeGame() {
     dashQueuedRef.current = false;
     setScoreBump(0);
     setLivesBump(0);
+    setLostLifeIndex(null);
     setLives(INITIAL_LIVES);
     setPhaseTimer(0);
     setFocusTimer(0);
@@ -1588,6 +1633,7 @@ export default function ArcadeGame() {
         const nextLives = next.lives;
         if (nextLives !== previousLivesRef.current) {
           if (nextLives < previousLivesRef.current) {
+            setLostLifeIndex(Math.max(0, previousLivesRef.current - 1));
             setLivesBump((value) => value + 1);
           }
           previousLivesRef.current = nextLives;
@@ -1695,8 +1741,6 @@ export default function ArcadeGame() {
     };
   }, [stopPointerControl]);
 
-  const powerupEntries = Object.entries(signalStyles) as Array<[Signal["kind"], (typeof signalStyles)[Signal["kind"]]]>;
-  const hazardEntries = Object.entries(incidentStyles) as Array<[Incident["kind"], (typeof incidentStyles)[Incident["kind"]]]>;
   const renderPowerupIcon = (kind: Signal["kind"], color: string, index: number) => {
     const style = { color, animationDelay: `${index * 140}ms` };
 
@@ -1798,12 +1842,12 @@ export default function ArcadeGame() {
   };
 
   return (
-    <div className="flex h-full max-h-full min-h-0 flex-1 flex-col gap-4 overflow-hidden lg:flex-row">
-      <section className="flex min-h-[28rem] flex-1 flex-col overflow-hidden rounded-lg border border-cyan-300/45 bg-[#080915] shadow-[0_0_0_1px_rgba(236,72,153,0.2),0_0_44px_rgba(34,211,238,0.16)]">
-        <div className="flex items-center justify-between border-b border-cyan-300/20 bg-black/35 px-4 py-3">
+    <div className="flex h-full max-h-full min-h-0 flex-1 flex-col gap-4 overflow-hidden [@media(max-height:820px)]:gap-3 [@media(max-height:640px)]:gap-2 lg:flex-row">
+      <section className="flex min-h-[28rem] flex-1 flex-col overflow-hidden rounded-lg border border-cyan-300/45 bg-[#080915] shadow-[0_0_0_1px_rgba(236,72,153,0.2),0_0_44px_rgba(34,211,238,0.16)] [@media(max-height:820px)]:min-h-[22rem] [@media(max-height:640px)]:min-h-[18rem]">
+        <div className="flex items-center justify-between border-b border-cyan-300/20 bg-black/35 px-4 py-3 [@media(max-height:820px)]:py-2">
           <div>
-            <h2 className="font-display text-xl font-bold text-cyan-100 [text-shadow:0_0_16px_rgba(34,211,238,0.7)]">Star Surge</h2>
-            <p className="type-meta mt-0.5 text-xs text-fuchsia-300">dash, dodge, collect</p>
+            <h2 className="font-display text-xl font-bold text-cyan-100 [text-shadow:0_0_16px_rgba(34,211,238,0.7)] [@media(max-height:820px)]:text-lg">Star Surge</h2>
+            <p className="type-meta mt-0.5 text-xs text-fuchsia-300 [@media(max-height:640px)]:hidden">dash, dodge, collect</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -1817,7 +1861,7 @@ export default function ArcadeGame() {
                 }
                 setMode((current) => (current === "running" ? "paused" : "running"));
               }}
-              className="focus-accent grid size-9 place-items-center rounded-md border border-cyan-300/30 bg-cyan-300/5 text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10"
+              className="focus-accent grid size-9 place-items-center rounded-md border border-cyan-300/30 bg-cyan-300/5 text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10 [@media(max-height:820px)]:size-8"
             >
               {mode === "running" ? (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -1834,7 +1878,7 @@ export default function ArcadeGame() {
               aria-label="Restart"
               title="Restart"
               onClick={restart}
-              className="focus-accent grid size-9 place-items-center rounded-md border border-fuchsia-300/30 bg-fuchsia-300/5 text-fuchsia-100 transition hover:border-fuchsia-200 hover:bg-fuchsia-300/10"
+              className="focus-accent grid size-9 place-items-center rounded-md border border-fuchsia-300/30 bg-fuchsia-300/5 text-fuchsia-100 transition hover:border-fuchsia-200 hover:bg-fuchsia-300/10 [@media(max-height:820px)]:size-8"
             >
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -1896,11 +1940,11 @@ export default function ArcadeGame() {
         </div>
       </section>
 
-      <aside className="flex h-full max-h-full min-h-0 flex-col gap-3 overflow-hidden lg:w-64">
-        <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
+      <aside className="flex h-full max-h-full min-h-0 flex-col gap-3 overflow-hidden [@media(max-height:820px)]:gap-2 lg:w-64">
+        <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
           <div className="type-meta text-xs text-cyan-300/80">Score</div>
-          <div key={scoreBump} className="arcade-score arcade-score-bump font-display mt-1 text-4xl font-bold">{score}</div>
-          <div className={`mt-3 h-1.5 overflow-hidden rounded-full bg-white/10 ${isMaxCombo ? "arcade-combo-meter--max" : ""}`}>
+          <div key={scoreBump} className="arcade-score arcade-score-bump font-display mt-1 text-4xl font-bold [@media(max-height:820px)]:text-3xl">{score}</div>
+          <div className={`mt-3 h-1.5 overflow-hidden rounded-full bg-white/10 [@media(max-height:820px)]:mt-2 ${isMaxCombo ? "arcade-combo-meter--max" : ""}`}>
             <div
               className={`h-full rounded-full transition-[width,background-color] duration-100 ${comboMultiplier > BASE_COMBO_MULTIPLIER ? "arcade-combo-bar--live" : ""} ${isMaxCombo ? "arcade-combo-bar--max" : ""}`}
               style={{
@@ -1922,38 +1966,43 @@ export default function ArcadeGame() {
             />
           </div>
         </div>
-        <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
+        <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
           <div className="type-meta text-xs text-cyan-300/80">Lives</div>
-          <div key={livesBump} className="arcade-lives-bump mt-3 flex gap-2">
-            {Array.from({ length: INITIAL_LIVES }).map((_, index) => (
-              <svg
-                key={index}
-                viewBox="0 0 24 24"
-                className={`arcade-life-icon ${index < lives ? "arcade-life-icon--on" : "arcade-life-icon--off"}`}
-                aria-label={index < lives ? "Life remaining" : "Life lost"}
-                role="img"
-              >
-                <path d="M12 3.5 21 21 12 16.5 3 21Z" />
-              </svg>
-            ))}
+          <div className="mt-3 flex gap-2 [@media(max-height:820px)]:mt-2">
+            {LIFE_INDICES.map((index) => {
+              const active = index < lives;
+              const justLost = index === lostLifeIndex && !active;
+
+              return (
+                <svg
+                  key={`${index}-${justLost ? livesBump : "life"}`}
+                  viewBox="0 0 24 24"
+                  className={`arcade-life-icon ${active ? "arcade-life-icon--on" : "arcade-life-icon--off"} ${justLost ? "arcade-life-icon--lost" : ""}`}
+                  aria-label={active ? "Life remaining" : "Life lost"}
+                  role="img"
+                >
+                  <path d="M12 3.6 20.7 20.4 3.3 20.4Z" />
+                </svg>
+              );
+            })}
           </div>
         </div>
-        <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
+        <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
           <div className="type-meta text-xs text-cyan-300/80">Active</div>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:gap-1.5">
             {renderActiveChip("Shield", phaseTimer, PHASE_DURATION, signalStyles.repair.color)}
             {renderActiveChip("Freeze", focusTimer, FREEZE_DURATION, signalStyles.focus.color)}
             {renderActiveChip("Nova", novaWaveTimer, NOVA_WAVE_DURATION, signalStyles.clear.color)}
             {renderActiveChip("2x", multiplierTimer, OVERDRIVE_DURATION, signalStyles.bonus.color)}
           </div>
         </div>
-        <details open className="arcade-guide-panel arcade-panel min-h-0 overflow-hidden rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
+        <details open className="arcade-guide-panel arcade-panel min-h-0 overflow-hidden rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
           <summary className="type-meta cursor-pointer select-none text-xs text-cyan-300/80">Guide</summary>
-          <div className="arcade-guide-content mt-4 space-y-5">
+          <div className="arcade-guide-content mt-4 space-y-5 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:space-y-4">
             <div>
               <div className="type-meta text-xs text-cyan-300/60">Powerups</div>
-              <div className="mt-3 space-y-3">
-                {powerupEntries.map(([kind, signal], index) => (
+              <div className="mt-3 space-y-3 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:space-y-2">
+                {POWERUP_ENTRIES.map(([kind, signal], index) => (
                   <div key={kind} className="flex items-center gap-2.5">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center">
                       {renderPowerupIcon(kind, signal.color, index)}
@@ -1968,8 +2017,8 @@ export default function ArcadeGame() {
             </div>
             <div>
               <div className="type-meta text-xs text-cyan-300/60">Hazards</div>
-              <div className="mt-3 space-y-2.5">
-                {hazardEntries.map(([kind, incident], index) => (
+              <div className="mt-3 space-y-2.5 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:space-y-2">
+                {HAZARD_ENTRIES.map(([kind, incident], index) => (
                   <div key={kind} className="flex items-center gap-2.5">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center">
                       {renderHazardIcon(kind, incident.color, index)}

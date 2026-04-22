@@ -2,12 +2,12 @@ import Magnetic from "./Magnetic";
 
 export default function Footer() {
   return (
-    <footer className="shrink-0 border-t border-zinc-200/40 bg-white dark:border-zinc-800/50 dark:bg-black">
-      <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-zinc-600 dark:text-zinc-400">
-        <div className="relative flex items-center justify-between">
+    <footer className="h-14 shrink-0 border-t border-zinc-200/40 bg-white dark:border-zinc-800/50 dark:bg-black [@media(max-height:640px)]:h-11 [@media(max-height:480px)]:h-9">
+      <div className="mx-auto flex h-full max-w-6xl items-center px-4 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="relative flex w-full items-center justify-between gap-4">
           <p className="type-meta text-xs">© {new Date().getFullYear()} Steven Gonzalez</p>
 
-          <div id="secret-message" className="secret-message secret-message--in-footer" aria-hidden="true">
+          <div id="secret-message" className="secret-message secret-message--in-footer hidden sm:block" aria-hidden="true">
             Curiosity is an underrated engineering skill.
           </div>
 
