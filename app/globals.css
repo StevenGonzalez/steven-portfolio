@@ -739,11 +739,11 @@ h4, h5, h6 { letter-spacing: -0.012em; }
 
 @media (max-width: 640px) {
   .insights-archive-list {
-    height: min(34rem, calc(100svh - 24rem));
+    height: min(34rem, calc(100svh - 22rem));
   }
 
   .projects-index-panel {
-    height: min(32rem, calc(100svh - 28rem));
+    height: min(34rem, calc(100svh - 24rem));
   }
 }
 

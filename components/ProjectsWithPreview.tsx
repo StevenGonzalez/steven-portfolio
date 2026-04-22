@@ -17,7 +17,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
 
   return (
     <div
-      className="mt-6 flex h-full min-h-0 flex-col md:grid md:grid-cols-[1fr_320px] md:items-start md:gap-10"
+      className="flex h-full min-h-0 flex-col md:grid md:grid-cols-[1fr_320px] md:items-start md:gap-10"
       onMouseLeave={() => {
         if (mode === "hover") {
           setActiveSlug(null);
