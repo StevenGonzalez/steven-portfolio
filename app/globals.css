@@ -100,6 +100,23 @@ body[data-route^="/arcade"] {
   }
 }
 
+@keyframes arcade-hazard-svg-flicker {
+  0%, 100% {
+    opacity: 0.78;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  42% {
+    opacity: 0.95;
+    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 13px currentColor);
+  }
+  46% {
+    opacity: 0.68;
+  }
+  54% {
+    opacity: 0.9;
+  }
+}
+
 @keyframes arcade-score-bump {
   0% {
     transform: translateX(0) scale(1);
@@ -153,6 +170,56 @@ body[data-route^="/arcade"] {
   }
 }
 
+@keyframes arcade-combo-max-bar {
+  0%, 100% {
+    filter: brightness(1.12) saturate(1.15);
+    box-shadow: 0 0 18px rgb(248 250 252 / 0.95), 0 0 34px rgb(34 211 238 / 0.7), 0 0 58px rgb(192 132 252 / 0.45);
+  }
+  36% {
+    filter: brightness(1.8) saturate(1.35);
+    box-shadow: 0 0 28px rgb(248 250 252 / 1), 0 0 52px rgb(34 211 238 / 0.85), 0 0 82px rgb(192 132 252 / 0.6);
+  }
+}
+
+@keyframes arcade-combo-bar-flow {
+  0% {
+    background-position: 0% 50%;
+    filter: brightness(calc(1 + var(--combo-heat, 0) * 0.15));
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(calc(1.12 + var(--combo-heat, 0) * 0.35));
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: brightness(calc(1 + var(--combo-heat, 0) * 0.15));
+  }
+}
+
+@keyframes arcade-combo-meter-shake {
+  0%, 100% {
+    transform: translate(0, 0) scaleY(1);
+  }
+  12% {
+    transform: translate(-4px, 3px) scaleY(1.2);
+  }
+  24% {
+    transform: translate(3px, -3px) scaleY(0.94);
+  }
+  38% {
+    transform: translate(-3px, -2px) scaleY(1.14);
+  }
+  56% {
+    transform: translate(4px, 3px) scaleY(1);
+  }
+  72% {
+    transform: translate(-2px, 2px) scaleY(1.08);
+  }
+  86% {
+    transform: translate(2px, -2px) scaleY(0.98);
+  }
+}
+
 .arcade-score {
   display: inline-block;
   animation: arcade-score-glow 5s ease-in-out infinite;
@@ -188,12 +255,63 @@ body[data-route^="/arcade"] {
   animation: arcade-shield-bump 240ms ease-out both;
 }
 
+.arcade-lives-bump {
+  animation: arcade-shield-bump 240ms ease-out both;
+}
+
+.arcade-life-icon {
+  display: block;
+  width: 1.55rem;
+  height: 1.55rem;
+  overflow: visible;
+}
+
+.arcade-life-icon path {
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+}
+
+.arcade-life-icon--on {
+  filter: drop-shadow(0 0 6px rgb(103 232 249 / 0.9)) drop-shadow(0 0 12px rgb(34 211 238 / 0.5));
+}
+
+.arcade-life-icon--on path {
+  fill: rgb(103 232 249 / 0.16);
+  stroke: #a5f3fc;
+}
+
+.arcade-life-icon--off {
+  filter: none;
+}
+
+.arcade-life-icon--off path {
+  fill: rgb(103 232 249 / 0.04);
+  stroke: rgb(103 232 249 / 0.28);
+}
+
 .arcade-active-chip {
   background: rgb(8 9 21 / 0.76);
 }
 
 .arcade-active-chip--on {
   animation: arcade-active-chip-glow 1.8s ease-in-out infinite;
+}
+
+.arcade-combo-bar--live {
+  background-size: 220% 100%;
+}
+
+.arcade-combo-meter--max {
+  animation: arcade-combo-meter-shake 420ms steps(2, end) infinite;
+  transform-origin: center center;
+  overflow: visible;
+}
+
+.arcade-combo-bar--max {
+  animation:
+    arcade-combo-bar-flow 0.9s ease-in-out infinite,
+    arcade-combo-max-bar 560ms ease-in-out infinite;
 }
 
 .arcade-guide-panel[open] {
@@ -229,6 +347,11 @@ body[data-route^="/arcade"] {
 .arcade-hazard-icon {
   transform-origin: center;
   animation: arcade-hazard-flicker 5.6s steps(4, end) infinite;
+}
+
+.arcade-hazard-icon-svg {
+  transform-origin: center;
+  animation: arcade-hazard-svg-flicker 5.6s steps(4, end) infinite;
 }
 
 @theme inline {

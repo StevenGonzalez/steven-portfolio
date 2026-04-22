@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 
 type GameMode = "ready" | "running" | "paused" | "ended";
 
@@ -16,10 +16,11 @@ type Signal = Vector & {
 };
 
 type Incident = Vector & {
-  kind: "drift" | "tracker" | "heavy";
+  kind: "drift" | "tracker" | "heavy" | "waver" | "splitter" | "sentinel";
   radius: number;
   velocity: Vector;
   spin: number;
+  age: number;
 };
 
 type NovaWave = Vector & {
@@ -27,6 +28,14 @@ type NovaWave = Vector & {
   duration: number;
   radius: number;
   maxRadius: number;
+};
+
+type FloatingText = Vector & {
+  text: string;
+  color: string;
+  surge: boolean;
+  age: number;
+  duration: number;
 };
 
 type GameState = {
@@ -37,8 +46,12 @@ type GameState = {
   signals: Signal[];
   incidents: Incident[];
   novaWave: NovaWave | null;
+  floatingTexts: FloatingText[];
   score: number;
-  stability: number;
+  combo: number;
+  comboTimer: number;
+  lives: number;
+  phaseTimer: number;
   focusTimer: number;
   purgeSlowTimer: number;
   multiplierTimer: number;
@@ -62,19 +75,32 @@ const DASH_SPEED = 780;
 const DASH_DURATION = 0.16;
 const DASH_COOLDOWN = 1.35;
 const DASH_INVULNERABLE_DURATION = 0.22;
-const INITIAL_STABILITY = 100;
-const MAX_INCIDENTS = 15;
-const HAZARD_COLOR = "#f43f5e";
-const FREEZE_DURATION = 4.8;
-const NOVA_SLOW_DURATION = 1.5;
-const NOVA_WAVE_DURATION = 0.9;
-const OVERDRIVE_DURATION = 5.5;
-const HAZARD_DAMAGE: Record<Incident["kind"], number> = {
-  drift: 18,
-  tracker: 24,
-  heavy: 36,
+const HIT_INVULNERABLE_DURATION = 1.8;
+const INITIAL_LIVES = 3;
+const MAX_INCIDENTS = 14;
+const SURGE_CYCLE_DURATION = 34;
+const SURGE_PHASE_START = 18;
+const RECOVERY_PHASE_START = 26;
+const PHASE_DURATION = 6;
+const FREEZE_DURATION = 7.5;
+const NOVA_SLOW_DURATION = 3.5;
+const NOVA_WAVE_DURATION = 1.1;
+const FLOATING_TEXT_DURATION = 0.9;
+const OVERDRIVE_DURATION = 10.5;
+const OVERDRIVE_SPEED_MULTIPLIER = 1.25;
+const COMBO_DURATION = 4.2;
+const BASE_COMBO_MULTIPLIER = 1;
+const COMBO_DECAY_STEP = 0.2;
+const MAX_COMBO_MULTIPLIER = 3;
+const COMBO_COLORS = ["#67e8f9", "#38bdf8", "#a78bfa", "#f97316", "#f8fafc"] as const;
+const NOVA_CLEAR_SCORE: Record<Incident["kind"], number> = {
+  drift: 30,
+  tracker: 40,
+  heavy: 55,
+  waver: 65,
+  splitter: 75,
+  sentinel: 90,
 };
-
 const TIMER_UI_STEP = 0.1;
 const DASH_COLOR = "#22d3ee";
 const PLAYER_BASE_COLOR = "#2f7f8e";
@@ -83,28 +109,28 @@ const PLAYER_READY_COLOR = "#67e8f9";
 const signalStyles = {
   gain: {
     label: "Star",
-    description: "+100 score",
+    description: "combo score",
     color: "#f8fafc",
   },
   repair: {
     label: "Shield",
-    description: "+30 shield",
-    color: "#22c55e",
+    description: "blocks hits",
+    color: "#2dd4bf",
   },
   focus: {
     label: "Freeze",
     description: "slows hazards",
-    color: "#38bdf8",
+    color: "#60a5fa",
   },
   bonus: {
     label: "Overdrive",
-    description: "double score",
-    color: "#14b8a6",
+    description: "2x score, faster",
+    color: "#a3e635",
   },
   clear: {
     label: "Nova",
     description: "clears hazards",
-    color: "#8b5cf6",
+    color: "#c084fc",
   },
 } satisfies Record<Signal["kind"], { label: string; description: string; color: string }>;
 
@@ -112,17 +138,32 @@ const incidentStyles = {
   drift: {
     label: "Laser",
     description: "straight",
-    color: HAZARD_COLOR,
+    color: "#fb7185",
   },
   tracker: {
     label: "Orb",
-    description: "turns",
-    color: HAZARD_COLOR,
+    description: "tracks",
+    color: "#f43f5e",
   },
   heavy: {
     label: "Crusher",
-    description: "slow",
-    color: HAZARD_COLOR,
+    description: "lane slam",
+    color: "#ef4444",
+  },
+  waver: {
+    label: "Waver",
+    description: "wide sweep",
+    color: "#f97316",
+  },
+  splitter: {
+    label: "Splitter",
+    description: "splits wide",
+    color: "#fb923c",
+  },
+  sentinel: {
+    label: "Sentinel",
+    description: "pulse zone",
+    color: "#e11d48",
   },
 } satisfies Record<Incident["kind"], { label: string; description: string; color: string }>;
 
@@ -143,6 +184,59 @@ function quantizeTimer(value: number) {
   return value <= 0 ? 0 : Math.ceil(value / TIMER_UI_STEP) / (1 / TIMER_UI_STEP);
 }
 
+function getComboGain(multiplier: number) {
+  const heat = clamp((multiplier - BASE_COMBO_MULTIPLIER) / (MAX_COMBO_MULTIPLIER - BASE_COMBO_MULTIPLIER), 0, 1);
+  return clamp(0.24 * (1 - heat) ** 1.55 + 0.04, 0.05, 0.24);
+}
+
+function getComboColor(heat: number) {
+  const index = Math.min(COMBO_COLORS.length - 1, Math.floor(heat * COMBO_COLORS.length));
+  return COMBO_COLORS[index];
+}
+
+function getSurgePhase(elapsed: number) {
+  const cycle = Math.floor(elapsed / SURGE_CYCLE_DURATION);
+  const phaseTime = elapsed % SURGE_CYCLE_DURATION;
+  const phase = phaseTime >= RECOVERY_PHASE_START ? "recovery" : phaseTime >= SURGE_PHASE_START ? "surge" : "build";
+  return {
+    cycle,
+    phase,
+    speedMultiplier: phase === "surge" ? 1.16 : phase === "recovery" ? 0.86 : 1,
+    spawnOffset: phase === "surge" ? -0.13 : phase === "recovery" ? 0.22 : 0,
+  };
+}
+
+function getIncidentCap(elapsed: number) {
+  return Math.min(MAX_INCIDENTS, 6 + Math.floor(elapsed / 22));
+}
+
+function getIncidentSpawnDelay(elapsed: number) {
+  const surge = getSurgePhase(elapsed);
+  const cyclePressure = Math.min(0.18, surge.cycle * 0.03);
+  return clamp(0.86 - cyclePressure + surge.spawnOffset, 0.46, 1.05);
+}
+
+function getIncidentCollisionRadius(incident: Incident) {
+  if (incident.kind === "sentinel") {
+    const pulseTime = incident.age % 2.15;
+    if (pulseTime > 0.95) return incident.radius;
+    return incident.radius + (1 - (1 - pulseTime / 0.95) ** 2) * 54;
+  }
+  return incident.radius;
+}
+
+function createFloatingText(x: number, y: number, text: string, color: string, surge = false): FloatingText {
+  return {
+    x,
+    y,
+    text,
+    color,
+    surge,
+    age: 0,
+    duration: FLOATING_TEXT_DURATION,
+  };
+}
+
 function createNovaWave(origin: Vector, width: number, height: number): NovaWave {
   const maxRadius = Math.max(
     distance(origin, { x: 0, y: 0 }),
@@ -161,11 +255,7 @@ function createNovaWave(origin: Vector, width: number, height: number): NovaWave
   };
 }
 
-function createSignal(width: number, height: number): Signal {
-  const roll = Math.random();
-  const kind: Signal["kind"] =
-    roll < 0.84 ? "gain" : roll < 0.9 ? "repair" : roll < 0.95 ? "focus" : roll < 0.985 ? "clear" : "bonus";
-
+function createSignal(width: number, height: number, kind: Signal["kind"]): Signal {
   return {
     kind,
     x: 48 + Math.random() * Math.max(1, width - 96),
@@ -175,12 +265,103 @@ function createSignal(width: number, height: number): Signal {
   };
 }
 
-function createIncident(width: number, height: number, elapsed: number): Incident {
-  const side = Math.floor(Math.random() * 4);
+function createPowerupSignal(width: number, height: number): Signal {
   const roll = Math.random();
-  const kind: Incident["kind"] = roll < 0.62 ? "drift" : roll < 0.84 ? "tracker" : "heavy";
-  const baseSpeed = kind === "heavy" ? 66 : kind === "tracker" ? 96 : 132;
-  const speed = baseSpeed + Math.min(170, elapsed * 4) + Math.random() * 44;
+  const kind: Signal["kind"] = roll < 0.42 ? "repair" : roll < 0.67 ? "focus" : roll < 0.88 ? "clear" : "bonus";
+
+  return createSignal(width, height, kind);
+}
+
+function getIncidentWeights(elapsed: number): Array<[Incident["kind"], number]> {
+  if (elapsed < 20) {
+    return [["drift", 1]];
+  }
+
+  if (elapsed < 45) {
+    return [
+      ["drift", 0.76],
+      ["tracker", 0.24],
+    ];
+  }
+
+  if (elapsed < 75) {
+    return [
+      ["drift", 0.48],
+      ["tracker", 0.18],
+      ["heavy", 0.34],
+    ];
+  }
+
+  if (elapsed < 110) {
+    return [
+      ["drift", 0.28],
+      ["tracker", 0.12],
+      ["heavy", 0.28],
+      ["waver", 0.32],
+    ];
+  }
+
+  if (elapsed < 155) {
+    return [
+      ["drift", 0.14],
+      ["tracker", 0.1],
+      ["heavy", 0.28],
+      ["waver", 0.27],
+      ["splitter", 0.21],
+    ];
+  }
+
+  return [
+    ["drift", 0.07],
+    ["tracker", 0.07],
+    ["heavy", 0.29],
+    ["waver", 0.27],
+    ["splitter", 0.22],
+    ["sentinel", 0.08],
+  ];
+}
+
+function getIncidentKindLimit(kind: Incident["kind"], elapsed: number) {
+  if (kind === "sentinel") return elapsed > 130 ? 2 : 1;
+  if (kind === "tracker") return 2;
+  if (kind === "drift") return elapsed > 155 ? 2 : 5;
+  return MAX_INCIDENTS;
+}
+
+function chooseIncidentKind(elapsed: number, activeIncidents: Incident[]): Incident["kind"] {
+  const counts = activeIncidents.reduce(
+    (accumulator, incident) => {
+      accumulator[incident.kind] += 1;
+      return accumulator;
+    },
+    {
+      drift: 0,
+      tracker: 0,
+      heavy: 0,
+      waver: 0,
+      splitter: 0,
+      sentinel: 0,
+    } satisfies Record<Incident["kind"], number>,
+  );
+  const weights = getIncidentWeights(elapsed).filter(([kind]) => counts[kind] < getIncidentKindLimit(kind, elapsed));
+  const availableWeights = weights.length > 0 ? weights : getIncidentWeights(elapsed);
+  const totalWeight = availableWeights.reduce((total, [, weight]) => total + weight, 0);
+  let roll = Math.random() * totalWeight;
+
+  for (const [kind, weight] of availableWeights) {
+    roll -= weight;
+    if (roll <= 0) return kind;
+  }
+
+  return availableWeights[availableWeights.length - 1][0];
+}
+
+function createIncident(width: number, height: number, elapsed: number, activeIncidents: Incident[]): Incident {
+  const side = Math.floor(Math.random() * 4);
+  const kind = chooseIncidentKind(elapsed, activeIncidents);
+  const surge = getSurgePhase(elapsed);
+  const baseSpeed = kind === "heavy" ? 86 : kind === "sentinel" ? 56 : kind === "splitter" ? 94 : kind === "tracker" ? 68 : kind === "waver" ? 112 : 128;
+  const speed = (baseSpeed + Math.min(72, elapsed * 1.55) + Math.random() * 24) * surge.speedMultiplier;
   const angle = Math.random() * Math.PI * 2;
   const start = [
     { x: -28, y: Math.random() * height },
@@ -205,9 +386,21 @@ function createIncident(width: number, height: number, elapsed: number): Inciden
   return {
     ...start,
     kind,
-    radius: kind === "heavy" ? 22 + Math.random() * 8 : kind === "tracker" ? 13 + Math.random() * 5 : 10 + Math.random() * 9,
+    radius:
+      kind === "heavy"
+        ? 34 + Math.random() * 10
+        : kind === "sentinel"
+          ? 34 + Math.random() * 7
+          : kind === "splitter"
+            ? 23 + Math.random() * 5
+          : kind === "tracker"
+            ? 15 + Math.random() * 4
+            : kind === "waver"
+              ? 20 + Math.random() * 5
+              : 10 + Math.random() * 5,
     velocity,
-    spin: (Math.random() - 0.5) * (kind === "heavy" ? 2 : 5),
+    spin: Math.random() * Math.PI * 2,
+    age: 0,
   };
 }
 
@@ -222,8 +415,12 @@ function createGameState(width: number, height: number): GameState {
     signals: [],
     incidents: [],
     novaWave: null,
+    floatingTexts: [],
     score: 0,
-    stability: INITIAL_STABILITY,
+    combo: BASE_COMBO_MULTIPLIER,
+    comboTimer: 0,
+    lives: INITIAL_LIVES,
+    phaseTimer: 0,
     focusTimer: 0,
     purgeSlowTimer: 0,
     multiplierTimer: 0,
@@ -234,7 +431,7 @@ function createGameState(width: number, height: number): GameState {
     shakeTimer: 0,
     elapsed: 0,
     spawnTimer: 0.38,
-    signalTimer: 0.95,
+    signalTimer: 3.2,
     width,
     height,
   };
@@ -304,12 +501,44 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   ctx.restore();
 
   if (game.focusTimer > 0 || game.purgeSlowTimer > 0) {
+    const isFreeze = game.focusTimer > 0;
+    const effectColor = isFreeze ? signalStyles.focus.color : signalStyles.clear.color;
+    const freezePulse = 0.5 + Math.sin(game.elapsed * 5.5) * 0.5;
     ctx.save();
-    ctx.globalAlpha = game.focusTimer > 0 ? 0.36 : 0.24;
-    ctx.strokeStyle = game.focusTimer > 0 ? signalStyles.focus.color : signalStyles.clear.color;
+    if (isFreeze) {
+      const sweepY = (game.elapsed * 48) % 42;
+      ctx.fillStyle = effectColor;
+      ctx.globalAlpha = 0.025;
+      ctx.fillRect(0, 0, width, height);
+      ctx.globalAlpha = 0.08 + freezePulse * 0.04;
+      for (let y = -42; y < height + 42; y += 42) {
+        ctx.fillRect(0, y + sweepY, width, 1);
+      }
+    } else {
+      const novaPulse = 0.5 + Math.sin(game.elapsed * 8) * 0.5;
+      ctx.fillStyle = effectColor;
+      ctx.globalAlpha = 0.018 + novaPulse * 0.012;
+      ctx.fillRect(0, 0, width, height);
+      ctx.strokeStyle = effectColor;
+      ctx.globalAlpha = 0.08 + novaPulse * 0.05;
+      ctx.lineWidth = 1;
+      for (let index = 0; index < 6; index += 1) {
+        const angle = game.elapsed * 0.45 + index * ((Math.PI * 2) / 10);
+        const inner = 28 + novaPulse * 8;
+        const outer = 64 + novaPulse * 16;
+        ctx.beginPath();
+        ctx.moveTo(game.player.x + Math.cos(angle) * inner, game.player.y + Math.sin(angle) * inner);
+        ctx.lineTo(game.player.x + Math.cos(angle) * outer, game.player.y + Math.sin(angle) * outer);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = isFreeze ? 0.42 : 0.24;
+    ctx.strokeStyle = effectColor;
+    ctx.shadowBlur = isFreeze ? 16 + freezePulse * 10 : 0;
+    ctx.shadowColor = effectColor;
     ctx.lineWidth = 2;
     const inset = 16;
-    const length = 46;
+    const length = isFreeze ? 58 : 46;
     ctx.beginPath();
     ctx.moveTo(inset, inset + length);
     ctx.lineTo(inset, inset);
@@ -323,6 +552,30 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
     ctx.moveTo(inset + length, height - inset);
     ctx.lineTo(inset, height - inset);
     ctx.lineTo(inset, height - inset - length);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  if (game.multiplierTimer > 0) {
+    const overdrivePulse = 0.5 + Math.sin(game.elapsed * 7) * 0.5;
+    const speedOffset = (game.elapsed * 180) % 56;
+    ctx.save();
+    ctx.strokeStyle = signalStyles.bonus.color;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.06 + overdrivePulse * 0.03;
+    for (let y = -height * 0.7; y < height * 1.7; y += 86) {
+      ctx.beginPath();
+      ctx.moveTo(width + 60, y + speedOffset);
+      ctx.lineTo(-60, y + height * 0.34 + speedOffset);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 0.16 + overdrivePulse * 0.08;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(width, 0);
+    ctx.moveTo(0, height);
+    ctx.lineTo(width, height);
     ctx.stroke();
     ctx.restore();
   }
@@ -348,28 +601,90 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   }
 
   for (const incident of game.incidents) {
+    const style = incidentStyles[incident.kind];
     ctx.save();
     ctx.translate(incident.x, incident.y);
     const heading = Math.atan2(incident.velocity.y, incident.velocity.x);
     if (incident.kind === "drift") {
       ctx.rotate(heading);
     }
-    ctx.strokeStyle = HAZARD_COLOR;
-    ctx.fillStyle = "#0e1022";
+    ctx.strokeStyle = style.color;
+    ctx.fillStyle = "transparent";
     ctx.shadowBlur = 9;
     ctx.shadowColor = ctx.strokeStyle;
     if (incident.kind === "tracker") {
       ctx.lineWidth = 1.25;
       ctx.beginPath();
-      ctx.arc(0, 0, 10, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.arc(0, 0, incident.radius, 0, Math.PI * 2);
       ctx.stroke();
+    } else if (incident.kind === "sentinel") {
+      const pulseRadius = getIncidentCollisionRadius(incident);
+      const pulseTime = incident.age % 2.15;
+      const pulseProgress = pulseTime <= 0.95 ? pulseTime / 0.95 : 0;
+      ctx.lineWidth = 1.25;
+      ctx.beginPath();
+      for (let point = 0; point < 6; point += 1) {
+        const angle = Math.PI / 6 + point * (Math.PI / 3);
+        const radius = incident.radius;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        if (point === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.globalAlpha = pulseProgress > 0 ? 0.34 + pulseProgress * 0.36 : 0.16;
+      ctx.setLineDash([5, 6]);
+      ctx.lineWidth = 1.1 + pulseProgress * 1.4;
+      ctx.beginPath();
+      ctx.arc(0, 0, pulseRadius, 0, Math.PI * 2);
+      ctx.stroke();
+      if (pulseProgress > 0) {
+        ctx.globalAlpha = 0.11 + pulseProgress * 0.12;
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.arc(0, 0, pulseRadius - 4, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
     } else if (incident.kind === "heavy") {
       const size = Math.max(22, incident.radius * 0.98);
+      ctx.rotate(Math.PI / 4);
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.rect(-size / 2, -size / 2, size, size);
-      ctx.fill();
+      ctx.stroke();
+    } else if (incident.kind === "waver") {
+      ctx.rotate(incident.spin * 0.28);
+      ctx.lineWidth = 1.6;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      for (let point = 0; point <= 16; point += 1) {
+        const angle = point * (Math.PI / 8);
+        const radius = incident.radius * (point % 2 === 0 ? 0.86 : 0.58);
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        if (point === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
+      ctx.stroke();
+    } else if (incident.kind === "splitter") {
+      ctx.rotate(heading);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(incident.radius, 0);
+      ctx.lineTo(0, incident.radius * 0.72);
+      ctx.lineTo(-incident.radius, 0);
+      ctx.lineTo(0, -incident.radius * 0.72);
+      ctx.closePath();
       ctx.stroke();
     } else {
       ctx.lineCap = "round";
@@ -379,6 +694,53 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
       ctx.lineTo(incident.radius * 0.95, 0);
       ctx.stroke();
     }
+    if (game.focusTimer > 0) {
+      const freezeHalo = 0.5 + Math.sin(game.elapsed * 6 + incident.spin) * 0.5;
+      ctx.strokeStyle = signalStyles.focus.color;
+      ctx.shadowColor = signalStyles.focus.color;
+      ctx.shadowBlur = 10 + freezeHalo * 8;
+      ctx.globalAlpha = 0.22 + freezeHalo * 0.16;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.arc(0, 0, getIncidentCollisionRadius(incident) + 5 + freezeHalo * 2, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.restore();
+  }
+
+  if (game.phaseTimer > 0) {
+    const shieldPulse = 0.5 + Math.sin(game.elapsed * 7.5) * 0.5;
+    const shieldRadius = PLAYER_RADIUS + 19 + shieldPulse * 3;
+    ctx.save();
+    ctx.translate(game.player.x, game.player.y);
+    const shieldGlow = ctx.createRadialGradient(0, 0, PLAYER_RADIUS * 0.7, 0, 0, shieldRadius + 12);
+    shieldGlow.addColorStop(0, "rgba(45,212,191,0)");
+    shieldGlow.addColorStop(0.58, "rgba(45,212,191,0.06)");
+    shieldGlow.addColorStop(1, "rgba(45,212,191,0)");
+    ctx.fillStyle = shieldGlow;
+    ctx.globalAlpha = 0.95;
+    ctx.beginPath();
+    ctx.arc(0, 0, shieldRadius + 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = signalStyles.repair.color;
+    ctx.shadowColor = signalStyles.repair.color;
+    ctx.shadowBlur = 18 + shieldPulse * 16;
+    ctx.globalAlpha = 0.34 + shieldPulse * 0.18;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, shieldRadius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.globalAlpha = 0.26 + shieldPulse * 0.14;
+    ctx.lineWidth = 1.25;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(0, 0, shieldRadius - 5, game.elapsed * 1.8, game.elapsed * 1.8 + Math.PI * 0.85);
+    ctx.arc(0, 0, shieldRadius - 5, game.elapsed * 1.8 + Math.PI * 1.18, game.elapsed * 1.8 + Math.PI * 1.72);
+    ctx.stroke();
     ctx.restore();
   }
 
@@ -387,29 +749,44 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
     const fade = 1 - progress;
     ctx.save();
     ctx.translate(game.novaWave.x, game.novaWave.y);
-    ctx.globalAlpha = 0.2 + fade * 0.55;
     ctx.strokeStyle = signalStyles.clear.color;
-    ctx.shadowBlur = 24 + fade * 22;
-    ctx.shadowColor = signalStyles.clear.color;
-    ctx.lineWidth = 2 + fade * 2;
+    ctx.globalAlpha = 0.38 + fade * 0.45;
+    ctx.lineWidth = 3 + fade * 2;
     ctx.beginPath();
     ctx.arc(0, 0, game.novaWave.radius, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.globalAlpha = 0.12 * fade;
-    ctx.lineWidth = 10;
+
+    ctx.globalAlpha = 0.1 + fade * 0.16;
+    ctx.lineWidth = 8 + fade * 8;
     ctx.beginPath();
     ctx.arc(0, 0, Math.max(0, game.novaWave.radius - 8), 0, Math.PI * 2);
     ctx.stroke();
+
+    ctx.globalAlpha = 0.12 * fade;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([12, 14]);
+    ctx.beginPath();
+    ctx.arc(0, 0, Math.max(0, game.novaWave.radius * 0.72), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
     ctx.restore();
   }
 
   if (game.dashTimer > 0 || game.invulnerableTimer > 0) {
     const dashFade = clamp(game.dashTimer / DASH_DURATION, 0, 1);
+    const recoveryFade = game.dashTimer <= 0 ? clamp(game.invulnerableTimer / HIT_INVULNERABLE_DURATION, 0, 1) : 0;
     ctx.save();
     ctx.translate(game.player.x, game.player.y);
     ctx.strokeStyle = PLAYER_READY_COLOR;
     ctx.shadowBlur = 18;
     ctx.shadowColor = PLAYER_READY_COLOR;
+    if (recoveryFade > 0) {
+      ctx.globalAlpha = 0.18 + Math.sin(game.elapsed * 24) * 0.08 + recoveryFade * 0.22;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, PLAYER_RADIUS + 9 + recoveryFade * 3, 0, Math.PI * 2);
+      ctx.stroke();
+    }
     if (dashFade > 0) {
       ctx.globalAlpha = 0.45 * dashFade;
       ctx.lineWidth = 3;
@@ -422,6 +799,9 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   }
 
   const dashReadyPercent = clamp(1 - game.dashCooldown / DASH_COOLDOWN, 0, 1);
+  const dashReady = game.dashCooldown <= 0;
+  const readyPulse = dashReady ? 0.5 + Math.sin(game.elapsed * 6.2) * 0.5 : 0;
+  const overdriveActive = game.multiplierTimer > 0;
   ctx.save();
   ctx.translate(game.player.x, game.player.y);
   ctx.rotate(game.playerAngle);
@@ -431,10 +811,31 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
     { x: -PLAYER_RADIUS * 0.72, y: -PLAYER_RADIUS * 0.72 },
     { x: PLAYER_RADIUS * 1.05, y: 0 },
   ];
+  if (overdriveActive) {
+    const trailPulse = 0.5 + Math.sin(game.elapsed * 12) * 0.5;
+    ctx.strokeStyle = signalStyles.bonus.color;
+    ctx.shadowColor = signalStyles.bonus.color;
+    ctx.shadowBlur = 20 + trailPulse * 10;
+    ctx.lineCap = "round";
+    for (let index = 0; index < 3; index += 1) {
+      const length = 18 + index * 10 + trailPulse * 6;
+      const offset = index * 4;
+      ctx.globalAlpha = 0.34 - index * 0.09;
+      ctx.lineWidth = 3 - index * 0.45;
+      ctx.beginPath();
+      ctx.moveTo(-PLAYER_RADIUS * 0.72 - offset, PLAYER_RADIUS * 0.42);
+      ctx.lineTo(-PLAYER_RADIUS * 0.72 - length, PLAYER_RADIUS * 0.42);
+      ctx.moveTo(-PLAYER_RADIUS * 0.72 - offset, -PLAYER_RADIUS * 0.42);
+      ctx.lineTo(-PLAYER_RADIUS * 0.72 - length, -PLAYER_RADIUS * 0.42);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
   ctx.fillStyle = "#050816";
   ctx.strokeStyle = PLAYER_BASE_COLOR;
-  ctx.shadowBlur = 8;
-  ctx.shadowColor = PLAYER_BASE_COLOR;
+  ctx.globalAlpha = dashReady ? 1 : 0.62;
+  ctx.shadowBlur = overdriveActive ? 14 : dashReady ? 8 : 0;
+  ctx.shadowColor = overdriveActive ? signalStyles.bonus.color : PLAYER_BASE_COLOR;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(shipPoints[0].x, shipPoints[0].y);
@@ -443,28 +844,32 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
+  ctx.globalAlpha = 1;
 
   if (dashReadyPercent > 0) {
     const dashScale = 1.08;
     const dashPoints = shipPoints.map((point) => ({ x: point.x * dashScale, y: point.y * dashScale }));
     const edgeLengths = dashPoints.slice(0, -1).map((point, index) => distance(point, dashPoints[index + 1]));
     let remainingLength = edgeLengths.reduce((total, length) => total + length, 0) * dashReadyPercent;
-    ctx.fillStyle = DASH_COLOR;
-    ctx.globalAlpha = game.dashCooldown <= 0 ? 0.2 : 0.08;
-    ctx.shadowBlur = game.dashCooldown <= 0 ? 24 + Math.sin(game.elapsed * 5) * 5 : 12;
-    ctx.shadowColor = DASH_COLOR;
-    ctx.beginPath();
-    ctx.moveTo(dashPoints[0].x, dashPoints[0].y);
-    ctx.lineTo(dashPoints[1].x, dashPoints[1].y);
-    ctx.lineTo(dashPoints[2].x, dashPoints[2].y);
-    ctx.closePath();
-    ctx.fill();
+
+    if (dashReady) {
+      ctx.fillStyle = DASH_COLOR;
+      ctx.globalAlpha = 0.1 + readyPulse * 0.1;
+      ctx.shadowBlur = 20 + readyPulse * 12;
+      ctx.shadowColor = DASH_COLOR;
+      ctx.beginPath();
+      ctx.moveTo(dashPoints[0].x, dashPoints[0].y);
+      ctx.lineTo(dashPoints[1].x, dashPoints[1].y);
+      ctx.lineTo(dashPoints[2].x, dashPoints[2].y);
+      ctx.closePath();
+      ctx.fill();
+    }
 
     ctx.strokeStyle = DASH_COLOR;
-    ctx.shadowBlur = game.dashCooldown <= 0 ? 18 + Math.sin(game.elapsed * 5) * 4 : 9;
+    ctx.shadowBlur = dashReady ? 18 + readyPulse * 10 : 0;
     ctx.shadowColor = DASH_COLOR;
-    ctx.globalAlpha = game.dashCooldown <= 0 ? 1 : 0.8;
-    ctx.lineWidth = 2.5;
+    ctx.globalAlpha = dashReady ? 1 : 0.55;
+    ctx.lineWidth = dashReady ? 2.8 : 2;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.beginPath();
@@ -482,8 +887,50 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
       remainingLength -= edgeLength;
     }
     ctx.stroke();
+
+    if (dashReady) {
+      const readyScale = 1.2 + readyPulse * 0.07;
+      ctx.strokeStyle = PLAYER_READY_COLOR;
+      ctx.globalAlpha = 0.3 + readyPulse * 0.28;
+      ctx.shadowBlur = 18 + readyPulse * 16;
+      ctx.shadowColor = PLAYER_READY_COLOR;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(shipPoints[0].x * readyScale, shipPoints[0].y * readyScale);
+      ctx.lineTo(shipPoints[1].x * readyScale, shipPoints[1].y * readyScale);
+      ctx.lineTo(shipPoints[2].x * readyScale, shipPoints[2].y * readyScale);
+      ctx.closePath();
+      ctx.stroke();
+    }
   }
   ctx.restore();
+
+  for (const floatingText of game.floatingTexts) {
+    const progress = clamp(floatingText.age / floatingText.duration, 0, 1);
+    const lift = 34 * (1 - (1 - progress) * (1 - progress));
+    ctx.save();
+    ctx.translate(floatingText.x, floatingText.y - lift);
+    ctx.globalAlpha = 1 - progress;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = `${floatingText.surge ? "800" : "700"} ${floatingText.surge ? 18 : 16}px Roboto Condensed, sans-serif`;
+    if (floatingText.surge) {
+      const shimmer = (Math.sin(game.elapsed * 18 + floatingText.age * 22) + 1) / 2;
+      const surgeGradient = ctx.createLinearGradient(-24, 0, 24, 0);
+      surgeGradient.addColorStop(0, shimmer > 0.5 ? "#22d3ee" : "#c084fc");
+      surgeGradient.addColorStop(0.48, "#f8fafc");
+      surgeGradient.addColorStop(1, shimmer > 0.5 ? "#c084fc" : "#22d3ee");
+      ctx.fillStyle = surgeGradient;
+      ctx.shadowBlur = 20 + shimmer * 10;
+      ctx.shadowColor = shimmer > 0.5 ? "#22d3ee" : "#c084fc";
+    } else {
+      ctx.fillStyle = floatingText.color;
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = floatingText.color;
+    }
+    ctx.fillText(floatingText.text, 0, 0);
+    ctx.restore();
+  }
 
   if (mode === "ready" || mode === "paused" || mode === "ended") {
     ctx.save();
@@ -506,6 +953,8 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
 function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequested: boolean): GameState {
   const previousPlayerX = game.player.x;
   const previousPlayerY = game.player.y;
+  const comboExpired = game.comboTimer <= 0 && game.combo > BASE_COMBO_MULTIPLIER;
+  const decayedCombo = comboExpired ? clamp(game.combo - COMBO_DECAY_STEP, BASE_COMBO_MULTIPLIER, MAX_COMBO_MULTIPLIER) : game.combo;
   const next: GameState = {
     ...game,
     player: { ...game.player },
@@ -520,6 +969,15 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
           age: game.novaWave.age + dt,
         }
       : null,
+    floatingTexts: game.floatingTexts
+      .map((floatingText) => ({
+        ...floatingText,
+        age: floatingText.age + dt,
+      }))
+      .filter((floatingText) => floatingText.age < floatingText.duration),
+    combo: decayedCombo,
+    comboTimer: comboExpired && decayedCombo > BASE_COMBO_MULTIPLIER ? COMBO_DURATION : Math.max(0, game.comboTimer - dt),
+    phaseTimer: Math.max(0, game.phaseTimer - dt),
     focusTimer: Math.max(0, game.focusTimer - dt),
     purgeSlowTimer: Math.max(0, game.purgeSlowTimer - dt),
     multiplierTimer: Math.max(0, game.multiplierTimer - dt),
@@ -539,6 +997,7 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
   if (keys.has("ArrowRight") || keys.has("KeyD")) keyVelocityX += 1;
   if (keys.has("ArrowUp") || keys.has("KeyW")) keyVelocityY -= 1;
   if (keys.has("ArrowDown") || keys.has("KeyS")) keyVelocityY += 1;
+  const movementBoost = next.multiplierTimer > 0 ? OVERDRIVE_SPEED_MULTIPLIER : 1;
 
   if (dashRequested && next.dashCooldown <= 0) {
     let dashX = Math.cos(next.playerAngle);
@@ -566,15 +1025,15 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
 
   if (keyVelocityX || keyVelocityY) {
     const length = Math.hypot(keyVelocityX, keyVelocityY);
-    next.player.x += (keyVelocityX / length) * KEYBOARD_SPEED * dt;
-    next.player.y += (keyVelocityY / length) * KEYBOARD_SPEED * dt;
+    next.player.x += (keyVelocityX / length) * KEYBOARD_SPEED * movementBoost * dt;
+    next.player.y += (keyVelocityY / length) * KEYBOARD_SPEED * movementBoost * dt;
     next.target = next.player;
     next.pointerActive = false;
   } else if (next.pointerActive) {
     const toTargetX = next.target.x - next.player.x;
     const toTargetY = next.target.y - next.player.y;
     const targetDistance = Math.hypot(toTargetX, toTargetY);
-    const travel = Math.min(targetDistance, POINTER_SPEED * dt);
+    const travel = Math.min(targetDistance, POINTER_SPEED * movementBoost * dt);
 
     if (targetDistance > 1) {
       next.player.x += (toTargetX / targetDistance) * travel;
@@ -601,24 +1060,37 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
   }
 
   if (next.spawnTimer <= 0) {
-    next.incidents.push(createIncident(next.width, next.height, next.elapsed));
-    next.spawnTimer = Math.max(0.23, 0.84 - next.elapsed * 0.0085);
+    if (next.incidents.length < getIncidentCap(next.elapsed)) {
+      next.incidents.push(createIncident(next.width, next.height, next.elapsed, next.incidents));
+    }
+    next.spawnTimer = getIncidentSpawnDelay(next.elapsed);
   }
 
-  if (next.signalTimer <= 0 && next.signals.length < 4) {
-    next.signals.push(createSignal(next.width, next.height));
-    next.signalTimer = 1.2 + Math.random() * 1.05;
+  if (!next.signals.some((signal) => signal.kind === "gain")) {
+    next.signals.push(createSignal(next.width, next.height, "gain"));
   }
 
-  const focusScale = next.focusTimer > 0 ? 0.55 : next.purgeSlowTimer > 0 ? 0.78 : 1;
+  if (next.signalTimer <= 0) {
+    const powerupCount = next.signals.filter((signal) => signal.kind !== "gain").length;
+    if (powerupCount < 2 && Math.random() < 0.52) {
+      next.signals.push(createPowerupSignal(next.width, next.height));
+    }
+    next.signalTimer = 5.4 + Math.random() * 4.2;
+  }
+
+  const focusScale = next.focusTimer > 0 ? 0.45 : next.purgeSlowTimer > 0 ? 0.78 : 1;
   const activeIncidents: Incident[] = [];
+  const spawnedIncidents: Incident[] = [];
   for (const incident of next.incidents) {
+    incident.age += dt;
+    incident.spin += dt * (incident.kind === "sentinel" ? 2.2 : incident.kind === "splitter" ? 6.2 : incident.kind === "waver" ? 5.5 : 2.4);
+
     if (incident.kind === "tracker") {
       const desiredAngle = Math.atan2(next.player.y - incident.y, next.player.x - incident.x);
       const currentSpeed = Math.hypot(incident.velocity.x, incident.velocity.y);
       const desiredX = Math.cos(desiredAngle) * currentSpeed;
       const desiredY = Math.sin(desiredAngle) * currentSpeed;
-      const turnRate = Math.min(1, dt * 0.82);
+      const turnRate = Math.min(1, dt * 0.44);
       incident.velocity.x += (desiredX - incident.velocity.x) * turnRate;
       incident.velocity.y += (desiredY - incident.velocity.y) * turnRate;
       const steeredSpeed = Math.hypot(incident.velocity.x, incident.velocity.y) || currentSpeed;
@@ -626,14 +1098,66 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
       incident.velocity.y = (incident.velocity.y / steeredSpeed) * currentSpeed;
     }
 
-    incident.x += incident.velocity.x * dt * focusScale;
-    incident.y += incident.velocity.y * dt * focusScale;
+    const heavyChargeScale = incident.kind === "heavy" && incident.age < 0.62 ? 0 : incident.kind === "heavy" ? 1.48 : 1;
+    const sentinelPulseScale = incident.kind === "sentinel" && incident.age % 2.15 < 0.95 ? 0.25 : 1;
 
-    if (incident.x > -80 && incident.x < next.width + 80 && incident.y > -80 && incident.y < next.height + 80) {
+    incident.x += incident.velocity.x * dt * focusScale * heavyChargeScale * sentinelPulseScale;
+    incident.y += incident.velocity.y * dt * focusScale * heavyChargeScale * sentinelPulseScale;
+
+    if (incident.kind === "heavy" && incident.age >= 0.62) {
+      const speed = Math.hypot(incident.velocity.x, incident.velocity.y) || 1;
+      const crushSweep = Math.sin((incident.age - 0.62) * 7.2) * 72 * dt * focusScale;
+      incident.x += (-incident.velocity.y / speed) * crushSweep;
+      incident.y += (incident.velocity.x / speed) * crushSweep;
+    }
+
+    if (incident.kind === "waver") {
+      const speed = Math.hypot(incident.velocity.x, incident.velocity.y) || 1;
+      const wave = Math.sin(incident.spin) * 124 * dt * focusScale;
+      incident.x += (-incident.velocity.y / speed) * wave;
+      incident.y += (incident.velocity.x / speed) * wave;
+    }
+
+    if (incident.kind === "splitter") {
+      const desiredAngle = Math.atan2(next.player.y - incident.y, next.player.x - incident.x);
+      const currentSpeed = Math.hypot(incident.velocity.x, incident.velocity.y);
+      const desiredX = Math.cos(desiredAngle) * currentSpeed;
+      const desiredY = Math.sin(desiredAngle) * currentSpeed;
+      const turnRate = Math.min(1, dt * 0.22);
+      incident.velocity.x += (desiredX - incident.velocity.x) * turnRate;
+      incident.velocity.y += (desiredY - incident.velocity.y) * turnRate;
+      const steeredSpeed = Math.hypot(incident.velocity.x, incident.velocity.y) || currentSpeed;
+      incident.velocity.x = (incident.velocity.x / steeredSpeed) * currentSpeed;
+      incident.velocity.y = (incident.velocity.y / steeredSpeed) * currentSpeed;
+    }
+
+    if (incident.kind === "splitter" && incident.age > 2.8 && getIncidentCap(next.elapsed) - activeIncidents.length - spawnedIncidents.length > 1) {
+      const heading = Math.atan2(incident.velocity.y, incident.velocity.x);
+      const speed = Math.hypot(incident.velocity.x, incident.velocity.y) * 1.28;
+      for (const spread of [-0.72, 0.72]) {
+        spawnedIncidents.push({
+          x: incident.x,
+          y: incident.y,
+          kind: "waver",
+          radius: 8,
+          velocity: {
+            x: Math.cos(heading + spread) * speed,
+            y: Math.sin(heading + spread) * speed,
+          },
+          spin: Math.random() * Math.PI * 2,
+          age: 0,
+        });
+      }
+      continue;
+    }
+
+    const expired = incident.kind === "sentinel" && incident.age > 8.5;
+    if (!expired && incident.x > -80 && incident.x < next.width + 80 && incident.y > -80 && incident.y < next.height + 80) {
       activeIncidents.push(incident);
     }
   }
-  next.incidents = activeIncidents.length > MAX_INCIDENTS ? activeIncidents.slice(-MAX_INCIDENTS) : activeIncidents;
+  const incidentCap = getIncidentCap(next.elapsed);
+  next.incidents = [...activeIncidents, ...spawnedIncidents].slice(-incidentCap);
 
   if (next.novaWave) {
     const progress = clamp(next.novaWave.age / next.novaWave.duration, 0, 1);
@@ -641,16 +1165,20 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
     next.novaWave.radius = next.novaWave.maxRadius * easedProgress;
 
     let cleared = 0;
+    let clearScoreTotal = 0;
     next.incidents = next.incidents.filter((incident) => {
-      const hit = distance(incident, next.novaWave as NovaWave) <= (next.novaWave as NovaWave).radius + incident.radius;
+      const hit = distance(incident, next.novaWave as NovaWave) <= (next.novaWave as NovaWave).radius + getIncidentCollisionRadius(incident);
       if (hit) {
         cleared += 1;
+        const clearScore = Math.round(NOVA_CLEAR_SCORE[incident.kind] * next.combo * (next.multiplierTimer > 0 ? 2 : 1));
+        clearScoreTotal += clearScore;
+        next.floatingTexts.push(createFloatingText(incident.x, incident.y, `+${clearScore}`, signalStyles.clear.color, next.combo >= MAX_COMBO_MULTIPLIER));
       }
       return !hit;
     });
 
     if (cleared > 0) {
-      next.score += cleared * 35 * (next.multiplierTimer > 0 ? 2 : 1);
+      next.score += clearScoreTotal;
     }
 
     if (progress >= 1) {
@@ -661,35 +1189,53 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
   next.signals = next.signals.filter((signal) => {
     if (distance(signal, next.player) < signal.radius + PLAYER_RADIUS) {
       if (signal.kind === "gain") {
-        next.score += 100 * (next.multiplierTimer > 0 ? 2 : 1);
+        const nextCombo = clamp(next.combo + getComboGain(next.combo), BASE_COMBO_MULTIPLIER, MAX_COMBO_MULTIPLIER);
+        next.combo = nextCombo;
+        next.comboTimer = COMBO_DURATION;
+        const starScore = Math.round(100 * nextCombo * (next.multiplierTimer > 0 ? 2 : 1));
+        const comboHeat = clamp((nextCombo - BASE_COMBO_MULTIPLIER) / (MAX_COMBO_MULTIPLIER - BASE_COMBO_MULTIPLIER), 0, 1);
+        const scoreColor = nextCombo >= MAX_COMBO_MULTIPLIER ? "#f8fafc" : getComboColor(comboHeat);
+        next.score += starScore;
+        next.floatingTexts.push(createFloatingText(signal.x, signal.y, `+${starScore}`, scoreColor, nextCombo >= MAX_COMBO_MULTIPLIER));
       } else if (signal.kind === "repair") {
-        next.stability = clamp(next.stability + 30, 0, INITIAL_STABILITY);
+        if (next.combo > BASE_COMBO_MULTIPLIER) next.comboTimer = COMBO_DURATION;
+        next.phaseTimer = PHASE_DURATION;
+        next.floatingTexts.push(createFloatingText(signal.x, signal.y, "SHIELD", signalStyles.repair.color));
       } else if (signal.kind === "focus") {
-        next.score += 75 * (next.multiplierTimer > 0 ? 2 : 1);
+        if (next.combo > BASE_COMBO_MULTIPLIER) next.comboTimer = COMBO_DURATION;
         next.focusTimer = FREEZE_DURATION;
+        next.floatingTexts.push(createFloatingText(signal.x, signal.y, "FREEZE", signalStyles.focus.color));
       } else if (signal.kind === "clear") {
-        next.score += 140 * (next.multiplierTimer > 0 ? 2 : 1);
+        if (next.combo > BASE_COMBO_MULTIPLIER) next.comboTimer = COMBO_DURATION;
         next.novaWave = createNovaWave(next.player, next.width, next.height);
         next.purgeSlowTimer = NOVA_SLOW_DURATION;
+        next.floatingTexts.push(createFloatingText(signal.x, signal.y, "NOVA", signalStyles.clear.color));
       } else {
-        next.score += 175;
+        if (next.combo > BASE_COMBO_MULTIPLIER) next.comboTimer = COMBO_DURATION;
         next.multiplierTimer = OVERDRIVE_DURATION;
+        next.floatingTexts.push(createFloatingText(signal.x, signal.y, "2X", signalStyles.bonus.color));
       }
       return false;
     }
     return true;
   });
 
+  if (!next.signals.some((signal) => signal.kind === "gain")) {
+    next.signals.push(createSignal(next.width, next.height, "gain"));
+  }
+
   for (const incident of next.incidents) {
-    if (next.invulnerableTimer <= 0 && distance(incident, next.player) < incident.radius + PLAYER_RADIUS - 2) {
-      next.stability -= HAZARD_DAMAGE[incident.kind];
+    if (next.invulnerableTimer <= 0 && next.phaseTimer <= 0 && distance(incident, next.player) < getIncidentCollisionRadius(incident) + PLAYER_RADIUS - 2) {
+      next.lives = Math.max(0, next.lives - 1);
+      next.invulnerableTimer = HIT_INVULNERABLE_DURATION;
       next.shakeTimer = 0.22;
+      next.combo = BASE_COMBO_MULTIPLIER;
+      next.comboTimer = 0;
       incident.x = -999;
       next.score = Math.max(0, next.score - 70);
     }
   }
 
-  next.stability = clamp(next.stability, 0, INITIAL_STABILITY);
   return next;
 }
 
@@ -706,17 +1252,27 @@ export default function ArcadeGame() {
   const [mode, setMode] = useState<GameMode>("ready");
   const modeRef = useRef<GameMode>("ready");
   const [score, setScore] = useState(0);
-  const [stability, setStability] = useState(INITIAL_STABILITY);
+  const [combo, setCombo] = useState(BASE_COMBO_MULTIPLIER);
+  const [comboTimer, setComboTimer] = useState(0);
+  const [lives, setLives] = useState(INITIAL_LIVES);
+  const [phaseTimer, setPhaseTimer] = useState(0);
   const [focusTimer, setFocusTimer] = useState(0);
   const [novaWaveTimer, setNovaWaveTimer] = useState(0);
   const [multiplierTimer, setMultiplierTimer] = useState(0);
   const [scoreBump, setScoreBump] = useState(0);
-  const [shieldBump, setShieldBump] = useState(0);
+  const [livesBump, setLivesBump] = useState(0);
   const previousScoreRef = useRef(0);
-  const previousStabilityRef = useRef(INITIAL_STABILITY);
+  const previousComboRef = useRef(BASE_COMBO_MULTIPLIER);
+  const previousComboTimerRef = useRef(0);
+  const previousLivesRef = useRef(INITIAL_LIVES);
+  const previousPhaseTimerRef = useRef(0);
   const previousFocusTimerRef = useRef(0);
   const previousNovaWaveTimerRef = useRef(0);
   const previousMultiplierTimerRef = useRef(0);
+  const comboMultiplier = combo;
+  const isMaxCombo = comboMultiplier >= MAX_COMBO_MULTIPLIER;
+  const comboHeat = clamp((comboMultiplier - BASE_COMBO_MULTIPLIER) / (MAX_COMBO_MULTIPLIER - BASE_COMBO_MULTIPLIER), 0, 1);
+  const comboColor = getComboColor(comboHeat);
 
   const renderActiveChip = (label: string, seconds: number, maxSeconds: number, color: string) => {
     const active = seconds > 0;
@@ -793,6 +1349,11 @@ export default function ArcadeGame() {
           x: incident.x * scaleX,
           y: incident.y * scaleY,
         })),
+        floatingTexts: current.floatingTexts.map((floatingText) => ({
+          ...floatingText,
+          x: floatingText.x * scaleX,
+          y: floatingText.y * scaleY,
+        })),
         novaWave: current.novaWave
           ? createNovaWave(
               {
@@ -820,15 +1381,21 @@ export default function ArcadeGame() {
 
     gameRef.current = createGameState(canvas.clientWidth, canvas.clientHeight);
     setScore(0);
+    setCombo(BASE_COMBO_MULTIPLIER);
+    setComboTimer(0);
     previousScoreRef.current = 0;
-    previousStabilityRef.current = INITIAL_STABILITY;
+    previousComboRef.current = BASE_COMBO_MULTIPLIER;
+    previousComboTimerRef.current = 0;
+    previousLivesRef.current = INITIAL_LIVES;
+    previousPhaseTimerRef.current = 0;
     previousFocusTimerRef.current = 0;
     previousNovaWaveTimerRef.current = 0;
     previousMultiplierTimerRef.current = 0;
     dashQueuedRef.current = false;
     setScoreBump(0);
-    setShieldBump(0);
-    setStability(INITIAL_STABILITY);
+    setLivesBump(0);
+    setLives(INITIAL_LIVES);
+    setPhaseTimer(0);
     setFocusTimer(0);
     setNovaWaveTimer(0);
     setMultiplierTimer(0);
@@ -919,13 +1486,31 @@ export default function ArcadeGame() {
           setScore(nextScore);
         }
 
-        const nextStability = Math.round(next.stability);
-        if (nextStability !== previousStabilityRef.current) {
-          if (nextStability < previousStabilityRef.current) {
-            setShieldBump((value) => value + 1);
+        const nextCombo = Math.round(next.combo * 100) / 100;
+        if (nextCombo !== previousComboRef.current) {
+          previousComboRef.current = nextCombo;
+          setCombo(nextCombo);
+        }
+
+        const nextComboTimer = quantizeTimer(next.comboTimer);
+        if (nextComboTimer !== previousComboTimerRef.current) {
+          previousComboTimerRef.current = nextComboTimer;
+          setComboTimer(nextComboTimer);
+        }
+
+        const nextLives = next.lives;
+        if (nextLives !== previousLivesRef.current) {
+          if (nextLives < previousLivesRef.current) {
+            setLivesBump((value) => value + 1);
           }
-          previousStabilityRef.current = nextStability;
-          setStability(nextStability);
+          previousLivesRef.current = nextLives;
+          setLives(nextLives);
+        }
+
+        const nextPhaseTimer = quantizeTimer(next.phaseTimer);
+        if (nextPhaseTimer !== previousPhaseTimerRef.current) {
+          previousPhaseTimerRef.current = nextPhaseTimer;
+          setPhaseTimer(nextPhaseTimer);
         }
 
         const nextFocusTimer = quantizeTimer(next.focusTimer);
@@ -946,7 +1531,7 @@ export default function ArcadeGame() {
           setMultiplierTimer(nextMultiplierTimer);
         }
 
-        if (next.stability <= 0) {
+        if (next.lives <= 0) {
           setMode("ended");
         }
       } else if (game.shakeTimer > 0) {
@@ -989,17 +1574,88 @@ export default function ArcadeGame() {
     game.target = point;
   };
 
-  const stopPointerControl = () => {
+  const stopPointerControl = useCallback(() => {
     pointerStartRef.current = null;
     const game = gameRef.current;
     if (game) {
       game.pointerActive = false;
       game.target = { ...game.player };
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const stop = () => stopPointerControl();
+    const stopWhenHidden = () => {
+      if (document.hidden) stopPointerControl();
+    };
+
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
+    window.addEventListener("mouseup", stop);
+    window.addEventListener("blur", stop);
+    window.addEventListener("contextmenu", stop);
+    document.addEventListener("mouseleave", stop);
+    document.addEventListener("visibilitychange", stopWhenHidden);
+
+    return () => {
+      window.removeEventListener("pointerup", stop);
+      window.removeEventListener("pointercancel", stop);
+      window.removeEventListener("mouseup", stop);
+      window.removeEventListener("blur", stop);
+      window.removeEventListener("contextmenu", stop);
+      document.removeEventListener("mouseleave", stop);
+      document.removeEventListener("visibilitychange", stopWhenHidden);
+    };
+  }, [stopPointerControl]);
 
   const powerupEntries = Object.entries(signalStyles) as Array<[Signal["kind"], (typeof signalStyles)[Signal["kind"]]]>;
   const hazardEntries = Object.entries(incidentStyles) as Array<[Incident["kind"], (typeof incidentStyles)[Incident["kind"]]]>;
+  const renderHazardIcon = (kind: Incident["kind"], color: string, index: number) => {
+    const style = {
+      color,
+      borderColor: color,
+      backgroundColor: "transparent",
+      animationDelay: `${index * 170}ms`,
+    };
+
+    if (kind === "drift") {
+      return <span className="arcade-hazard-icon h-1 w-5 shrink-0 rounded-full border" style={style} />;
+    }
+
+    if (kind === "tracker") {
+      return <span className="arcade-hazard-icon size-5 shrink-0 rounded-full border" style={style} />;
+    }
+
+    if (kind === "heavy") {
+      return (
+        <svg className="arcade-hazard-icon-svg h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={{ color, animationDelay: `${index * 170}ms` }} aria-hidden>
+          <path d="M0-10 L10 0 L0 10 L-10 0 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        </svg>
+      );
+    }
+
+    if (kind === "waver") {
+      return (
+        <svg className="arcade-hazard-icon-svg h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={{ color, animationDelay: `${index * 170}ms` }} aria-hidden>
+          <path d="M10 0 L5.4 2.2 L7.1 7.1 L2.2 5.4 L0 10 L-2.2 5.4 L-7.1 7.1 L-5.4 2.2 L-10 0 L-5.4-2.2 L-7.1-7.1 L-2.2-5.4 L0-10 L2.2-5.4 L7.1-7.1 L5.4-2.2 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        </svg>
+      );
+    }
+
+    if (kind === "splitter") {
+      return (
+        <svg className="arcade-hazard-icon-svg h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={{ color, animationDelay: `${index * 170}ms` }} aria-hidden>
+          <path d="M10 0 L0 7.5 L-10 0 L0-7.5 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        </svg>
+      );
+    }
+
+    return (
+      <svg className="arcade-hazard-icon-svg h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={{ color, animationDelay: `${index * 170}ms` }} aria-hidden>
+        <path d="M0-10 L8.7-5 L8.7 5 L0 10 L-8.7 5 L-8.7-5 Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      </svg>
+    );
+  };
 
   return (
     <div className="flex h-full max-h-full min-h-0 flex-1 flex-col gap-4 overflow-hidden lg:flex-row">
@@ -1014,7 +1670,13 @@ export default function ArcadeGame() {
               type="button"
               aria-label={mode === "running" ? "Pause" : "Play"}
               title={mode === "running" ? "Pause" : "Play"}
-              onClick={() => setMode((current) => (current === "running" ? "paused" : "running"))}
+              onClick={() => {
+                if (mode === "ended") {
+                  restart();
+                  return;
+                }
+                setMode((current) => (current === "running" ? "paused" : "running"));
+              }}
               className="focus-accent grid size-9 place-items-center rounded-md border border-cyan-300/30 bg-cyan-300/5 text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/10"
             >
               {mode === "running" ? (
@@ -1045,6 +1707,12 @@ export default function ArcadeGame() {
             ref={canvasRef}
             className="block h-full w-full touch-none"
             onPointerDown={(event) => {
+              if (event.pointerType !== "touch" && event.button !== 0) {
+                event.preventDefault();
+                stopPointerControl();
+                return;
+              }
+
               event.currentTarget.setPointerCapture(event.pointerId);
               if (mode === "ready" || mode === "ended") restart();
               stopPointerControl();
@@ -1057,7 +1725,12 @@ export default function ArcadeGame() {
             }}
             onPointerMove={(event) => {
               const start = pointerStartRef.current;
-              if (!start || start.id !== event.pointerId || (event.pointerType !== "touch" && event.buttons === 0)) return;
+              if (!start || start.id !== event.pointerId) return;
+
+              if (event.pointerType !== "touch" && event.buttons !== 1) {
+                stopPointerControl();
+                return;
+              }
 
               const hasDragged = Math.hypot(event.clientX - start.x, event.clientY - start.y) >= POINTER_DRAG_THRESHOLD;
               if (start.dragging || hasDragged) {
@@ -1075,6 +1748,10 @@ export default function ArcadeGame() {
               stopPointerControl();
             }}
             onLostPointerCapture={stopPointerControl}
+            onContextMenu={(event) => {
+              event.preventDefault();
+              stopPointerControl();
+            }}
           />
         </div>
       </section>
@@ -1083,21 +1760,48 @@ export default function ArcadeGame() {
         <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
           <div className="type-meta text-xs text-cyan-300/80">Score</div>
           <div key={scoreBump} className="arcade-score arcade-score-bump font-display mt-1 text-4xl font-bold">{score}</div>
+          <div className={`mt-3 h-1.5 overflow-hidden rounded-full bg-white/10 ${isMaxCombo ? "arcade-combo-meter--max" : ""}`}>
+            <div
+              className={`h-full rounded-full transition-[width,background-color] duration-100 ${comboMultiplier > BASE_COMBO_MULTIPLIER ? "arcade-combo-bar--live" : ""} ${isMaxCombo ? "arcade-combo-bar--max" : ""}`}
+              style={{
+                width: `${comboMultiplier > BASE_COMBO_MULTIPLIER ? clamp((comboTimer / COMBO_DURATION) * 100, 0, 100) : 0}%`,
+                backgroundColor: comboColor,
+                backgroundImage: isMaxCombo
+                  ? "linear-gradient(90deg, #22d3ee, #f8fafc 42%, #c084fc 70%, #f8fafc)"
+                  : comboMultiplier > BASE_COMBO_MULTIPLIER
+                    ? `linear-gradient(90deg, ${comboColor}, rgba(255,255,255,0.72), ${comboColor})`
+                    : undefined,
+                boxShadow: isMaxCombo
+                  ? "0 0 18px rgb(248 250 252 / 0.95), 0 0 34px rgb(34 211 238 / 0.7), 0 0 58px rgb(192 132 252 / 0.45)"
+                  : comboMultiplier > BASE_COMBO_MULTIPLIER
+                    ? `0 0 ${10 + comboHeat * 14}px ${comboColor}`
+                    : undefined,
+                "--combo-color": comboColor,
+                "--combo-heat": comboHeat,
+              } as CSSProperties}
+            />
+          </div>
         </div>
         <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
-          <div className="type-meta text-xs text-cyan-300/80">Shield</div>
-          <div key={shieldBump} className="arcade-shield-bump mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-            <div
-              className="arcade-shield relative h-full overflow-hidden rounded-full shadow-[0_0_14px_rgba(34,197,94,0.75)] transition-[width]"
-              style={{ width: `${stability}%`, backgroundColor: signalStyles.repair.color }}
-            >
-              <span className="arcade-shield-sweep" />
-            </div>
+          <div className="type-meta text-xs text-cyan-300/80">Lives</div>
+          <div key={livesBump} className="arcade-lives-bump mt-3 flex gap-2">
+            {Array.from({ length: INITIAL_LIVES }).map((_, index) => (
+              <svg
+                key={index}
+                viewBox="0 0 24 24"
+                className={`arcade-life-icon ${index < lives ? "arcade-life-icon--on" : "arcade-life-icon--off"}`}
+                aria-label={index < lives ? "Life remaining" : "Life lost"}
+                role="img"
+              >
+                <path d="M12 3.5 21 21 12 16.5 3 21Z" />
+              </svg>
+            ))}
           </div>
         </div>
         <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
           <div className="type-meta text-xs text-cyan-300/80">Active</div>
           <div className="mt-3 flex flex-wrap gap-2">
+            {renderActiveChip("Shield", phaseTimer, PHASE_DURATION, signalStyles.repair.color)}
             {renderActiveChip("Freeze", focusTimer, FREEZE_DURATION, signalStyles.focus.color)}
             {renderActiveChip("Nova", novaWaveTimer, NOVA_WAVE_DURATION, signalStyles.clear.color)}
             {renderActiveChip("2x", multiplierTimer, OVERDRIVE_DURATION, signalStyles.bonus.color)}
@@ -1110,16 +1814,18 @@ export default function ArcadeGame() {
               <div className="type-meta text-xs text-cyan-300/60">Powerups</div>
               <div className="mt-3 space-y-3">
                 {powerupEntries.map(([kind, signal], index) => (
-                  <div key={kind} className="flex items-start gap-3">
-                    <span
-                      className="arcade-powerup-icon mt-1 size-4 shrink-0 rounded-full border shadow-[0_0_10px_currentColor]"
-                      style={{
-                        color: signal.color,
-                        borderColor: signal.color,
-                        backgroundColor: `${signal.color}22`,
-                        animationDelay: `${index * 140}ms`,
-                      }}
-                    />
+                  <div key={kind} className="flex items-center gap-2.5">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center">
+                      <span
+                        className="arcade-powerup-icon size-4 rounded-full border shadow-[0_0_10px_currentColor]"
+                        style={{
+                          color: signal.color,
+                          borderColor: signal.color,
+                          backgroundColor: `${signal.color}22`,
+                          animationDelay: `${index * 140}ms`,
+                        }}
+                      />
+                    </span>
                     <div>
                       <div className="text-sm font-semibold text-zinc-100">{signal.label}</div>
                       <div className="type-meta text-[0.68rem] text-cyan-300/60">{signal.description}</div>
@@ -1130,22 +1836,14 @@ export default function ArcadeGame() {
             </div>
             <div>
               <div className="type-meta text-xs text-cyan-300/60">Hazards</div>
-              <div className="mt-3 space-y-3">
+              <div className="mt-3 space-y-2.5">
                 {hazardEntries.map(([kind, incident], index) => (
-                  <div key={kind} className="flex items-start gap-3">
-                    <span className="flex h-6 w-5 shrink-0 items-center justify-center">
-                      <span
-                        className={`arcade-hazard-icon shrink-0 border ${kind === "tracker" ? "size-5 rounded-full" : kind === "heavy" ? "size-6 rounded-sm" : "h-1 w-5 rounded-full"}`}
-                        style={{
-                          color: incident.color,
-                          borderColor: incident.color,
-                          backgroundColor: `${incident.color}12`,
-                          animationDelay: `${index * 170}ms`,
-                        }}
-                      />
+                  <div key={kind} className="flex items-center gap-2.5">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center">
+                      {renderHazardIcon(kind, incident.color, index)}
                     </span>
                     <div>
-                      <div className="text-sm font-semibold text-zinc-100">{incident.label}</div>
+                      <div className="text-[0.82rem] font-semibold leading-tight text-zinc-100">{incident.label}</div>
                       <div className="type-meta text-[0.68rem] text-cyan-300/60">{incident.description}</div>
                     </div>
                   </div>
