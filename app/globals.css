@@ -72,14 +72,21 @@ body[data-route^="/arcade"] {
 
 @keyframes arcade-powerup-pulse {
   0%, 100% {
-    opacity: 0.82;
+    opacity: 0.84;
     transform: scale(1);
-    box-shadow: 0 0 8px currentColor;
   }
   50% {
     opacity: 1;
-    transform: scale(1.08);
-    box-shadow: 0 0 13px currentColor, 0 0 20px currentColor;
+    transform: scale(1.045);
+  }
+}
+
+@keyframes arcade-powerup-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 8px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor);
   }
 }
 
@@ -342,6 +349,11 @@ body[data-route^="/arcade"] {
 .arcade-powerup-icon {
   transform-origin: center;
   animation: arcade-powerup-pulse 5.2s ease-in-out infinite;
+  filter: none;
+}
+
+.arcade-powerup-glow {
+  animation: arcade-powerup-glow 5.2s ease-in-out infinite;
 }
 
 .arcade-hazard-icon {

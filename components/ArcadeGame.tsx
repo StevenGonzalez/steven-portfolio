@@ -78,6 +78,8 @@ const DASH_INVULNERABLE_DURATION = 0.22;
 const HIT_INVULNERABLE_DURATION = 1.8;
 const INITIAL_LIVES = 3;
 const MAX_INCIDENTS = 14;
+const SENTINEL_PULL_RADIUS_PADDING = 150;
+const SENTINEL_PULL_SPEED = 230;
 const SURGE_CYCLE_DURATION = 34;
 const SURGE_PHASE_START = 18;
 const RECOVERY_PHASE_START = 26;
@@ -260,7 +262,7 @@ function createSignal(width: number, height: number, kind: Signal["kind"]): Sign
     kind,
     x: 48 + Math.random() * Math.max(1, width - 96),
     y: 48 + Math.random() * Math.max(1, height - 96),
-    radius: 9 + Math.random() * 4,
+    radius: kind === "gain" ? 12 + Math.random() * 3 : 14 + Math.random() * 4,
     pulse: Math.random() * Math.PI * 2,
   };
 }
@@ -437,6 +439,73 @@ function createGameState(width: number, height: number): GameState {
   };
 }
 
+function drawSignalIcon(ctx: CanvasRenderingContext2D, kind: Signal["kind"], radius: number) {
+  if (kind === "gain") {
+    ctx.beginPath();
+    for (let point = 0; point < 10; point += 1) {
+      const angle = -Math.PI / 2 + point * (Math.PI / 5);
+      const pointRadius = point % 2 === 0 ? radius : radius * 0.42;
+      const x = Math.cos(angle) * pointRadius;
+      const y = Math.sin(angle) * pointRadius;
+      if (point === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+    return;
+  }
+
+  if (kind === "repair") {
+    ctx.beginPath();
+    ctx.moveTo(0, -radius);
+    ctx.quadraticCurveTo(radius * 0.78, -radius * 0.78, radius * 0.72, -radius * 0.04);
+    ctx.quadraticCurveTo(radius * 0.62, radius * 0.58, 0, radius);
+    ctx.quadraticCurveTo(-radius * 0.62, radius * 0.58, -radius * 0.72, -radius * 0.04);
+    ctx.quadraticCurveTo(-radius * 0.78, -radius * 0.78, 0, -radius);
+    ctx.stroke();
+    return;
+  }
+
+  if (kind === "focus") {
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    for (let spoke = 0; spoke < 3; spoke += 1) {
+      const angle = spoke * (Math.PI / 3);
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      ctx.moveTo(-x, -y);
+      ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    return;
+  }
+
+  if (kind === "bonus") {
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    ctx.moveTo(-radius * 0.65, -radius * 0.72);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(-radius * 0.65, radius * 0.72);
+    ctx.moveTo(radius * 0.06, -radius * 0.72);
+    ctx.lineTo(radius * 0.72, 0);
+    ctx.lineTo(radius * 0.06, radius * 0.72);
+    ctx.stroke();
+    return;
+  }
+
+  ctx.beginPath();
+  ctx.arc(0, 0, radius * 0.66, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  for (let ray = 0; ray < 4; ray += 1) {
+    const angle = ray * (Math.PI / 2) + Math.PI / 4;
+    ctx.moveTo(Math.cos(angle) * radius * 0.92, Math.sin(angle) * radius * 0.92);
+    ctx.lineTo(Math.cos(angle) * radius * 1.18, Math.sin(angle) * radius * 1.18);
+  }
+  ctx.stroke();
+}
+
 function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode) {
   const { width, height } = game;
   ctx.clearRect(0, 0, width, height);
@@ -583,20 +652,19 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
   for (const signal of game.signals) {
     const glowPulse = 0.5 + Math.sin(game.elapsed * 5 + signal.pulse) * 0.5;
     const style = signalStyles[signal.kind];
+    const iconRadius = signal.kind === "gain" ? 11 : 12.5;
     ctx.save();
     ctx.translate(signal.x, signal.y);
-    ctx.shadowBlur = 8 + glowPulse * 8;
+    ctx.shadowBlur = 8 + glowPulse * 7;
     ctx.shadowColor = style.color;
     ctx.globalAlpha = 0.95;
-    ctx.fillStyle = "#0e1022";
-    ctx.beginPath();
-    ctx.arc(0, 0, 8, 0, Math.PI * 2);
-    ctx.fill();
     ctx.strokeStyle = style.color;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(0, 0, 8, 0, Math.PI * 2);
-    ctx.stroke();
+    ctx.lineWidth = 1.4;
+    ctx.globalAlpha = 0.24 + glowPulse * 0.1;
+    drawSignalIcon(ctx, signal.kind, iconRadius + 3.5);
+    ctx.globalAlpha = 0.95;
+    ctx.lineWidth = 1.8;
+    drawSignalIcon(ctx, signal.kind, iconRadius);
     ctx.restore();
   }
 
@@ -1104,6 +1172,23 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
     incident.x += incident.velocity.x * dt * focusScale * heavyChargeScale * sentinelPulseScale;
     incident.y += incident.velocity.y * dt * focusScale * heavyChargeScale * sentinelPulseScale;
 
+    if (incident.kind === "sentinel") {
+      const pulseTime = incident.age % 2.15;
+      if (pulseTime < 0.95) {
+        const pullRadius = getIncidentCollisionRadius(incident) + SENTINEL_PULL_RADIUS_PADDING;
+        const toSentinelX = incident.x - next.player.x;
+        const toSentinelY = incident.y - next.player.y;
+        const pullDistance = Math.hypot(toSentinelX, toSentinelY);
+        if (pullDistance > 1 && pullDistance < pullRadius) {
+          const pulseStrength = 1 - (1 - pulseTime / 0.95) ** 2;
+          const distanceStrength = 1 - pullDistance / pullRadius;
+          const pull = SENTINEL_PULL_SPEED * pulseStrength * distanceStrength * dt;
+          next.player.x += (toSentinelX / pullDistance) * pull;
+          next.player.y += (toSentinelY / pullDistance) * pull;
+        }
+      }
+    }
+
     if (incident.kind === "heavy" && incident.age >= 0.62) {
       const speed = Math.hypot(incident.velocity.x, incident.velocity.y) || 1;
       const crushSweep = Math.sin((incident.age - 0.62) * 7.2) * 72 * dt * focusScale;
@@ -1131,10 +1216,10 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
       incident.velocity.y = (incident.velocity.y / steeredSpeed) * currentSpeed;
     }
 
-    if (incident.kind === "splitter" && incident.age > 2.8 && getIncidentCap(next.elapsed) - activeIncidents.length - spawnedIncidents.length > 1) {
+    if (incident.kind === "splitter" && incident.age > 2.8 && getIncidentCap(next.elapsed) - activeIncidents.length - spawnedIncidents.length > 3) {
       const heading = Math.atan2(incident.velocity.y, incident.velocity.x);
       const speed = Math.hypot(incident.velocity.x, incident.velocity.y) * 1.28;
-      for (const spread of [-0.72, 0.72]) {
+      for (const spread of [-Math.PI / 2, 0, Math.PI / 2, Math.PI]) {
         spawnedIncidents.push({
           x: incident.x,
           y: incident.y,
@@ -1158,6 +1243,8 @@ function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequeste
   }
   const incidentCap = getIncidentCap(next.elapsed);
   next.incidents = [...activeIncidents, ...spawnedIncidents].slice(-incidentCap);
+  next.player.x = clamp(next.player.x, PLAYER_RADIUS + 4, next.width - PLAYER_RADIUS - 4);
+  next.player.y = clamp(next.player.y, PLAYER_RADIUS + 4, next.height - PLAYER_RADIUS - 4);
 
   if (next.novaWave) {
     const progress = clamp(next.novaWave.age / next.novaWave.duration, 0, 1);
@@ -1610,6 +1697,59 @@ export default function ArcadeGame() {
 
   const powerupEntries = Object.entries(signalStyles) as Array<[Signal["kind"], (typeof signalStyles)[Signal["kind"]]]>;
   const hazardEntries = Object.entries(incidentStyles) as Array<[Incident["kind"], (typeof incidentStyles)[Incident["kind"]]]>;
+  const renderPowerupIcon = (kind: Signal["kind"], color: string, index: number) => {
+    const style = { color, animationDelay: `${index * 140}ms` };
+
+    if (kind === "gain") {
+      const starPath = "M0-10 L2.4-3.3 L9.5-3.1 L3.8 1.2 L5.9 8.4 L0 4.2 L-5.9 8.4 L-3.8 1.2 L-9.5-3.1 L-2.4-3.3 Z";
+      return (
+        <svg className="arcade-powerup-icon h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={style} aria-hidden>
+          <path className="arcade-powerup-glow" d={starPath} fill="none" stroke="currentColor" strokeWidth="6.2" strokeLinejoin="round" opacity="0.34" />
+          <path d={starPath} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        </svg>
+      );
+    }
+
+    if (kind === "repair") {
+      const shieldPath = "M0-10 C7-8 8-5.5 7 0 C6 5.5 2.8 8.2 0 10 C-2.8 8.2-6 5.5-7 0 C-8-5.5-7-8 0-10 Z";
+      return (
+        <svg className="arcade-powerup-icon h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={style} aria-hidden>
+          <path className="arcade-powerup-glow" d={shieldPath} fill="none" stroke="currentColor" strokeWidth="6.2" strokeLinejoin="round" opacity="0.34" />
+          <path d={shieldPath} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        </svg>
+      );
+    }
+
+    if (kind === "focus") {
+      const freezePath = "M-9 0 H9 M-4.5-7.8 L4.5 7.8 M4.5-7.8 L-4.5 7.8";
+      return (
+        <svg className="arcade-powerup-icon h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={style} aria-hidden>
+          <path className="arcade-powerup-glow" d={freezePath} fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" opacity="0.34" />
+          <path d={freezePath} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      );
+    }
+
+    if (kind === "bonus") {
+      const overdrivePath = "M-7-8 L0 0 L-7 8 M1-8 L8 0 L1 8";
+      return (
+        <svg className="arcade-powerup-icon h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={style} aria-hidden>
+          <path className="arcade-powerup-glow" d={overdrivePath} fill="none" stroke="currentColor" strokeWidth="6.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.34" />
+          <path d={overdrivePath} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    }
+
+    const novaRayPath = "M7.5-7.5 L9.8-9.8 M7.5 7.5 L9.8 9.8 M-7.5 7.5 L-9.8 9.8 M-7.5-7.5 L-9.8-9.8";
+    return (
+      <svg className="arcade-powerup-icon h-6 w-6 shrink-0 overflow-visible" viewBox="-12 -12 24 24" style={style} aria-hidden>
+        <circle className="arcade-powerup-glow" cx="0" cy="0" r="6.5" fill="none" stroke="currentColor" strokeWidth="6" opacity="0.34" />
+        <path className="arcade-powerup-glow" d={novaRayPath} fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" opacity="0.34" />
+        <circle cx="0" cy="0" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <path d={novaRayPath} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  };
   const renderHazardIcon = (kind: Incident["kind"], color: string, index: number) => {
     const style = {
       color,
@@ -1816,15 +1956,7 @@ export default function ArcadeGame() {
                 {powerupEntries.map(([kind, signal], index) => (
                   <div key={kind} className="flex items-center gap-2.5">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center">
-                      <span
-                        className="arcade-powerup-icon size-4 rounded-full border shadow-[0_0_10px_currentColor]"
-                        style={{
-                          color: signal.color,
-                          borderColor: signal.color,
-                          backgroundColor: `${signal.color}22`,
-                          animationDelay: `${index * 140}ms`,
-                        }}
-                      />
+                      {renderPowerupIcon(kind, signal.color, index)}
                     </span>
                     <div>
                       <div className="text-sm font-semibold text-zinc-100">{signal.label}</div>
