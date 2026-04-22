@@ -42,6 +42,10 @@ type GameState = {
   focusTimer: number;
   purgeSlowTimer: number;
   multiplierTimer: number;
+  dashCooldown: number;
+  dashTimer: number;
+  invulnerableTimer: number;
+  dashVector: Vector;
   shakeTimer: number;
   elapsed: number;
   spawnTimer: number;
@@ -53,6 +57,11 @@ type GameState = {
 const PLAYER_RADIUS = 14;
 const KEYBOARD_SPEED = 260;
 const POINTER_SPEED = 220;
+const POINTER_DRAG_THRESHOLD = 8;
+const DASH_SPEED = 780;
+const DASH_DURATION = 0.16;
+const DASH_COOLDOWN = 1.35;
+const DASH_INVULNERABLE_DURATION = 0.22;
 const INITIAL_STABILITY = 100;
 const MAX_INCIDENTS = 15;
 const HAZARD_COLOR = "#f43f5e";
@@ -67,6 +76,9 @@ const HAZARD_DAMAGE: Record<Incident["kind"], number> = {
 };
 
 const TIMER_UI_STEP = 0.1;
+const DASH_COLOR = "#22d3ee";
+const PLAYER_BASE_COLOR = "#2f7f8e";
+const PLAYER_READY_COLOR = "#67e8f9";
 
 const signalStyles = {
   gain: {
@@ -215,6 +227,10 @@ function createGameState(width: number, height: number): GameState {
     focusTimer: 0,
     purgeSlowTimer: 0,
     multiplierTimer: 0,
+    dashCooldown: 0,
+    dashTimer: 0,
+    invulnerableTimer: 0,
+    dashVector: { x: Math.cos(-Math.PI / 2), y: Math.sin(-Math.PI / 2) },
     shakeTimer: 0,
     elapsed: 0,
     spawnTimer: 0.38,
@@ -387,21 +403,86 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
     ctx.restore();
   }
 
+  if (game.dashTimer > 0 || game.invulnerableTimer > 0) {
+    const dashFade = clamp(game.dashTimer / DASH_DURATION, 0, 1);
+    ctx.save();
+    ctx.translate(game.player.x, game.player.y);
+    ctx.strokeStyle = PLAYER_READY_COLOR;
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = PLAYER_READY_COLOR;
+    if (dashFade > 0) {
+      ctx.globalAlpha = 0.45 * dashFade;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-game.dashVector.x * 9, -game.dashVector.y * 9);
+      ctx.lineTo(-game.dashVector.x * 34, -game.dashVector.y * 34);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  const dashReadyPercent = clamp(1 - game.dashCooldown / DASH_COOLDOWN, 0, 1);
   ctx.save();
   ctx.translate(game.player.x, game.player.y);
   ctx.rotate(game.playerAngle);
+  const shipPoints = [
+    { x: PLAYER_RADIUS * 1.05, y: 0 },
+    { x: -PLAYER_RADIUS * 0.72, y: PLAYER_RADIUS * 0.72 },
+    { x: -PLAYER_RADIUS * 0.72, y: -PLAYER_RADIUS * 0.72 },
+    { x: PLAYER_RADIUS * 1.05, y: 0 },
+  ];
   ctx.fillStyle = "#050816";
-  ctx.strokeStyle = "#67e8f9";
-  ctx.shadowBlur = 16;
-  ctx.shadowColor = "#67e8f9";
+  ctx.strokeStyle = PLAYER_BASE_COLOR;
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = PLAYER_BASE_COLOR;
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(PLAYER_RADIUS * 1.05, 0);
-  ctx.lineTo(-PLAYER_RADIUS * 0.72, PLAYER_RADIUS * 0.72);
-  ctx.lineTo(-PLAYER_RADIUS * 0.72, -PLAYER_RADIUS * 0.72);
+  ctx.moveTo(shipPoints[0].x, shipPoints[0].y);
+  ctx.lineTo(shipPoints[1].x, shipPoints[1].y);
+  ctx.lineTo(shipPoints[2].x, shipPoints[2].y);
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
+
+  if (dashReadyPercent > 0) {
+    const dashScale = 1.08;
+    const dashPoints = shipPoints.map((point) => ({ x: point.x * dashScale, y: point.y * dashScale }));
+    const edgeLengths = dashPoints.slice(0, -1).map((point, index) => distance(point, dashPoints[index + 1]));
+    let remainingLength = edgeLengths.reduce((total, length) => total + length, 0) * dashReadyPercent;
+    ctx.fillStyle = DASH_COLOR;
+    ctx.globalAlpha = game.dashCooldown <= 0 ? 0.2 : 0.08;
+    ctx.shadowBlur = game.dashCooldown <= 0 ? 24 + Math.sin(game.elapsed * 5) * 5 : 12;
+    ctx.shadowColor = DASH_COLOR;
+    ctx.beginPath();
+    ctx.moveTo(dashPoints[0].x, dashPoints[0].y);
+    ctx.lineTo(dashPoints[1].x, dashPoints[1].y);
+    ctx.lineTo(dashPoints[2].x, dashPoints[2].y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = DASH_COLOR;
+    ctx.shadowBlur = game.dashCooldown <= 0 ? 18 + Math.sin(game.elapsed * 5) * 4 : 9;
+    ctx.shadowColor = DASH_COLOR;
+    ctx.globalAlpha = game.dashCooldown <= 0 ? 1 : 0.8;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    ctx.moveTo(dashPoints[0].x, dashPoints[0].y);
+    for (let index = 0; index < edgeLengths.length && remainingLength > 0; index += 1) {
+      const from = dashPoints[index];
+      const to = dashPoints[index + 1];
+      const edgeLength = edgeLengths[index];
+      if (remainingLength >= edgeLength) {
+        ctx.lineTo(to.x, to.y);
+      } else {
+        const amount = remainingLength / edgeLength;
+        ctx.lineTo(from.x + (to.x - from.x) * amount, from.y + (to.y - from.y) * amount);
+      }
+      remainingLength -= edgeLength;
+    }
+    ctx.stroke();
+  }
   ctx.restore();
 
   if (mode === "ready" || mode === "paused" || mode === "ended") {
@@ -415,23 +496,24 @@ function drawGame(ctx: CanvasRenderingContext2D, game: GameState, mode: GameMode
     ctx.fillText(mode === "ended" ? "Game Over" : mode === "paused" ? "Paused" : "Star Surge", width / 2, height / 2 - 16);
     ctx.font = "400 13px Roboto Mono, monospace";
     ctx.fillStyle = "#a1a1aa";
-    ctx.fillText("Move with WASD, arrows, or drag", width / 2, height / 2 + 20);
+    ctx.fillText("Move with WASD, arrows, or drag. Shift dashes.", width / 2, height / 2 + 20);
     ctx.restore();
   }
 
   ctx.restore();
 }
 
-function updateGame(game: GameState, dt: number, keys: Set<string>): GameState {
-  const previousPlayer = { ...game.player };
+function updateGame(game: GameState, dt: number, keys: Set<string>, dashRequested: boolean): GameState {
+  const previousPlayerX = game.player.x;
+  const previousPlayerY = game.player.y;
   const next: GameState = {
     ...game,
     player: { ...game.player },
     target: { ...game.target },
     pointerActive: game.pointerActive,
     playerAngle: game.playerAngle,
-    signals: game.signals.map((signal) => ({ ...signal })),
-    incidents: game.incidents.map((incident) => ({ ...incident, velocity: { ...incident.velocity } })),
+    signals: game.signals,
+    incidents: game.incidents,
     novaWave: game.novaWave
       ? {
           ...game.novaWave,
@@ -441,50 +523,81 @@ function updateGame(game: GameState, dt: number, keys: Set<string>): GameState {
     focusTimer: Math.max(0, game.focusTimer - dt),
     purgeSlowTimer: Math.max(0, game.purgeSlowTimer - dt),
     multiplierTimer: Math.max(0, game.multiplierTimer - dt),
+    dashCooldown: Math.max(0, game.dashCooldown - dt),
+    dashTimer: Math.max(0, game.dashTimer - dt),
+    invulnerableTimer: Math.max(0, game.invulnerableTimer - dt),
+    dashVector: game.dashVector,
     shakeTimer: Math.max(0, game.shakeTimer - dt),
     elapsed: game.elapsed + dt,
     spawnTimer: game.spawnTimer - dt,
     signalTimer: game.signalTimer - dt,
   };
 
-  const keyVelocity = { x: 0, y: 0 };
-  if (keys.has("ArrowLeft") || keys.has("KeyA")) keyVelocity.x -= 1;
-  if (keys.has("ArrowRight") || keys.has("KeyD")) keyVelocity.x += 1;
-  if (keys.has("ArrowUp") || keys.has("KeyW")) keyVelocity.y -= 1;
-  if (keys.has("ArrowDown") || keys.has("KeyS")) keyVelocity.y += 1;
+  let keyVelocityX = 0;
+  let keyVelocityY = 0;
+  if (keys.has("ArrowLeft") || keys.has("KeyA")) keyVelocityX -= 1;
+  if (keys.has("ArrowRight") || keys.has("KeyD")) keyVelocityX += 1;
+  if (keys.has("ArrowUp") || keys.has("KeyW")) keyVelocityY -= 1;
+  if (keys.has("ArrowDown") || keys.has("KeyS")) keyVelocityY += 1;
 
-  if (keyVelocity.x || keyVelocity.y) {
-    const length = Math.hypot(keyVelocity.x, keyVelocity.y);
-    next.player.x += (keyVelocity.x / length) * KEYBOARD_SPEED * dt;
-    next.player.y += (keyVelocity.y / length) * KEYBOARD_SPEED * dt;
+  if (dashRequested && next.dashCooldown <= 0) {
+    let dashX = Math.cos(next.playerAngle);
+    let dashY = Math.sin(next.playerAngle);
+
+    if (keyVelocityX || keyVelocityY) {
+      const length = Math.hypot(keyVelocityX, keyVelocityY);
+      dashX = keyVelocityX / length;
+      dashY = keyVelocityY / length;
+    } else if (next.pointerActive) {
+      const toTargetX = next.target.x - next.player.x;
+      const toTargetY = next.target.y - next.player.y;
+      const targetDistance = Math.hypot(toTargetX, toTargetY);
+      if (targetDistance > 1) {
+        dashX = toTargetX / targetDistance;
+        dashY = toTargetY / targetDistance;
+      }
+    }
+
+    next.dashVector = { x: dashX, y: dashY };
+    next.dashTimer = DASH_DURATION;
+    next.dashCooldown = DASH_COOLDOWN;
+    next.invulnerableTimer = DASH_INVULNERABLE_DURATION;
+  }
+
+  if (keyVelocityX || keyVelocityY) {
+    const length = Math.hypot(keyVelocityX, keyVelocityY);
+    next.player.x += (keyVelocityX / length) * KEYBOARD_SPEED * dt;
+    next.player.y += (keyVelocityY / length) * KEYBOARD_SPEED * dt;
     next.target = next.player;
     next.pointerActive = false;
   } else if (next.pointerActive) {
-    const toTarget = {
-      x: next.target.x - next.player.x,
-      y: next.target.y - next.player.y,
-    };
-    const targetDistance = Math.hypot(toTarget.x, toTarget.y);
+    const toTargetX = next.target.x - next.player.x;
+    const toTargetY = next.target.y - next.player.y;
+    const targetDistance = Math.hypot(toTargetX, toTargetY);
     const travel = Math.min(targetDistance, POINTER_SPEED * dt);
 
     if (targetDistance > 1) {
-      next.player.x += (toTarget.x / targetDistance) * travel;
-      next.player.y += (toTarget.y / targetDistance) * travel;
+      next.player.x += (toTargetX / targetDistance) * travel;
+      next.player.y += (toTargetY / targetDistance) * travel;
     }
   } else {
     next.player.x += (next.target.x - next.player.x) * Math.min(1, dt * 7);
     next.player.y += (next.target.y - next.player.y) * Math.min(1, dt * 7);
   }
 
+  if (next.dashTimer > 0) {
+    const dashEase = 0.7 + (next.dashTimer / DASH_DURATION) * 0.3;
+    next.player.x += next.dashVector.x * DASH_SPEED * dashEase * dt;
+    next.player.y += next.dashVector.y * DASH_SPEED * dashEase * dt;
+  }
+
   next.player.x = clamp(next.player.x, PLAYER_RADIUS + 4, next.width - PLAYER_RADIUS - 4);
   next.player.y = clamp(next.player.y, PLAYER_RADIUS + 4, next.height - PLAYER_RADIUS - 4);
 
-  const movement = {
-    x: next.player.x - previousPlayer.x,
-    y: next.player.y - previousPlayer.y,
-  };
-  if (Math.hypot(movement.x, movement.y) > 0.1) {
-    next.playerAngle = lerpAngle(next.playerAngle, Math.atan2(movement.y, movement.x), Math.min(1, dt * 14));
+  const movementX = next.player.x - previousPlayerX;
+  const movementY = next.player.y - previousPlayerY;
+  if (Math.hypot(movementX, movementY) > 0.1) {
+    next.playerAngle = lerpAngle(next.playerAngle, Math.atan2(movementY, movementX), Math.min(1, dt * 14));
   }
 
   if (next.spawnTimer <= 0) {
@@ -497,34 +610,30 @@ function updateGame(game: GameState, dt: number, keys: Set<string>): GameState {
     next.signalTimer = 1.2 + Math.random() * 1.05;
   }
 
-  next.incidents = next.incidents
-    .map((incident) => {
-      const focusScale = next.focusTimer > 0 ? 0.55 : next.purgeSlowTimer > 0 ? 0.78 : 1;
-      const updated = { ...incident, velocity: { ...incident.velocity } };
+  const focusScale = next.focusTimer > 0 ? 0.55 : next.purgeSlowTimer > 0 ? 0.78 : 1;
+  const activeIncidents: Incident[] = [];
+  for (const incident of next.incidents) {
+    if (incident.kind === "tracker") {
+      const desiredAngle = Math.atan2(next.player.y - incident.y, next.player.x - incident.x);
+      const currentSpeed = Math.hypot(incident.velocity.x, incident.velocity.y);
+      const desiredX = Math.cos(desiredAngle) * currentSpeed;
+      const desiredY = Math.sin(desiredAngle) * currentSpeed;
+      const turnRate = Math.min(1, dt * 0.82);
+      incident.velocity.x += (desiredX - incident.velocity.x) * turnRate;
+      incident.velocity.y += (desiredY - incident.velocity.y) * turnRate;
+      const steeredSpeed = Math.hypot(incident.velocity.x, incident.velocity.y) || currentSpeed;
+      incident.velocity.x = (incident.velocity.x / steeredSpeed) * currentSpeed;
+      incident.velocity.y = (incident.velocity.y / steeredSpeed) * currentSpeed;
+    }
 
-      if (updated.kind === "tracker") {
-        const desiredAngle = Math.atan2(next.player.y - updated.y, next.player.x - updated.x);
-        const currentSpeed = Math.hypot(updated.velocity.x, updated.velocity.y);
-        const desired = {
-          x: Math.cos(desiredAngle) * currentSpeed,
-          y: Math.sin(desiredAngle) * currentSpeed,
-        };
-        const turnRate = Math.min(1, dt * 0.82);
-        updated.velocity.x += (desired.x - updated.velocity.x) * turnRate;
-        updated.velocity.y += (desired.y - updated.velocity.y) * turnRate;
-        const steeredSpeed = Math.hypot(updated.velocity.x, updated.velocity.y) || currentSpeed;
-        updated.velocity.x = (updated.velocity.x / steeredSpeed) * currentSpeed;
-        updated.velocity.y = (updated.velocity.y / steeredSpeed) * currentSpeed;
-      }
+    incident.x += incident.velocity.x * dt * focusScale;
+    incident.y += incident.velocity.y * dt * focusScale;
 
-      return {
-        ...updated,
-        x: updated.x + updated.velocity.x * dt * focusScale,
-        y: updated.y + updated.velocity.y * dt * focusScale,
-      };
-    })
-    .filter((incident) => incident.x > -80 && incident.x < next.width + 80 && incident.y > -80 && incident.y < next.height + 80)
-    .slice(-MAX_INCIDENTS);
+    if (incident.x > -80 && incident.x < next.width + 80 && incident.y > -80 && incident.y < next.height + 80) {
+      activeIncidents.push(incident);
+    }
+  }
+  next.incidents = activeIncidents.length > MAX_INCIDENTS ? activeIncidents.slice(-MAX_INCIDENTS) : activeIncidents;
 
   if (next.novaWave) {
     const progress = clamp(next.novaWave.age / next.novaWave.duration, 0, 1);
@@ -572,7 +681,7 @@ function updateGame(game: GameState, dt: number, keys: Set<string>): GameState {
   });
 
   for (const incident of next.incidents) {
-    if (distance(incident, next.player) < incident.radius + PLAYER_RADIUS - 2) {
+    if (next.invulnerableTimer <= 0 && distance(incident, next.player) < incident.radius + PLAYER_RADIUS - 2) {
       next.stability -= HAZARD_DAMAGE[incident.kind];
       next.shakeTimer = 0.22;
       incident.x = -999;
@@ -590,9 +699,12 @@ export default function ArcadeGame() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<GameState | null>(null);
   const keysRef = useRef(new Set<string>());
+  const dashQueuedRef = useRef(false);
+  const pointerStartRef = useRef<{ id: number; x: number; y: number; dragging: boolean } | null>(null);
   const animationRef = useRef<number | null>(null);
   const lastFrameRef = useRef<number | null>(null);
   const [mode, setMode] = useState<GameMode>("ready");
+  const modeRef = useRef<GameMode>("ready");
   const [score, setScore] = useState(0);
   const [stability, setStability] = useState(INITIAL_STABILITY);
   const [focusTimer, setFocusTimer] = useState(0);
@@ -713,14 +825,20 @@ export default function ArcadeGame() {
     previousFocusTimerRef.current = 0;
     previousNovaWaveTimerRef.current = 0;
     previousMultiplierTimerRef.current = 0;
+    dashQueuedRef.current = false;
     setScoreBump(0);
     setShieldBump(0);
     setStability(INITIAL_STABILITY);
     setFocusTimer(0);
     setNovaWaveTimer(0);
     setMultiplierTimer(0);
+    modeRef.current = "running";
     setMode("running");
   }, []);
+
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
 
   useEffect(() => {
     sizeCanvas();
@@ -745,12 +863,15 @@ export default function ArcadeGame() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(event.code)) {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "ShiftLeft", "ShiftRight"].includes(event.code)) {
         event.preventDefault();
       }
       if (event.code === "Space") {
         setMode((current) => (current === "running" ? "paused" : current === "paused" ? "running" : current));
         return;
+      }
+      if ((event.code === "ShiftLeft" || event.code === "ShiftRight") && !event.repeat && modeRef.current === "running") {
+        dashQueuedRef.current = true;
       }
       keysRef.current.add(event.code);
     };
@@ -782,8 +903,11 @@ export default function ArcadeGame() {
       lastFrameRef.current = time;
 
       let frameGame = game;
+      const shouldContinue = mode === "running" || game.shakeTimer > 0;
       if (mode === "running") {
-        const next = updateGame(game, dt, keysRef.current);
+        const dashRequested = dashQueuedRef.current;
+        dashQueuedRef.current = false;
+        const next = updateGame(game, dt, keysRef.current, dashRequested);
         gameRef.current = next;
         frameGame = next;
         const nextScore = Math.floor(next.score);
@@ -834,7 +958,7 @@ export default function ArcadeGame() {
       }
 
       drawGame(ctx, frameGame, mode);
-      animationRef.current = requestAnimationFrame(frame);
+      animationRef.current = shouldContinue ? requestAnimationFrame(frame) : null;
     };
 
     animationRef.current = requestAnimationFrame(frame);
@@ -844,17 +968,34 @@ export default function ArcadeGame() {
     };
   }, [mode]);
 
-  const setPointerTarget = (event: React.PointerEvent<HTMLCanvasElement>) => {
+  const getCanvasPoint = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     const game = gameRef.current;
-    if (!canvas || !game) return;
+    if (!canvas || !game) return null;
 
     const rect = canvas.getBoundingClientRect();
-    game.pointerActive = true;
-    game.target = {
+    return {
       x: clamp(event.clientX - rect.left, PLAYER_RADIUS + 4, game.width - PLAYER_RADIUS - 4),
       y: clamp(event.clientY - rect.top, PLAYER_RADIUS + 4, game.height - PLAYER_RADIUS - 4),
     };
+  };
+
+  const setPointerTarget = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    const game = gameRef.current;
+    const point = getCanvasPoint(event);
+    if (!game || !point) return;
+
+    game.pointerActive = true;
+    game.target = point;
+  };
+
+  const stopPointerControl = () => {
+    pointerStartRef.current = null;
+    const game = gameRef.current;
+    if (game) {
+      game.pointerActive = false;
+      game.target = { ...game.player };
+    }
   };
 
   const powerupEntries = Object.entries(signalStyles) as Array<[Signal["kind"], (typeof signalStyles)[Signal["kind"]]]>;
@@ -866,7 +1007,7 @@ export default function ArcadeGame() {
         <div className="flex items-center justify-between border-b border-cyan-300/20 bg-black/35 px-4 py-3">
           <div>
             <h2 className="font-display text-xl font-bold text-cyan-100 [text-shadow:0_0_16px_rgba(34,211,238,0.7)]">Star Surge</h2>
-            <p className="type-meta mt-0.5 text-xs text-fuchsia-300">neon star cabinet</p>
+            <p className="type-meta mt-0.5 text-xs text-fuchsia-300">dash, dodge, collect</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -906,21 +1047,34 @@ export default function ArcadeGame() {
             onPointerDown={(event) => {
               event.currentTarget.setPointerCapture(event.pointerId);
               if (mode === "ready" || mode === "ended") restart();
-              setPointerTarget(event);
+              stopPointerControl();
+              pointerStartRef.current = {
+                id: event.pointerId,
+                x: event.clientX,
+                y: event.clientY,
+                dragging: false,
+              };
             }}
             onPointerMove={(event) => {
-              if (event.buttons > 0 || event.pointerType === "touch") {
+              const start = pointerStartRef.current;
+              if (!start || start.id !== event.pointerId || (event.pointerType !== "touch" && event.buttons === 0)) return;
+
+              const hasDragged = Math.hypot(event.clientX - start.x, event.clientY - start.y) >= POINTER_DRAG_THRESHOLD;
+              if (start.dragging || hasDragged) {
+                start.dragging = true;
                 setPointerTarget(event);
               }
             }}
-            onPointerUp={() => {
-              const game = gameRef.current;
-              if (game) game.pointerActive = false;
+            onPointerUp={(event) => {
+              if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                event.currentTarget.releasePointerCapture(event.pointerId);
+              }
+              stopPointerControl();
             }}
             onPointerCancel={() => {
-              const game = gameRef.current;
-              if (game) game.pointerActive = false;
+              stopPointerControl();
             }}
+            onLostPointerCapture={stopPointerControl}
           />
         </div>
       </section>
@@ -940,7 +1094,6 @@ export default function ArcadeGame() {
               <span className="arcade-shield-sweep" />
             </div>
           </div>
-          <div className="type-meta mt-2 text-xs text-cyan-300/70">{stability}%</div>
         </div>
         <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
           <div className="type-meta text-xs text-cyan-300/80">Active</div>
@@ -950,7 +1103,7 @@ export default function ArcadeGame() {
             {renderActiveChip("2x", multiplierTimer, OVERDRIVE_DURATION, signalStyles.bonus.color)}
           </div>
         </div>
-        <details className="arcade-guide-panel arcade-panel min-h-0 overflow-hidden rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
+        <details open className="arcade-guide-panel arcade-panel min-h-0 overflow-hidden rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)]">
           <summary className="type-meta cursor-pointer select-none text-xs text-cyan-300/80">Guide</summary>
           <div className="arcade-guide-content mt-4 space-y-5">
             <div>
