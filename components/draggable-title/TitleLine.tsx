@@ -144,6 +144,31 @@ export function TitleLine({
             );
           }
 
+          if (isTitle && idx === 0 && (t === "Minigame" || t === "Minigame.")) {
+            const suffix = t.replace("Minigame", "");
+            return (
+              <DraggableToken
+                key={`${idx}-${i}-minigame`}
+                className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
+                overlay
+                hover={{ scale: 1.03, rotate: 0.8 }}
+                onDirty={() => setDirty(true)}
+                resetSignal={resetSignal}
+                enterInitialProps={enter.enterInitialProps}
+                enterAnimateProps={enter.enterAnimateProps}
+                enterTransitionProps={enter.enterTransitionProps}
+              >
+                <span className="inline-flex items-baseline">
+                  <span>M</span>
+                  <span className="relative inline-block">
+                    <span ref={setStaticGlyphRef}>{"\u0131"}</span>
+                  </span>
+                  <span>nigame{suffix}</span>
+                </span>
+              </DraggableToken>
+            );
+          }
+
           return (
             <DraggableToken
               key={`${idx}-${i}-${t}`}

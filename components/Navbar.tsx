@@ -56,6 +56,16 @@ export default function Navbar() {
               Insights
             </NavLink>
           </Magnetic>
+          <Magnetic strength={8}>
+            <NavLink
+              href="/arcade"
+              className={baseStyles}
+              activeClassName={activeStyles}
+              inactiveClassName={inactiveStyles}
+            >
+              Minigame
+            </NavLink>
+          </Magnetic>
         </div>
       </nav>
       {open && (
@@ -64,6 +74,7 @@ export default function Navbar() {
             <div className="flex flex-col gap-2">
               <Link href="/projects" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Projects</Link>
               <Link href="/insights" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Insights</Link>
+              <Link href="/arcade" className="type-nav py-2 text-sm" onClick={() => setOpen(false)}>Minigame</Link>
             </div>
           </div>
         </div>

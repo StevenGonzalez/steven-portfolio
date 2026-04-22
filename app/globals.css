@@ -8,13 +8,227 @@
 }
 
 body[data-route^="/projects"] {
-  --accent: #0ea5e9;
-  --accent-rgb: 14 165 233;
+  --accent: #10b981;
+  --accent-rgb: 16 185 129;
 }
 
 body[data-route^="/insights"] {
-  --accent: #f43f5e;
-  --accent-rgb: 244 63 94;
+  --accent: #f59e0b;
+  --accent-rgb: 245 158 11;
+}
+
+body[data-route^="/arcade"] {
+  --accent: #22d3ee;
+  --accent-rgb: 34 211 238;
+}
+
+@keyframes arcade-score-glow {
+  0%, 100% {
+    color: #ffffff;
+    filter: brightness(1);
+    text-shadow: 0 0 8px rgb(255 255 255 / 0.8), 0 0 20px rgb(34 211 238 / 0.5), 0 0 38px rgb(217 70 239 / 0.25);
+  }
+  50% {
+    color: #cffafe;
+    filter: brightness(1.35);
+    text-shadow: 0 0 14px rgb(255 255 255 / 0.95), 0 0 34px rgb(34 211 238 / 0.85), 0 0 60px rgb(217 70 239 / 0.45);
+  }
+}
+
+@keyframes arcade-shield-flow {
+  0% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+    box-shadow: 0 0 10px rgb(34 197 94 / 0.75), 0 0 24px rgb(34 197 94 / 0.28);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1.16);
+    box-shadow: 0 0 14px rgb(34 197 94 / 0.82), 0 0 30px rgb(34 197 94 / 0.34);
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+    box-shadow: 0 0 10px rgb(34 197 94 / 0.75), 0 0 24px rgb(34 197 94 / 0.28);
+  }
+}
+
+@keyframes arcade-shield-sweep {
+  0% {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.48;
+  }
+  70% {
+    opacity: 0.48;
+  }
+  100% {
+    transform: translateX(260%);
+    opacity: 0;
+  }
+}
+
+@keyframes arcade-powerup-pulse {
+  0%, 100% {
+    opacity: 0.82;
+    transform: scale(1);
+    box-shadow: 0 0 8px currentColor;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+    box-shadow: 0 0 13px currentColor, 0 0 20px currentColor;
+  }
+}
+
+@keyframes arcade-hazard-flicker {
+  0%, 100% {
+    opacity: 0.78;
+    box-shadow: 0 0 7px currentColor;
+  }
+  42% {
+    opacity: 0.95;
+    box-shadow: 0 0 11px currentColor;
+  }
+  46% {
+    opacity: 0.68;
+  }
+  54% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes arcade-score-bump {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  18% {
+    transform: translateX(-2px) scale(1.08);
+  }
+  36% {
+    transform: translateX(3px) scale(1.06);
+  }
+  54% {
+    transform: translateX(-2px) scale(1.04);
+  }
+  72% {
+    transform: translateX(1px) scale(1.02);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes arcade-shield-bump {
+  0% {
+    transform: translateX(0);
+  }
+  18% {
+    transform: translateX(-3px);
+  }
+  36% {
+    transform: translateX(4px);
+  }
+  54% {
+    transform: translateX(-2px);
+  }
+  72% {
+    transform: translateX(1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes arcade-active-chip-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px currentColor;
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 14px currentColor, 0 0 28px currentColor;
+    filter: brightness(1.22);
+  }
+}
+
+.arcade-score {
+  display: inline-block;
+  animation: arcade-score-glow 5s ease-in-out infinite;
+}
+
+.arcade-score-bump {
+  animation:
+    arcade-score-glow 5s ease-in-out infinite,
+    arcade-score-bump 260ms ease-out both;
+}
+
+.arcade-shield {
+  background-image: linear-gradient(
+    90deg,
+    rgb(34 197 94),
+    rgb(134 239 172),
+    rgb(34 197 94)
+  );
+  background-size: 220% 100%;
+  animation: arcade-shield-flow 5s ease-in-out infinite;
+}
+
+.arcade-shield-sweep {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 27%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgb(187 247 208 / 0.42), transparent);
+  animation: arcade-shield-sweep 5s linear infinite;
+}
+
+.arcade-shield-bump {
+  animation: arcade-shield-bump 240ms ease-out both;
+}
+
+.arcade-active-chip {
+  background: rgb(8 9 21 / 0.76);
+}
+
+.arcade-active-chip--on {
+  animation: arcade-active-chip-glow 1.8s ease-in-out infinite;
+}
+
+.arcade-guide-panel[open] {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-left: 1.25rem;
+  padding-right: 0.85rem;
+  padding-bottom: 1.1rem;
+  scroll-padding-bottom: 1.1rem;
+  scrollbar-gutter: stable;
+}
+
+.arcade-guide-panel[open] summary {
+  flex: 0 0 auto;
+}
+
+.arcade-guide-panel[open] .arcade-guide-content {
+  flex: 0 0 auto;
+  min-height: max-content;
+  overflow: visible;
+  padding: 0.2rem 0.4rem 1.2rem 0.15rem;
+}
+
+.arcade-powerup-icon {
+  transform-origin: center;
+  animation: arcade-powerup-pulse 5.2s ease-in-out infinite;
+}
+
+.arcade-hazard-icon {
+  transform-origin: center;
+  animation: arcade-hazard-flicker 5.6s steps(4, end) infinite;
 }
 
 @theme inline {
@@ -32,6 +246,11 @@ body[data-route^="/insights"] {
     --accent: #8b5cf6;
     --accent-rgb: 139 92 246;
   }
+}
+
+body[data-route^="/arcade"] {
+  --accent: #22d3ee;
+  --accent-rgb: 34 211 238;
 }
 
 body {
