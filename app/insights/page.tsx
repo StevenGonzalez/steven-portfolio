@@ -12,6 +12,7 @@ export default function InsightsPage() {
     <DraggableTitle
       lines={["Insights", "Essays on architecture, systems, and tradeoffs."]}
       fill={false}
+      compactSpacing
     >
       <div className="flex h-full min-h-0 flex-1 flex-col">
         <div className="insights-archive-list min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-3xl border border-zinc-200/70 bg-white/70 dark:border-zinc-800/70 dark:bg-black/20">

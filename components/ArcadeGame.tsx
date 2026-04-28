@@ -1843,7 +1843,7 @@ export default function ArcadeGame() {
 
   return (
     <div className="flex h-full max-h-full min-h-0 flex-1 flex-col gap-4 overflow-hidden [@media(max-height:820px)]:gap-3 [@media(max-height:640px)]:gap-2 lg:flex-row">
-      <section className="flex min-h-[28rem] flex-1 flex-col overflow-hidden rounded-lg border border-cyan-300/45 bg-[#080915] shadow-[0_0_0_1px_rgba(236,72,153,0.2),0_0_44px_rgba(34,211,238,0.16)] [@media(max-height:820px)]:min-h-[22rem] [@media(max-height:640px)]:min-h-[18rem]">
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-cyan-300/45 bg-[#080915] shadow-[0_0_0_1px_rgba(236,72,153,0.2),0_0_44px_rgba(34,211,238,0.16)]">
         <div className="flex items-center justify-between border-b border-cyan-300/20 bg-black/35 px-4 py-3 [@media(max-height:820px)]:py-2">
           <div>
             <h2 className="font-display text-xl font-bold text-cyan-100 [text-shadow:0_0_16px_rgba(34,211,238,0.7)] [@media(max-height:820px)]:text-lg">Star Surge</h2>
@@ -1886,7 +1886,7 @@ export default function ArcadeGame() {
             </button>
           </div>
         </div>
-        <div ref={containerRef} className="relative min-h-0 flex-1">
+        <div ref={containerRef} className="relative min-h-0 flex-1 aspect-square lg:mx-auto lg:h-[clamp(22rem,62dvh,46rem)] lg:w-[clamp(22rem,62dvh,46rem)] [@media(min-height:900px)]:lg:h-[clamp(24rem,64dvh,48rem)] [@media(min-height:900px)]:lg:w-[clamp(24rem,64dvh,48rem)] lg:flex-none">
           <canvas
             ref={canvasRef}
             className="block h-full w-full touch-none"

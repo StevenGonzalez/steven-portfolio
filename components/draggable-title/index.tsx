@@ -18,10 +18,14 @@ export default function DraggableTitle({
     "I design reliable, performant software with pragmatic tradeoffs",
   ],
   fill = false,
+  compactSpacing = false,
+  compactTitle = false,
   children,
 }: {
   lines: string[];
   fill?: boolean;
+  compactSpacing?: boolean;
+  compactTitle?: boolean;
   children?: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -221,9 +225,13 @@ export default function DraggableTitle({
         >
           <div
             className={
-              fill
-                ? "select-none pt-14 pb-12 sm:pt-24 sm:pb-16 [@media(max-height:900px)]:pt-16 [@media(max-height:820px)]:pt-10 [@media(max-height:640px)]:pt-6 [@media(max-height:820px)]:pb-8 [@media(max-height:640px)]:pb-5"
-                : "select-none pt-14 sm:pt-24 [@media(max-height:900px)]:pt-16 [@media(max-height:820px)]:pt-10 [@media(max-height:640px)]:pt-6"
+              compactSpacing
+                ? fill
+                  ? "select-none pt-8 pb-6 sm:pt-12 sm:pb-8 [@media(max-height:900px)]:pt-10 [@media(max-height:900px)]:pb-7 [@media(max-height:820px)]:pt-7 [@media(max-height:820px)]:pb-5 [@media(max-height:640px)]:pt-5 [@media(max-height:640px)]:pb-4"
+                  : "select-none pt-8 sm:pt-12 [@media(max-height:900px)]:pt-10 [@media(max-height:820px)]:pt-7 [@media(max-height:640px)]:pt-5"
+                : fill
+                  ? "select-none pt-14 pb-12 sm:pt-24 sm:pb-16 [@media(max-height:900px)]:pt-16 [@media(max-height:820px)]:pt-10 [@media(max-height:640px)]:pt-6 [@media(max-height:820px)]:pb-8 [@media(max-height:640px)]:pb-5"
+                  : "select-none pt-14 sm:pt-24 [@media(max-height:900px)]:pt-16 [@media(max-height:820px)]:pt-10 [@media(max-height:640px)]:pt-6"
             }
           >
             {lines.map((line, idx) => (
@@ -231,6 +239,7 @@ export default function DraggableTitle({
                 key={idx}
                 line={line}
                 idx={idx}
+                compactTitle={compactTitle}
                 reduceMotion={reduceMotion}
                 setDirty={setDirty}
                 resetSignal={resetSignal}
@@ -241,11 +250,15 @@ export default function DraggableTitle({
 
           {children &&
             (internalScrollEnabled ? (
-              <div className="relative z-10 mt-6 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3">
+              <div className={compactSpacing
+                ? "relative z-10 mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
+                : "relative z-10 mt-6 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3"}>
                 {children}
               </div>
             ) : (
-              <div className="relative z-10 mt-6 pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3">{children}</div>
+              <div className={compactSpacing
+                ? "relative z-10 mt-3 pb-4 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
+                : "relative z-10 mt-6 pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3"}>{children}</div>
             ))}
 
           {dirty && (

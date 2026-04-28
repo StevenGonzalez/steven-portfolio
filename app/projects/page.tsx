@@ -15,6 +15,7 @@ export default function ProjectsPage() {
         "Case studies in pragmatic engineering and architecture.",
       ]}
       fill={false}
+      compactSpacing
     >
       <div className="flex h-full min-h-0 flex-1 flex-col">
         <p className="max-w-2xl border-l-2 border-zinc-300 pl-3 text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-500 [@media(max-height:720px)]:hidden">

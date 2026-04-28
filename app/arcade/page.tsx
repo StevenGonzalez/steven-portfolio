@@ -14,6 +14,8 @@ export default function ArcadePage() {
         "Collect stars. Survive the surge.",
       ]}
       fill={false}
+      compactSpacing
+      compactTitle
     >
       <ArcadeGame />
     </DraggableTitle>

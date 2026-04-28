@@ -752,21 +752,21 @@ h4, h5, h6 { letter-spacing: -0.012em; }
   inset: -10%;
   background:
     radial-gradient(
-      400px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
-      rgb(var(--accent-rgb) / 0.22) 0%,
-      rgb(var(--accent-rgb) / 0.13) 28%,
-      rgb(var(--accent-rgb) / 0.075) 48%,
-      rgb(var(--accent-rgb) / 0.035) 66%,
-      rgb(var(--accent-rgb) / 0.016) 80%,
+      330px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
+      rgb(var(--accent-rgb) / 0.17) 0%,
+      rgb(var(--accent-rgb) / 0.1) 28%,
+      rgb(var(--accent-rgb) / 0.058) 48%,
+      rgb(var(--accent-rgb) / 0.026) 66%,
+      rgb(var(--accent-rgb) / 0.012) 80%,
       transparent 95%
     ),
     radial-gradient(
-      800px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
-      rgb(var(--accent-rgb) / 0.055) 0%,
-      rgb(var(--accent-rgb) / 0.03) 42%,
+      680px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
+      rgb(var(--accent-rgb) / 0.04) 0%,
+      rgb(var(--accent-rgb) / 0.022) 42%,
       transparent 88%
     );
-  filter: blur(8px);
+  filter: blur(6px);
   opacity: 0;
   transform: translate3d(0, 10px, 0) scale(0.98);
   will-change: transform, opacity;
@@ -776,18 +776,18 @@ h4, h5, h6 { letter-spacing: -0.012em; }
   .premium-spotlight {
     background:
       radial-gradient(
-        420px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
-        rgb(var(--accent-rgb) / 0.22) 0%,
-        rgb(var(--accent-rgb) / 0.13) 28%,
-        rgb(var(--accent-rgb) / 0.075) 48%,
-        rgb(var(--accent-rgb) / 0.035) 66%,
-        rgb(var(--accent-rgb) / 0.016) 80%,
+        350px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
+        rgb(var(--accent-rgb) / 0.17) 0%,
+        rgb(var(--accent-rgb) / 0.1) 28%,
+        rgb(var(--accent-rgb) / 0.058) 48%,
+        rgb(var(--accent-rgb) / 0.026) 66%,
+        rgb(var(--accent-rgb) / 0.012) 80%,
         transparent 95%
       ),
       radial-gradient(
-        850px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
-        rgb(var(--accent-rgb) / 0.055) 0%,
-        rgb(var(--accent-rgb) / 0.03) 42%,
+        720px circle at var(--spotlight-1-x, 28%) var(--spotlight-1-y, 30%),
+        rgb(var(--accent-rgb) / 0.04) 0%,
+        rgb(var(--accent-rgb) / 0.022) 42%,
         transparent 88%
       );
   }

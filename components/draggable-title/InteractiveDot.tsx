@@ -33,7 +33,7 @@ export function InteractiveDot({
     <DraggableToken
       key={dotAnchor ? "hero-dot-ready" : "hero-dot-init"}
       className="fixed z-[200] inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
-      hover={{ scale: 1.03 }}
+      hover={{ scale: 1.02 }}
       onDirty={onDirty}
       onPointerDown={onDirty}
       resetSignal={resetSignal}
@@ -47,7 +47,7 @@ export function InteractiveDot({
       styleProps={{
         left: `${dotAnchor?.left ?? 0}px`,
         top: `${dotAnchor?.top ?? 0}px`,
-        fontSize: "clamp(2.75rem,7vw,4.5rem)",
+        fontSize: "clamp(2.2rem,5.8vw,3.6rem)",
         lineHeight: 1,
         opacity: dotAnchor ? 1 : 0,
       }}
@@ -55,7 +55,7 @@ export function InteractiveDot({
       <motion.span
         className="inline-block"
         style={{ transformOrigin: "50% 50%" }}
-        animate={dotAnimating ? { scale: [1, 1.16, 1] } : { scale: 1 }}
+        animate={dotAnimating ? { scale: [1, 1.12, 1] } : { scale: 1 }}
         transition={
           dotAnimating
             ? {
