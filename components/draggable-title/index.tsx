@@ -225,13 +225,13 @@ export default function DraggableTitle({
           {children &&
             (internalScrollEnabled ? (
               <div className={compactSpacing
-                ? "relative z-10 mt-3 h-0 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
+                ? "relative z-10 mt-5 h-0 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
                 : "relative z-10 mt-6 h-0 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3"}>
                 {children}
               </div>
             ) : (
               <div className={compactSpacing
-                ? "relative z-10 mt-3 pb-4 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
+                ? "relative z-10 mt-5 pb-4 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
                 : "relative z-10 mt-6 pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3"}>{children}</div>
             ))}
 
