@@ -1,21 +1,4 @@
-export type ProjectDetail = {
-  slug: string;
-  title: string;
-  timeline?: string;
-  summary: string;
-  image: string;
-  tags: string[];
-  links?: { label: string; href: string }[];
-  role?: string;
-  scope?: string;
-  keyDecision?: string;
-  highlights?: string[];
-  problem: string;
-  approach: string;
-  architecture: string;
-  tradeoffs: string;
-  outcome: string;
-};
+import type { ProjectDetail } from "../types/content";
 
 export const projects: ProjectDetail[] = [
   {

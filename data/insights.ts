@@ -1,12 +1,4 @@
-export type InsightPost = {
-  slug: string;
-  title: string;
-  summary: string;
-  date: string;
-  category: string;
-  readTime: string;
-  tags: string[];
-};
+import type { InsightPost } from "../types/content";
 
 export const insights: InsightPost[] = [
   {

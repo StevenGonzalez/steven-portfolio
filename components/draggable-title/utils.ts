@@ -4,8 +4,31 @@ export const getTokenDelay = (lineIndex: number, tokenIndex: number) => {
   return 1.12 + tokenIndex * 0.03;
 };
 
+const SPECIAL_TOKEN_SEGMENTS: Record<string, { prefix: string; glyph: string; suffix: string }> = {
+  "Hi": { prefix: "H", glyph: "ı", suffix: "" },
+  "Insights": { prefix: "Ins", glyph: "ı", suffix: "ghts" },
+  "Projects": { prefix: "Pro", glyph: "ȷ", suffix: "ects" },
+  "Experience": { prefix: "Exper", glyph: "ı", suffix: "ence" },
+  "Minigame": { prefix: "M", glyph: "ı", suffix: "nigame" },
+};
+
 export const tokenizeTitle = (line: string) => {
   return line.split(/(\s+)/g).filter((p) => p.length > 0);
+};
+
+export const getSpecialTokenParts = (token: string) => {
+  const punctuationMatch = token.match(/[.,!?;:]+$/);
+  const punctuation = punctuationMatch?.[0] ?? "";
+  const baseToken = punctuation ? token.slice(0, -punctuation.length) : token;
+  const special = SPECIAL_TOKEN_SEGMENTS[baseToken];
+
+  if (!special) return null;
+
+  return {
+    prefix: special.prefix,
+    glyph: special.glyph,
+    suffix: `${special.suffix}${punctuation}`,
+  };
 };
 
 export const getEnterAnimation = (delay: number, isTitle: boolean, reduceMotion: boolean | null) => {

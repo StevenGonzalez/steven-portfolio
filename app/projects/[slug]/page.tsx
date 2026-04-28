@@ -1,14 +1,23 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { projects } from "../../../data/projects";
+import SectionRail from "../../../components/SectionRail";
+import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug } from "../../../lib/content";
+
+const sectionDefinitions = [
+  { id: "problem", title: "Problem", key: "problem" },
+  { id: "approach", title: "Approach", key: "approach" },
+  { id: "architecture", title: "Architecture", key: "architecture" },
+  { id: "tradeoffs", title: "Tradeoffs", key: "tradeoffs" },
+  { id: "outcome", title: "Outcome", key: "outcome" },
+] as const;
 
 export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  return getAllProjectSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = getProjectBySlug(slug);
   if (!project) return {};
   return {
     title: `${project.title} | Steven`,
@@ -18,33 +27,36 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = getProjectBySlug(slug);
   if (!project) return notFound();
 
-  const primaryLinks = project.links?.filter((link) => {
-    const label = link.label.toLowerCase();
-    return !label.includes("privacy") && !label.includes("terms");
-  });
+  const primaryLinks = getPrimaryProjectLinks(project);
+  const sections = sectionDefinitions.map((section) => ({
+    ...section,
+    body: project[section.key],
+  }));
+  const sectionItems = sections.map((section) => ({ id: section.id, label: section.title }));
 
   return (
     <article className="mx-auto max-w-6xl px-4 py-16">
       <header className="mb-8">
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{project.title}</h1>
+        <div className="type-meta text-xs text-accent">Case study</div>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{project.title}</h1>
         {project.timeline ? (
           <div className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{project.timeline}</div>
         ) : null}
-        <p className="mt-2 max-w-4xl text-zinc-600 dark:text-zinc-400">{project.summary}</p>
+        <p className="mt-3 max-w-4xl text-zinc-600 dark:text-zinc-400">{project.summary}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {project.tags.map((t) => (
-            <span key={t} className="type-meta rounded-full border border-zinc-200 px-2 py-1 text-xs text-zinc-700 dark:border-zinc-700 dark:text-zinc-300">
+            <span key={t} className="meta-pill">
               {t}
             </span>
           ))}
         </div>
 
-        {project.links?.length ? (
+        {primaryLinks.length ? (
           <div className="mt-4 flex flex-wrap gap-4 text-sm">
-            {project.links.map((l) => (
+            {primaryLinks.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
@@ -72,34 +84,26 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             />
           </div>
 
-          <section className="mt-10 space-y-10">
-            <section id="problem" className="scroll-mt-24">
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Problem</h2>
-              <p className="mt-2 text-zinc-700 dark:text-zinc-300">{project.problem}</p>
-            </section>
-            <section id="approach" className="scroll-mt-24">
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Approach</h2>
-              <p className="mt-2 text-zinc-700 dark:text-zinc-300">{project.approach}</p>
-            </section>
-            <section id="architecture" className="scroll-mt-24">
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Architecture</h2>
-              <p className="mt-2 text-zinc-700 dark:text-zinc-300">{project.architecture}</p>
-            </section>
-            <section id="tradeoffs" className="scroll-mt-24">
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Tradeoffs</h2>
-              <p className="mt-2 text-zinc-700 dark:text-zinc-300">{project.tradeoffs}</p>
-            </section>
-            <section id="outcome" className="scroll-mt-24">
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Outcome</h2>
-              <p className="mt-2 text-zinc-700 dark:text-zinc-300">{project.outcome}</p>
-            </section>
-          </section>
+          <div className="surface-panel mt-10 rounded-2xl px-6 py-8 sm:px-8">
+            <div className="prose max-w-[68ch]">
+              {sections.map((section) => (
+                <section key={section.id} id={section.id} className="scroll-mt-24">
+                  <h2>{section.title}</h2>
+                  <p>{section.body}</p>
+                </section>
+              ))}
+            </div>
+          </div>
         </div>
 
         <aside className="hidden lg:block">
-          <div className="sticky top-24 rounded-2xl border border-zinc-200 p-5 dark:border-zinc-800">
+          <div className="surface-panel sticky top-24 rounded-2xl p-5">
             <div className="type-meta text-xs text-zinc-500 dark:text-zinc-400">
               Project snapshot
+            </div>
+
+            <div className="mt-5 border-b border-zinc-200 pb-5 dark:border-zinc-800">
+              <SectionRail items={sectionItems} />
             </div>
 
             {project.role ? (

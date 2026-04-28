@@ -17,7 +17,9 @@ export default function ArcadePage() {
       compactSpacing
       compactTitle
     >
-      <ArcadeGame />
+      <div className="flex h-full min-h-0 flex-1 overflow-hidden">
+        <ArcadeGame />
+      </div>
     </DraggableTitle>
   );
 }

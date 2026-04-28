@@ -7,10 +7,11 @@ export default function RouteTheme() {
   const pathname = usePathname();
 
   useEffect(() => {
-    document.body.setAttribute("data-route", pathname);
-    return () => {
-      document.body.removeAttribute("data-route");
-    };
+    const body = document.body;
+    const routeSection = pathname === "/" ? "home" : pathname.split("/").filter(Boolean)[0] ?? "home";
+
+    body.setAttribute("data-route", pathname);
+    body.setAttribute("data-route-section", routeSection);
   }, [pathname]);
 
   return null;

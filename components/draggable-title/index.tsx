@@ -7,10 +7,10 @@ import { usePreviousPath } from "../NavProvider";
 import { useSpotlight } from "../../hooks/useSpotlight";
 import { useDotAnchor } from "../../hooks/useDotAnchor";
 import { LightingLayer } from "./LightingLayer";
-import { SpotlightLayer } from "./SpotlightLayer";
 import { InteractiveDot } from "./InteractiveDot";
 import { TitleLine } from "./TitleLine";
 import { getTokenDelay, tokenizeTitle } from "./utils";
+import { getHeroEntryTransition } from "./transition";
 export default function DraggableTitle({
   lines = [
     "Hi, I'm Steven",
@@ -31,7 +31,6 @@ export default function DraggableTitle({
   const pathname = usePathname();
   const prevPath = usePreviousPath();
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
   const lightingMaskRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
@@ -86,30 +85,7 @@ export default function DraggableTitle({
     return maxDelay;
   })();
 
-  const getPageIndex = (p: string | null) => {
-    if (!p) return -1;
-    if (p === "/") return 0;
-    if (p.startsWith("/experience")) return 1;
-    if (p.startsWith("/projects")) return 2;
-    if (p.startsWith("/insights")) return 3;
-    return -1;
-  };
-
-  const currIdx = getPageIndex(pathname);
-  const prevIdx = getPageIndex(prevPath);
-
-  let enterX = 0;
-  let useFlyIn = false;
-
-  if (prevPath && prevIdx !== -1 && currIdx !== -1) {
-    if (prevIdx < currIdx) {
-      enterX = -2000;
-      useFlyIn = true;
-    } else if (prevIdx > currIdx) {
-      enterX = 2000;
-      useFlyIn = true;
-    }
-  }
+  const { useFlyIn, enterX } = getHeroEntryTransition(pathname, prevPath);
 
   const dotDelay = useFlyIn ? 0.2 : lastRevealDelay + 0.18;
 
@@ -170,15 +146,22 @@ export default function DraggableTitle({
     const prevHtmlOverflow = html.style.overflow;
     const prevBodyOverflow = body.style.overflow;
     const prevBodyOverscroll = body.style.overscrollBehaviorY;
+    const prevBodyDraggableLock = body.dataset.draggableLock;
 
     html.style.overflow = "hidden";
     body.style.overflow = "hidden";
     body.style.overscrollBehaviorY = "none";
+    body.dataset.draggableLock = "true";
 
     return () => {
       html.style.overflow = prevHtmlOverflow;
       body.style.overflow = prevBodyOverflow;
       body.style.overscrollBehaviorY = prevBodyOverscroll;
+      if (prevBodyDraggableLock === undefined) {
+        delete body.dataset.draggableLock;
+      } else {
+        body.dataset.draggableLock = prevBodyDraggableLock;
+      }
     };
   }, [internalScrollEnabled]);
 
@@ -212,23 +195,14 @@ export default function DraggableTitle({
         clipId={clipId}
       />
 
-      <SpotlightLayer
-        reduceMotion={reduceMotion}
-        spotlightRef={spotlightRef}
-        dotDelay={dotDelay}
-      />
-
       <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col px-4">
-        <div
-          ref={containerRef}
-          className="relative flex min-h-0 flex-1 flex-col justify-start"
-        >
+        <div className="relative flex min-h-0 flex-1 flex-col justify-start">
           <div
             className={
               compactSpacing
                 ? fill
-                  ? "select-none pt-8 pb-6 sm:pt-12 sm:pb-8 [@media(max-height:900px)]:pt-10 [@media(max-height:900px)]:pb-7 [@media(max-height:820px)]:pt-7 [@media(max-height:820px)]:pb-5 [@media(max-height:640px)]:pt-5 [@media(max-height:640px)]:pb-4"
-                  : "select-none pt-8 sm:pt-12 [@media(max-height:900px)]:pt-10 [@media(max-height:820px)]:pt-7 [@media(max-height:640px)]:pt-5"
+                  ? "select-none pt-6 pb-5 sm:pt-10 sm:pb-7 [@media(max-height:900px)]:pt-8 [@media(max-height:900px)]:pb-6 [@media(max-height:820px)]:pt-6 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:pt-4 [@media(max-height:640px)]:pb-3"
+                  : "select-none pt-6 sm:pt-10 [@media(max-height:900px)]:pt-8 [@media(max-height:820px)]:pt-6 [@media(max-height:640px)]:pt-4"
                 : fill
                   ? "select-none pt-14 pb-12 sm:pt-24 sm:pb-16 [@media(max-height:900px)]:pt-16 [@media(max-height:820px)]:pt-10 [@media(max-height:640px)]:pt-6 [@media(max-height:820px)]:pb-8 [@media(max-height:640px)]:pb-5"
                   : "select-none pt-14 sm:pt-24 [@media(max-height:900px)]:pt-16 [@media(max-height:820px)]:pt-10 [@media(max-height:640px)]:pt-6"
@@ -251,8 +225,8 @@ export default function DraggableTitle({
           {children &&
             (internalScrollEnabled ? (
               <div className={compactSpacing
-                ? "relative z-10 mt-3 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
-                : "relative z-10 mt-6 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3"}>
+                ? "relative z-10 mt-3 h-0 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:pb-3 [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:pb-2"
+                : "relative z-10 mt-6 h-0 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-6 [@media(max-height:820px)]:mt-4 [@media(max-height:820px)]:pb-4 [@media(max-height:640px)]:mt-3 [@media(max-height:640px)]:pb-3"}>
                 {children}
               </div>
             ) : (
@@ -262,7 +236,7 @@ export default function DraggableTitle({
             ))}
 
           {dirty && (
-            <div className="absolute right-4 top-4">
+            <div className="absolute right-4 top-14 [@media(max-height:820px)]:top-12">
               <button
                 onClick={() => {
                   setResetSignal((n) => n + 1);

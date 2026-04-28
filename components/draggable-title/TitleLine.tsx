@@ -1,5 +1,5 @@
 import { DraggableToken } from "./DraggableToken";
-import { getTokenDelay, tokenizeTitle, getEnterAnimation } from "./utils";
+import { getTokenDelay, tokenizeTitle, getEnterAnimation, getSpecialTokenParts } from "./utils";
 
 interface TitleLineProps {
   line: string;
@@ -32,6 +32,38 @@ export function TitleLine({
         : "font-display mt-5 text-[clamp(1.25rem,3.2vw,2rem)] font-medium leading-snug text-zinc-900 dark:text-zinc-100 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:text-[clamp(1.1rem,2.6vw,1.55rem)] [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:text-[clamp(1rem,2.4vw,1.35rem)]"
       : "mt-3 max-w-4xl text-[clamp(1rem,2.2vw,1.25rem)] leading-relaxed text-zinc-600 dark:text-zinc-400 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:text-[clamp(0.95rem,2vw,1.1rem)]";
 
+  const renderToken = (
+    key: string,
+    content: React.ReactNode,
+    enter: ReturnType<typeof getEnterAnimation>,
+    token: string,
+  ) => (
+    <DraggableToken
+      key={key}
+      className={
+        isTitle
+          ? "relative z-[60] inline-block cursor-grab active:cursor-grabbing"
+          : "relative z-[60] inline-block cursor-grab active:cursor-grabbing px-1 mr-1"
+      }
+      overlay
+      hover={{ scale: 1.03, rotate: 0.8 }}
+      onDirty={() => setDirty(true)}
+      resetSignal={resetSignal}
+      enterInitialProps={enter.enterInitialProps}
+      enterAnimateProps={enter.enterAnimateProps}
+      enterTransitionProps={enter.enterTransitionProps}
+      styleProps={
+        isTitle && token === " "
+          ? {
+              whiteSpace: "pre-wrap",
+            }
+          : undefined
+      }
+    >
+      {content}
+    </DraggableToken>
+  );
+
   return (
     <div className={lineClasses}>
       {tokens.map((t, i) => {
@@ -50,158 +82,26 @@ export function TitleLine({
         const delay = getTokenDelay(idx, revealIndex);
         const enter = getEnterAnimation(delay, isTitle, reduceMotion);
 
-        if (isTitle && idx === 0 && i === 0 && (t === "Hi," || t === "Hi")) {
-            const comma = t === "Hi," ? "," : "";
-            return (
-              <DraggableToken
-                key={`${idx}-${i}-hi`}
-                className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
-                overlay
-                hover={{ scale: 1.03, rotate: 0.8 }}
-                onDirty={() => setDirty(true)}
-                resetSignal={resetSignal}
-                enterInitialProps={enter.enterInitialProps}
-                enterAnimateProps={enter.enterAnimateProps}
-                enterTransitionProps={enter.enterTransitionProps}
-              >
-                <span className="inline-flex items-baseline">
-                  <span>H</span>
-                  <span className="relative inline-block">
-                    <span ref={setStaticGlyphRef}>ı</span>
-                  </span>
-                  <span>{comma}</span>
+        if (isTitle && idx === 0) {
+          const specialParts = getSpecialTokenParts(t);
+          if (specialParts) {
+            return renderToken(
+              `${idx}-${i}-special`,
+              <span className="inline-flex items-baseline">
+                <span>{specialParts.prefix}</span>
+                <span className="relative inline-block">
+                  <span ref={setStaticGlyphRef}>{specialParts.glyph}</span>
                 </span>
-              </DraggableToken>
+                <span>{specialParts.suffix}</span>
+              </span>,
+              enter,
+              t,
             );
           }
+        }
 
-          if (isTitle && idx === 0 && (t === "Insights" || t === "Insights.")) {
-            const suffix = t.replace("Insights", "");
-            return (
-              <DraggableToken
-                key={`${idx}-${i}-insights`}
-                className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
-                overlay
-                hover={{ scale: 1.03, rotate: 0.8 }}
-                onDirty={() => setDirty(true)}
-                resetSignal={resetSignal}
-                enterInitialProps={enter.enterInitialProps}
-                enterAnimateProps={enter.enterAnimateProps}
-                enterTransitionProps={enter.enterTransitionProps}
-              >
-                <span className="inline-flex items-baseline">
-                  <span>Ins</span>
-                  <span className="relative inline-block">
-                    <span ref={setStaticGlyphRef}>ı</span>
-                  </span>
-                  <span>ghts{suffix}</span>
-                </span>
-              </DraggableToken>
-            );
-          }
-
-          if (isTitle && idx === 0 && (t === "Projects" || t === "Projects.")) {
-            const suffix = t.replace("Projects", "");
-            return (
-              <DraggableToken
-                key={`${idx}-${i}-projects`}
-                className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
-                overlay
-                hover={{ scale: 1.03, rotate: 0.8 }}
-                onDirty={() => setDirty(true)}
-                resetSignal={resetSignal}
-                enterInitialProps={enter.enterInitialProps}
-                enterAnimateProps={enter.enterAnimateProps}
-                enterTransitionProps={enter.enterTransitionProps}
-              >
-                <span className="inline-flex items-baseline">
-                  <span>Pro</span>
-                  <span className="relative inline-block">
-                    <span ref={setStaticGlyphRef}>ȷ</span>
-                  </span>
-                  <span>ects{suffix}</span>
-                </span>
-              </DraggableToken>
-            );
-          }
-
-          if (isTitle && idx === 0 && (t === "Experience" || t === "Experience.")) {
-            const suffix = t.replace("Experience", "");
-            return (
-              <DraggableToken
-                key={`${idx}-${i}-experience`}
-                className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
-                overlay
-                hover={{ scale: 1.03, rotate: 0.8 }}
-                onDirty={() => setDirty(true)}
-                resetSignal={resetSignal}
-                enterInitialProps={enter.enterInitialProps}
-                enterAnimateProps={enter.enterAnimateProps}
-                enterTransitionProps={enter.enterTransitionProps}
-              >
-                <span className="inline-flex items-baseline">
-                  <span>Exper</span>
-                  <span className="relative inline-block">
-                    <span ref={setStaticGlyphRef}>ı</span>
-                  </span>
-                  <span>ence{suffix}</span>
-                </span>
-              </DraggableToken>
-            );
-          }
-
-          if (isTitle && idx === 0 && (t === "Minigame" || t === "Minigame.")) {
-            const suffix = t.replace("Minigame", "");
-            return (
-              <DraggableToken
-                key={`${idx}-${i}-minigame`}
-                className="relative z-[60] inline-block cursor-grab active:cursor-grabbing"
-                overlay
-                hover={{ scale: 1.03, rotate: 0.8 }}
-                onDirty={() => setDirty(true)}
-                resetSignal={resetSignal}
-                enterInitialProps={enter.enterInitialProps}
-                enterAnimateProps={enter.enterAnimateProps}
-                enterTransitionProps={enter.enterTransitionProps}
-              >
-                <span className="inline-flex items-baseline">
-                  <span>M</span>
-                  <span className="relative inline-block">
-                    <span ref={setStaticGlyphRef}>{"\u0131"}</span>
-                  </span>
-                  <span>nigame{suffix}</span>
-                </span>
-              </DraggableToken>
-            );
-          }
-
-          return (
-            <DraggableToken
-              key={`${idx}-${i}-${t}`}
-              className={
-                isTitle
-                  ? "relative z-[60] inline-block cursor-grab active:cursor-grabbing"
-                  : "relative z-[60] inline-block cursor-grab active:cursor-grabbing px-1 mr-1"
-              }
-              overlay
-              hover={{ scale: 1.03, rotate: 0.8 }}
-              onDirty={() => setDirty(true)}
-              resetSignal={resetSignal}
-              enterInitialProps={enter.enterInitialProps}
-              enterAnimateProps={enter.enterAnimateProps}
-              enterTransitionProps={enter.enterTransitionProps}
-              styleProps={
-                isTitle && t === " "
-                  ? {
-                      whiteSpace: "pre-wrap",
-                    }
-                  : undefined
-              }
-            >
-              {t}
-            </DraggableToken>
-          );
-        })}
+        return renderToken(`${idx}-${i}-${t}`, t, enter, t);
+      })}
     </div>
   );
 }

@@ -14,7 +14,7 @@ export function SpotlightLayer({
 }: SpotlightLayerProps) {
   return (
     <div
-      className="pointer-events-none absolute inset-0 left-1/2 w-screen -translate-x-1/2 -z-10"
+      className="pointer-events-none absolute inset-y-0 left-1/2 w-[140vw] -translate-x-1/2 -z-10"
       aria-hidden="true"
     >
       {reduceMotion ? (

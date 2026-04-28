@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Roboto, Roboto_Condensed, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
@@ -30,7 +30,12 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Steven | Senior Software Engineer",
-  description: "Portfolio showcasing projects and software engineering insights.",
+  description: "Senior software engineer focused on reliable systems, pragmatic architecture, and software other engineers can safely change.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -41,16 +46,34 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} antialiased bg-white dark:bg-black`}
+        className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} bg-white text-zinc-950 antialiased dark:bg-black dark:text-zinc-50`}
       >
-        <NavProvider>
+        <div className="relative isolate h-svh overflow-x-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,250,250,0.94))] dark:bg-[linear-gradient(180deg,rgba(9,9,11,0.98),rgba(9,9,11,0.94))]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-16 inset-x-0 bottom-0 opacity-95"
+            style={{
+              background:
+                "radial-gradient(circle at top center, rgb(var(--accent-rgb) / 0.12), transparent 34%), linear-gradient(180deg, rgb(255 255 255 / 0.18), transparent 32%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 -top-8 h-64"
+            style={{
+              background:
+                "linear-gradient(180deg, rgb(var(--accent-rgb) / 0.1), transparent 74%)",
+            }}
+          />
+          <NavProvider>
             <RouteTheme />
-            <div className="flex h-svh flex-col overflow-hidden pt-16">
-            <Navbar />
-            <PageTransition className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</PageTransition>
-            <Footer />
+            <div className="relative flex h-svh flex-col">
+              <Navbar />
+              <PageTransition className="flex min-h-0 flex-1 flex-col overflow-y-auto pt-14">{children}</PageTransition>
+              <Footer />
             </div>
           </NavProvider>
+        </div>
       </body>
     </html>
   );

@@ -7,7 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "validate:content": "node scripts/validate-content.mjs",
+    "validate": "yarn lint && yarn type-check && yarn validate:content"
   },
   "dependencies": {
     "next": "16.1.6",

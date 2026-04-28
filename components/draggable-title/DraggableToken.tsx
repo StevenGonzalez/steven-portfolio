@@ -81,7 +81,14 @@ export function DraggableToken({
     const rect = el.getBoundingClientRect();
     const padding = 6;
     const maxRight = window.innerWidth - padding;
-    const maxBottom = window.innerHeight - padding;
+
+    const header = document.querySelector("header");
+    const footer = document.querySelector("footer");
+    const headerBottom = header?.getBoundingClientRect().bottom ?? 0;
+    const footerTop = footer?.getBoundingClientRect().top ?? window.innerHeight;
+
+    const minTop = Math.max(padding, headerBottom + 6);
+    const maxBottom = Math.min(window.innerHeight - padding, footerTop - 6);
 
     let dx = 0;
     let dy = 0;
@@ -89,7 +96,7 @@ export function DraggableToken({
     if (rect.left < padding) dx = padding - rect.left;
     else if (rect.right > maxRight) dx = maxRight - rect.right;
 
-    if (rect.top < padding) dy = padding - rect.top;
+    if (rect.top < minTop) dy = minTop - rect.top;
     else if (rect.bottom > maxBottom) dy = maxBottom - rect.bottom;
 
     if (dx === 0 && dy === 0) return;
@@ -112,17 +119,9 @@ export function DraggableToken({
       if (!force && (x.get() !== 0 || y.get() !== 0)) return;
 
       const rect = el.getBoundingClientRect();
-      const parent = el.offsetParent as HTMLElement | null;
-
-      if (!parent) {
-        setOverlayBase({ left: rect.left + window.scrollX, top: rect.top + window.scrollY });
-        return;
-      }
-
-      const parentRect = parent.getBoundingClientRect();
       setOverlayBase({
-        left: rect.left - parentRect.left + parent.scrollLeft,
-        top: rect.top - parentRect.top + parent.scrollTop,
+        left: rect.left,
+        top: rect.top,
       });
     };
 
@@ -182,8 +181,8 @@ export function DraggableToken({
       style={
         overlay
           ? {
-              position: "absolute",
-              zIndex: 100,
+              position: "fixed",
+              zIndex: 320,
               touchAction: "none",
               left: overlayBase?.left ?? 0,
               top: overlayBase?.top ?? 0,
