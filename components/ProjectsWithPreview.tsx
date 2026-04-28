@@ -4,6 +4,7 @@ import { AnimatePresence } from "framer-motion";
 import { useMemo, useState } from "react";
 import ProjectRow from "./ProjectRow";
 import ProjectPreviewCard from "./ProjectPreviewCard";
+import ScrollCuePanel from "./ScrollCuePanel";
 import type { ProjectDetail } from "../types/content";
 
 type PreviewIntent = "featured" | "hovered" | "focused";
@@ -45,7 +46,11 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
         }
       }}
     >
-      <div className="projects-index-panel surface-panel h-full min-h-0 overflow-y-auto overscroll-contain rounded-3xl">
+      <ScrollCuePanel
+        containerClassName="projects-index-panel surface-panel h-full min-h-0 rounded-3xl"
+        scrollerClassName="h-full overflow-y-auto overscroll-contain"
+        nudgeKey="projects-index"
+      >
         {projects.map((p) => (
           <ProjectRow
             key={p.slug}
@@ -63,14 +68,18 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
             }}
           />
         ))}
-      </div>
+      </ScrollCuePanel>
 
       <aside className="hidden min-h-0 md:block md:h-full">
-        <div className="projects-index-panel h-full min-h-0 overflow-y-auto overscroll-contain">
+        <ScrollCuePanel
+          containerClassName="projects-index-panel h-full min-h-0 rounded-3xl"
+          scrollerClassName="h-full overflow-y-auto overscroll-contain"
+          nudgeKey="projects-preview"
+        >
           <AnimatePresence mode="wait" initial={false}>
             {active ? <ProjectPreviewCard active={active} eyebrow={previewEyebrow} /> : null}
           </AnimatePresence>
-        </div>
+        </ScrollCuePanel>
       </aside>
     </div>
   );

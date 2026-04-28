@@ -1,5 +1,6 @@
 import DraggableTitle from "../../components/draggable-title";
 import InsightArchiveRow from "../../components/InsightArchiveRow";
+import ScrollCuePanel from "../../components/ScrollCuePanel";
 import { insights } from "../../lib/content";
 
 export const metadata = {
@@ -23,11 +24,15 @@ export default function InsightsPage() {
         </div>
 
         <div className="mt-6 min-h-0 flex-1 sm:mt-8 [@media(max-height:820px)]:mt-4 [@media(max-height:640px)]:mt-3">
-          <div className="insights-archive-list surface-panel min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-3xl">
+          <ScrollCuePanel
+            containerClassName="insights-archive-list surface-panel min-h-0 flex-1 rounded-3xl"
+            scrollerClassName="h-full overflow-y-auto overscroll-contain"
+            nudgeKey="insights-archive"
+          >
             {insights.map((insight) => (
               <InsightArchiveRow key={insight.slug} insight={insight} />
             ))}
-          </div>
+          </ScrollCuePanel>
         </div>
       </div>
     </DraggableTitle>
