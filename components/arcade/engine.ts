@@ -126,7 +126,7 @@ export function updateGame(game: GameState, dt: number, keys: Set<string>, dashR
     const length = Math.hypot(keyVelocityX, keyVelocityY);
     next.player.x += (keyVelocityX / length) * KEYBOARD_SPEED * movementBoost * dt;
     next.player.y += (keyVelocityY / length) * KEYBOARD_SPEED * movementBoost * dt;
-    next.target = next.player;
+    next.target = { ...next.player };
     next.pointerActive = false;
   } else if (next.pointerActive) {
     const toTargetX = next.target.x - next.player.x;
@@ -151,6 +151,10 @@ export function updateGame(game: GameState, dt: number, keys: Set<string>, dashR
 
   next.player.x = clamp(next.player.x, PLAYER_RADIUS + 4, next.width - PLAYER_RADIUS - 4);
   next.player.y = clamp(next.player.y, PLAYER_RADIUS + 4, next.height - PLAYER_RADIUS - 4);
+
+  if (next.dashTimer > 0 && !keyVelocityX && !keyVelocityY && !next.pointerActive) {
+    next.target = { ...next.player };
+  }
 
   const movementX = next.player.x - previousPlayerX;
   const movementY = next.player.y - previousPlayerY;
