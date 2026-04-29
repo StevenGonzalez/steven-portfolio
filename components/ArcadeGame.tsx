@@ -79,6 +79,7 @@ export default function ArcadeGame() {
 
   useArcadeFrameLoop({
     mode,
+    modeRef,
     setMode,
     canvasRef,
     ctxRef,
