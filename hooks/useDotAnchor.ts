@@ -22,7 +22,7 @@ export function useDotAnchor({
     let rafId = 0;
     let settleRafId = 0;
     const HI_DOT_TUNE_X = 1;
-    const TUNE_Y_RATIO = 0.675;
+    const TUNE_Y_RATIO = 0.74;
 
     const getAnchor = (glyphEl: HTMLElement, dotEl: HTMLElement) => {
       const style = window.getComputedStyle(glyphEl);

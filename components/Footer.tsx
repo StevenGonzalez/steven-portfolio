@@ -8,7 +8,6 @@ export default function Footer() {
         <div className="relative flex flex-col gap-2 text-sm text-zinc-600 dark:text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="type-meta text-[11px]">© {new Date().getFullYear()} Steven Gonzalez</p>
-            <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400 [@media(max-height:760px)]:hidden">Senior software engineer focused on reliability, readability, and long-term ownership.</p>
           </div>
 
           <div id="secret-message" className="secret-message secret-message--in-footer hidden sm:block" aria-hidden="true">
