@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, useMotionValue, useReducedMotion } from "framer-motion";
+import { animate, motion, useMotionValue, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState, useCallback, useId } from "react";
 import { usePathname } from "next/navigation";
 import { usePreviousPath } from "../NavProvider";
@@ -237,17 +237,23 @@ export default function DraggableTitle({
 
           {dirty && (
             <div className="absolute right-4 top-14 [@media(max-height:820px)]:top-12">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   setResetSignal((n) => n + 1);
                   if (dotHomeRef.current) setDotAnchor(dotHomeRef.current);
                   setDirty(false);
                   setDotAnimating(true);
                 }}
-                className="rounded-full border border-zinc-300 px-3 py-1 text-xs text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-900"
+                className="surface-panel focus-accent type-meta inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1 text-[11px] text-zinc-600 hover:text-accent dark:text-zinc-400"
               >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 3v5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 Reset
-              </button>
+              </motion.button>
             </div>
           )}
         </div>

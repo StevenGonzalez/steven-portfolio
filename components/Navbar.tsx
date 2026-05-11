@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { primaryNavLinks } from "../lib/site";
 import Magnetic from "./Magnetic";
 import NavLink from "./NavLink";
@@ -61,25 +62,36 @@ export default function Navbar() {
           </button>
         </nav>
 
-        {open && (
-          <div id="mobile-site-menu" className="border-t border-zinc-200/70 py-2.5 dark:border-zinc-800/70 sm:hidden">
-            <div className="flex flex-col gap-2">
-              {primaryNavLinks.map((item) => (
-                <NavLink
-                  key={item.href}
-                  href={item.href}
-                  className="focus-accent rounded-xl px-3 py-3 transition"
-                  activeClassName="bg-accent/10 text-accent"
-                  inactiveClassName="text-zinc-700 hover:bg-white/70 hover:text-accent dark:text-zinc-300 dark:hover:bg-black/20"
-                  onClick={() => setOpen(false)}
-                >
-                  <span className="type-nav text-sm font-medium">{item.label}</span>
-                  <span className="mt-1 block text-sm leading-6 text-zinc-500 dark:text-zinc-400">{item.description}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              key="mobile-menu"
+              id="mobile-site-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              style={{ overflow: "hidden" }}
+              className="border-t border-zinc-200/70 dark:border-zinc-800/70 sm:hidden"
+            >
+              <div className="flex flex-col gap-2 py-2.5">
+                {primaryNavLinks.map((item) => (
+                  <NavLink
+                    key={item.href}
+                    href={item.href}
+                    className="focus-accent rounded-xl px-3 py-3 transition"
+                    activeClassName="bg-accent/10 text-accent"
+                    inactiveClassName="text-zinc-700 hover:bg-white/70 hover:text-accent dark:text-zinc-300 dark:hover:bg-black/20"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="type-nav text-sm font-medium">{item.label}</span>
+                    <span className="mt-1 block text-sm leading-6 text-zinc-500 dark:text-zinc-400">{item.description}</span>
+                  </NavLink>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

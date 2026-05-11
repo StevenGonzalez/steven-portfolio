@@ -32,7 +32,7 @@ export function InteractiveDot({
   return (
     <DraggableToken
       key={dotAnchor ? "hero-dot-ready" : "hero-dot-init"}
-      className="fixed z-[200] inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
+      className="fixed z-[400] inline-block origin-center cursor-grab active:cursor-grabbing leading-none text-accent"
       hover={{ scale: 1.02 }}
       onDirty={onDirty}
       onPointerDown={onDirty}

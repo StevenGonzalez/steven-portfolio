@@ -11,6 +11,20 @@ interface TitleLineProps {
   setStaticGlyphRef: (node: HTMLSpanElement | null) => void;
 }
 
+function getTitleLineClasses(idx: number, isTitle: boolean, compactTitle: boolean): string {
+  if (isTitle) {
+    return compactTitle
+      ? "font-display text-[clamp(2.2rem,5.5vw,3.4rem)] font-semibold tracking-tight leading-[1.02] text-zinc-900 dark:text-zinc-100 [@media(max-height:860px)]:text-[clamp(2rem,5vw,3rem)] [@media(max-height:740px)]:text-[clamp(1.8rem,4.6vw,2.6rem)]"
+      : "font-display text-[clamp(2.75rem,7vw,4.5rem)] font-semibold tracking-tight leading-[1.02] text-zinc-900 dark:text-zinc-100 [@media(max-height:820px)]:text-[clamp(2.35rem,6vw,3.6rem)] [@media(max-height:640px)]:text-[clamp(2rem,5.4vw,3rem)]";
+  }
+  if (idx === 1) {
+    return compactTitle
+      ? "font-display mt-3 text-[clamp(1.05rem,2.4vw,1.4rem)] font-medium leading-snug text-zinc-900 dark:text-zinc-100 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:text-[clamp(0.95rem,2.1vw,1.2rem)] [@media(max-height:760px)]:hidden"
+      : "font-display mt-5 text-[clamp(1.25rem,3.2vw,2rem)] font-medium leading-snug text-zinc-900 dark:text-zinc-100 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:text-[clamp(1.1rem,2.6vw,1.55rem)] [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:text-[clamp(1rem,2.4vw,1.35rem)]";
+  }
+  return "mt-3 max-w-4xl text-[clamp(1rem,2.2vw,1.25rem)] leading-relaxed text-zinc-600 dark:text-zinc-400 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:text-[clamp(0.95rem,2vw,1.1rem)]";
+}
+
 export function TitleLine({
   line,
   idx,
@@ -22,15 +36,7 @@ export function TitleLine({
 }: TitleLineProps) {
   const isTitle = idx === 0;
   const tokens = isTitle ? tokenizeTitle(line) : line.split(" ");
-  const lineClasses = isTitle
-    ? compactTitle
-      ? "font-display text-[clamp(2.2rem,5.5vw,3.4rem)] font-semibold tracking-tight leading-[1.02] text-zinc-900 dark:text-zinc-100 [@media(max-height:860px)]:text-[clamp(2rem,5vw,3rem)] [@media(max-height:740px)]:text-[clamp(1.8rem,4.6vw,2.6rem)]"
-      : "font-display text-[clamp(2.75rem,7vw,4.5rem)] font-semibold tracking-tight leading-[1.02] text-zinc-900 dark:text-zinc-100 [@media(max-height:820px)]:text-[clamp(2.35rem,6vw,3.6rem)] [@media(max-height:640px)]:text-[clamp(2rem,5.4vw,3rem)]"
-    : idx === 1
-      ? compactTitle
-        ? "font-display mt-3 text-[clamp(1.05rem,2.4vw,1.4rem)] font-medium leading-snug text-zinc-900 dark:text-zinc-100 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:text-[clamp(0.95rem,2.1vw,1.2rem)] [@media(max-height:760px)]:hidden"
-        : "font-display mt-5 text-[clamp(1.25rem,3.2vw,2rem)] font-medium leading-snug text-zinc-900 dark:text-zinc-100 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:text-[clamp(1.1rem,2.6vw,1.55rem)] [@media(max-height:640px)]:mt-2 [@media(max-height:640px)]:text-[clamp(1rem,2.4vw,1.35rem)]"
-      : "mt-3 max-w-4xl text-[clamp(1rem,2.2vw,1.25rem)] leading-relaxed text-zinc-600 dark:text-zinc-400 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:text-[clamp(0.95rem,2vw,1.1rem)]";
+  const lineClasses = getTitleLineClasses(idx, isTitle, compactTitle);
 
   const renderToken = (
     key: string,
@@ -75,9 +81,9 @@ export function TitleLine({
           );
         }
 
-        const revealIndex = isTitle 
+        const revealIndex = isTitle
           ? tokens.slice(0, i).filter(pt => !/^\s+$/.test(pt)).length
-          : i; 
+          : i;
 
         const delay = getTokenDelay(idx, revealIndex);
         const enter = getEnterAnimation(delay, isTitle, reduceMotion);

@@ -7,6 +7,8 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
   reactStrictMode: false,
+  compress: true,
+  poweredByHeader: false,
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   experimental: {
     mdxRs: true,

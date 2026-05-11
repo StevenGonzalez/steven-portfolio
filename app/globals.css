@@ -892,3 +892,105 @@ body[data-draggable-lock="true"] main {
     transform: none;
   }
 }
+
+/* ─── Card glow micro-interaction ─────────────────────────────────────────── */
+
+.card-glow {
+  position: relative;
+  overflow: hidden;
+}
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    180px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgb(var(--accent-rgb) / 0.09) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+/* ─── Grain / noise texture overlay ───────────────────────────────────────── */
+
+.layout-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 998;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* ─── Arcade: respect prefers-reduced-motion ──────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .arcade-score,
+  .arcade-score-bump {
+    animation: none;
+    color: #ffffff;
+    filter: none;
+    text-shadow: none;
+  }
+
+  .arcade-shield {
+    animation: none;
+    background-position: 0% 50%;
+  }
+
+  .arcade-shield-sweep {
+    animation: none;
+    display: none;
+  }
+
+  .arcade-shield-bump {
+    animation: none;
+  }
+
+  .arcade-life-icon--on {
+    animation: none;
+  }
+
+  .arcade-life-icon--lost {
+    animation: none;
+    opacity: 0.72;
+  }
+
+  .arcade-active-chip--on {
+    animation: none;
+  }
+
+  .arcade-combo-bar--max {
+    animation: none;
+  }
+
+  .arcade-combo-meter--max {
+    animation: none;
+  }
+
+  .arcade-powerup-icon {
+    animation: none;
+    opacity: 0.84;
+  }
+
+  .arcade-powerup-glow {
+    animation: none;
+  }
+
+  .arcade-hazard-icon {
+    animation: none;
+    opacity: 0.78;
+  }
+
+  .arcade-hazard-icon-svg {
+    animation: none;
+    opacity: 0.78;
+  }
+}

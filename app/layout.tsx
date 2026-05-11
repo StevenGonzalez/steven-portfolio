@@ -28,9 +28,23 @@ const robotoMono = Roboto_Mono({
   display: "swap",
 });
 
+const siteDescription =
+  "Senior software engineer focused on reliable systems, pragmatic architecture, and software other engineers can safely change.";
+
 export const metadata: Metadata = {
-  title: "Steven | Senior Software Engineer",
-  description: "Senior software engineer focused on reliable systems, pragmatic architecture, and software other engineers can safely change.",
+  title: "Steven Gonzalez | Senior Software Engineer",
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    title: "Steven Gonzalez | Senior Software Engineer",
+    description: siteDescription,
+    siteName: "Steven Gonzalez",
+  },
+  twitter: {
+    card: "summary",
+    title: "Steven Gonzalez | Senior Software Engineer",
+    description: siteDescription,
+  },
 };
 
 export const viewport: Viewport = {
@@ -49,6 +63,8 @@ export default function RootLayout({
         className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} bg-white text-zinc-950 antialiased dark:bg-black dark:text-zinc-50`}
       >
         <div className="relative isolate h-svh overflow-x-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,250,250,0.94))] dark:bg-[linear-gradient(180deg,rgba(9,9,11,0.98),rgba(9,9,11,0.94))]">
+          <div aria-hidden="true" className="layout-grain" />
+
           <div
             aria-hidden
             className="pointer-events-none absolute -top-16 inset-x-0 bottom-0 opacity-95"
