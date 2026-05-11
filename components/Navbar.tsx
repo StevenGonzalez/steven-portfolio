@@ -15,7 +15,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-[500] px-3 pt-2 sm:px-4 sm:pt-2.5">
-      <div className="surface-panel mx-auto max-w-6xl rounded-2xl px-4 shadow-[0_18px_44px_-36px_rgba(24,24,27,0.35)] backdrop-blur-xl dark:shadow-[0_20px_48px_-38px_rgba(0,0,0,0.8)]">
+      <div className="surface-panel mx-auto max-w-6xl rounded-2xl px-4 shadow-[0_18px_44px_-36px_rgba(24,24,27,0.35)] dark:shadow-[0_20px_48px_-38px_rgba(0,0,0,0.8)]">
         <nav className="flex h-12 items-center justify-between gap-4">
           <Magnetic strength={6}>
             <NavLink

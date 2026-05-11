@@ -4,7 +4,6 @@ import type { MotionValue } from "framer-motion";
 
 interface UseSpotlightProps {
   dotRef: RefObject<HTMLElement | null>;
-  spotlightRef: RefObject<HTMLElement | null>;
   lightingMaskRef: RefObject<HTMLElement | null>;
   dotAnchor: { left: number; top: number } | null;
   dotX: MotionValue<number>;
@@ -13,13 +12,12 @@ interface UseSpotlightProps {
 
 export function useSpotlight({
   dotRef,
-  spotlightRef,
   lightingMaskRef,
   dotAnchor,
   dotX,
   dotY,
 }: UseSpotlightProps) {
-  // Cache dimensions to avoid reading the DOM repeatedly inside hot paths.
+  // Cache dot dimensions to avoid reading the DOM inside hot paths.
   const dimensions = useRef({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -33,9 +31,7 @@ export function useSpotlight({
 
     measure();
 
-    if (typeof ResizeObserver === "undefined") {
-      return;
-    }
+    if (typeof ResizeObserver === "undefined") return;
 
     const observer = new ResizeObserver(measure);
     observer.observe(dotEl);
@@ -51,103 +47,49 @@ export function useSpotlight({
 
     const scheduleUpdate = () => {
       if (rafId !== null) return;
-
       rafId = requestAnimationFrame(() => {
-        updateSpotlight();
+        updatePositions();
         rafId = null;
       });
     };
 
-    const updateSpotlight = () => {
-      const spotlightEl = spotlightRef.current;
+    const updatePositions = () => {
       const lightingEl = lightingMaskRef.current;
-      if (!dotAnchor) return;
+      if (!dotAnchor || !lightingEl) return;
 
-      const targetRect = spotlightEl?.getBoundingClientRect() ?? lightingEl?.getBoundingClientRect();
-      if (!targetRect) return;
-
-      // Use cached dimensions and motion values to calculate center
-      // This avoids reading the dot's DOM node which might be dirty
-      const dotH = dimensions.current.height || 60; 
+      const dotH = dimensions.current.height || 60;
       const dotW = dimensions.current.width || 60;
-      
-      const currentX = dotX.get();
-      const currentY = dotY.get();
 
-      const dotCx = dotAnchor.left + currentX + dotW / 2;
-      const dotCy = dotAnchor.top + currentY + dotH / 2;
+      const dotCx = dotAnchor.left + dotX.get() + dotW / 2;
+      const dotCy = dotAnchor.top + dotY.get() + dotH / 2;
 
-      const cx = dotCx - targetRect.left;
-      const cy = dotCy - targetRect.top;
+      // GPU-composited move — no repaint. LightingLayer's motion.div only
+      // animates opacity so Framer Motion does not own the transform property.
+      lightingEl.style.transform = `translate3d(${dotCx}px, ${dotCy}px, 0)`;
 
-      const w = targetRect.width;
-      const h = targetRect.height;
-      const overflowX = w * 0.35;
-      const overflowY = h * 0.35;
-      const minX = -overflowX;
-      const maxX = w + overflowX;
-      const minY = -overflowY;
-      const maxY = h + overflowY;
-
-      // Clamp values
-      const g1x = Math.max(minX, Math.min(maxX, cx));
-      const g1y = Math.max(minY, Math.min(maxY, cy));
-
-      // Batch style updates
-      if (spotlightEl) {
-        spotlightEl.style.setProperty("--spotlight-1-x", `${g1x}px`);
-        spotlightEl.style.setProperty("--spotlight-1-y", `${g1y}px`);
-      }
-
-      if (lightingEl) {
-        const maskRect = lightingEl.getBoundingClientRect();
-        const mx = dotCx - maskRect.left;
-        const my = dotCy - maskRect.top;
-        lightingEl.style.setProperty("--lighting-x", `${mx}px`);
-        lightingEl.style.setProperty("--lighting-y", `${my}px`);
-      }
-
+      // Secret message reveal (small element, low repaint cost)
       secretEl ??= document.getElementById("secret-message");
       if (secretEl) {
         const secretRect = secretEl.getBoundingClientRect();
-        const rx = dotCx - secretRect.left;
-        const ry = dotCy - secretRect.top;
-        secretEl.style.setProperty("--reveal-x", `${rx}px`);
-        secretEl.style.setProperty("--reveal-y", `${ry}px`);
+        secretEl.style.setProperty("--reveal-x", `${dotCx - secretRect.left}px`);
+        secretEl.style.setProperty("--reveal-y", `${dotCy - secretRect.top}px`);
       }
     };
 
-    const onMotionChange = () => {
-      scheduleUpdate();
-    };
-
-    const unsubscribeX = dotX.on("change", onMotionChange);
-    const unsubscribeY = dotY.on("change", onMotionChange);
+    const unsubscribeX = dotX.on("change", scheduleUpdate);
+    const unsubscribeY = dotY.on("change", scheduleUpdate);
 
     scheduleUpdate();
 
-    const onViewportChange = () => scheduleUpdate();
-
-    window.addEventListener("resize", onViewportChange);
-    window.addEventListener("scroll", onViewportChange, { passive: true });
-
-    const spotlightEl = spotlightRef.current;
-    const observer =
-      typeof ResizeObserver !== "undefined" && spotlightEl
-        ? new ResizeObserver(() => scheduleUpdate())
-        : null;
-
-    if (observer && spotlightEl) {
-      observer.observe(spotlightEl);
-    }
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
 
     return () => {
       if (rafId !== null) cancelAnimationFrame(rafId);
       unsubscribeX();
       unsubscribeY();
-      window.removeEventListener("resize", onViewportChange);
-      window.removeEventListener("scroll", onViewportChange);
-      observer?.disconnect();
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate);
     };
-  }, [dotX, dotY, dotAnchor, spotlightRef, lightingMaskRef]);
+  }, [dotX, dotY, dotAnchor, lightingMaskRef]);
 }

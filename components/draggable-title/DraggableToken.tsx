@@ -199,7 +199,7 @@ export function DraggableToken({
     >
       <motion.span
         className="inline-block"
-        style={{ willChange: "transform, opacity, filter" }}
+        style={{ willChange: "transform, opacity" }}
         initial={enterInitialProps}
         animate={enterAnimateProps}
         transition={enterTransitionProps}

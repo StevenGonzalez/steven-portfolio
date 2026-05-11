@@ -31,7 +31,6 @@ export default function DraggableTitle({
   const pathname = usePathname();
   const prevPath = usePreviousPath();
 
-  const spotlightRef = useRef<HTMLDivElement>(null);
   const lightingMaskRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
   const hiIGlyphRef = useRef<HTMLSpanElement>(null);
@@ -65,7 +64,6 @@ export default function DraggableTitle({
 
   useSpotlight({
     dotRef,
-    spotlightRef,
     lightingMaskRef,
     dotAnchor,
     dotX,
