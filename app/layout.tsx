@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import PageTransition from "../components/PageTransition";
 import { NavProvider } from "../components/NavProvider";
 import RouteTheme from "../components/RouteTheme";
+import { siteUrl } from "../lib/site";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -32,6 +33,7 @@ const siteDescription =
   "Senior software engineer focused on reliable systems, pragmatic architecture, and software other engineers can safely change.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Steven Gonzalez | Senior Software Engineer",
   description: siteDescription,
   openGraph: {
@@ -39,9 +41,10 @@ export const metadata: Metadata = {
     title: "Steven Gonzalez | Senior Software Engineer",
     description: siteDescription,
     siteName: "Steven Gonzalez",
+    url: "/",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Steven Gonzalez | Senior Software Engineer",
     description: siteDescription,
   },
