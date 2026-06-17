@@ -1,9 +1,10 @@
+import GlowPanel from "../GlowPanel";
 import { HazardLegendIcon, PowerupLegendIcon } from "./LegendIcons";
 import { HAZARD_ENTRIES, POWERUP_ENTRIES } from "./core";
 
 export function ArcadeGuidePanel() {
   return (
-    <div className="arcade-guide-panel arcade-panel min-h-0 overflow-hidden rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3 lg:flex lg:flex-1 lg:flex-col">
+    <GlowPanel className="arcade-guide-panel arcade-panel min-h-0 overflow-hidden rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3 lg:flex lg:flex-1 lg:flex-col">
       <div className="type-meta select-none text-xs text-cyan-300/80">Guide</div>
       <div className="arcade-guide-content mt-4 space-y-5 [@media(max-height:820px)]:mt-3 [@media(max-height:820px)]:space-y-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
         <div>
@@ -39,6 +40,6 @@ export function ArcadeGuidePanel() {
           </div>
         </div>
       </div>
-    </div>
+    </GlowPanel>
   );
 }

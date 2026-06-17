@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import GlowPanel from "./GlowPanel";
 import { ArcadeActiveEffectsPanel } from "./arcade/ArcadeActiveEffectsPanel";
 import { ArcadeGuidePanel } from "./arcade/ArcadeGuidePanel";
 import { ArcadeLivesPanel } from "./arcade/ArcadeLivesPanel";
@@ -93,7 +94,7 @@ export default function ArcadeGame() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden [@media(max-height:820px)]:gap-3 [@media(max-height:640px)]:gap-2 lg:flex-row">
-      <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-cyan-300/45 bg-[#080915] shadow-[0_0_0_1px_rgba(236,72,153,0.2),0_0_44px_rgba(34,211,238,0.16)]">
+      <GlowPanel className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-cyan-300/45 bg-[#080915] shadow-[0_0_0_1px_rgba(236,72,153,0.2),0_0_44px_rgba(34,211,238,0.16)]">
         <div className="flex items-center justify-between border-b border-cyan-300/20 bg-black/35 px-4 py-3 [@media(max-height:820px)]:py-2">
           <div>
             <h2 className="font-display text-xl font-bold text-cyan-100 [text-shadow:0_0_16px_rgba(34,211,238,0.7)] [@media(max-height:820px)]:text-lg">Star Surge</h2>
@@ -148,7 +149,7 @@ export default function ArcadeGame() {
             onContextMenu={canvasPointerHandlers.onContextMenu}
           />
         </div>
-      </section>
+      </GlowPanel>
 
       <aside className="flex min-h-0 flex-col gap-3 overflow-y-auto overscroll-contain [@media(max-height:820px)]:gap-2 lg:w-60">
         <ArcadeScorePanel score={score} scoreBump={scoreBump} combo={comboMultiplier} comboTimer={comboTimer} comboColor={comboColor} comboHeat={comboHeat} />

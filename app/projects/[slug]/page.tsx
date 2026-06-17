@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import SectionRail from "../../../components/SectionRail";
+import GlowPanel from "../../../components/GlowPanel";
 import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug } from "../../../lib/content";
 
 const sectionDefinitions = [
@@ -84,7 +85,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             />
           </div>
 
-          <div className="surface-panel mt-10 rounded-2xl px-6 py-8 sm:px-8">
+          <GlowPanel className="surface-panel mt-10 rounded-2xl px-6 py-8 sm:px-8">
             <div className="prose max-w-[68ch]">
               {sections.map((section) => (
                 <section key={section.id} id={section.id} className="scroll-mt-24">
@@ -93,11 +94,12 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                 </section>
               ))}
             </div>
-          </div>
+          </GlowPanel>
         </div>
 
         <aside className="hidden lg:block">
-          <div className="surface-panel sticky top-24 rounded-2xl p-5">
+          <div className="sticky top-24">
+            <GlowPanel className="surface-panel rounded-2xl p-5">
             <div className="type-meta text-xs text-zinc-500 dark:text-zinc-400">
               Project snapshot
             </div>
@@ -158,6 +160,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                 </div>
               </div>
             ) : null}
+            </GlowPanel>
           </div>
         </aside>
       </div>

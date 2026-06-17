@@ -875,6 +875,20 @@ body[data-draggable-lock="true"] main {
   opacity: 1;
 }
 
+/* ─── Pointer glow ring (masks a cursor-following gradient to the border) ──── */
+
+.glow-ring {
+  padding: 1.5px;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
 /* ─── Grain / noise texture overlay ───────────────────────────────────────── */
 
 .layout-grain {

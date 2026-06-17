@@ -1,4 +1,5 @@
 import SectionRail from "./SectionRail";
+import GlowPanel from "./GlowPanel";
 
 type TocItem = {
   title: string;
@@ -56,15 +57,17 @@ export default function ThoughtPost({
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_240px]">
         <div className="min-w-0">
-          <div className="surface-panel rounded-2xl px-6 py-8 sm:px-8">
+          <GlowPanel className="surface-panel rounded-2xl px-6 py-8 sm:px-8">
             <div className="prose max-w-[68ch]">{children}</div>
-          </div>
+          </GlowPanel>
         </div>
 
         {sections.length > 0 ? (
           <aside className="hidden lg:block">
-            <div className="surface-panel sticky top-24 rounded-2xl p-4">
-              <SectionRail items={sections} />
+            <div className="sticky top-24">
+              <GlowPanel className="surface-panel rounded-2xl p-4">
+                <SectionRail items={sections} />
+              </GlowPanel>
             </div>
           </aside>
         ) : null}

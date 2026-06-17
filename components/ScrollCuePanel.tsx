@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, useMotionTemplate } from "framer-motion";
+import { usePointerGlow } from "@/hooks/usePointerGlow";
 
 interface ScrollCuePanelProps {
   children: React.ReactNode;
@@ -8,6 +10,7 @@ interface ScrollCuePanelProps {
   scrollerClassName?: string;
   nudgeKey?: string;
   enableNudge?: boolean;
+  glow?: boolean;
 }
 
 interface ScrollState {
@@ -23,8 +26,11 @@ export default function ScrollCuePanel({
   scrollerClassName,
   nudgeKey,
   enableNudge = true,
+  glow = false,
 }: ScrollCuePanelProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const { ref: glowRef, glowX, glowY, glowOpacity } = usePointerGlow(glow);
+  const glowBackground = useMotionTemplate`radial-gradient(circle 220px at ${glowX}% ${glowY}%, rgb(var(--accent-rgb) / 0.85), transparent 70%)`;
   const [scrollState, setScrollState] = useState<ScrollState>({
     canScroll: false,
     atTop: true,
@@ -89,10 +95,18 @@ export default function ScrollCuePanel({
   }, [enableNudge, nudgeKey, scrollState.canScroll, scrollState.atTop]);
 
   return (
-    <div className={`relative min-h-0 overflow-hidden ${containerClassName ?? ""}`}>
+    <div ref={glowRef} className={`relative min-h-0 overflow-hidden ${containerClassName ?? ""}`}>
       <div ref={scrollerRef} className={`cue-scroller ${scrollerClassName ?? ""}`}>
         {children}
       </div>
+
+      {glow ? (
+        <motion.span
+          aria-hidden
+          className="glow-ring pointer-events-none absolute inset-0 rounded-[inherit]"
+          style={{ background: glowBackground, opacity: glowOpacity }}
+        />
+      ) : null}
 
       {scrollState.canScroll && !scrollState.atTop ? (
         <div

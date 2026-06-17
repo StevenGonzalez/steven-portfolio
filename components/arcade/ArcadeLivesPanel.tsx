@@ -1,3 +1,4 @@
+import GlowPanel from "../GlowPanel";
 import { LIFE_INDICES } from "./core";
 
 type ArcadeLivesPanelProps = {
@@ -8,7 +9,7 @@ type ArcadeLivesPanelProps = {
 
 export function ArcadeLivesPanel({ lives, livesBump, lostLifeIndex }: ArcadeLivesPanelProps) {
   return (
-    <div className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
+    <GlowPanel className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
       <div className="type-meta text-xs text-cyan-300/80">Lives</div>
       <div className="mt-3 flex gap-2 [@media(max-height:820px)]:mt-2">
         {LIFE_INDICES.map((index) => {
@@ -28,6 +29,6 @@ export function ArcadeLivesPanel({ lives, livesBump, lostLifeIndex }: ArcadeLive
           );
         })}
       </div>
-    </div>
+    </GlowPanel>
   );
 }

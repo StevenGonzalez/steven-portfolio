@@ -50,6 +50,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
         containerClassName="projects-index-panel surface-panel h-full min-h-0 rounded-3xl"
         scrollerClassName="h-full overflow-y-auto overscroll-contain"
         nudgeKey="projects-index"
+        glow
       >
         {projects.map((p) => (
           <ProjectRow
@@ -75,6 +76,7 @@ export default function ProjectsWithPreview({ projects }: { projects: ProjectDet
           containerClassName="projects-index-panel h-full min-h-0 rounded-3xl"
           scrollerClassName="h-full overflow-y-auto overscroll-contain"
           nudgeKey="projects-preview"
+          glow
         >
           <AnimatePresence mode="wait" initial={false}>
             {active ? <ProjectPreviewCard active={active} eyebrow={previewEyebrow} /> : null}
