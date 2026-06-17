@@ -20,7 +20,7 @@ export default function Home() {
         lines={[
           "Hi, I'm Steven",
           "Senior Software Engineer",
-          "I solve problems. I take pride in my work. I give a damn.",
+          "I solve hard problems and give a damn about the outcome.",
         ]}
       >
         <div className="grid gap-2.5 lg:grid-cols-[minmax(0,1.45fr)_minmax(18rem,0.95fr)]">
