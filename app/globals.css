@@ -780,6 +780,33 @@ body[data-draggable-lock="true"] main {
   scrollbar-gutter: stable;
 }
 
+/* Thin, rounded scrollbar for the cue panels. The panels are rounded-3xl with
+   overflow-hidden, so a chunky native bar gets clipped by the corners and looks
+   like it starts partway down. A slim rounded bar inset symmetrically from top
+   and bottom reads as intentional and clears the corner radius. */
+.cue-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--accent-rgb) / 0.32) transparent;
+}
+
+.cue-scroller::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cue-scroller::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 0.6rem;
+}
+
+.cue-scroller::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--accent-rgb) / 0.28);
+  border-radius: 999px;
+}
+
+.cue-scroller::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(var(--accent-rgb) / 0.45);
+}
+
 @media (max-width: 640px) {
   .insights-archive-list {
     height: min(34rem, calc(100svh - 22rem));

@@ -90,7 +90,7 @@ export default function ScrollCuePanel({
 
   return (
     <div className={`relative min-h-0 overflow-hidden ${containerClassName ?? ""}`}>
-      <div ref={scrollerRef} className={scrollerClassName}>
+      <div ref={scrollerRef} className={`cue-scroller ${scrollerClassName ?? ""}`}>
         {children}
       </div>
 
