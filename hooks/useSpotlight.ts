@@ -65,6 +65,9 @@ export function useSpotlight({
 
       // GPU-composited move — no repaint. LightingLayer's motion.div only
       // animates opacity so Framer Motion does not own the transform property.
+      // dotCx/dotCy are viewport coords; this assumes the fixed lighting layer
+      // shares the dot's containing block (both are fixed inside PageTransition's
+      // motion.main), so they stay aligned even if an ancestor transform is active.
       lightingEl.style.transform = `translate3d(${dotCx}px, ${dotCy}px, 0)`;
 
       // Secret message reveal (small element, low repaint cost)
