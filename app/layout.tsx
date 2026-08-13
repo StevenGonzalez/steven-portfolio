@@ -54,6 +54,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
 };
 
 export default function RootLayout({
@@ -75,7 +80,7 @@ export default function RootLayout({
             className="pointer-events-none absolute -top-16 inset-x-0 bottom-0 opacity-95"
             style={{
               background:
-                "radial-gradient(circle at top center, rgb(var(--accent-rgb) / 0.12), transparent 34%), linear-gradient(180deg, rgb(255 255 255 / 0.18), transparent 32%)",
+                "radial-gradient(circle at top center, rgb(var(--accent-rgb) / 0.12), transparent 34%), linear-gradient(180deg, var(--bloom-top), transparent 32%)",
             }}
           />
           <div

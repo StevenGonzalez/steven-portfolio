@@ -5,6 +5,10 @@
   --foreground: #171717;
   --accent: #6366f1;
   --accent-rgb: 99 102 241;
+  /* Light bloom washed over the top of the page. It reads as sunlight on a
+     white ground; on a dark ground the same white is just haze, so the dark
+     theme drops it and leaves the accent glow to do the work. */
+  --bloom-top: rgb(255 255 255 / 0.18);
 }
 
 body[data-route^="/projects"] {
@@ -435,6 +439,7 @@ body[data-route^="/arcade"] {
     --foreground: #ededed;
     --accent: #8b5cf6;
     --accent-rgb: 139 92 246;
+    --bloom-top: transparent;
   }
 }
 
