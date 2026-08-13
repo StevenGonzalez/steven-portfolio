@@ -67,7 +67,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // The bootstrap script sets data-theme here before React hydrates, so this
+    // element legitimately carries an attribute the server never rendered. The
+    // server cannot know the stored choice, and the only way to learn it server
+    // side is a cookie, which would make every page dynamic to save an
+    // attribute. suppressHydrationWarning covers this element's own attributes
+    // and nothing below it, so the only thing it can hide is lang and
+    // data-theme.
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} bg-zinc-50 text-zinc-950 antialiased dark:bg-black dark:text-zinc-50`}
       >
