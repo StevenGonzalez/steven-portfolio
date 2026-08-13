@@ -6,6 +6,7 @@ import { primaryNavLinks } from "../lib/site";
 import GlowPanel from "./GlowPanel";
 import Magnetic from "./Magnetic";
 import NavLink from "./NavLink";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -45,22 +46,26 @@ export default function Navbar() {
             ))}
           </div>
 
-          <button
-            type="button"
-            aria-label="Toggle menu"
-            aria-controls="mobile-site-menu"
-            aria-expanded={open}
-            className="focus-accent inline-flex items-center justify-center rounded-full border border-zinc-200/80 bg-white/70 p-1.5 text-zinc-700 transition hover:border-accent/35 hover:text-accent dark:border-zinc-800/80 dark:bg-black/30 dark:text-zinc-300 sm:hidden"
-            onClick={() => setOpen((value) => !value)}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="inline-block">
-              {open ? (
-                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              )}
-            </svg>
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+
+            <button
+              type="button"
+              aria-label="Toggle menu"
+              aria-controls="mobile-site-menu"
+              aria-expanded={open}
+              className="focus-accent inline-flex items-center justify-center rounded-full border border-zinc-200/80 bg-white/70 p-1.5 text-zinc-700 transition hover:border-accent/35 hover:text-accent dark:border-zinc-800/80 dark:bg-black/30 dark:text-zinc-300 sm:hidden"
+              onClick={() => setOpen((value) => !value)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="inline-block">
+                {open ? (
+                  <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                ) : (
+                  <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                )}
+              </svg>
+            </button>
+          </div>
         </nav>
 
         <AnimatePresence>

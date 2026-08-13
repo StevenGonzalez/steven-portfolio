@@ -8,6 +8,7 @@ import { NavProvider } from "../components/NavProvider";
 import RouteTheme from "../components/RouteTheme";
 import ParticleField from "../components/ParticleField";
 import { siteUrl } from "../lib/site";
+import { themeBootstrapScript } from "../lib/theme";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -71,6 +72,7 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} bg-white text-zinc-950 antialiased dark:bg-black dark:text-zinc-50`}
       >
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <div className="relative isolate h-svh overflow-x-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,250,250,0.94))] dark:bg-[linear-gradient(180deg,rgba(9,9,11,0.98),rgba(9,9,11,0.94))]">
           <ParticleField />
           <div aria-hidden="true" className="layout-grain" />
