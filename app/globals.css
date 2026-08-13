@@ -25,8 +25,24 @@
 
   --background: #fafafa;
   --foreground: #171717;
-  --accent: #6366f1;
-  --accent-rgb: 99 102 241;
+
+  /* Accents are per theme, not shared. The accent is almost always small
+     uppercase type or a hover colour on a near-white surface, so on light it
+     has to carry real contrast: the dark set measures 1.8:1 to 2.5:1 against
+     white, which is unreadable at 11px. These clear 4.5:1 and read as deeper
+     jewel tones rather than the same hues dimmed. */
+  --accent: #4338ca;
+  --accent-rgb: 67 56 202;
+  --accent-projects: #047857;
+  --accent-projects-rgb: 4 120 87;
+  --accent-insights: #b45309;
+  --accent-insights-rgb: 180 83 9;
+  --accent-arcade: #0e7490;
+  --accent-arcade-rgb: 14 116 144;
+
+  /* Strength of the glow that trails the hero dot, which is the single largest
+     wash of accent on the page. */
+  --hero-glow: 0.45;
   /* Light bloom washed over the top of the page. It reads as sunlight on a
      light ground; on a dark ground the same white is just haze, so the dark
      theme drops it and leaves the accent glow to do the work. */
@@ -81,6 +97,15 @@
     --foreground: #ededed;
     --accent: #8b5cf6;
     --accent-rgb: 139 92 246;
+    --accent-projects: #10b981;
+    --accent-projects-rgb: 16 185 129;
+    --accent-insights: #f59e0b;
+    --accent-insights-rgb: 245 158 11;
+    --accent-arcade: #22d3ee;
+    --accent-arcade-rgb: 34 211 238;
+
+    --hero-glow: 1;
+
     --bloom-top: transparent;
 
     --page-bg: linear-gradient(180deg, rgb(9 9 11 / 0.98), rgb(9 9 11 / 0.94));
@@ -118,6 +143,15 @@
   --foreground: #ededed;
   --accent: #8b5cf6;
   --accent-rgb: 139 92 246;
+  --accent-projects: #10b981;
+  --accent-projects-rgb: 16 185 129;
+  --accent-insights: #f59e0b;
+  --accent-insights-rgb: 245 158 11;
+  --accent-arcade: #22d3ee;
+  --accent-arcade-rgb: 34 211 238;
+
+  --hero-glow: 1;
+
   --bloom-top: transparent;
 
   --page-bg: linear-gradient(180deg, rgb(9 9 11 / 0.98), rgb(9 9 11 / 0.94));
@@ -147,19 +181,22 @@
   --panel-shadow: 0 28px 80px -54px rgb(0 0 0 / 0.7);
 }
 
+/* Each section swaps the accent by pointing at the pair the active theme
+   resolved, so a section keeps its identity while still being legible on the
+   ground it is actually drawn on. */
 body[data-route^="/projects"] {
-  --accent: #10b981;
-  --accent-rgb: 16 185 129;
+  --accent: var(--accent-projects);
+  --accent-rgb: var(--accent-projects-rgb);
 }
 
 body[data-route^="/insights"] {
-  --accent: #f59e0b;
-  --accent-rgb: 245 158 11;
+  --accent: var(--accent-insights);
+  --accent-rgb: var(--accent-insights-rgb);
 }
 
 body[data-route^="/arcade"] {
-  --accent: #22d3ee;
-  --accent-rgb: 34 211 238;
+  --accent: var(--accent-arcade);
+  --accent-rgb: var(--accent-arcade-rgb);
 }
 
 @keyframes arcade-score-glow {
@@ -567,11 +604,6 @@ body[data-route^="/arcade"] {
   --font-sans: var(--font-roboto);
   --font-display: var(--font-roboto-condensed);
   --font-mono: var(--font-roboto-mono);
-}
-
-body[data-route^="/arcade"] {
-  --accent: #22d3ee;
-  --accent-rgb: 34 211 238;
 }
 
 body {

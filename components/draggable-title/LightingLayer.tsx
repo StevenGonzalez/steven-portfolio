@@ -14,8 +14,10 @@ interface LightingLayerProps {
 const SIZE = 1200;
 const HALF = SIZE / 2;
 
+// --hero-glow scales the accent wash per theme. On black it is a glow; at the
+// same strength on a light ground it is a colour cast over the whole hero.
 const BG =
-  `radial-gradient(460px circle at 50% 50%, rgb(var(--accent-rgb) / 0.24) 0%, rgb(var(--accent-rgb) / 0.12) 34%, rgb(var(--accent-rgb) / 0.04) 56%, transparent 78%), ` +
+  `radial-gradient(460px circle at 50% 50%, rgb(var(--accent-rgb) / calc(0.24 * var(--hero-glow))) 0%, rgb(var(--accent-rgb) / calc(0.12 * var(--hero-glow))) 34%, rgb(var(--accent-rgb) / calc(0.04 * var(--hero-glow))) 56%, transparent 78%), ` +
   `radial-gradient(1450px circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.004) 58%, rgba(0,0,0,0.012) 78%, rgba(0,0,0,0.02) 96%, rgba(0,0,0,0.03) 104%)`;
 
 const layerStyle: React.CSSProperties = {
