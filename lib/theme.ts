@@ -7,10 +7,26 @@ const THEME_COLOR: Record<"light" | "dark", string> = {
   dark: "#0a0a0a",
 };
 
-/** Runs before first paint, inlined into the document. Only an explicit choice
- *  needs applying: with no attribute the stylesheet already follows the OS, so
- *  the common path costs nothing and cannot flash. */
-export const themeBootstrapScript = `(function(){try{var t=localStorage.getItem("${THEME_STORAGE_KEY}");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t)}}catch(e){}})()`;
+/** The theme-color tag is created and owned here rather than rendered from the
+ *  viewport export. React deletes the metadata nodes it owns on every client
+ *  navigation, so a tag React rendered cannot also be edited from outside the
+ *  tree: detaching one leaves React deleting a node whose parent is already
+ *  null, which throws during the commit and breaks navigation entirely. The
+ *  cost of owning it here is that the tag is absent with JavaScript disabled,
+ *  which loses the browser chrome tint and nothing else. */
+const THEME_COLOR_META_ID = "theme-color";
+
+/** Runs before first paint, inlined into the document. The attribute is only
+ *  needed for an explicit choice, since with no attribute the stylesheet
+ *  already follows the OS; the theme-color tag has to be written either way so
+ *  the browser chrome is right on the first frame. */
+export const themeBootstrapScript = `(function(){try{var d=document,s=localStorage.getItem(${JSON.stringify(
+  THEME_STORAGE_KEY,
+)}),e=s==="light"||s==="dark";if(e){d.documentElement.setAttribute("data-theme",s)}var k=e?s==="dark":matchMedia("(prefers-color-scheme: dark)").matches,m=d.createElement("meta");m.id=${JSON.stringify(
+  THEME_COLOR_META_ID,
+)};m.name="theme-color";m.content=k?${JSON.stringify(THEME_COLOR.dark)}:${JSON.stringify(
+  THEME_COLOR.light,
+)};d.head.appendChild(m)}catch(x){}})()`;
 
 export function readStoredChoice(): ThemeChoice {
   try {
@@ -67,23 +83,18 @@ export function applyTheme(choice: ThemeChoice) {
   syncThemeColor(resolveTheme(choice));
 }
 
-/** The document ships two theme-color tags scoped by media query, which is the
- *  right answer until someone overrides the OS. Once JavaScript is in play,
- *  collapse them to the single resolved colour so the mobile browser chrome
- *  tracks the actual theme rather than the system preference. */
+/** Updates the tag the bootstrap script created. This only ever edits an
+ *  attribute on a node React does not know about, so nothing here can disturb
+ *  React's view of the document. */
 function syncThemeColor(resolved: "light" | "dark") {
-  const existing = document.querySelectorAll('meta[name="theme-color"]');
-  existing.forEach((tag, index) => {
-    if (index > 0) tag.remove();
-  });
+  let meta = document.getElementById(THEME_COLOR_META_ID);
 
-  let meta = existing[0] ?? null;
   if (!meta) {
     meta = document.createElement("meta");
+    meta.id = THEME_COLOR_META_ID;
     meta.setAttribute("name", "theme-color");
     document.head.appendChild(meta);
   }
 
-  meta.removeAttribute("media");
   meta.setAttribute("content", THEME_COLOR[resolved]);
 }

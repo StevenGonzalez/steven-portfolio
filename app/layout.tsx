@@ -56,10 +56,9 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  // theme-color is deliberately not declared here. It has to change when a
+  // visitor overrides the OS, and a tag React renders cannot be edited from
+  // outside React's tree. lib/theme.ts owns it instead.
 };
 
 export default function RootLayout({
