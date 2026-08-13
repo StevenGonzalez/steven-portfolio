@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "validate:content": "node scripts/validate-content.mjs",
-    "validate": "yarn lint && yarn type-check && yarn validate:content"
+    "validate:theme": "node scripts/validate-theme-tokens.mjs",
+    "validate": "yarn lint && yarn type-check && yarn validate:content && yarn validate:theme"
   },
   "dependencies": {
     "next": "16.1.6",

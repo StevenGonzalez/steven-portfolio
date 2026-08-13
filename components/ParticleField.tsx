@@ -33,15 +33,26 @@ export default function ParticleField() {
     let height = 0;
     let particles: Particle[] = [];
     let accent: [number, number, number] = [99, 102, 241];
+    let particleAlpha = 1;
     let frame = 0;
     let raf = 0;
     const pointer = { x: -9999, y: -9999 };
 
-    function readAccent() {
-      const raw = getComputedStyle(document.body).getPropertyValue("--accent-rgb").trim();
+    // Colour comes from the route, brightness from the theme. Motes are additive
+    // light: at full strength on a light ground they stop reading as drifting
+    // dust and start reading as dirt on the screen, so the light theme dims them.
+    function readTheme() {
+      const styles = getComputedStyle(document.body);
+
+      const raw = styles.getPropertyValue("--accent-rgb").trim();
       const parts = raw.split(/\s+/).map(Number);
       if (parts.length === 3 && parts.every(Number.isFinite)) {
         accent = [parts[0], parts[1], parts[2]];
+      }
+
+      const alpha = Number.parseFloat(styles.getPropertyValue("--particle-alpha"));
+      if (Number.isFinite(alpha)) {
+        particleAlpha = alpha;
       }
     }
 
@@ -142,7 +153,7 @@ export default function ParticleField() {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
+        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha * particleAlpha})`;
         ctx.fill();
       }
 
@@ -172,25 +183,39 @@ export default function ParticleField() {
         const alpha = 0.25 + (0.5 + 0.5 * Math.sin(p.phase)) * 0.4;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
+        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha * particleAlpha})`;
         ctx.fill();
       }
     }
 
-    readAccent();
+    readTheme();
     resizeCanvas();
     createParticles();
 
-    // Re-read the accent the moment RouteTheme swaps the route on <body>,
-    // so the dust recolors instantly when navigating between sections.
-    const accentObserver = new MutationObserver(() => {
-      readAccent();
+    // Re-read the moment RouteTheme swaps the route on <body> or the toggle
+    // swaps the theme on <html>, so the dust recolors instantly when navigating
+    // between sections and dims instantly on a switch to light.
+    const themeObserver = new MutationObserver(() => {
+      readTheme();
       if (reduceMotion) drawStatic();
     });
-    accentObserver.observe(document.body, {
+    themeObserver.observe(document.body, {
       attributes: true,
       attributeFilter: ["data-route"],
     });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    // With no explicit choice the theme follows the OS, which changes no
+    // attribute for the observer to see.
+    const schemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSchemeChange = () => {
+      readTheme();
+      if (reduceMotion) drawStatic();
+    };
+    schemeQuery.addEventListener("change", onSchemeChange);
 
     if (reduceMotion) {
       // Render a single static frame, no animation or pointer reaction, but
@@ -202,7 +227,8 @@ export default function ParticleField() {
       };
       window.addEventListener("resize", onStaticResize);
       return () => {
-        accentObserver.disconnect();
+        themeObserver.disconnect();
+        schemeQuery.removeEventListener("change", onSchemeChange);
         window.removeEventListener("resize", onStaticResize);
       };
     }
@@ -219,7 +245,8 @@ export default function ParticleField() {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);
-      accentObserver.disconnect();
+      themeObserver.disconnect();
+      schemeQuery.removeEventListener("change", onSchemeChange);
     };
   }, []);
 

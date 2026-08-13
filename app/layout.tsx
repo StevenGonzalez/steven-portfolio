@@ -69,10 +69,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} bg-white text-zinc-950 antialiased dark:bg-black dark:text-zinc-50`}
+        className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} bg-zinc-50 text-zinc-950 antialiased dark:bg-black dark:text-zinc-50`}
       >
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
-        <div className="relative isolate h-svh overflow-x-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,250,250,0.94))] dark:bg-[linear-gradient(180deg,rgba(9,9,11,0.98),rgba(9,9,11,0.94))]">
+        <div className="page-ground relative isolate h-svh overflow-x-hidden">
           <ParticleField />
           <div aria-hidden="true" className="layout-grain" />
 
@@ -81,7 +81,7 @@ export default function RootLayout({
             className="pointer-events-none absolute -top-16 inset-x-0 bottom-0 opacity-95"
             style={{
               background:
-                "radial-gradient(circle at top center, rgb(var(--accent-rgb) / 0.12), transparent 34%), linear-gradient(180deg, var(--bloom-top), transparent 32%)",
+                "radial-gradient(circle at top center, rgb(var(--accent-rgb) / var(--bloom-accent)), transparent 34%), linear-gradient(180deg, var(--bloom-top), transparent 32%)",
             }}
           />
           <div
@@ -89,7 +89,7 @@ export default function RootLayout({
             className="pointer-events-none absolute inset-x-0 -top-8 h-64"
             style={{
               background:
-                "linear-gradient(180deg, rgb(var(--accent-rgb) / 0.1), transparent 74%)",
+                "linear-gradient(180deg, rgb(var(--accent-rgb) / var(--bloom-accent-soft)), transparent 74%)",
             }}
           />
           <NavProvider>
