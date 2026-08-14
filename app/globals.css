@@ -1014,30 +1014,45 @@ body[data-draggable-lock="true"] main {
   scrollbar-gutter: stable;
 }
 
-/* Thin, rounded scrollbar for the cue panels. The panels are rounded-3xl with
-   overflow-hidden, so a chunky native bar gets clipped by the corners and looks
-   like it starts partway down. A slim rounded bar inset symmetrically from top
-   and bottom reads as intentional and clears the corner radius. */
-.cue-scroller {
+/* Thin, rounded scrollbar for every panel that scrolls inside a rounded,
+   overflow-hidden container: the cue panels and the arcade guide. A chunky
+   native bar gets clipped by the corners and looks like it starts partway down.
+   A slim rounded bar inset symmetrically from top and bottom reads as
+   intentional and clears the corner radius.
+
+   The guide is listed twice because it scrolls in two places: the panel itself
+   on narrow screens, and the content inside it once the sidebar has a column to
+   fill at lg. */
+.cue-scroller,
+.arcade-guide-panel,
+.arcade-guide-panel .arcade-guide-content {
   scrollbar-width: thin;
   scrollbar-color: rgb(var(--accent-rgb) / 0.32) transparent;
 }
 
-.cue-scroller::-webkit-scrollbar {
+.cue-scroller::-webkit-scrollbar,
+.arcade-guide-panel::-webkit-scrollbar,
+.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar {
   width: 8px;
 }
 
-.cue-scroller::-webkit-scrollbar-track {
+.cue-scroller::-webkit-scrollbar-track,
+.arcade-guide-panel::-webkit-scrollbar-track,
+.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar-track {
   background: transparent;
   margin-block: 0.6rem;
 }
 
-.cue-scroller::-webkit-scrollbar-thumb {
+.cue-scroller::-webkit-scrollbar-thumb,
+.arcade-guide-panel::-webkit-scrollbar-thumb,
+.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar-thumb {
   background-color: rgb(var(--accent-rgb) / 0.28);
   border-radius: 999px;
 }
 
-.cue-scroller::-webkit-scrollbar-thumb:hover {
+.cue-scroller::-webkit-scrollbar-thumb:hover,
+.arcade-guide-panel::-webkit-scrollbar-thumb:hover,
+.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar-thumb:hover {
   background-color: rgb(var(--accent-rgb) / 0.45);
 }
 
