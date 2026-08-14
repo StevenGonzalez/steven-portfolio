@@ -16,9 +16,9 @@ export function ActiveChip({
 
   return (
     <span
-      className={`arcade-active-chip type-meta relative overflow-hidden rounded-md border px-2 py-1 text-[0.68rem] ${active ? "arcade-active-chip--on text-white" : "text-zinc-500"}`}
+      className={`arcade-active-chip type-meta relative overflow-hidden rounded-md border px-2 py-1 text-[0.68rem] ${active ? "arcade-active-chip--on" : "text-zinc-500"}`}
       style={{
-        borderColor: active ? color : "rgb(63 63 70)",
+        borderColor: active ? color : "var(--arcade-chip-off-border)",
         color: active ? color : undefined,
       }}
     >
@@ -31,7 +31,7 @@ export function ActiveChip({
           opacity: active ? 0.88 : 0,
         }}
       />
-      <span className={`relative z-10 ${active ? "text-white mix-blend-screen" : "text-zinc-500"}`}>
+      <span className={`relative z-10 ${active ? "arcade-active-chip-label" : "text-zinc-500"}`}>
         {label}
       </span>
     </span>

@@ -15,10 +15,10 @@ export function ArcadeScorePanel({ score, scoreBump, combo, comboTimer, comboCol
   const isMaxCombo = combo >= MAX_COMBO_MULTIPLIER;
 
   return (
-    <GlowPanel className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
-      <div className="type-meta text-xs text-cyan-300/80">Score</div>
+    <GlowPanel className="arcade-panel rounded-lg p-4 [@media(max-height:820px)]:p-3">
+      <div className="type-meta arcade-label text-xs">Score</div>
       <div key={scoreBump} className="arcade-score arcade-score-bump font-display mt-1 text-4xl font-bold [@media(max-height:820px)]:text-3xl">{score}</div>
-      <div className={`mt-3 h-1.5 overflow-hidden rounded-full bg-white/10 [@media(max-height:820px)]:mt-2 ${isMaxCombo ? "arcade-combo-meter--max" : ""}`}>
+      <div className={`arcade-track mt-3 h-1.5 overflow-hidden rounded-full [@media(max-height:820px)]:mt-2 ${isMaxCombo ? "arcade-combo-meter--max" : ""}`}>
         <div
           className={`h-full rounded-full transition-[width,background-color] duration-100 ${combo > BASE_COMBO_MULTIPLIER ? "arcade-combo-bar--live" : ""} ${isMaxCombo ? "arcade-combo-bar--max" : ""}`}
           style={{

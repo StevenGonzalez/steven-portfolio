@@ -43,6 +43,42 @@
   /* Strength of the glow that trails the hero dot, which is the single largest
      wash of accent on the page. */
   --hero-glow: 0.45;
+
+  /* Star Surge. The playfield is a screen and stays dark in both themes, the
+     way a video player does, because its art is emissive and does not survive
+     on white. What follows is the instrumentation around it, which is site UI
+     and does follow the theme. Anything carrying a game colour keeps a dark
+     ground so it reads as designed: the Star powerup is #f8fafc and would
+     vanish on a white panel. */
+  --arcade-panel-bg: rgb(255 255 255 / 0.92);
+  --arcade-panel-border: rgb(228 228 231);
+  --arcade-panel-shadow:
+    0 1px 2px rgb(24 24 27 / 0.05),
+    0 8px 24px -12px rgb(24 24 27 / 0.12);
+  --arcade-frame-border: rgb(24 24 27 / 0.14);
+  --arcade-frame-shadow:
+    0 1px 2px rgb(24 24 27 / 0.06),
+    0 14px 36px -18px rgb(24 24 27 / 0.3);
+  --arcade-label: #0e7490;
+  --arcade-label-quiet: rgb(82 82 91);
+  --arcade-ink: rgb(24 24 27);
+  --arcade-track: rgb(228 228 231);
+  --arcade-legend-bg: #080915;
+  /* An idle chip carries no game colour, so it follows the theme. An active one
+     fills with its powerup colour, and those fills are light, so the label goes
+     dark and drops the screen blend that only works over a dark chip. */
+  --arcade-chip-bg: rgb(255 255 255 / 0.9);
+  --arcade-chip-off-border: rgb(212 212 216);
+  --arcade-chip-on-ink: rgb(24 24 27);
+  --arcade-chip-blend: normal;
+  /* Glow animations read as haze rather than light on a pale panel. */
+  --arcade-score-color: rgb(24 24 27);
+  --arcade-score-animation: none;
+  --arcade-life-animation: none;
+  --arcade-life-stroke: #0e7490;
+  --arcade-life-fill: rgb(14 116 144 / 0.14);
+  --arcade-life-off-stroke: rgb(24 24 27 / 0.25);
+  --arcade-life-off-fill: rgb(24 24 27 / 0.04);
   /* Light bloom washed over the top of the page. It reads as sunlight on a
      light ground; on a dark ground the same white is just haze, so the dark
      theme drops it and leaves the accent glow to do the work. */
@@ -106,6 +142,30 @@
 
     --hero-glow: 1;
 
+    --arcade-panel-bg: rgb(8 9 21 / 0.85);
+    --arcade-panel-border: rgb(103 232 249 / 0.25);
+    --arcade-panel-shadow: 0 0 24px rgb(34 211 238 / 0.08);
+    --arcade-frame-border: rgb(103 232 249 / 0.45);
+    --arcade-frame-shadow:
+      0 0 0 1px rgb(236 72 153 / 0.2),
+      0 0 44px rgb(34 211 238 / 0.16);
+    --arcade-label: rgb(103 232 249 / 0.8);
+    --arcade-label-quiet: rgb(103 232 249 / 0.6);
+    --arcade-ink: rgb(244 244 245);
+    --arcade-track: rgb(255 255 255 / 0.1);
+    --arcade-legend-bg: transparent;
+    --arcade-chip-bg: rgb(8 9 21 / 0.76);
+    --arcade-chip-off-border: rgb(63 63 70);
+    --arcade-chip-on-ink: #ffffff;
+    --arcade-chip-blend: screen;
+    --arcade-score-color: #ffffff;
+    --arcade-score-animation: arcade-score-glow 5s ease-in-out infinite;
+    --arcade-life-animation: arcade-life-pulse 2.2s ease-in-out infinite;
+    --arcade-life-stroke: #a5f3fc;
+    --arcade-life-fill: rgb(103 232 249 / 0.16);
+    --arcade-life-off-stroke: rgb(103 232 249 / 0.28);
+    --arcade-life-off-fill: rgb(103 232 249 / 0.04);
+
     --bloom-top: transparent;
 
     --page-bg: linear-gradient(180deg, rgb(9 9 11 / 0.98), rgb(9 9 11 / 0.94));
@@ -151,6 +211,30 @@
   --accent-arcade-rgb: 34 211 238;
 
   --hero-glow: 1;
+
+  --arcade-panel-bg: rgb(8 9 21 / 0.85);
+  --arcade-panel-border: rgb(103 232 249 / 0.25);
+  --arcade-panel-shadow: 0 0 24px rgb(34 211 238 / 0.08);
+  --arcade-frame-border: rgb(103 232 249 / 0.45);
+  --arcade-frame-shadow:
+    0 0 0 1px rgb(236 72 153 / 0.2),
+    0 0 44px rgb(34 211 238 / 0.16);
+  --arcade-label: rgb(103 232 249 / 0.8);
+  --arcade-label-quiet: rgb(103 232 249 / 0.6);
+  --arcade-ink: rgb(244 244 245);
+  --arcade-track: rgb(255 255 255 / 0.1);
+  --arcade-legend-bg: transparent;
+  --arcade-chip-bg: rgb(8 9 21 / 0.76);
+  --arcade-chip-off-border: rgb(63 63 70);
+  --arcade-chip-on-ink: #ffffff;
+  --arcade-chip-blend: screen;
+  --arcade-score-color: #ffffff;
+  --arcade-score-animation: arcade-score-glow 5s ease-in-out infinite;
+  --arcade-life-animation: arcade-life-pulse 2.2s ease-in-out infinite;
+  --arcade-life-stroke: #a5f3fc;
+  --arcade-life-fill: rgb(103 232 249 / 0.16);
+  --arcade-life-off-stroke: rgb(103 232 249 / 0.28);
+  --arcade-life-off-fill: rgb(103 232 249 / 0.04);
 
   --bloom-top: transparent;
 
@@ -441,14 +525,55 @@ body[data-route^="/arcade"] {
   }
 }
 
+/* The instrumentation panels around the playfield. All four already carried
+   this class; it just was never defined. */
+.arcade-panel {
+  border: 1px solid var(--arcade-panel-border);
+  background: var(--arcade-panel-bg);
+  box-shadow: var(--arcade-panel-shadow);
+}
+
+/* The screen itself. Its fill stays dark in both themes; only the way its edge
+   meets the page changes, from a neon ring to something that sits on paper. */
+.arcade-frame {
+  border: 1px solid var(--arcade-frame-border);
+  background: #080915;
+  box-shadow: var(--arcade-frame-shadow);
+}
+
+.arcade-label {
+  color: var(--arcade-label);
+}
+
+.arcade-label-quiet {
+  color: var(--arcade-label-quiet);
+}
+
+.arcade-ink {
+  color: var(--arcade-ink);
+}
+
+.arcade-track {
+  background: var(--arcade-track);
+}
+
+/* Powerup and hazard marks keep their game colours, so they keep the dark
+   ground those colours were chosen against. In dark this is transparent and
+   the swatch disappears into the panel. */
+.arcade-legend-swatch {
+  border-radius: 0.375rem;
+  background: var(--arcade-legend-bg);
+}
+
 .arcade-score {
   display: inline-block;
-  animation: arcade-score-glow 5s ease-in-out infinite;
+  color: var(--arcade-score-color);
+  animation: var(--arcade-score-animation);
 }
 
 .arcade-score-bump {
   animation:
-    arcade-score-glow 5s ease-in-out infinite,
+    var(--arcade-score-animation),
     arcade-score-bump 260ms ease-out both;
 }
 
@@ -493,12 +618,12 @@ body[data-route^="/arcade"] {
 }
 
 .arcade-life-icon--on {
-  animation: arcade-life-pulse 2.2s ease-in-out infinite;
+  animation: var(--arcade-life-animation);
 }
 
 .arcade-life-icon--on path {
-  fill: rgb(103 232 249 / 0.16);
-  stroke: #a5f3fc;
+  fill: var(--arcade-life-fill);
+  stroke: var(--arcade-life-stroke);
 }
 
 .arcade-life-icon--off {
@@ -507,8 +632,8 @@ body[data-route^="/arcade"] {
 }
 
 .arcade-life-icon--off path {
-  fill: rgb(103 232 249 / 0.04);
-  stroke: rgb(103 232 249 / 0.28);
+  fill: var(--arcade-life-off-fill);
+  stroke: var(--arcade-life-off-stroke);
 }
 
 .arcade-life-icon--lost {
@@ -516,12 +641,17 @@ body[data-route^="/arcade"] {
 }
 
 .arcade-life-icon--lost path {
-  fill: rgb(103 232 249 / 0.04);
-  stroke: rgb(103 232 249 / 0.28);
+  fill: var(--arcade-life-off-fill);
+  stroke: var(--arcade-life-off-stroke);
 }
 
 .arcade-active-chip {
-  background: rgb(8 9 21 / 0.76);
+  background: var(--arcade-chip-bg);
+}
+
+.arcade-active-chip-label {
+  color: var(--arcade-chip-on-ink);
+  mix-blend-mode: var(--arcade-chip-blend);
 }
 
 .arcade-active-chip--on {

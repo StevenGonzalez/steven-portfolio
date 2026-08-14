@@ -11,8 +11,8 @@ type ArcadeActiveEffectsPanelProps = {
 
 export function ArcadeActiveEffectsPanel({ phaseTimer, focusTimer, novaWaveTimer, multiplierTimer }: ArcadeActiveEffectsPanelProps) {
   return (
-    <GlowPanel className="arcade-panel rounded-lg border border-cyan-300/25 bg-[#080915]/85 p-4 shadow-[0_0_24px_rgba(34,211,238,0.08)] [@media(max-height:820px)]:p-3">
-      <div className="type-meta text-xs text-cyan-300/80">Active</div>
+    <GlowPanel className="arcade-panel rounded-lg p-4 [@media(max-height:820px)]:p-3">
+      <div className="type-meta arcade-label text-xs">Active</div>
       <div className="mt-3 flex flex-wrap gap-2 [@media(max-height:820px)]:mt-2 [@media(max-height:820px)]:gap-1.5">
         <ActiveChip label="Shield" seconds={phaseTimer} maxSeconds={PHASE_DURATION} color={signalStyles.repair.color} />
         <ActiveChip label="Freeze" seconds={focusTimer} maxSeconds={FREEZE_DURATION} color={signalStyles.focus.color} />
