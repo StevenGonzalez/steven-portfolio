@@ -404,6 +404,7 @@ a {
 .guide li b { display: block; font: 500 10px/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--hero-glow); }
 .guide li:not(.got) b { color: var(--hero-muted); opacity: 0.6; }
 .guide li small { display: block; font: 400 12.5px/1.4 var(--body); color: var(--hero-muted); }
+.guide li.extra :is(.n, small) { color: var(--hero-gold); opacity: 1; }
 .guide-foot { margin: 10px 0 0; font: 400 12px/1.4 var(--body); color: var(--hero-muted); }
 
 /* The seam starts inside the hero's bottom fade and reaches into the top of the page, behind its content. It arrives
