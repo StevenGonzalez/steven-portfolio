@@ -20,106 +20,31 @@
   }
 }
 
+/* Light is golden hour over the world, dark is night. The page below the world
+   takes its ground and ink from the same light: a pale cloud grey by day, the
+   deep teal of the night sky after dark. */
 :root {
   color-scheme: light;
 
-  --background: #fafafa;
-  --foreground: #171717;
+  --bg: #e9ede8;
+  --panel: #f3f5f1;
+  --line: #c9d3cd;
+  --fg: #13232a;
+  --muted: #4c5e61;
+  --accent: #8c5a10;
+  --accent-ink: #fdf8ee;
+  --glow: #136f65;
 
-  /* Accents are per theme, not shared. The accent is almost always small
-     uppercase type or a hover colour on a near-white surface, so on light it
-     has to carry real contrast: the dark set measures 1.8:1 to 2.5:1 against
-     white, which is unreadable at 11px. These clear 4.5:1 and read as deeper
-     jewel tones rather than the same hues dimmed. */
-  --accent: #4338ca;
-  --accent-rgb: 67 56 202;
-  --accent-projects: #047857;
-  --accent-projects-rgb: 4 120 87;
-  --accent-insights: #b45309;
-  --accent-insights-rgb: 180 83 9;
-  --accent-arcade: #0e7490;
-  --accent-arcade-rgb: 14 116 144;
+  /* The world is lit the same way in both themes as far as type is concerned:
+     it always sits on painted sky behind a dark scrim, so its ink never flips. */
+  --hero-fg: #f2ede0;
+  --hero-muted: #c9d3cc;
+  --hero-glow: #9fe6da;
+  --hero-gold: #e0b565;
 
-  /* Strength of the glow that trails the hero dot, which is the single largest
-     wash of accent on the page. */
-  --hero-glow: 0.45;
-
-  /* Star Surge. The playfield is a screen and stays dark in both themes, the
-     way a video player does, because its art is emissive and does not survive
-     on white. What follows is the instrumentation around it, which is site UI
-     and does follow the theme. Anything carrying a game colour keeps a dark
-     ground so it reads as designed: the Star powerup is #f8fafc and would
-     vanish on a white panel. */
-  --arcade-panel-bg: rgb(255 255 255 / 0.92);
-  --arcade-panel-border: rgb(228 228 231);
-  --arcade-panel-shadow:
-    0 1px 2px rgb(24 24 27 / 0.05),
-    0 8px 24px -12px rgb(24 24 27 / 0.12);
-  --arcade-frame-border: rgb(24 24 27 / 0.14);
-  --arcade-frame-shadow:
-    0 1px 2px rgb(24 24 27 / 0.06),
-    0 14px 36px -18px rgb(24 24 27 / 0.3);
-  --arcade-label: #0e7490;
-  --arcade-label-quiet: rgb(82 82 91);
-  --arcade-ink: rgb(24 24 27);
-  --arcade-track: rgb(228 228 231);
-  --arcade-legend-bg: #080915;
-  /* An idle chip carries no game colour, so it follows the theme. An active one
-     fills with its powerup colour, and those fills are light, so the label goes
-     dark and drops the screen blend that only works over a dark chip. */
-  --arcade-chip-bg: rgb(255 255 255 / 0.9);
-  --arcade-chip-off-border: rgb(212 212 216);
-  --arcade-chip-on-ink: rgb(24 24 27);
-  --arcade-chip-blend: normal;
-  /* Glow animations read as haze rather than light on a pale panel. */
-  --arcade-score-color: rgb(24 24 27);
-  --arcade-score-animation: none;
-  --arcade-life-animation: none;
-  --arcade-life-stroke: #0e7490;
-  --arcade-life-fill: rgb(14 116 144 / 0.14);
-  --arcade-life-off-stroke: rgb(24 24 27 / 0.25);
-  --arcade-life-off-fill: rgb(24 24 27 / 0.04);
-  /* Light bloom washed over the top of the page. It reads as sunlight on a
-     light ground; on a dark ground the same white is just haze, so the dark
-     theme drops it and leaves the accent glow to do the work. */
-  --bloom-top: rgb(255 255 255 / 0.4);
-
-  /* The ground is recessed and the panels are raised, which is how a light
-     interface gets depth. Dark inverts the relationship: there the ground is
-     the darkest thing and the panels lift by being lighter at their edges. */
-  --page-bg: linear-gradient(180deg, rgb(250 250 250 / 0.98), rgb(244 244 245 / 0.94));
-
-  /* Atmosphere. The bloom, the grain and the drifting motes are all additive
-     light, which means something over black and very little over white: at
-     dark-theme strength they read on a light ground as a colour cast, a dirty
-     screen and specks of dust. Light runs them at roughly a third. */
-  --bloom-accent: 0.05;
-  --bloom-accent-soft: 0.04;
-  --grain-opacity: 0.014;
-  --particle-alpha: 0.45;
-
-  --ink-title: rgb(24 24 27);
-  --ink-emphasis: rgb(39 39 42);
-  --ink-lede: rgb(39 39 42);
-  --ink-body: rgb(63 63 70);
-
-  --line-chrome: rgb(228 228 231 / 0.8);
-  --line-panel: rgb(228 228 231);
-  --line-block: rgb(228 228 231);
-
-  --surface-pill: rgb(255 255 255 / 0.85);
-  --surface-code: rgb(244 244 245);
-  --surface-pre: rgb(250 250 250);
-  --surface-details: rgb(250 250 250 / 0.72);
-
-  --panel-bg:
-    linear-gradient(180deg, rgb(255 255 255 / 0.92) 0%, rgb(255 255 255 / 0.86) 100%),
-    linear-gradient(135deg, rgb(var(--accent-rgb) / 0.06), transparent 42%);
-  /* A tight contact shadow plus a soft ambient one. The previous single value
-     had a -48px spread against a 64px blur, so almost nothing rendered. */
-  --panel-shadow:
-    0 1px 2px rgb(24 24 27 / 0.05),
-    0 8px 24px -12px rgb(24 24 27 / 0.12);
+  --display: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
+  --body: var(--font-schibsted), "Segoe UI", system-ui, sans-serif;
+  --mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
 /* The dark values, declared once for each way of arriving at dark. CSS has no
@@ -129,1088 +54,1051 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --accent: #8b5cf6;
-    --accent-rgb: 139 92 246;
-    --accent-projects: #10b981;
-    --accent-projects-rgb: 16 185 129;
-    --accent-insights: #f59e0b;
-    --accent-insights-rgb: 245 158 11;
-    --accent-arcade: #22d3ee;
-    --accent-arcade-rgb: 34 211 238;
-
-    --hero-glow: 1;
-
-    --arcade-panel-bg: rgb(8 9 21 / 0.85);
-    --arcade-panel-border: rgb(103 232 249 / 0.25);
-    --arcade-panel-shadow: 0 0 24px rgb(34 211 238 / 0.08);
-    --arcade-frame-border: rgb(103 232 249 / 0.45);
-    --arcade-frame-shadow:
-      0 0 0 1px rgb(236 72 153 / 0.2),
-      0 0 44px rgb(34 211 238 / 0.16);
-    --arcade-label: rgb(103 232 249 / 0.8);
-    --arcade-label-quiet: rgb(103 232 249 / 0.6);
-    --arcade-ink: rgb(244 244 245);
-    --arcade-track: rgb(255 255 255 / 0.1);
-    --arcade-legend-bg: transparent;
-    --arcade-chip-bg: rgb(8 9 21 / 0.76);
-    --arcade-chip-off-border: rgb(63 63 70);
-    --arcade-chip-on-ink: #ffffff;
-    --arcade-chip-blend: screen;
-    --arcade-score-color: #ffffff;
-    --arcade-score-animation: arcade-score-glow 5s ease-in-out infinite;
-    --arcade-life-animation: arcade-life-pulse 2.2s ease-in-out infinite;
-    --arcade-life-stroke: #a5f3fc;
-    --arcade-life-fill: rgb(103 232 249 / 0.16);
-    --arcade-life-off-stroke: rgb(103 232 249 / 0.28);
-    --arcade-life-off-fill: rgb(103 232 249 / 0.04);
-
-    --bloom-top: transparent;
-
-    --page-bg: linear-gradient(180deg, rgb(9 9 11 / 0.98), rgb(9 9 11 / 0.94));
-
-    --bloom-accent: 0.12;
-    --bloom-accent-soft: 0.1;
-    --grain-opacity: 0.028;
-    --particle-alpha: 1;
-
-    --ink-title: rgb(244 244 245);
-    --ink-emphasis: rgb(244 244 245);
-    --ink-lede: rgb(228 228 231);
-    --ink-body: rgb(212 212 216);
-
-    --line-chrome: rgb(63 63 70 / 0.8);
-    --line-panel: rgb(63 63 70 / 0.75);
-    --line-block: rgb(39 39 42);
-
-    --surface-pill: rgb(9 9 11 / 0.42);
-    --surface-code: rgb(24 24 27);
-    --surface-pre: rgb(9 9 11);
-    --surface-details: rgb(9 9 11 / 0.62);
-
-    --panel-bg:
-      linear-gradient(180deg, rgb(9 9 11 / 0.72) 0%, rgb(9 9 11 / 0.56) 100%),
-      linear-gradient(135deg, rgb(var(--accent-rgb) / 0.14), transparent 48%);
-    --panel-shadow: 0 28px 80px -54px rgb(0 0 0 / 0.7);
+    --bg: #091318;
+    --panel: #0e1c22;
+    --line: #20333a;
+    --fg: #e7e3d7;
+    --muted: #93a4a3;
+    --accent: #e0b565;
+    --accent-ink: #11191c;
+    --glow: #78dccb;
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --accent: #8b5cf6;
-  --accent-rgb: 139 92 246;
-  --accent-projects: #10b981;
-  --accent-projects-rgb: 16 185 129;
-  --accent-insights: #f59e0b;
-  --accent-insights-rgb: 245 158 11;
-  --accent-arcade: #22d3ee;
-  --accent-arcade-rgb: 34 211 238;
-
-  --hero-glow: 1;
-
-  --arcade-panel-bg: rgb(8 9 21 / 0.85);
-  --arcade-panel-border: rgb(103 232 249 / 0.25);
-  --arcade-panel-shadow: 0 0 24px rgb(34 211 238 / 0.08);
-  --arcade-frame-border: rgb(103 232 249 / 0.45);
-  --arcade-frame-shadow:
-    0 0 0 1px rgb(236 72 153 / 0.2),
-    0 0 44px rgb(34 211 238 / 0.16);
-  --arcade-label: rgb(103 232 249 / 0.8);
-  --arcade-label-quiet: rgb(103 232 249 / 0.6);
-  --arcade-ink: rgb(244 244 245);
-  --arcade-track: rgb(255 255 255 / 0.1);
-  --arcade-legend-bg: transparent;
-  --arcade-chip-bg: rgb(8 9 21 / 0.76);
-  --arcade-chip-off-border: rgb(63 63 70);
-  --arcade-chip-on-ink: #ffffff;
-  --arcade-chip-blend: screen;
-  --arcade-score-color: #ffffff;
-  --arcade-score-animation: arcade-score-glow 5s ease-in-out infinite;
-  --arcade-life-animation: arcade-life-pulse 2.2s ease-in-out infinite;
-  --arcade-life-stroke: #a5f3fc;
-  --arcade-life-fill: rgb(103 232 249 / 0.16);
-  --arcade-life-off-stroke: rgb(103 232 249 / 0.28);
-  --arcade-life-off-fill: rgb(103 232 249 / 0.04);
-
-  --bloom-top: transparent;
-
-  --page-bg: linear-gradient(180deg, rgb(9 9 11 / 0.98), rgb(9 9 11 / 0.94));
-
-  --bloom-accent: 0.12;
-  --bloom-accent-soft: 0.1;
-  --grain-opacity: 0.028;
-  --particle-alpha: 1;
-
-  --ink-title: rgb(244 244 245);
-  --ink-emphasis: rgb(244 244 245);
-  --ink-lede: rgb(228 228 231);
-  --ink-body: rgb(212 212 216);
-
-  --line-chrome: rgb(63 63 70 / 0.8);
-  --line-panel: rgb(63 63 70 / 0.75);
-  --line-block: rgb(39 39 42);
-
-  --surface-pill: rgb(9 9 11 / 0.42);
-  --surface-code: rgb(24 24 27);
-  --surface-pre: rgb(9 9 11);
-  --surface-details: rgb(9 9 11 / 0.62);
-
-  --panel-bg:
-    linear-gradient(180deg, rgb(9 9 11 / 0.72) 0%, rgb(9 9 11 / 0.56) 100%),
-    linear-gradient(135deg, rgb(var(--accent-rgb) / 0.14), transparent 48%);
-  --panel-shadow: 0 28px 80px -54px rgb(0 0 0 / 0.7);
-}
-
-/* Each section swaps the accent by pointing at the pair the active theme
-   resolved, so a section keeps its identity while still being legible on the
-   ground it is actually drawn on. */
-body[data-route^="/projects"] {
-  --accent: var(--accent-projects);
-  --accent-rgb: var(--accent-projects-rgb);
-}
-
-body[data-route^="/insights"] {
-  --accent: var(--accent-insights);
-  --accent-rgb: var(--accent-insights-rgb);
-}
-
-body[data-route^="/arcade"] {
-  --accent: var(--accent-arcade);
-  --accent-rgb: var(--accent-arcade-rgb);
-}
-
-@keyframes arcade-score-glow {
-  0%, 100% {
-    color: #ffffff;
-    filter: brightness(1);
-    text-shadow: 0 0 8px rgb(255 255 255 / 0.8), 0 0 20px rgb(34 211 238 / 0.5), 0 0 38px rgb(217 70 239 / 0.25);
-  }
-  50% {
-    color: #cffafe;
-    filter: brightness(1.35);
-    text-shadow: 0 0 14px rgb(255 255 255 / 0.95), 0 0 34px rgb(34 211 238 / 0.85), 0 0 60px rgb(217 70 239 / 0.45);
-  }
-}
-
-@keyframes arcade-shield-flow {
-  0% {
-    background-position: 0% 50%;
-    filter: brightness(1);
-    box-shadow: 0 0 10px rgb(34 197 94 / 0.75), 0 0 24px rgb(34 197 94 / 0.28);
-  }
-  50% {
-    background-position: 100% 50%;
-    filter: brightness(1.16);
-    box-shadow: 0 0 14px rgb(34 197 94 / 0.82), 0 0 30px rgb(34 197 94 / 0.34);
-  }
-  100% {
-    background-position: 0% 50%;
-    filter: brightness(1);
-    box-shadow: 0 0 10px rgb(34 197 94 / 0.75), 0 0 24px rgb(34 197 94 / 0.28);
-  }
-}
-
-@keyframes arcade-shield-sweep {
-  0% {
-    transform: translateX(-140%);
-    opacity: 0;
-  }
-  18% {
-    opacity: 0.48;
-  }
-  70% {
-    opacity: 0.48;
-  }
-  100% {
-    transform: translateX(260%);
-    opacity: 0;
-  }
-}
-
-@keyframes arcade-powerup-pulse {
-  0%, 100% {
-    opacity: 0.84;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.045);
-  }
-}
-
-@keyframes arcade-powerup-glow {
-  0%, 100% {
-    filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 8px currentColor);
-  }
-  50% {
-    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor);
-  }
-}
-
-@keyframes arcade-hazard-flicker {
-  0%, 100% {
-    opacity: 0.78;
-    box-shadow: 0 0 7px currentColor;
-  }
-  42% {
-    opacity: 0.95;
-    box-shadow: 0 0 11px currentColor;
-  }
-  46% {
-    opacity: 0.68;
-  }
-  54% {
-    opacity: 0.9;
-  }
-}
-
-@keyframes arcade-hazard-svg-flicker {
-  0%, 100% {
-    opacity: 0.78;
-    filter: drop-shadow(0 0 5px currentColor);
-  }
-  42% {
-    opacity: 0.95;
-    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 13px currentColor);
-  }
-  46% {
-    opacity: 0.68;
-  }
-  54% {
-    opacity: 0.9;
-  }
-}
-
-@keyframes arcade-score-bump {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-  18% {
-    transform: translateX(-2px) scale(1.08);
-  }
-  36% {
-    transform: translateX(3px) scale(1.06);
-  }
-  54% {
-    transform: translateX(-2px) scale(1.04);
-  }
-  72% {
-    transform: translateX(1px) scale(1.02);
-  }
-  100% {
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes arcade-shield-bump {
-  0% {
-    transform: translateX(0);
-  }
-  18% {
-    transform: translateX(-3px);
-  }
-  36% {
-    transform: translateX(4px);
-  }
-  54% {
-    transform: translateX(-2px);
-  }
-  72% {
-    transform: translateX(1px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes arcade-life-pulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 6px rgb(103 232 249 / 0.78)) drop-shadow(0 0 12px rgb(34 211 238 / 0.38));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 9px rgb(165 243 252 / 0.98)) drop-shadow(0 0 19px rgb(34 211 238 / 0.64)) drop-shadow(0 0 28px rgb(192 132 252 / 0.26));
-    transform: scale(1.06);
-  }
-}
-
-@keyframes arcade-life-lost-shake {
-  0% {
-    filter: drop-shadow(0 0 6px rgb(103 232 249 / 0.42));
-    opacity: 0.88;
-    transform: translateX(0) rotate(0deg) scale(1.06);
-  }
-  18% {
-    transform: translateX(-4px) rotate(-9deg) scale(1.1);
-  }
-  36% {
-    transform: translateX(4px) rotate(8deg) scale(1.05);
-  }
-  54% {
-    transform: translateX(-3px) rotate(-6deg) scale(1);
-  }
-  72% {
-    filter: drop-shadow(0 0 3px rgb(103 232 249 / 0.24));
-    transform: translateX(2px) rotate(4deg) scale(0.98);
-  }
-  100% {
-    filter: none;
-    opacity: 0.72;
-    transform: translateX(0) rotate(0deg) scale(1);
-  }
-}
-
-@keyframes arcade-active-chip-glow {
-  0%, 100% {
-    box-shadow: 0 0 8px currentColor;
-    filter: brightness(1);
-  }
-  50% {
-    box-shadow: 0 0 14px currentColor, 0 0 28px currentColor;
-    filter: brightness(1.22);
-  }
-}
-
-@keyframes arcade-combo-max-bar {
-  0%, 100% {
-    filter: brightness(1.12) saturate(1.15);
-    box-shadow: 0 0 18px rgb(248 250 252 / 0.95), 0 0 34px rgb(34 211 238 / 0.7), 0 0 58px rgb(192 132 252 / 0.45);
-  }
-  36% {
-    filter: brightness(1.8) saturate(1.35);
-    box-shadow: 0 0 28px rgb(248 250 252 / 1), 0 0 52px rgb(34 211 238 / 0.85), 0 0 82px rgb(192 132 252 / 0.6);
-  }
-}
-
-@keyframes arcade-combo-bar-flow {
-  0% {
-    background-position: 0% 50%;
-    filter: brightness(calc(1 + var(--combo-heat, 0) * 0.15));
-  }
-  50% {
-    background-position: 100% 50%;
-    filter: brightness(calc(1.12 + var(--combo-heat, 0) * 0.35));
-  }
-  100% {
-    background-position: 0% 50%;
-    filter: brightness(calc(1 + var(--combo-heat, 0) * 0.15));
-  }
-}
-
-@keyframes arcade-combo-meter-shake {
-  0%, 100% {
-    transform: translate(0, 0) scaleY(1);
-  }
-  12% {
-    transform: translate(-4px, 3px) scaleY(1.2);
-  }
-  24% {
-    transform: translate(3px, -3px) scaleY(0.94);
-  }
-  38% {
-    transform: translate(-3px, -2px) scaleY(1.14);
-  }
-  56% {
-    transform: translate(4px, 3px) scaleY(1);
-  }
-  72% {
-    transform: translate(-2px, 2px) scaleY(1.08);
-  }
-  86% {
-    transform: translate(2px, -2px) scaleY(0.98);
-  }
-}
-
-/* The instrumentation panels around the playfield. All four already carried
-   this class; it just was never defined. */
-.arcade-panel {
-  border: 1px solid var(--arcade-panel-border);
-  background: var(--arcade-panel-bg);
-  box-shadow: var(--arcade-panel-shadow);
-}
-
-/* The screen itself. Its fill stays dark in both themes; only the way its edge
-   meets the page changes, from a neon ring to something that sits on paper. */
-.arcade-frame {
-  border: 1px solid var(--arcade-frame-border);
-  background: #080915;
-  box-shadow: var(--arcade-frame-shadow);
-}
-
-.arcade-label {
-  color: var(--arcade-label);
-}
-
-.arcade-label-quiet {
-  color: var(--arcade-label-quiet);
-}
-
-.arcade-ink {
-  color: var(--arcade-ink);
-}
-
-.arcade-track {
-  background: var(--arcade-track);
-}
-
-/* Powerup and hazard marks keep their game colours, so they keep the dark
-   ground those colours were chosen against. In dark this is transparent and
-   the swatch disappears into the panel. */
-.arcade-legend-swatch {
-  border-radius: 0.375rem;
-  background: var(--arcade-legend-bg);
-}
-
-.arcade-score {
-  display: inline-block;
-  color: var(--arcade-score-color);
-  animation: var(--arcade-score-animation);
-}
-
-.arcade-score-bump {
-  animation:
-    var(--arcade-score-animation),
-    arcade-score-bump 260ms ease-out both;
-}
-
-.arcade-shield {
-  background-image: linear-gradient(
-    90deg,
-    rgb(34 197 94),
-    rgb(134 239 172),
-    rgb(34 197 94)
-  );
-  background-size: 220% 100%;
-  animation: arcade-shield-flow 5s ease-in-out infinite;
-}
-
-.arcade-shield-sweep {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 27%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, transparent, rgb(187 247 208 / 0.42), transparent);
-  animation: arcade-shield-sweep 5s linear infinite;
-}
-
-.arcade-shield-bump {
-  animation: arcade-shield-bump 240ms ease-out both;
-}
-
-.arcade-life-icon {
-  display: block;
-  width: 1.55rem;
-  height: 1.55rem;
-  overflow: visible;
-  transform-box: fill-box;
-  transform-origin: center;
-  will-change: filter, transform;
-}
-
-.arcade-life-icon path {
-  vector-effect: non-scaling-stroke;
-  stroke-linejoin: round;
-  stroke-width: 2.4;
-}
-
-.arcade-life-icon--on {
-  animation: var(--arcade-life-animation);
-}
-
-.arcade-life-icon--on path {
-  fill: var(--arcade-life-fill);
-  stroke: var(--arcade-life-stroke);
-}
-
-.arcade-life-icon--off {
-  filter: none;
-  opacity: 0.68;
-}
-
-.arcade-life-icon--off path {
-  fill: var(--arcade-life-off-fill);
-  stroke: var(--arcade-life-off-stroke);
-}
-
-.arcade-life-icon--lost {
-  animation: arcade-life-lost-shake 360ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
-}
-
-.arcade-life-icon--lost path {
-  fill: var(--arcade-life-off-fill);
-  stroke: var(--arcade-life-off-stroke);
-}
-
-.arcade-active-chip {
-  background: var(--arcade-chip-bg);
-}
-
-.arcade-active-chip-label {
-  color: var(--arcade-chip-on-ink);
-  mix-blend-mode: var(--arcade-chip-blend);
-}
-
-.arcade-active-chip--on {
-  animation: arcade-active-chip-glow 1.8s ease-in-out infinite;
-}
-
-.arcade-combo-bar--live {
-  background-size: 220% 100%;
-}
-
-.arcade-combo-meter--max {
-  animation: arcade-combo-meter-shake 420ms steps(2, end) infinite;
-  transform-origin: center center;
-  overflow: visible;
-}
-
-.arcade-combo-bar--max {
-  animation:
-    arcade-combo-bar-flow 0.9s ease-in-out infinite,
-    arcade-combo-max-bar 560ms ease-in-out infinite;
-}
-
-.arcade-guide-panel {
-  display: flex;
-  min-height: 0;
-  flex: 1 1 auto;
-  flex-direction: column;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-left: 1.25rem;
-  padding-right: 0.85rem;
-  padding-bottom: 1.1rem;
-  scroll-padding-bottom: 1.1rem;
-  scrollbar-gutter: stable;
-}
-
-.arcade-guide-panel .arcade-guide-content {
-  flex: 0 0 auto;
-  min-height: max-content;
-  overflow: visible;
-  padding: 0.2rem 0.4rem 1.2rem 0.45rem;
-}
-
-@media (max-height: 820px) {
-  .arcade-guide-panel {
-    padding-left: 0.75rem;
-    padding-right: 0.6rem;
-    padding-bottom: 0.75rem;
-    scroll-padding-bottom: 0.75rem;
-  }
-
-  .arcade-guide-panel .arcade-guide-content {
-    padding: 0.2rem 0.35rem 0.75rem 0.35rem;
-  }
-}
-
-.arcade-powerup-icon {
-  transform-origin: center;
-  animation: arcade-powerup-pulse 5.2s ease-in-out infinite;
-  filter: none;
-}
-
-.arcade-powerup-glow {
-  animation: arcade-powerup-glow 5.2s ease-in-out infinite;
-}
-
-.arcade-hazard-icon {
-  transform-origin: center;
-  animation: arcade-hazard-flicker 5.6s steps(4, end) infinite;
-}
-
-.arcade-hazard-icon-svg {
-  transform-origin: center;
-  animation: arcade-hazard-svg-flicker 5.6s steps(4, end) infinite;
+  --bg: #091318;
+  --panel: #0e1c22;
+  --line: #20333a;
+  --fg: #e7e3d7;
+  --muted: #93a4a3;
+  --accent: #e0b565;
+  --accent-ink: #11191c;
+  --glow: #78dccb;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-roboto);
-  --font-display: var(--font-roboto-condensed);
-  --font-mono: var(--font-roboto-mono);
+  --font-sans: var(--body);
+  --font-mono: var(--mono);
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  font-weight: 400;
-  line-height: 1.6;
-  letter-spacing: -0.005em;
-  text-rendering: geometricPrecision;
+  position: relative;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 17px/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
 }
 
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
-@supports (overflow: clip) {
-  html,
-  body {
-    overflow-x: clip;
-  }
+a {
+  color: inherit;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+:focus-visible {
+  outline: 2px solid var(--glow);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-.font-display {
-  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-}
+/* ─── Header ───────────────────────────────────────────────────────────────── */
 
-.type-nav {
-  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  letter-spacing: 0.06em;
-}
-
-.type-meta {
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-}
-
-.meta-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  border: 1px solid var(--line-chrome);
-  border-radius: 999px;
-  background: var(--surface-pill);
-  padding: 0.3rem 0.65rem;
-  color: var(--ink-body);
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.72rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-  backdrop-filter: blur(10px);
-}
-
-.page-ground {
-  background: var(--page-bg);
-}
-
-.surface-panel {
-  border: 1px solid var(--line-panel);
-  background: var(--panel-bg);
-  backdrop-filter: blur(8px);
-  box-shadow: var(--panel-shadow);
-}
-
-h1 { letter-spacing: -0.03em; }
-h2 { letter-spacing: -0.028em; }
-h3 { letter-spacing: -0.02em; }
-h4, h5, h6 { letter-spacing: -0.012em; }
-
-@supports (text-wrap: balance) {
-  h1, h2, h3 {
-    text-wrap: balance;
-  }
-}
-
-.prose {
-  color: var(--ink-body);
-  line-height: 1.75;
-  font-size: 1.05rem;
-  letter-spacing: -0.003em;
-}
-
-@supports (text-wrap: pretty) {
-  .prose {
-    text-wrap: pretty;
-  }
-}
-
-.prose :where(p, ul, ol, pre, blockquote, hr) {
-  margin-top: 1.1rem;
-  margin-bottom: 1.1rem;
-}
-
-.prose > p:first-of-type {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: var(--ink-lede);
-}
-
-.prose :where(h2, h3) {
-  scroll-margin-top: 6rem;
-  margin-top: 2.4rem;
-  margin-bottom: 0.75rem;
-  color: var(--ink-title);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-}
-
-.prose :where(h2) {
+/* Transparent over the world, solid once the page scrolls past it, and solid
+   from the start on every page without a world behind it. */
+.nav {
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1.4rem;
+  justify-content: space-between;
+  gap: 16px;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) clamp(16px, 4vw, 48px) 14px;
+  color: var(--hero-fg);
+  border-bottom: 1px solid transparent;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
-.prose :where(h2)::before {
-  content: "";
-  width: 0.55rem;
-  height: 0.55rem;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: var(--accent);
-  box-shadow: 0 0 0 0.28rem rgb(var(--accent-rgb) / 0.12);
+.nav.solid {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  color: var(--fg);
+  border-color: var(--line);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
-.prose :where(h3) {
-  font-size: 1.2rem;
-}
-
-.prose :where(ul, ol) {
-  padding-left: 1.1rem;
-  list-style-position: outside;
-}
-
-.prose :where(ul) {
-  list-style-type: disc;
-}
-
-.prose :where(ol) {
-  list-style-type: decimal;
-}
-.prose :where(li) {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.prose :where(li)::marker {
-  color: var(--accent);
-}
-
-.prose :where(a) {
-  color: inherit;
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
-  transition: color 160ms ease, text-decoration-color 160ms ease;
-}
-.prose :where(a:hover) {
-  color: var(--accent);
-  text-decoration-color: color-mix(in srgb, var(--accent) 70%, transparent);
-}
-
-.prose :where(code) {
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.95em;
-  font-variant-ligatures: none;
-  font-feature-settings: "liga" 0, "calt" 0;
-  padding: 0.15rem 0.35rem;
-  border-radius: 0.4rem;
-  background: var(--surface-code);
-  color: var(--ink-emphasis);
-}
-
-.prose :where(pre) {
-  overflow-x: auto;
-  border-radius: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--line-block);
-  background: var(--surface-pre);
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-.prose :where(pre code) {
-  padding: 0;
-  background: transparent;
-}
-
-.prose :where(blockquote) {
-  border-left: 2px solid var(--accent);
-  margin-inline: 0;
-  padding: 0.75rem 0 0.75rem 1rem;
-  background: linear-gradient(90deg, rgb(var(--accent-rgb) / 0.08), transparent 70%);
-  color: var(--ink-body);
-}
-
-.prose :where(hr) {
-  border: 0;
-  height: 1px;
-  background: color-mix(in srgb, currentColor 12%, transparent);
-}
-
-.prose :where(details) {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-  border: 1px solid var(--line-block);
-  border-radius: 0.9rem;
-  padding: 1rem;
-  background: var(--surface-details);
-}
-
-.prose :where(summary) {
-  cursor: pointer;
-  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  font-weight: 700;
-  color: var(--ink-emphasis);
-}
-
-.link-underline {
-  position: relative;
-}
-.link-underline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 1px;
-  background-color: currentColor;
-  opacity: 0.2;
-  transition: opacity 200ms ease;
-}
-.link-underline:hover::after { opacity: 0.5; }
-
-.nav-underline:hover::after {
-  background-color: var(--accent);
-  opacity: 0.9;
-}
-.nav-underline-active::after {
-  background-color: var(--accent);
-  opacity: 0.95;
-  height: 2px;
-}
-
-.accent-underline:hover::after {
-  background-color: var(--accent);
-  opacity: 0.9;
-}
-
-.text-accent { color: var(--accent); }
-.border-accent { border-color: var(--accent); }
-.bg-accent { background-color: var(--accent); }
-
-.focus-accent:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent);
-}
-
-body[data-draggable-lock="true"] main {
-  overflow: hidden !important;
-}
-
-.insights-archive-list {
-  height: 100%;
-  scrollbar-gutter: stable;
-}
-
-.projects-index-panel {
-  height: 100%;
-  scrollbar-gutter: stable;
-}
-
-/* Thin, rounded scrollbar for every panel that scrolls inside a rounded,
-   overflow-hidden container: the cue panels and the arcade guide. A chunky
-   native bar gets clipped by the corners and looks like it starts partway down.
-   A slim rounded bar inset symmetrically from top and bottom reads as
-   intentional and clears the corner radius.
-
-   The guide is listed twice because it scrolls in two places: the panel itself
-   on narrow screens, and the content inside it once the sidebar has a column to
-   fill at lg. */
-.cue-scroller,
-.arcade-guide-panel,
-.arcade-guide-panel .arcade-guide-content {
-  scrollbar-width: thin;
-  scrollbar-color: rgb(var(--accent-rgb) / 0.32) transparent;
-}
-
-.cue-scroller::-webkit-scrollbar,
-.arcade-guide-panel::-webkit-scrollbar,
-.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.cue-scroller::-webkit-scrollbar-track,
-.arcade-guide-panel::-webkit-scrollbar-track,
-.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar-track {
-  background: transparent;
-  margin-block: 0.6rem;
-}
-
-.cue-scroller::-webkit-scrollbar-thumb,
-.arcade-guide-panel::-webkit-scrollbar-thumb,
-.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar-thumb {
-  background-color: rgb(var(--accent-rgb) / 0.28);
-  border-radius: 999px;
-}
-
-.cue-scroller::-webkit-scrollbar-thumb:hover,
-.arcade-guide-panel::-webkit-scrollbar-thumb:hover,
-.arcade-guide-panel .arcade-guide-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(var(--accent-rgb) / 0.45);
-}
-
-@media (max-width: 640px) {
-  .insights-archive-list {
-    height: min(34rem, calc(100svh - 22rem));
-  }
-
-  .projects-index-panel {
-    height: min(34rem, calc(100svh - 24rem));
-  }
-}
-
-.secret-message {
-  pointer-events: none;
-  user-select: none;
+.wordmark {
+  font: 600 22px/1 var(--display);
+  letter-spacing: 0.01em;
+  text-decoration: none;
   white-space: nowrap;
-
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.8rem;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: rgb(var(--accent-rgb) / 0.85);
-  text-shadow: 0 0 18px rgb(var(--accent-rgb) / 0.25);
-
-  -webkit-mask-image: radial-gradient(
-    140px circle at var(--reveal-x, -999px) var(--reveal-y, -999px),
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  mask-image: radial-gradient(
-    140px circle at var(--reveal-x, -999px) var(--reveal-y, -999px),
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
 }
-
-.secret-message--in-footer {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.nav nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.4vw, 28px);
+  font: 500 14px/1 var(--body);
 }
-
-/* ─── Card glow micro-interaction ─────────────────────────────────────────── */
-
-.card-glow {
-  position: relative;
-  overflow: hidden;
+.nav nav a {
+  text-decoration: none;
+  opacity: 0.82;
 }
-.card-glow::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    180px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgb(var(--accent-rgb) / 0.09) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 200ms ease;
-  pointer-events: none;
-  z-index: 0;
+.nav nav a:hover {
+  opacity: 1;
 }
-.card-glow:hover::before {
+.theme {
+  display: inline-grid;
+  place-items: center;
+  color: inherit;
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 6px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.theme:hover {
   opacity: 1;
 }
 
-/* ─── Pointer glow ring (masks a cursor-following gradient to the border) ──── */
+/* ─── The world ────────────────────────────────────────────────────────────── */
 
-.glow-ring {
-  padding: 1.5px;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
+.hero {
+  position: relative;
+  height: max(620px, min(100svh, 1200px));
+  overflow: hidden;
+  background: #0b1a20;
+  color: var(--hero-fg);
+  isolation: isolate;
+}
+.scene {
+  position: absolute;
+  inset: 0;
+  animation: world-in 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.scene canvas {
+  position: absolute;
+  left: -72px;
+  top: -72px;
+  will-change: transform;
+  pointer-events: none;
+}
+.copy > * {
+  animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.copy > :nth-child(1) { animation-delay: 0.35s; }
+.copy > :nth-child(2) { animation-delay: 0.5s; }
+.copy > :nth-child(3) { animation-delay: 0.7s; }
+.copy > :nth-child(4) { animation-delay: 0.85s; }
+.copy > :nth-child(5) { animation-delay: 1.3s; }
+@keyframes world-in {
+  from { opacity: 0; transform: scale(1.04); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
 }
 
-/* ─── Grain / noise texture overlay ───────────────────────────────────────── */
-
-.layout-grain {
-  position: fixed;
+/* Arrival: the world starts dark and the lantern tree's light spreads out across it. */
+@property --wake {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+.wake {
+  position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 998;
-  opacity: var(--grain-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background: radial-gradient(circle at var(--wx, 67%) var(--wy, 40%), transparent calc(var(--wake) * 0.3), #02080b var(--wake));
+  animation: wake 2.8s cubic-bezier(0.3, 0, 0.2, 1) 0.2s both paused;
+}
+.wake.go {
+  animation-play-state: running;
+}
+@keyframes wake {
+  from { --wake: 0px; }
+  to { --wake: 170vmax; }
+}
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgb(4 11 14 / 0.62), rgb(4 11 14 / 0.28) 34%, transparent 58%);
+}
+/* Smoothstep stops, so the fade lands on the page with no visible band where a linear ramp would stop. */
+.fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 18%;
+  pointer-events: none;
+  background: linear-gradient(
+    transparent,
+    color-mix(in srgb, var(--bg) 16%, transparent) 25%,
+    color-mix(in srgb, var(--bg) 50%, transparent) 50%,
+    color-mix(in srgb, var(--bg) 84%, transparent) 75%,
+    var(--bg)
+  );
+}
+.copy {
+  position: absolute;
+  z-index: 2;
+  left: clamp(16px, 5vw, 80px);
+  top: 50%;
+  translate: 0 -54%;
+  width: min(36rem, 46vw);
+}
+.eyebrow {
+  margin: 0 0 18px;
+  font: 500 12px/1.5 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hero-glow);
+}
+.copy h1 {
+  margin: 0;
+  font: 500 clamp(3.6rem, 8.4vw, 7.6rem)/0.86 var(--display);
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 0.35);
+}
+.copy .lead {
+  margin: 22px 0 0;
+  max-width: 30ch;
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--hero-muted);
+}
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 15px/1 var(--body);
+  text-decoration: none;
+  padding: 14px 20px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  transition: transform 0.2s, background 0.2s;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn.solid {
+  background: var(--hero-gold);
+  color: #11191c;
+}
+.btn.line {
+  border-color: rgb(242 237 224 / 0.5);
+  color: var(--hero-fg);
+}
+.btn.line:hover {
+  background: rgb(242 237 224 / 0.08);
 }
 
-/* ─── Arcade: respect prefers-reduced-motion ──────────────────────────────── */
+/* Field-guide label that follows the pointer, and the guide itself. */
+.tag {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  max-width: 250px;
+  padding: 10px 12px;
+  border-radius: 3px;
+  background: rgb(6 14 18 / 0.9);
+  border: 1px solid rgb(159 230 218 / 0.25);
+  color: var(--hero-fg);
+  opacity: 0;
+  transition: opacity 0.18s;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.3);
+}
+.tag.on { opacity: 1; }
+.tag i { display: block; font: italic 500 19px/1.1 var(--display); }
+.tag b { display: block; margin-top: 3px; font: 500 10.5px/1.3 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--hero-glow); }
+.tag span { display: block; margin-top: 6px; font: 400 13px/1.45 var(--body); color: var(--hero-muted); }
+.tag em {
+  display: block;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgb(159 230 218 / 0.2);
+  font: normal 500 10.5px/1.3 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hero-gold);
+}
+.guide-wrap {
+  position: relative;
+  margin-top: 26px;
+}
+.guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 8px 10px;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hero-fg);
+  background: rgb(6 14 18 / 0.45);
+  border: 1px solid rgb(159 230 218 / 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.guide-btn::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--hero-glow);
+  box-shadow: 0 0 10px var(--hero-glow);
+}
+.guide-btn b { font-weight: 500; color: var(--hero-glow); }
+.guide-btn:hover { border-color: rgb(159 230 218 / 0.6); }
+.guide-btn.new { animation: found 1.4s ease-out; }
+.guide-btn.done::before { background: var(--hero-gold); box-shadow: 0 0 10px var(--hero-gold); }
+.guide-btn.done b { color: var(--hero-gold); }
+@keyframes found {
+  0% { box-shadow: 0 0 0 0 rgb(159 230 218 / 0.7); }
+  100% { box-shadow: 0 0 0 14px rgb(159 230 218 / 0); }
+}
+.guide {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  bottom: calc(100% + 10px);
+  width: min(330px, calc(100vw - 32px));
+  max-height: min(76vh, 620px);
+  overflow: auto;
+  padding: 16px 16px 12px;
+  border-radius: 4px;
+  background: #070f13;
+  border: 1px solid rgb(159 230 218 / 0.25);
+  box-shadow: 0 16px 50px rgb(0 0 0 / 0.45);
+  scrollbar-width: thin;
+  scrollbar-color: rgb(159 230 218 / 0.3) transparent;
+}
+.guide-h { margin: 0 0 10px; font: italic 500 22px/1.1 var(--display); }
+.guide-h span { display: block; margin-top: 4px; font: normal 500 10.5px/1.3 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--hero-muted); }
+.guide ol { list-style: none; margin: 0; padding: 0; }
+.guide li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr); gap: 4px; padding: 5px 0; border-top: 1px solid rgb(159 230 218 / 0.12); }
+.guide .n { font: 400 11px/1.7 var(--mono); color: var(--hero-muted); opacity: 0.7; }
+.guide li i { display: block; font: italic 500 16px/1.2 var(--display); }
+.guide li b { display: block; font: 500 10px/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--hero-glow); }
+.guide li:not(.got) b { color: var(--hero-muted); opacity: 0.6; }
+.guide li small { display: block; font: 400 12.5px/1.4 var(--body); color: var(--hero-muted); }
+.guide-foot { margin: 10px 0 0; font: 400 12px/1.4 var(--body); color: var(--hero-muted); }
 
-@media (prefers-reduced-motion: reduce) {
-  .arcade-score,
-  .arcade-score-bump {
-    animation: none;
-    color: #ffffff;
-    filter: none;
-    text-shadow: none;
+/* The seam starts inside the hero's bottom fade and reaches into the top of the page, behind its content. It arrives
+   after the world has woken, so it never shows over the dark of the arrival. The low seam closes the page: it is
+   positioned against the body, so it reaches behind the footer as well as the last section. */
+.site {
+  position: relative;
+  z-index: 0;
+  padding-inline: clamp(16px, 5vw, 80px);
+}
+.seam {
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  top: -140px;
+  width: 100%;
+  height: 600px;
+  pointer-events: none;
+  mask-image: linear-gradient(transparent, #000 18%, #000 45%, transparent);
+  animation: seam-in 1.6s ease-out 1.6s both;
+}
+@keyframes seam-in {
+  from { opacity: 0; }
+}
+.seam.low {
+  top: auto;
+  bottom: 0;
+  height: 520px;
+  animation: none;
+  mask-image: linear-gradient(to top, #000 25%, transparent);
+}
+
+/* ─── Site ─────────────────────────────────────────────────────────────────── */
+
+.sec {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: clamp(64px, 9vw, 112px);
+}
+.sec + .sec {
+  border-top: 1px solid var(--line);
+}
+.label {
+  margin: 0 0 10px;
+  font: 500 12px/1.4 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--glow);
+}
+.label::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 10px 2px 0;
+  border-radius: 50%;
+  background: var(--glow);
+  box-shadow: 0 0 10px var(--glow);
+  vertical-align: middle;
+}
+.sec > h2,
+.page-h {
+  margin: 0 0 clamp(28px, 4vw, 48px);
+  font: 500 clamp(2.4rem, 5vw, 3.8rem)/1 var(--display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.intro {
+  margin: calc(-1 * clamp(12px, 2vw, 24px)) 0 clamp(28px, 4vw, 48px);
+  max-width: 62ch;
+  color: var(--muted);
+}
+
+.work {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.proj {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(22px, 3vw, 34px);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  transition: border-color 0.25s, transform 0.25s;
+}
+/* Cards catch the light: a soft glow follows the pointer and lights the nearest stretch of edge. */
+[data-glow] {
+  position: relative;
+  isolation: isolate;
+}
+[data-glow]::before,
+[data-glow]::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+[data-glow]::after {
+  background: radial-gradient(440px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--glow) 10%, transparent), transparent 65%);
+}
+[data-glow]::before {
+  z-index: 1;
+  padding: 1px;
+  background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--glow) 75%, transparent), transparent 70%);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+[data-glow]:hover::before,
+[data-glow]:hover::after {
+  opacity: 1;
+}
+.proj:hover {
+  border-color: color-mix(in srgb, var(--glow) 45%, var(--line));
+  transform: translateY(-2px);
+}
+.proj.lead-proj {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 14px 48px;
+  background: radial-gradient(120% 90% at 100% 0, color-mix(in srgb, var(--glow) 9%, transparent), transparent 60%), var(--panel);
+}
+.proj .meta {
+  margin: 0;
+  font: 500 12px/1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.proj h3 {
+  margin: 0;
+  font: 600 clamp(1.7rem, 2.6vw, 2.3rem)/1.05 var(--display);
+  text-wrap: balance;
+}
+.proj p {
+  margin: 0;
+  color: var(--muted);
+}
+.proj ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.proj li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.proj li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.85;
+}
+/* Sits at the foot of the card, so stacks and links line up across a row. */
+.proj .stack {
+  margin: auto 0 0;
+  padding-top: 6px;
+  font: 400 12.5px/1.6 var(--mono);
+  color: var(--muted);
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font: 500 14px/1.4 var(--body);
+}
+.links a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.links a:hover {
+  border-color: var(--accent);
+}
+.lead-proj .side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+.about blockquote {
+  margin: 0;
+  font: italic 500 clamp(1.9rem, 3.4vw, 2.8rem)/1.12 var(--display);
+  text-wrap: balance;
+}
+.about blockquote em {
+  font-style: normal;
+  color: var(--accent);
+}
+.about .body {
+  display: grid;
+  gap: 16px;
+  max-width: 62ch;
+}
+.about .body p {
+  margin: 0;
+}
+.facts {
+  margin: 8px 0 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px 20px;
+  font-size: 15px;
+}
+.facts dt {
+  font: 500 12px/1.9 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.facts dd {
+  margin: 0;
+}
+
+.posts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.posts li + li {
+  border-top: 1px solid var(--line);
+}
+.posts a {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 4px 28px;
+  padding: 20px 0;
+  text-decoration: none;
+}
+.posts time {
+  font: 400 13px/1.9 var(--mono);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.posts b {
+  display: block;
+  font: 600 1.45rem/1.2 var(--display);
+}
+.posts a:hover b {
+  color: var(--accent);
+}
+.posts span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+.posts small {
+  display: block;
+  margin-top: 6px;
+  font: 400 12px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.more {
+  display: inline-block;
+  margin-top: 24px;
+  font: 500 15px/1 var(--body);
+  color: var(--accent);
+}
+
+.colo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+.colo li {
+  padding: clamp(22px, 2.4vw, 28px);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+.colo b {
+  display: block;
+  font: 500 clamp(2.8rem, 4.4vw, 3.6rem)/1 var(--display);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.colo span {
+  display: block;
+  margin-top: 8px;
+  font: 500 12px/1.4 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--glow);
+}
+.colo p {
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.colo-foot {
+  margin: 24px 0 0;
+  max-width: 68ch;
+  color: var(--muted);
+}
+
+.contact p.big {
+  margin: 0 0 28px;
+  max-width: 22ch;
+  font: 500 clamp(2.2rem, 4.6vw, 3.6rem)/1.05 var(--display);
+  text-wrap: balance;
+}
+.contact .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.contact .btn.solid {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.contact .btn.line {
+  border-color: var(--line);
+  color: var(--fg);
+}
+.contact .btn.line:hover {
+  background: var(--panel);
+}
+
+/* Set by script only, so nothing stays hidden if it never runs. */
+.rv {
+  opacity: 0;
+}
+.rv.in {
+  opacity: 1;
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) backwards;
+}
+
+.foot {
+  width: min(1120px, 100% - 2 * clamp(16px, 5vw, 80px));
+  margin: 0 auto;
+  padding: 28px 0 calc(40px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  font: 400 12.5px/1.6 var(--mono);
+  color: var(--muted);
+}
+.foot nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.foot a {
+  text-decoration: none;
+}
+.foot a:hover {
+  color: var(--accent);
+}
+
+/* ─── Pages without a world ───────────────────────────────────────────────── */
+
+/* The header is solid here, so the page starts below it. */
+.page {
+  padding: calc(72px + env(safe-area-inset-top, 0px)) clamp(16px, 5vw, 80px) 0;
+}
+.page .sec:first-child {
+  padding-top: clamp(40px, 6vw, 72px);
+}
+.crumb {
+  display: inline-block;
+  margin-bottom: 18px;
+  font: 500 12px/1.4 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+}
+.crumb:hover {
+  color: var(--accent);
+}
+.doc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+.doc-head {
+  max-width: 48rem;
+}
+.doc-head h1 {
+  margin: 0;
+  font: 500 clamp(2.5rem, 5.4vw, 4.2rem)/1.02 var(--display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.doc-head .sub {
+  margin: 18px 0 0;
+  max-width: 60ch;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+.doc-head .meta {
+  margin: 14px 0 0;
+  font: 400 12.5px/1.6 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.doc-head .links {
+  margin-top: 18px;
+}
+.doc-body {
+  margin-top: clamp(32px, 5vw, 56px);
+}
+.doc-figure {
+  margin: clamp(28px, 4vw, 48px) 0 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+}
+.doc-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.rail {
+  position: sticky;
+  top: 96px;
+  display: grid;
+  gap: 22px;
+  font-size: 14.5px;
+}
+.rail h2 {
+  margin: 0 0 8px;
+  font: 500 11.5px/1.4 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rail p {
+  margin: 0;
+  line-height: 1.5;
+}
+.rail ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.rail a,
+.rail button {
+  display: block;
+  padding: 4px 0 4px 12px;
+  border: 0;
+  border-left: 2px solid var(--line);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.rail a:hover,
+.rail button:hover {
+  color: var(--fg);
+}
+.rail a[aria-current="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.rail .top {
+  border-left-color: transparent;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.pills li {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font: 400 12px/1.4 var(--mono);
+  color: var(--muted);
+}
+.archive .posts a {
+  grid-template-columns: 9rem minmax(0, 1fr);
+}
+
+/* ─── Long-form prose ─────────────────────────────────────────────────────── */
+
+.prose {
+  max-width: 68ch;
+  font-size: 1.06rem;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+.prose :where(p, ul, ol, pre, blockquote, hr, details) {
+  margin-block: 1.1rem;
+}
+.prose > :first-child {
+  margin-top: 0;
+}
+.prose :where(h2, h3) {
+  scroll-margin-top: 96px;
+  margin: 2.6rem 0 0.6rem;
+  font-family: var(--display);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+.prose :where(h2) {
+  font-size: 2rem;
+}
+.prose :where(h3) {
+  font-size: 1.5rem;
+}
+.prose :where(ul, ol) {
+  padding-left: 1.2rem;
+}
+.prose :where(ul) {
+  list-style: disc;
+}
+.prose :where(ol) {
+  list-style: decimal;
+}
+.prose :where(li) {
+  margin-block: 0.45rem;
+}
+.prose :where(li)::marker {
+  color: var(--accent);
+}
+.prose :where(a) {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.prose :where(a:hover) {
+  text-decoration-color: var(--accent);
+}
+.prose :where(strong) {
+  font-weight: 600;
+}
+.prose :where(code) {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  padding: 0.12rem 0.35rem;
+  border-radius: 3px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.prose :where(pre) {
+  overflow-x: auto;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.prose :where(pre code) {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.prose :where(blockquote) {
+  margin-inline: 0;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 2px solid var(--accent);
+  font: italic 500 1.35rem/1.4 var(--display);
+}
+.prose :where(hr) {
+  border: 0;
+  height: 1px;
+  background: var(--line);
+}
+.prose :where(details) {
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+}
+.prose :where(summary) {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .work,
+  .proj.lead-proj,
+  .about,
+  .doc {
+    grid-template-columns: minmax(0, 1fr);
   }
-
-  .arcade-shield {
-    animation: none;
-    background-position: 0% 50%;
+  .posts a,
+  .archive .posts a {
+    grid-template-columns: minmax(0, 1fr);
   }
-
-  .arcade-shield-sweep {
-    animation: none;
+  .colo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rail {
     display: none;
   }
+}
+@media (max-width: 520px) {
+  .colo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .nav nav a.hide-sm {
+    display: none;
+  }
+  .copy {
+    top: calc(84px + env(safe-area-inset-top, 0px));
+    translate: none;
+    width: auto;
+    right: 16px;
+  }
+  .copy h1 {
+    font-size: clamp(3.1rem, 15vw, 4.4rem);
+  }
+  .copy .lead {
+    margin-top: 14px;
+    font-size: 1rem;
+  }
+  .ctas {
+    margin-top: 20px;
+  }
+  .scrim {
+    background: linear-gradient(180deg, rgb(4 11 14 / 0.66), rgb(4 11 14 / 0.34) 48%, transparent 66%);
+  }
+  .guide-wrap {
+    margin-top: 16px;
+  }
+}
 
-  .arcade-shield-bump {
+/* Theme changes: the new theme grows outward through a soft-edged circle (see switchTheme in lib/theme.ts). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  mask: radial-gradient(closest-side, #000 72%, transparent) no-repeat;
+  mask-size: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .btn,
+  .tag,
+  .nav,
+  .proj {
+    transition: none;
+  }
+  .scene,
+  .copy > *,
+  .guide-btn.new,
+  .seam {
     animation: none;
   }
-
-  .arcade-life-icon--on {
-    animation: none;
-  }
-
-  .arcade-life-icon--lost {
-    animation: none;
-    opacity: 0.72;
-  }
-
-  .arcade-active-chip--on {
-    animation: none;
-  }
-
-  .arcade-combo-bar--max {
-    animation: none;
-  }
-
-  .arcade-combo-meter--max {
-    animation: none;
-  }
-
-  .arcade-powerup-icon {
-    animation: none;
-    opacity: 0.84;
-  }
-
-  .arcade-powerup-glow {
-    animation: none;
-  }
-
-  .arcade-hazard-icon {
-    animation: none;
-    opacity: 0.78;
-  }
-
-  .arcade-hazard-icon-svg {
-    animation: none;
-    opacity: 0.78;
+  .wake {
+    display: none;
   }
 }

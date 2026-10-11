@@ -15,6 +15,12 @@ export type ProjectDetail = {
   scope?: string;
   keyDecision?: string;
   highlights?: string[];
+  /** The short version for the project's card: a one-line pitch, the points worth a glance, and the stack. */
+  card: {
+    blurb: string;
+    points: string[];
+    stack: string[];
+  };
   problem: string;
   approach: string;
   architecture: string;

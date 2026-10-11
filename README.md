@@ -6,16 +6,15 @@ Live site: [stevengonzalez.dev](https://stevengonzalez.dev)
 
 ## Overview
 
-This repo powers my portfolio site built with Next.js, TypeScript, and MDX. It is where I showcase project case studies, write about software delivery and architecture, and add a little personality through interactive UI work and a small arcade minigame.
+This repo powers my portfolio site built with Next.js, TypeScript, and MDX. It is where I showcase project case studies, write about software delivery and architecture, and open with a small painted world: a sky island drawn live in Canvas 2D with no images or libraries.
 
 The goal was not to ship a generic portfolio template. I wanted something that felt deliberate, fast, and personal while still being easy to maintain.
 
 ## What You Will Find Here
 
-- A custom homepage with interactive presentation and motion-driven UI
+- A homepage hero that paints a living sky island in layered canvases, with the static layers painted in a Web Worker
 - Project case studies covering mobile, SaaS, desktop, and platform engineering work
 - An Insights section for longer-form writing on architecture, delivery, and engineering tradeoffs
-- A small built-in minigame because serious work and personality do not have to be mutually exclusive
 - Data-driven content structures for projects and writing
 
 ## Stack
@@ -24,7 +23,6 @@ The goal was not to ship a generic portfolio template. I wanted something that f
 - React 19
 - TypeScript
 - Tailwind CSS v4
-- Framer Motion
 - MDX
 - Yarn
 
@@ -51,6 +49,7 @@ Open `http://localhost:3000`.
 
 - `app/` - route-level pages and MDX insight entries
 - `components/` - reusable UI and interaction components
+- `lib/world/` - the painted world engine behind the homepage hero
 - `data/projects.ts` - project case study metadata and long-form content
 - `data/insights.ts` - insight metadata
 - `scripts/validate-content.mjs` - guards against missing or inconsistent content

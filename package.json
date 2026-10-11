@@ -14,11 +14,10 @@
     "validate": "yarn lint && yarn type-check && yarn validate:content && yarn validate:theme"
   },
   "dependencies": {
+    "@next/mdx": "16.1.6",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "framer-motion": "^11.2.0",
-    "@next/mdx": "16.1.6"
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

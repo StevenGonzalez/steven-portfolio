@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import SectionRail from "../../../components/SectionRail";
-import GlowPanel from "../../../components/GlowPanel";
 import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug } from "../../../lib/content";
 
 const sectionDefinitions = [
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const project = getProjectBySlug(slug);
   if (!project) return {};
   return {
-    title: `${project.title} | Steven`,
+    title: `${project.title} | Steven Gonzalez`,
     description: project.summary,
   };
 }
@@ -39,131 +39,78 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   const sectionItems = sections.map((section) => ({ id: section.id, label: section.title }));
 
   return (
-    <article className="mx-auto max-w-6xl px-4 py-16">
-      <header className="mb-8">
-        <div className="type-meta text-xs text-accent">Case study</div>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{project.title}</h1>
-        {project.timeline ? (
-          <div className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{project.timeline}</div>
-        ) : null}
-        <p className="mt-3 max-w-4xl text-zinc-600 dark:text-zinc-400">{project.summary}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {project.tags.map((t) => (
-            <span key={t} className="meta-pill">
-              {t}
-            </span>
-          ))}
-        </div>
+    <div className="page">
+      <article className="sec">
+        <Link className="crumb" href="/projects">
+          ← Case studies
+        </Link>
+        <div className="doc">
+          <div className="min-w-0">
+            <header className="doc-head">
+              <p className="label">Case study</p>
+              <h1>{project.title}</h1>
+              <p className="sub">{project.summary}</p>
+              {project.timeline ? <p className="meta">{project.timeline}</p> : null}
+              <ul className="pills">
+                {project.tags.map((tag) => (
+                  <li key={tag}>{tag}</li>
+                ))}
+              </ul>
+              {primaryLinks.length ? (
+                <div className="links">
+                  {primaryLinks.map((link) => (
+                    <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              ) : null}
+            </header>
 
-        {primaryLinks.length ? (
-          <div className="mt-4 flex flex-wrap gap-4 text-sm">
-            {primaryLinks.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                target="_blank"
-                rel="noreferrer"
-                className="link-underline hover:text-accent focus-accent"
-              >
-                {l.label}
-              </a>
-            ))}
-          </div>
-        ) : null}
-      </header>
+            <figure className="doc-figure">
+              <Image
+                src={project.image}
+                alt={project.title}
+                width={1280}
+                height={720}
+                sizes="(max-width: 860px) 100vw, 820px"
+                priority
+              />
+            </figure>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_260px]">
-        <div className="min-w-0">
-          <div className="overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
-            <Image
-              src={project.image}
-              alt={project.title}
-              width={1280}
-              height={720}
-              className="h-auto w-full object-cover"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
-            />
-          </div>
-
-          <GlowPanel className="surface-panel mt-10 rounded-2xl px-6 py-8 sm:px-8">
-            <div className="prose max-w-[68ch]">
+            <div className="prose doc-body">
               {sections.map((section) => (
-                <section key={section.id} id={section.id} className="scroll-mt-24">
+                <section key={section.id} id={section.id}>
                   <h2>{section.title}</h2>
                   <p>{section.body}</p>
                 </section>
               ))}
             </div>
-          </GlowPanel>
-        </div>
-
-        <aside className="hidden lg:block">
-          <div className="sticky top-24">
-            <GlowPanel className="surface-panel rounded-2xl p-5">
-            <div className="type-meta text-xs text-zinc-500 dark:text-zinc-400">
-              Project snapshot
-            </div>
-
-            <div className="mt-5 border-b border-zinc-200 pb-5 dark:border-zinc-800">
-              <SectionRail items={sectionItems} />
-            </div>
-
-            {project.role ? (
-              <div className="mt-5">
-                <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100">Role</div>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{project.role}</p>
-              </div>
-            ) : null}
-
-            {project.scope ? (
-              <div className="mt-5">
-                <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100">Scope</div>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{project.scope}</p>
-              </div>
-            ) : null}
-
-            {project.keyDecision ? (
-              <div className="mt-5">
-                <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100">Key decision</div>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{project.keyDecision}</p>
-              </div>
-            ) : null}
-
-            {project.highlights?.length ? (
-              <div className="mt-5">
-                <div className="text-xs font-medium text-zinc-900 dark:text-zinc-100">Highlights</div>
-                <ul className="mt-2 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  {project.highlights.slice(0, 4).map((highlight) => (
-                    <li key={highlight} className="flex gap-2">
-                      <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                      <span>{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {primaryLinks?.length ? (
-              <div className="mt-5 border-t border-zinc-200 pt-4 dark:border-zinc-800">
-                <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                  {primaryLinks.slice(0, 3).map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="link-underline hover:text-accent focus-accent"
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-            </GlowPanel>
           </div>
-        </aside>
-      </div>
-    </article>
+
+          <aside className="rail">
+            <SectionRail items={sectionItems} />
+            {project.role ? (
+              <div>
+                <h2>Role</h2>
+                <p>{project.role}</p>
+              </div>
+            ) : null}
+            {project.scope ? (
+              <div>
+                <h2>Scope</h2>
+                <p>{project.scope}</p>
+              </div>
+            ) : null}
+            {project.keyDecision ? (
+              <div>
+                <h2>Key decision</h2>
+                <p>{project.keyDecision}</p>
+              </div>
+            ) : null}
+          </aside>
+        </div>
+      </article>
+    </div>
   );
 }

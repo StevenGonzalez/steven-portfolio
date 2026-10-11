@@ -4,8 +4,8 @@ import { useEffect, useSyncExternalStore } from "react";
 import {
   applyTheme,
   readStoredChoice,
-  setTheme,
   subscribeToTheme,
+  switchTheme,
   type ThemeChoice,
 } from "../lib/theme";
 
@@ -61,8 +61,11 @@ export default function ThemeToggle() {
       type="button"
       aria-label={`Theme: ${LABELS[choice]}. Switch to ${LABELS[next]}.`}
       title={`Theme: ${LABELS[choice]}`}
-      className="focus-accent inline-flex items-center justify-center rounded-full border border-zinc-200/80 bg-white/70 p-1.5 text-zinc-700 transition hover:border-accent/35 hover:text-accent dark:border-zinc-800/80 dark:bg-black/30 dark:text-zinc-300"
-      onClick={() => setTheme(next)}
+      className="theme"
+      onClick={(e) => {
+        const b = e.currentTarget.getBoundingClientRect();
+        switchTheme(next, { x: b.left + b.width / 2, y: b.top + b.height / 2 });
+      }}
     >
       <svg
         width="16"

@@ -3,8 +3,8 @@ export type ThemeChoice = "system" | "light" | "dark";
 export const THEME_STORAGE_KEY = "theme";
 
 const THEME_COLOR: Record<"light" | "dark", string> = {
-  light: "#ffffff",
-  dark: "#0a0a0a",
+  light: "#e9ede8",
+  dark: "#091318",
 };
 
 /** The theme-color tag is created and owned here rather than rendered from the
@@ -53,6 +53,57 @@ export function subscribeToTheme(listener: () => void) {
   return () => {
     listeners.delete(listener);
   };
+}
+
+/** Something drawn in the theme's colours that needs a moment to get the other theme ready: the world on the home
+ *  page, which has a worker paint it ahead of time. A switch waits for it rather than freezing while it repaints, and
+ *  the new theme spreads out from the stage's own light when that light is on screen. */
+export type ThemeStage = {
+  prepare(dark: boolean): Promise<void>;
+  origin(): { x: number; y: number } | null;
+};
+
+let stage: ThemeStage | null = null;
+
+export function setThemeStage(next: ThemeStage) {
+  stage = next;
+  return () => {
+    if (stage === next) stage = null;
+  };
+}
+
+function currentTheme(): "light" | "dark" {
+  const attribute = document.documentElement.getAttribute("data-theme");
+  return attribute === "light" || attribute === "dark" ? attribute : resolveTheme("system");
+}
+
+let switching = false;
+
+/** Switches theme with the new one growing outward through a soft-edged circle, from the stage's light or from
+ *  `from` (the control that asked). A choice that leaves the resolved theme as it was swaps instantly. */
+export async function switchTheme(choice: ThemeChoice, from: { x: number; y: number }) {
+  if (switching) return;
+  const dark = resolveTheme(choice) === "dark";
+  if (dark === (currentTheme() === "dark")) return setTheme(choice);
+
+  switching = true;
+  try {
+    await stage?.prepare(dark);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !document.startViewTransition) return setTheme(choice);
+
+    const transition = document.startViewTransition(() => setTheme(choice));
+    await transition.ready;
+    const { x, y } = stage?.origin() ?? from;
+    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) * 1.5;
+    document.documentElement.animate(
+      { maskSize: ["0px 0px", `${r * 2}px ${r * 2}px`], maskPosition: [`${x}px ${y}px`, `${x - r}px ${y - r}px`] },
+      { duration: 1300, easing: "cubic-bezier(.45, 0, .2, 1)", fill: "forwards", pseudoElement: "::view-transition-new(root)" },
+    );
+    await transition.finished;
+  } finally {
+    switching = false;
+  }
 }
 
 export function setTheme(choice: ThemeChoice) {

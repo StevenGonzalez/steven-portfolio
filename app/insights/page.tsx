@@ -1,42 +1,27 @@
-import DraggableTitle from "../../components/draggable-title";
-import GlowPanel from "../../components/GlowPanel";
-import InsightArchiveRow from "../../components/InsightArchiveRow";
-import ScrollCuePanel from "../../components/ScrollCuePanel";
+import PostList from "../../components/PostList";
 import { insights } from "../../lib/content";
 
 export const metadata = {
-  title: "Insights | Steven",
+  title: "Writing | Steven Gonzalez",
   description: "Notes on architecture and delivery from building software in the real world.",
 };
 
 export default function InsightsPage() {
   return (
-    <DraggableTitle
-      lines={["Insights", "Things I learned the hard way and chose to share."]}
-      fill={false}
-      compactSpacing
-    >
-      <div className="flex h-full min-h-0 flex-1 flex-col">
-        <GlowPanel className="surface-panel max-w-3xl rounded-2xl px-4 py-4 [@media(max-height:720px)]:hidden">
-          <div className="type-meta text-xs text-accent">Why This Exists</div>
-          <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
-            I write when I run into something that took longer to figure out than it should have. Maybe it saves someone else the time.
-          </p>
-        </GlowPanel>
-
-        <div className="mt-6 min-h-0 flex-1 sm:mt-8 [@media(max-height:820px)]:mt-4 [@media(max-height:640px)]:mt-3">
-          <ScrollCuePanel
-            containerClassName="insights-archive-list surface-panel min-h-0 flex-1 rounded-3xl"
-            scrollerClassName="h-full overflow-y-auto overscroll-contain"
-            nudgeKey="insights-archive"
-            glow
-          >
-            {insights.map((insight) => (
-              <InsightArchiveRow key={insight.slug} insight={insight} />
-            ))}
-          </ScrollCuePanel>
-        </div>
-      </div>
-    </DraggableTitle>
+    <div className="page">
+      <section className="sec archive" aria-labelledby="insights-h">
+        <p className="label" data-rv>
+          Writing
+        </p>
+        <h1 id="insights-h" className="page-h" data-rv>
+          Notes on building software
+        </h1>
+        <p className="intro" data-rv>
+          I write when I run into something that took longer to figure out than it should have. Maybe it saves someone
+          else the time.
+        </p>
+        <PostList posts={insights} />
+      </section>
+    </div>
   );
 }

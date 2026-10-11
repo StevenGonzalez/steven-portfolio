@@ -1,33 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Roboto, Roboto_Condensed, Roboto_Mono } from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Mono, Schibsted_Grotesk } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/Navbar";
+import Header from "../components/Header";
 import Footer from "../components/Footer";
-import PageTransition from "../components/PageTransition";
-import { NavProvider } from "../components/NavProvider";
-import RouteTheme from "../components/RouteTheme";
-import ParticleField from "../components/ParticleField";
+import SiteEffects from "../components/SiteEffects";
 import { siteUrl } from "../lib/site";
 import { themeBootstrapScript } from "../lib/theme";
 
-const roboto = Roboto({
-  variable: "--font-roboto",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "900"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const robotoCondensed = Roboto_Condensed({
-  variable: "--font-roboto-condensed",
+const schibsted = Schibsted_Grotesk({
+  variable: "--font-schibsted",
   subsets: ["latin"],
-  weight: ["300", "400", "700"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -74,40 +72,22 @@ export default function RootLayout({
     // attribute. suppressHydrationWarning covers this element's own attributes
     // and nothing below it, so the only thing it can hide is lang and
     // data-theme.
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} bg-zinc-50 text-zinc-950 antialiased dark:bg-black dark:text-zinc-50`}
-      >
+    //
+    // The font variables sit on <html> because the tokens that use them are
+    // declared on :root. data-scroll-behavior lets Next turn smooth scrolling
+    // off while it moves between routes, so a new page starts at its top.
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${cormorant.variable} ${schibsted.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
-        <div className="page-ground relative isolate h-svh overflow-x-hidden">
-          <ParticleField />
-          <div aria-hidden="true" className="layout-grain" />
-
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-16 inset-x-0 bottom-0 opacity-95"
-            style={{
-              background:
-                "radial-gradient(circle at top center, rgb(var(--accent-rgb) / var(--bloom-accent)), transparent 34%), linear-gradient(180deg, var(--bloom-top), transparent 32%)",
-            }}
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 -top-8 h-64"
-            style={{
-              background:
-                "linear-gradient(180deg, rgb(var(--accent-rgb) / var(--bloom-accent-soft)), transparent 74%)",
-            }}
-          />
-          <NavProvider>
-            <RouteTheme />
-            <div className="relative flex h-svh flex-col">
-              <Navbar />
-              <PageTransition className="flex min-h-0 flex-1 flex-col overflow-y-auto pt-14">{children}</PageTransition>
-              <Footer />
-            </div>
-          </NavProvider>
-        </div>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+        <SiteEffects />
       </body>
     </html>
   );

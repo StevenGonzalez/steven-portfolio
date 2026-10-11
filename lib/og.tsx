@@ -3,22 +3,20 @@ import { ImageResponse } from "next/og";
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 
-type Accent = { rgb: string; hex: string };
-
-// Mirrors the per-route accents in app/globals.css so shared links look on-brand.
-export const ROUTE_ACCENTS: Record<string, Accent> = {
-  home: { rgb: "129, 140, 248", hex: "#818cf8" },
-  projects: { rgb: "16, 185, 129", hex: "#10b981" },
-  insights: { rgb: "245, 158, 11", hex: "#f59e0b" },
-  arcade: { rgb: "34, 211, 238", hex: "#22d3ee" },
-};
+// The night palette from app/globals.css, so shared links look like the site.
+const BG = "#091318";
+const GLOW = "120, 220, 203";
+const GOLD = "#e0b565";
+const FG = "#e7e3d7";
+const MUTED = "#93a4a3";
+const LINE = "#20333a";
+const PANEL = "#0e1c22";
 
 type OgCardProps = {
   eyebrow: string;
   title: string;
   subtitle?: string;
   tags?: string[];
-  accent: Accent;
 };
 
 function clamp(text: string, max: number) {
@@ -26,7 +24,7 @@ function clamp(text: string, max: number) {
   return `${text.slice(0, max - 1).trimEnd()}…`;
 }
 
-export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: OgCardProps) {
+export function renderOgCard({ eyebrow, title, subtitle, tags = [] }: OgCardProps) {
   return new ImageResponse(
     (
       <div
@@ -36,13 +34,13 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#09090b",
+          backgroundColor: BG,
           padding: "76px 84px",
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* Accent glow — a nod to the site's cursor-lighting motif. */}
+        {/* The glow of the lantern tree, low in the corner the way it sits in the world. */}
         <div
           style={{
             position: "absolute",
@@ -51,7 +49,7 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
             width: 760,
             height: 760,
             display: "flex",
-            backgroundImage: `radial-gradient(circle at center, rgba(${accent.rgb}, 0.40), rgba(${accent.rgb}, 0) 68%)`,
+            backgroundImage: `radial-gradient(circle at center, rgba(${GLOW}, 0.28), rgba(${GLOW}, 0) 68%)`,
           }}
         />
 
@@ -62,8 +60,8 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
               height: 24,
               borderRadius: 9999,
               display: "flex",
-              backgroundColor: accent.hex,
-              boxShadow: `0 0 30px 6px rgba(${accent.rgb}, 0.65)`,
+              backgroundColor: GOLD,
+              boxShadow: "0 0 30px 6px rgba(224, 181, 101, 0.6)",
             }}
           />
           <div
@@ -71,7 +69,7 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
               fontSize: 26,
               letterSpacing: 4,
               textTransform: "uppercase",
-              color: `rgba(${accent.rgb}, 0.95)`,
+              color: `rgba(${GLOW}, 0.95)`,
               fontWeight: 600,
             }}
           >
@@ -84,7 +82,7 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
             style={{
               fontSize: 78,
               fontWeight: 700,
-              color: "#fafafa",
+              color: FG,
               lineHeight: 1.04,
               letterSpacing: -2,
               maxWidth: 1000,
@@ -93,7 +91,7 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
             {clamp(title, 64)}
           </div>
           {subtitle ? (
-            <div style={{ fontSize: 31, color: "#a1a1aa", lineHeight: 1.4, maxWidth: 980 }}>
+            <div style={{ fontSize: 31, color: MUTED, lineHeight: 1.4, maxWidth: 980 }}>
               {clamp(subtitle, 150)}
             </div>
           ) : null}
@@ -105,9 +103,9 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
                   style={{
                     display: "flex",
                     fontSize: 22,
-                    color: "#d4d4d8",
-                    border: "1px solid #27272a",
-                    backgroundColor: "#18181b",
+                    color: FG,
+                    border: `1px solid ${LINE}`,
+                    backgroundColor: PANEL,
                     borderRadius: 9999,
                     padding: "8px 22px",
                   }}
@@ -124,14 +122,14 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [], accent }: Og
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            borderTop: "1px solid #27272a",
+            borderTop: `1px solid ${LINE}`,
             paddingTop: 30,
           }}
         >
-          <div style={{ display: "flex", fontSize: 27, color: "#fafafa", fontWeight: 600 }}>
+          <div style={{ display: "flex", fontSize: 27, color: FG, fontWeight: 600 }}>
             Steven Gonzalez
           </div>
-          <div style={{ display: "flex", fontSize: 24, color: "#71717a" }}>
+          <div style={{ display: "flex", fontSize: 24, color: MUTED }}>
             Senior Software Engineer
           </div>
         </div>

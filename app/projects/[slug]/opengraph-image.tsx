@@ -1,4 +1,4 @@
-import { renderOgCard, ROUTE_ACCENTS, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+import { renderOgCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
 import { getAllProjectSlugs, getProjectBySlug } from "@/lib/content";
 
 export const size = OG_SIZE;
@@ -17,7 +17,6 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     return renderOgCard({
       eyebrow: "Case study",
       title: "Projects",
-      accent: ROUTE_ACCENTS.projects,
     });
   }
 
@@ -26,6 +25,5 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     title: project.title,
     subtitle: project.summary,
     tags: project.tags,
-    accent: ROUTE_ACCENTS.projects,
   });
 }

@@ -48,6 +48,18 @@ export const projects: ProjectDetail[] = [
       "Automated routine generation and workout progression",
       "Event-driven supporting services with Azure Service Bus",
     ],
+    card: {
+      blurb:
+        "Co-founded and built a cross-platform fitness product with React Native clients, a .NET API, Azure infrastructure, and an in-app AI trainer grounded in each user's training context.",
+      points: [
+        "Shipped on the App Store and Google Play",
+        "Configurable dashboard with O(1) widget placement and per-user caching",
+        "AI trainer that answers from the user's own training history",
+        "Automatic routine generation and workout progression",
+        "Event-driven supporting services on Azure Service Bus",
+      ],
+      stack: ["React Native", ".NET Core", "Azure", "SQL Server", "Cosmos DB", "LLM"],
+    },
     problem:
       "My co-founder and I wanted to build the kind of product we could not find in the market: something that behaved like a credible personal trainer instead of a generic workout tracker. Most alternatives had weak programming quality, clumsy workout flows, or poor progress visibility. The product needed to feel fast during training, trustworthy in its recommendations, and usable over long training cycles.",
     approach:
@@ -76,6 +88,15 @@ export const projects: ProjectDetail[] = [
       "Contributed to both product features and underlying platform capabilities",
       "Operated in a multi-tenant SaaS environment with real operational constraints",
     ],
+    card: {
+      blurb:
+        "Multi-tenant SaaS for studios, gyms and multi-location operators: scheduling, billing, CRM, member experience and reporting.",
+      points: [
+        "Features used by national operators across hundreds of locations",
+        "Worked across product features and the platform underneath them",
+      ],
+      stack: ["C#", ".NET", "SQL", "Web"],
+    },
     problem:
       "The platform serves a wide range of fitness operators, from single-location startups to large franchises, each with different operational needs. It has to support scheduling, billing, lead management, member experience, staff workflows, and reporting in a consistent way across customers with different configurations. Delivering new capabilities without disrupting existing operators at scale is a constant engineering challenge.",
     approach:
@@ -106,6 +127,15 @@ export const projects: ProjectDetail[] = [
       "Implemented PLC communication flows for machine control and status",
       "Contributed to architecture discussions, sprint planning, and estimation",
     ],
+    card: {
+      blurb:
+        "Production software for industrial saw systems: an Angular operator UI, a C# API, Electron.NET desktop packaging and RabbitMQ messaging.",
+      points: [
+        "UI, API and messaging layers that evolve independently",
+        "Deterministic machine communication for control and status",
+      ],
+      stack: ["Angular", "C#", "Electron.NET", "RabbitMQ"],
+    },
     problem:
       "The software has to coordinate user-driven workflows, machine state, and inter-process communication in a production environment where reliability matters. The challenge is not just writing UI or API code in isolation. It is making sure desktop behavior, backend logic, messaging, and PLC interactions remain predictable under real operating conditions while still moving quickly through sprint-based delivery.",
     approach:
@@ -134,6 +164,15 @@ export const projects: ProjectDetail[] = [
       "Modernized obsolete encryption paths to current APIs",
       "Preserved business-critical behavior through staged validation and release gates",
     ],
+    card: {
+      blurb:
+        "Moved a business-critical application from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without disrupting core workflows.",
+      points: [
+        "Audited high-risk dependencies before changing targets",
+        "Replaced obsolete encryption paths with current APIs",
+      ],
+      stack: ["C#", ".NET 8", "Migration", "Security"],
+    },
     problem:
       "The application was still central to operations, but it was running on .NET Framework 4.6 with brittle library assumptions, aging dependencies, and encryption code that had become obsolete. The risk was not just technical debt. Staying in place increased maintenance friction, narrowed future upgrade paths, and left security-sensitive areas on a stack that was increasingly difficult to justify.",
     approach:
@@ -162,6 +201,15 @@ export const projects: ProjectDetail[] = [
       "Used semantic versioning and tags for safe adoption",
       "Reduced setup time for more complex delivery workflows",
     ],
+    card: {
+      blurb:
+        "Converted classic pipelines to YAML and built a versioned template repository that teams adopt without being broken by changes.",
+      points: [
+        "Semantically versioned tags for safe, opt-in upgrades",
+        "Faster setup for complex delivery workflows",
+      ],
+      stack: ["Azure DevOps", "YAML", "CI/CD"],
+    },
     problem:
       "Our Azure DevOps setup had become inconsistent over time. Many pipelines were still defined through classic UI flows, which made them harder to review, standardize, and reuse across teams. More advanced delivery steps were frequently rebuilt from scratch, slowing onboarding and causing behavior drift.",
     approach:
