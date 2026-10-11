@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import { mountWorld } from "../lib/world/stage";
 
 /** The painted world at the top of the home page. The markup is React's; everything drawn into it belongs to the engine
- *  in lib/world, which mounts on these elements and hands back its own teardown. The seams and the colophon's frame
- *  timing live further down the page, so they are found by id once the page has committed. */
+ *  in lib/world, which mounts on these elements and hands back its own teardown. The seams live further down the
+ *  page, so they are found by id once the page has committed. */
 export default function World() {
   const hero = useRef<HTMLElement>(null);
   const scene = useRef<HTMLDivElement>(null);
@@ -31,9 +31,6 @@ export default function World() {
         guideFoot: guideFoot.current,
         seamTop: document.getElementById("seam"),
         seamLow: document.getElementById("seam-low"),
-        frameMs: document.getElementById("colo-ms"),
-        frameMsNote: document.getElementById("colo-ms-note"),
-        layersBtn: document.getElementById("colo-layers"),
       }),
     [],
   );

@@ -87,48 +87,24 @@ export default function Home() {
           <h2 id="colophon-h" data-rv>
             How the world up top works
           </h2>
-          <ul className="colo">
-            <li data-glow data-rv>
-              <b>0</b>
-              <span>Images</span>
-              <p>
-                Every rock, leaf and cloud is painted with code when the page loads. The randomness is seeded, so
-                it&apos;s the same island on every visit.
-              </p>
-            </li>
-            <li data-glow data-rv>
-              <b>
-                <button type="button" id="colo-layers" aria-label="Pull the world apart into its 11 layers">
-                  11
-                </button>
-              </b>
-              <span>Canvas layers</span>
-              <p>
-                Eight are painted once, in a background worker where the browser allows it, and after that they only
-                slide. The other three hold everything that moves and redraw each frame.
-              </p>
-            </li>
-            <li data-glow data-rv>
-              <b id="colo-ms">–</b>
-              <span>ms per frame</span>
-              <p id="colo-ms-note">
-                Script time per frame on your device, averaged while the world was on screen. A frame at 60 fps gets
-                16.7 ms.
-              </p>
-            </li>
-            <li data-glow data-rv>
-              <b>{worldKb()}</b>
-              <span>KB gzipped</span>
-              <p>
-                The world&apos;s own code, measured when the site is built. Plain JavaScript drawing on canvas, with no
-                libraries. The rest of the site is Next.js.
-              </p>
-            </li>
-          </ul>
-          <p className="colo-foot" data-rv>
-            It stops drawing when you scroll away or switch tabs, holds still if your system asks for reduced motion,
-            and quietly drops some decoration on a device that can&apos;t keep up.
-          </p>
+          <div className="colo">
+            <p data-rv>
+              There are no images in it. Every rock, leaf and cloud is drawn in code when the page loads, from a fixed
+              random seed, so it&apos;s the same island on every visit.
+            </p>
+            <p data-rv>
+              The scenery is painted once in a background worker, then stacked in layers that slide with your pointer;
+              only the things that move are redrawn each frame. It&apos;s plain JavaScript on canvas with no libraries,
+              about {worldKb()} KB gzipped, and it holds still if your system asks for reduced motion.
+            </p>
+          </div>
+          <a className="more" href={`${gitHub.href}/steven-portfolio/tree/main/lib/world`}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-rv
+          >
+            Read the source on GitHub
+          </a>
         </section>
 
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
