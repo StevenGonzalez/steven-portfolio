@@ -6,8 +6,8 @@ export const alt = "Insights — Steven Gonzalez";
 
 export default function Image() {
   return renderOgCard({
-    eyebrow: "Insights",
+    eyebrow: "Writing",
     title: "Things I learned the hard way",
-    subtitle: "Notes on architecture and delivery from building software in the real world.",
+    subtitle: "Notes on software architecture and delivery.",
   });
 }

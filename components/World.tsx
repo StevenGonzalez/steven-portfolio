@@ -33,6 +33,7 @@ export default function World() {
         seamLow: document.getElementById("seam-low"),
         frameMs: document.getElementById("colo-ms"),
         frameMsNote: document.getElementById("colo-ms-note"),
+        layersBtn: document.getElementById("colo-layers"),
       }),
     [],
   );
@@ -46,7 +47,7 @@ export default function World() {
       <div className="copy" data-hero-copy>
         <p className="eyebrow">Software engineer</p>
         <h1>Steven Gonzalez</h1>
-        <p className="lead">I build fast, reliable web products and the real-time systems behind them.</p>
+        <p className="lead">I build web apps and the real-time systems behind them.</p>
         <div className="ctas">
           <a className="btn solid" href="#work">
             See the work

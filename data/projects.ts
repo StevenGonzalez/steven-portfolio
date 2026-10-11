@@ -5,7 +5,7 @@ export const projects: ProjectDetail[] = [
     slug: "virtual-trainer",
     title: "Virtual Trainer",
     summary:
-      "Co-founded and built a cross-platform fitness product with React Native clients, a .NET API, Azure infrastructure, and an in-app AI trainer grounded in each user's training context.",
+      "A fitness app I co-founded and built: React Native on iOS and Android, a .NET API on Azure, and an AI trainer that answers from your own workout history.",
     image: "/virtual-trainer.svg",
     tags: [
       "React Native",
@@ -38,9 +38,9 @@ export const projects: ProjectDetail[] = [
       },
     ],
     role: "Co-founder • Lead engineer",
-    scope: "Product strategy, iOS + Android, .NET API, Azure",
+    scope: "Product, iOS and Android apps, .NET API, Azure",
     keyDecision:
-      "Used SQL Server for structured workout data, Cosmos DB for flexible document models, and Service Bus for async workflows",
+      "SQL Server for workout and account data, Cosmos DB for document-shaped data, and Service Bus for background work",
     highlights: [
       "Shipped on App Store + Google Play",
       "Configurable dashboard with O(1) widget placement and per-user caching",
@@ -50,38 +50,38 @@ export const projects: ProjectDetail[] = [
     ],
     card: {
       blurb:
-        "Co-founded and built a cross-platform fitness product with React Native clients, a .NET API, Azure infrastructure, and an in-app AI trainer grounded in each user's training context.",
+        "A fitness app I co-founded and built: React Native on iOS and Android, a .NET API on Azure, and an AI trainer that answers from your own workout history.",
       points: [
-        "Shipped on the App Store and Google Play",
-        "Configurable dashboard with O(1) widget placement and per-user caching",
+        "Live on the App Store and Google Play",
+        "Customizable dashboard with O(1) widget placement and per-user caching",
         "AI trainer that answers from the user's own training history",
-        "Automatic routine generation and workout progression",
-        "Event-driven supporting services on Azure Service Bus",
+        "Generates routines and progresses workouts automatically",
+        "Background work runs through Azure Service Bus",
       ],
       stack: ["React Native", ".NET Core", "Azure", "SQL Server", "Cosmos DB", "LLM"],
     },
     problem:
-      "My co-founder and I wanted to build the kind of product we could not find in the market: something that behaved like a credible personal trainer instead of a generic workout tracker. Most alternatives had weak programming quality, clumsy workout flows, or poor progress visibility. The product needed to feel fast during training, trustworthy in its recommendations, and usable over long training cycles.",
+      "My co-founder and I wanted a trainer, not a tracker. Most fitness apps we tried logged workouts well enough but planned them badly, made you fight the screen mid-set, or hid your progress. We wanted an app you could trust to plan your training, that stayed quick between sets, and that still made sense after months of use.",
     approach:
-      "I led product and engineering implementation across the mobile experience and backend platform. On the client side, I built the React Native experience around a training-domain model for routines, workouts, exercises, timers, warmups, supersets, and history. I also built a configurable dashboard with O(1) widget placement and per-user caching so personalized reporting stayed responsive. For guided workouts, I implemented automatic progression logic modeled on practical coaching heuristics. I later extended the product with an in-app AI trainer that answers questions using the user's own training context instead of generic fitness advice.",
+      "I led product and engineering across the app and the back end. The React Native client is built around a model of how training actually works: routines, workouts, exercises, timers, warmups, supersets and history. Each user arranges their own dashboard; widget placement is O(1) and results are cached per user, so it stays quick as people add more. Guided workouts progress automatically, using the same rules of thumb a coach would. Later I added an AI trainer that answers questions from the user's own training data instead of giving generic fitness advice.",
     architecture:
-      "The mobile apps are built in React Native and communicate with a C# .NET API designed around clear domain boundaries and fast interaction paths. I set up Azure infrastructure using SQL Server for relational workout and account data, Cosmos DB for document-shaped use cases, and Service Bus to decouple asynchronous processing such as supporting services and notifications. The frontend balances local UI state, shared global state, and server-state synchronization so the app stays responsive across complex workout flows.",
+      "The apps talk to a C# .NET API that is split along the same lines as the training model. On Azure, SQL Server holds workouts and accounts, Cosmos DB holds the data that is naturally document-shaped, and Service Bus carries background work like notifications so it never holds up a request. In the app I kept screen state, shared app state and server data apart, which kept long workout sessions responsive.",
     tradeoffs:
-      "The product sits at the intersection of training logic, personalization, and AI assistance, so capability can quickly become complexity. Automatic progression and generated programming needed guardrails so the app could adapt without making unsafe jumps or muddy recommendations. Supporting both SQL Server and Cosmos DB also adds operational cost, so I kept storage boundaries explicit and used asynchronous workflows where they improved responsiveness without hiding important user feedback.",
+      "Training logic, personalization and AI each add complexity, and together they add a lot. Automatic progression needed limits so it could adapt without suggesting unsafe jumps. Running both SQL Server and Cosmos DB costs more to operate, so I kept a clear rule for what lives where. Moving work to the background made the app faster, but anything the user needs to see right away stays out of the queue.",
     outcome:
-      "Virtual Trainer shipped to the App Store and Google Play with routine and workout generation, guided training flows, progress reporting, custom exercise support, automatic progression, and an in-app AI trainer. It also validated an end-to-end stack I designed and operated in production: mobile clients, backend services, cloud infrastructure, asynchronous workflows, and product decisions that kept those systems cohesive for users.",
+      "Virtual Trainer shipped on the App Store and Google Play with generated routines and workouts, guided training, progress reports, custom exercises, automatic progression and the AI trainer. I designed and ran the whole stack in production, from the mobile apps down to the cloud.",
   },
   {
     slug: "fitness-platform",
     title: "Fitness Business Management Platform",
     summary:
-      "Contributed across a full-suite fitness business management SaaS platform serving studios, gyms, and multi-location operators with scheduling, billing, CRM, member experience, and reporting.",
+      "Engineer on the SaaS platform that runs studios, gyms and multi-location operators: scheduling, billing, CRM, member experience and reporting.",
     image: "/fitness-platform.svg",
     tags: ["C#", ".NET", "SaaS", "SQL", "Web", "Fitness Tech"],
     role: "Software engineer",
-    scope: "Full-stack, cross-product platform contribution",
+    scope: "Full stack, across most of the product",
     keyDecision:
-      "Designed features for multi-tenant scale while preserving operational consistency across diverse fitness operator types",
+      "Built each feature to work for every tenant's setup, from a single studio to a national franchise",
     highlights: [
       "Worked across scheduling, billing, CRM, and member experience domains",
       "Built and maintained features used by national fitness operators",
@@ -92,33 +92,33 @@ export const projects: ProjectDetail[] = [
       blurb:
         "Multi-tenant SaaS for studios, gyms and multi-location operators: scheduling, billing, CRM, member experience and reporting.",
       points: [
-        "Features used by national operators across hundreds of locations",
-        "Worked across product features and the platform underneath them",
+        "Shipped features used by national operators across hundreds of locations",
+        "Worked on product features and the shared platform under them",
       ],
       stack: ["C#", ".NET", "SQL", "Web"],
     },
     problem:
-      "The platform serves a wide range of fitness operators, from single-location startups to large franchises, each with different operational needs. It has to support scheduling, billing, lead management, member experience, staff workflows, and reporting in a consistent way across customers with different configurations. Delivering new capabilities without disrupting existing operators at scale is a constant engineering challenge.",
+      "The platform serves everyone from a single studio to a national franchise, and each one runs differently. Scheduling, billing, leads, member experience, staff workflows and reporting all have to behave the same way for every customer, however they are set up. The hard part is shipping new features without breaking anything for the operators already relying on it.",
     approach:
-      "I contributed across the breadth of the platform rather than a single vertical. That meant working on scheduling flows, billing and payment paths, CRM and lead management, member-facing experiences, and internal reporting depending on what the product needed. Working across domains gave me a wide view of how the system held together and where the real dependencies and constraints were, which informed how I approached both feature work and systemic improvements.",
+      "I worked across the product instead of owning one area: scheduling, billing and payments, CRM and leads, member-facing features and internal reporting, wherever the work was. Seeing that much of the system showed me where the real dependencies were, and that shaped both my feature work and the fixes I pushed for underneath it.",
     architecture:
-      "The platform is a multi-tenant SaaS with a web frontend and a .NET backend, structured to serve many operator configurations through shared infrastructure. Supporting that breadth requires careful data isolation, configuration-driven behavior, and well-defined service boundaries so product changes in one area do not break unrelated workflows for other customers. Reporting and analytics run across a data layer that has to stay consistent despite high write volume from concurrent operator activity.",
+      "It is a multi-tenant web app with a .NET back end, serving many operator setups from shared infrastructure. That only works with strict data isolation, behavior driven by configuration, and clear boundaries between services, so a change in one area cannot break an unrelated workflow for another customer. Reporting has to stay accurate while many operators write to the same data at once.",
     tradeoffs:
-      "Breadth at a SaaS company means balancing feature velocity against operational stability across many concurrent customers. A change to billing or scheduling logic can touch a large surface area, so the tradeoff was always between moving fast and moving safely. Working across domains also means understanding cross-cutting concerns like multi-tenancy, permissions, and data integrity at a level that siloed feature work would not require.",
+      "With that many customers on one system, every change trades speed against safety. A billing or scheduling change can reach a lot of code, so I learned to map what a change touches before making it. Working across areas also meant understanding tenancy, permissions and data integrity more deeply than a single feature team would need to.",
     outcome:
-      "My work contributed to a platform used by national fitness operators across hundreds of locations. Beyond individual features, broad cross-domain contribution built a strong understanding of what it takes to evolve a production SaaS with real customers, operational complexity, and the kind of scale where engineering decisions have immediate visible consequences.",
+      "My work shipped to national fitness operators across hundreds of locations. I came away knowing what it takes to keep changing a production SaaS that businesses run on every day, where a mistake is visible to customers right away.",
   },
   {
     slug: "industrial-saw-control-platform",
     title: "Industrial Saw Control Platform",
     summary:
-      "Build and maintain production software for industrial saw systems using an Angular frontend, C# API backend, and Electron.NET desktop packaging, with RabbitMQ messaging and PLC integration.",
+      "I build and maintain the software that runs industrial saws: an Angular operator interface, a C# API, Electron.NET desktop packaging, RabbitMQ messaging and PLC integration.",
     image: "/saw-blade-minimal.svg",
     tags: ["Angular", "C#", "Electron.NET", "RabbitMQ", "PLC", "Desktop"],
     role: "Software engineer",
-    scope: "Frontend, backend, machine integration, and delivery process",
+    scope: "Front end, back end, machine integration and how we ship",
     keyDecision:
-      "Used a modular desktop architecture where Angular UI, C# API, and messaging layers could evolve independently while maintaining deterministic machine communication paths",
+      "Kept the Angular UI, C# API and messaging as separate layers that can change independently, with fixed, predictable paths for talking to the machine",
     highlights: [
       "Built and maintained Angular features for machine operation workflows",
       "Implemented and supported C# API endpoints consumed by the desktop client",
@@ -129,35 +129,35 @@ export const projects: ProjectDetail[] = [
     ],
     card: {
       blurb:
-        "Production software for industrial saw systems: an Angular operator UI, a C# API, Electron.NET desktop packaging and RabbitMQ messaging.",
+        "The software that runs industrial saws: an Angular operator interface, a C# API, Electron.NET desktop packaging and RabbitMQ messaging.",
       points: [
-        "UI, API and messaging layers that evolve independently",
+        "UI, API and messaging layers that change independently",
         "Deterministic machine communication for control and status",
       ],
       stack: ["Angular", "C#", "Electron.NET", "RabbitMQ"],
     },
     problem:
-      "The software has to coordinate user-driven workflows, machine state, and inter-process communication in a production environment where reliability matters. The challenge is not just writing UI or API code in isolation. It is making sure desktop behavior, backend logic, messaging, and PLC interactions remain predictable under real operating conditions while still moving quickly through sprint-based delivery.",
+      "The software keeps track of what the operator is doing, what the machine is doing, and the messages passing between programs, on machines that people rely on to run production. Writing the UI or the API on its own is the easy part. The hard part is keeping the desktop app, the back end, messaging and the PLC predictable while the machine is running, and still shipping every sprint.",
     approach:
-      "I work across the Angular frontend and C# API to implement and evolve operator-facing workflows and backend capabilities together. I package the combined stack with Electron.NET so desktop releases remain consistent. I also contribute to messaging and machine-integration work, including RabbitMQ flows and PLC communication paths, and collaborate closely with other engineers during architecture reviews, sprint planning, and estimation to keep implementation aligned with system constraints.",
+      "I work on the Angular front end and the C# API together, building operator workflows end to end. I package the whole stack with Electron.NET so every desktop release ships as one consistent build. I also work on messaging and machine integration, including RabbitMQ flows and PLC communication, and take part in architecture reviews, sprint planning and estimation.",
     architecture:
-      "The application is structured as an Angular UI paired with a C# API and delivered as a desktop application through Electron.NET. RabbitMQ handles messaging between the saw software and other programs, while PLC integration provides control and telemetry pathways to the machine itself. The architecture balances local desktop responsiveness with explicit service and messaging boundaries so machine interactions remain controlled and observable.",
+      "The app is an Angular UI on a C# API, shipped as a desktop application through Electron.NET. RabbitMQ carries messages between the saw software and other programs, and the PLC integration handles control and telemetry to and from the machine. The UI stays quick locally, while anything that talks to the machine goes through explicit services and message contracts that we can watch and control.",
     tradeoffs:
-      "A combined desktop-plus-service stack gives strong control over deployment and operator experience, but it increases coordination costs across UI, API, machine communication, and messaging contracts. PLC integration also favors deterministic behavior over rapid experimentation, so changes require careful sequencing and validation. The practical tradeoff is choosing incremental, well-scoped improvements that preserve operational confidence while still improving architecture and developer workflow.",
+      "Shipping the UI and services together gives us control over deployment and the operator's experience, but every change has to line up across the UI, the API, the machine and the message contracts. Machine control rewards predictability over experimentation, so changes are sequenced and tested carefully. In practice that means small, well-scoped improvements that make the system better without putting what already works at risk.",
     outcome:
-      "The result is a production platform that supports day-to-day machine operations with a cohesive UI, backend, desktop packaging model, and integration layer. Beyond feature work, this has strengthened cross-team engineering practices around architecture decisions, sprint execution, and estimation, helping the system evolve without losing reliability in the field.",
+      "The platform runs day-to-day machine operations with one consistent UI, back end, packaging model and integration layer. Along the way it has improved how the team makes architecture decisions, runs sprints and estimates work, so the system keeps changing without becoming less reliable in the field.",
   },
   {
     slug: "dotnet-framework-to-dotnet-8-upgrade",
     title: ".NET Framework to .NET 8 Upgrade",
     summary:
-      "Led a business-critical application upgrade from .NET Framework 4.6 to .NET 8, resolving breaking runtime and dependency issues without disrupting core workflows.",
+      "Led the move of a business-critical application from .NET Framework 4.6 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
     image: "/winforms-modernization.svg",
     tags: ["C#", ".NET 8", ".NET Framework", "Upgrade", "Compatibility", "Security"],
     role: "Lead engineer",
-    scope: "Legacy .NET platform upgrade",
+    scope: "Upgrading a legacy .NET application",
     keyDecision:
-      "Ran the work as a compatibility-first platform upgrade with staged risk gates instead of a rewrite",
+      "Upgraded in stages, checking compatibility at each one, instead of rewriting",
     highlights: [
       "Audited high-risk dependencies before changing target frameworks",
       "Resolved runtime and package-level breaking changes during migration",
@@ -166,35 +166,35 @@ export const projects: ProjectDetail[] = [
     ],
     card: {
       blurb:
-        "Moved a business-critical application from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without disrupting core workflows.",
+        "Moved a business-critical application from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without disrupting the workflows people relied on.",
       points: [
         "Audited high-risk dependencies before changing targets",
-        "Replaced obsolete encryption paths with current APIs",
+        "Replaced obsolete encryption with current APIs",
       ],
       stack: ["C#", ".NET 8", "Migration", "Security"],
     },
     problem:
-      "The application was still central to operations, but it was running on .NET Framework 4.6 with brittle library assumptions, aging dependencies, and encryption code that had become obsolete. The risk was not just technical debt. Staying in place increased maintenance friction, narrowed future upgrade paths, and left security-sensitive areas on a stack that was increasingly difficult to justify.",
+      "The application was still central to the business, but it ran on .NET Framework 4.6 with fragile library assumptions, old dependencies and encryption code that had become obsolete. Staying put made every change harder, closed off future upgrades, and left security-sensitive code on a stack that was getting hard to defend.",
     approach:
-      "I treated migration as discovery plus risk management, not a blind version jump. I audited dependencies, mapped likely break points, and split work into direct upgrades versus replacement tracks. I then replaced obsolete crypto usage with supported APIs and resolved runtime, package, and API-level breakages as the app moved to .NET 8. Each phase closed with workflow-level validation before broad rollout.",
+      "I treated the upgrade as a series of discoveries, not one version bump. I audited the dependencies, listed where things were likely to break, and split the work into packages that could simply be upgraded and ones that had to be replaced. I replaced the obsolete cryptography with supported APIs and fixed runtime, package and API breaks as the app moved to .NET 8. Each stage ended with the main workflows tested before it went out more widely.",
     architecture:
-      "The architecture work focused on reducing fragility while preserving known behavior under a new runtime. I modernized target frameworks, dependency boundaries, and security-sensitive paths while keeping business workflows stable. Where legacy components could not move forward cleanly, I isolated or replaced them behind safer boundaries so the application could continue evolving on supported foundations.",
+      "The goal was to make the app less fragile on a new runtime while keeping its behavior the same. I moved the target frameworks, tightened dependency boundaries and updated the security-sensitive code without changing how the business workflows behaved. Where an old component could not move forward cleanly, I isolated or replaced it so the rest of the app could keep moving.",
     tradeoffs:
-      "A rewrite would have created unnecessary delivery risk for a system users already depended on, but a shallow version bump would not fix core issues. The balance was aggressive modernization where the stack was unsafe or unsupported, while preserving enough continuity that users could trust existing behavior. That required deliberate choices about what to preserve, what to replace, and where temporary complexity was acceptable to reach a sustainable platform.",
+      "A rewrite would have put a system people depended on at risk for no good reason, but a shallow version bump would not have fixed the real problems. So I changed things aggressively where the stack was unsafe or unsupported, and left the rest alone so users could keep trusting how it behaved. That meant deciding piece by piece what to keep, what to replace, and where a little temporary complexity was worth it.",
     outcome:
-      "The result was a legacy application moved onto .NET 8 with stronger security, fewer unsupported dependencies, and a healthier maintenance path. The team shifted from repeatedly working around legacy blockers to delivering changes on a supported platform with lower upgrade risk.",
+      "The application now runs on .NET 8 with stronger security, fewer unsupported dependencies and an easier road for future upgrades. The team stopped working around legacy blockers and went back to shipping changes.",
   },
   {
     slug: "azure-devops-pipeline-templates",
     title: "Azure DevOps Pipeline Templates",
     summary:
-      "Standardized Azure DevOps delivery workflows by converting classic pipelines to YAML and building a versioned shared template repository teams could adopt safely.",
+      "Moved our Azure DevOps pipelines from the classic editor to YAML and built a shared, versioned template repository that teams can adopt without being broken by changes.",
     image: "/azure-devops-templates.svg",
     tags: ["Azure DevOps", "YAML", "CI/CD", "DevEx", "Templates", "Automation"],
     role: "Lead engineer",
-    scope: "Pipeline platform and developer workflow",
+    scope: "Build pipelines and developer workflow",
     keyDecision:
-      "Published reusable pipeline templates behind semantically versioned tags so teams could opt into upgrades without being broken by template changes",
+      "Published the templates behind semantic version tags, so teams upgrade when they choose to and never get broken by a template change",
     highlights: [
       "Migrated classic Azure DevOps pipelines to YAML",
       "Built a shared template repository for cross-team reuse",
@@ -203,22 +203,22 @@ export const projects: ProjectDetail[] = [
     ],
     card: {
       blurb:
-        "Converted classic pipelines to YAML and built a versioned template repository that teams adopt without being broken by changes.",
+        "Moved classic pipelines to YAML and built a versioned template repository that teams can adopt without being broken by changes.",
       points: [
-        "Semantically versioned tags for safe, opt-in upgrades",
-        "Faster setup for complex delivery workflows",
+        "Semantic version tags, so each team chooses when to upgrade",
+        "Complex pipelines take less time to set up",
       ],
       stack: ["Azure DevOps", "YAML", "CI/CD"],
     },
     problem:
-      "Our Azure DevOps setup had become inconsistent over time. Many pipelines were still defined through classic UI flows, which made them harder to review, standardize, and reuse across teams. More advanced delivery steps were frequently rebuilt from scratch, slowing onboarding and causing behavior drift.",
+      "Our Azure DevOps setup had drifted. Many pipelines still lived in the classic UI editor, which made them hard to review, standardize or reuse. Teams kept rebuilding the same advanced steps from scratch, which slowed down new projects and meant the same step behaved differently from one pipeline to the next.",
     approach:
-      "I converted classic pipelines into YAML so they could be versioned and reviewed like code. The bigger gain came from moving beyond one-off migrations: I built a dedicated template repository that teams could reference directly for common build, test, packaging, and deployment patterns. This centralized repeated logic, removed copy-paste drift, and let improvements ship once across many consumers.",
+      "I converted the classic pipelines to YAML so they could be versioned and reviewed like code. The bigger win came next: a shared template repository that teams reference directly for common build, test, packaging and deployment steps. Repeated logic now lives in one place, copy-paste drift is gone, and a fix ships once for every pipeline that uses it.",
     architecture:
-      "The shared repository was structured around reusable YAML templates that teams imported into their own pipelines. I versioned templates with semantic versioning and published tags that downstream pipelines referenced explicitly. That created a stable contract between template authors and consuming teams: improvements could ship continuously, while breaking changes landed in new versions without surprising existing builds. The result was a lightweight internal CI/CD platform instead of disconnected pipeline files.",
+      "Teams import reusable YAML templates from the shared repository into their own pipelines. I versioned the templates with semantic versioning and published tags that pipelines reference explicitly. That gives template authors and teams a stable contract: improvements keep shipping, while breaking changes go into a new version and existing builds keep working.",
     tradeoffs:
-      "Centralizing pipeline logic improves consistency, but it creates a shared dependency teams need to trust. The versioned-tag model balanced this: teams adopted shared templates without giving up control over upgrade timing, and I could evolve templates without surprise regressions. The tradeoff was stricter discipline around versioning and compatibility, which was still far cheaper than each team maintaining fragile pipeline logic independently.",
+      "Centralizing pipeline logic makes things consistent, but it also creates a shared dependency that teams have to trust. Version tags handled that: teams kept control of when they upgraded, and I could change the templates without surprising anyone. The cost was being strict about versioning and compatibility, which is still far cheaper than every team maintaining its own fragile pipeline logic.",
     outcome:
-      "The pipeline work unified how delivery workflows were defined, reduced time to stand up complex pipelines, and made common tasks easier to maintain across teams. More importantly, it shifted pipelines from ad hoc configuration to a reusable engineering asset: versioned, reviewable, and safe to evolve over time.",
+      "Pipelines are now defined the same way across teams, complex ones take less time to set up, and common steps are easier to maintain. They went from one-off configuration to shared code that is versioned, reviewed and safe to change.",
   },
 ];

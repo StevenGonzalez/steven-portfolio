@@ -30,7 +30,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 const siteDescription =
-  "Senior software engineer focused on reliable systems, pragmatic architecture, and software other engineers can safely change.";
+  "Steven Gonzalez is a software engineer who builds web apps and the real-time systems behind them, in TypeScript, React, Angular and .NET.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

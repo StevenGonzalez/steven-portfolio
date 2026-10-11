@@ -8,6 +8,6 @@ export default function Image() {
   return renderOgCard({
     eyebrow: "Senior Software Engineer",
     title: "Steven Gonzalez",
-    subtitle: "Reliable systems, pragmatic architecture, and software other engineers can safely change.",
+    subtitle: "Web apps and the real-time systems behind them.",
   });
 }

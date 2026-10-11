@@ -6,8 +6,8 @@ export const alt = "Projects — Steven Gonzalez";
 
 export default function Image() {
   return renderOgCard({
-    eyebrow: "Projects",
+    eyebrow: "Case studies",
     title: "What I built, and why",
-    subtitle: "Real project work, real constraints, and the decisions that made the outcome better.",
+    subtitle: "The problem, what I built, the tradeoffs and how it turned out, for each project.",
   });
 }

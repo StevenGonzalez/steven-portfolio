@@ -3,7 +3,7 @@ import { insights } from "../../lib/content";
 
 export const metadata = {
   title: "Writing | Steven Gonzalez",
-  description: "Notes on architecture and delivery from building software in the real world.",
+  description: "Notes on software architecture and delivery.",
 };
 
 export default function InsightsPage() {

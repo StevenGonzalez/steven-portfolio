@@ -3,7 +3,7 @@ import { projects } from "../../lib/content";
 
 export const metadata = {
   title: "Case studies | Steven Gonzalez",
-  description: "Real project work, real constraints, and the decisions that made the outcome better.",
+  description: "The problem, what I built, the tradeoffs and how it turned out, for each project.",
 };
 
 export default function ProjectsPage() {
@@ -14,11 +14,11 @@ export default function ProjectsPage() {
           Case studies
         </p>
         <h1 id="projects-h" className="page-h" data-rv>
-          What I built, why, and what I learned
+          Each project, in more detail
         </h1>
         <p className="intro" data-rv>
-          Client details are anonymized where needed. The rest is honest: what I built, what I was trying to solve, and
-          what I took away from it.
+          For each one: the problem, what I built, the tradeoffs, and how it turned out. Some client details are left
+          out.
         </p>
         <ProjectGrid projects={projects} />
       </section>

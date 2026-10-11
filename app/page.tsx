@@ -32,7 +32,7 @@ export default function Home() {
             Selected work
           </p>
           <h2 id="work-h" data-rv>
-            Products and platforms I&apos;ve built
+            What I&apos;ve built
           </h2>
           <ProjectGrid projects={projects} />
         </section>
@@ -43,7 +43,7 @@ export default function Home() {
           </p>
           <div className="about">
             <blockquote data-rv>
-              I like hard problems, fast feedback and software you can <em>feel</em> working.
+              I like making slow things <em>fast</em> and fragile things boring.
             </blockquote>
             <div className="body" data-rv>
               <p>
@@ -52,8 +52,8 @@ export default function Home() {
                 and studios across the country.
               </p>
               <p>
-                The thread through all of it is the web: interfaces that respond instantly, systems that stay up, and code
-                the next person can safely change.
+                Most of it has been web work, usually Angular or React on a .NET back end. Day to day I care about two
+                things: that the app feels quick, and that the next person can change the code without breaking something.
               </p>
               <dl className="facts">
                 <dt>Front end</dt>
@@ -97,7 +97,11 @@ export default function Home() {
               </p>
             </li>
             <li data-glow data-rv>
-              <b>11</b>
+              <b>
+                <button type="button" id="colo-layers" aria-label="Pull the world apart into its 11 layers">
+                  11
+                </button>
+              </b>
               <span>Canvas layers</span>
               <p>
                 Eight are painted once, in a background worker where the browser allows it, and after that they only
@@ -132,7 +136,7 @@ export default function Home() {
             Contact
           </p>
           <p className="big" data-rv>
-            Have a hard problem you care about? I&apos;d like to hear about it.
+            Hiring, or building something interesting? Send me a message.
           </p>
           <div className="row" data-rv>
             <a className="btn solid" href={linkedIn.href} target="_blank" rel="noopener noreferrer">
