@@ -27,16 +27,6 @@ export default function Home() {
       <div className="site">
         <canvas className="seam" id="seam" aria-hidden="true" />
 
-        <section className="sec" id="work" aria-labelledby="work-h">
-          <p className="label" data-rv>
-            Selected work
-          </p>
-          <h2 id="work-h" data-rv>
-            What I&apos;ve built
-          </h2>
-          <ProjectGrid projects={projects} />
-        </section>
-
         <section className="sec" id="about" aria-labelledby="about-h">
           <p className="label" id="about-h" data-rv>
             About
@@ -47,24 +37,44 @@ export default function Home() {
             </blockquote>
             <div className="body" data-rv>
               <p>
-                I build software for industrial machines: operator interfaces, messaging, and the systems that tie them
-                together. Before that I co-founded Virtual Trainer and built features for a business platform used by gyms
-                and studios across the country.
+                I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the .NET
+                APIs and databases behind them, iOS and Android apps in React Native, and a desktop app that runs
+                industrial saws. Before the saws I worked on a SaaS platform that gyms and studios across the country run
+                on, and co-founded Virtual Trainer, which I built end to end.
               </p>
               <p>
-                Most of it has been web work, usually Angular or React on a .NET back end. Day to day I care about two
-                things: that the app feels quick, and that the next person can change the code without breaking something.
+                I love automation, and it&apos;s how I get to quality. If a check can run on every commit, it should, so
+                people can spend their attention on the hard problems instead. Virtual Trainer has more than 6,000
+                automated tests across the app and the API. At work I moved our build pipelines into shared, versioned
+                YAML templates that every team builds on.
+              </p>
+              <p>
+                I sweat the details people feel: how fast a page loads, how it holds up on a cheap phone, whether it works
+                from the keyboard. The world at the top of this page is drawn in a background worker, so the page stays
+                responsive while it moves.
               </p>
               <dl className="facts">
                 <dt>Front end</dt>
-                <dd>TypeScript, Angular, React, React Native</dd>
+                <dd>TypeScript, React, Angular, React Native</dd>
                 <dt>Back end</dt>
                 <dd>C#, .NET, SQL Server, Cosmos DB, RabbitMQ</dd>
-                <dt>Platform</dt>
-                <dd>Azure, Azure DevOps, Electron.NET</dd>
+                <dt>Testing</dt>
+                <dd>Jest, React Native Testing Library, xUnit, Moq</dd>
+                <dt>Delivery</dt>
+                <dd>Azure, Azure DevOps pipelines, Electron.NET</dd>
               </dl>
             </div>
           </div>
+        </section>
+
+        <section className="sec" id="work" aria-labelledby="work-h">
+          <p className="label" data-rv>
+            Selected work
+          </p>
+          <h2 id="work-h" data-rv>
+            What I&apos;ve built
+          </h2>
+          <ProjectGrid projects={projects} />
         </section>
 
         <section className="sec" id="writing" aria-labelledby="writing-h">
@@ -93,8 +103,9 @@ export default function Home() {
               random seed, so it&apos;s the same island on every visit.
             </p>
             <p data-rv>
-              The scenery is painted once in a background worker, then stacked in layers that slide with your pointer;
-              only the things that move are redrawn each frame. It&apos;s plain JavaScript on canvas with no libraries,
+              The scenery is painted once, then stacked in layers that slide with your pointer, and only the things that
+              move are redrawn each frame. All of the drawing happens in background workers, so the page itself stays
+              free. It&apos;s plain JavaScript on canvas with no libraries,
               about {worldKb()} KB gzipped, and it holds still if your system asks for reduced motion.
             </p>
           </div>

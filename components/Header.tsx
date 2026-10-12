@@ -32,10 +32,10 @@ export default function Header() {
         Steven Gonzalez
       </Link>
       <nav aria-label="Sections">
-        <Link href="/#work">Work</Link>
         <Link href="/#about" className="hide-sm">
           About
         </Link>
+        <Link href="/#work">Work</Link>
         <Link href="/#writing">Writing</Link>
         <Link href="/#contact" className="hide-sm">
           Contact
