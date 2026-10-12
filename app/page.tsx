@@ -31,39 +31,34 @@ export default function Home() {
           <p className="label" id="about-h" data-rv>
             About
           </p>
-          <div className="about">
-            <blockquote data-rv>
-              If a check can run on <em>every commit</em>, it should.
-            </blockquote>
-            <div className="body" data-rv>
-              <p>
-                I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the .NET
-                APIs and databases behind them, iOS and Android apps in React Native, and a desktop app that runs
-                industrial saws. Before the saws I worked on a SaaS platform that gyms and studios across the country run
-                on, and co-founded Virtual Trainer, which I built end to end.
-              </p>
-              <p>
-                I love automation, and it&apos;s how I get to quality. Letting machines run the checks frees people to
-                spend their attention on the hard problems. Virtual Trainer has more than 6,000
-                automated tests across the app and the API. At work I moved our build pipelines into shared, versioned
-                YAML templates that every team builds on.
-              </p>
-              <p>
-                I sweat the details people feel: how fast a page loads, how it holds up on a cheap phone, whether it works
-                from the keyboard. The world at the top of this page is drawn in a background worker, so the page stays
-                responsive while it moves.
-              </p>
-              <dl className="facts">
-                <dt>Front end</dt>
-                <dd>TypeScript, React, Angular, React Native</dd>
-                <dt>Back end</dt>
-                <dd>C#, .NET, SQL Server, Cosmos DB, RabbitMQ</dd>
-                <dt>Testing</dt>
-                <dd>Jest, React Native Testing Library, xUnit, Moq</dd>
-                <dt>Delivery</dt>
-                <dd>Azure, Azure DevOps pipelines, Electron.NET</dd>
-              </dl>
-            </div>
+          <div className="about" data-rv>
+            <p>
+              I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the .NET
+              APIs and databases behind them, iOS and Android apps in React Native, and a desktop app that runs
+              industrial saws. Before the saws I worked on a SaaS platform that gyms and studios across the country run
+              on, and co-founded Virtual Trainer, which I built end to end.
+            </p>
+            <p>
+              I love automation, and it&apos;s how I get to quality. Letting machines run the checks frees people to
+              spend their attention on the hard problems. Virtual Trainer has more than 6,000
+              automated tests across the app and the API. At work I moved our build pipelines into shared, versioned
+              YAML templates that every team builds on.
+            </p>
+            <p>
+              I sweat the details people feel: how fast a page loads, how it holds up on a cheap phone, whether it works
+              from the keyboard. The world at the top of this page is drawn in a background worker, so the page stays
+              responsive while it moves.
+            </p>
+            <dl className="facts">
+              <dt>Front end</dt>
+              <dd>TypeScript, React, Angular, React Native</dd>
+              <dt>Back end</dt>
+              <dd>C#, .NET, SQL Server, Cosmos DB, RabbitMQ</dd>
+              <dt>Testing</dt>
+              <dd>Jest, React Native Testing Library, xUnit, Moq</dd>
+              <dt>Delivery</dt>
+              <dd>Azure, Azure DevOps pipelines, Electron.NET</dd>
+            </dl>
           </div>
         </section>
 
