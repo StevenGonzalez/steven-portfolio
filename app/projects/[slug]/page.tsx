@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import BackCrumb from "../../../components/BackCrumb";
 import ProjectScene from "../../../components/ProjectScene";
 import SectionRail from "../../../components/SectionRail";
 import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug } from "../../../lib/content";
@@ -41,9 +41,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   return (
     <div className="page">
       <article className="sec">
-        <Link className="crumb" href="/projects">
-          ← Case studies
-        </Link>
+        <BackCrumb href="/projects" label="Case studies" />
         <div className="doc">
           <div className="min-w-0">
             <header className="doc-head">

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BackCrumb from "./BackCrumb";
 import SectionRail from "./SectionRail";
 
 type TocItem = {
@@ -37,9 +37,7 @@ export default function ThoughtPost({
   return (
     <div className="page">
       <article className="sec">
-        <Link className="crumb" href="/insights">
-          ← Writing
-        </Link>
+        <BackCrumb href="/insights" label="Writing" />
         <div className="doc">
           <div className="min-w-0">
             <header className="doc-head">
