@@ -3,9 +3,9 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-/** Two small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
- *  arrive together; the hidden state is added here, so nothing stays hidden if this never runs. And cards marked
- *  data-glow catch the light where the pointer is. */
+/** Small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
+ *  arrive together; the hidden state is added here, so nothing stays hidden if this never runs. Cards marked
+ *  data-glow catch the light where the pointer is. And a box marked data-scene plays that painted scene. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
@@ -29,6 +29,22 @@ export default function SiteEffects() {
       io.observe(el);
     }
     return () => io.disconnect();
+  }, [pathname]);
+
+  // Only the 404 page marks a scene this way. The root 404 is part of every route, so a client component of its own
+  // would add a script request to every page; this one is already there, and the scene code loads only when needed.
+  useEffect(() => {
+    const boxes = [...document.querySelectorAll<HTMLElement>("[data-scene]")];
+    if (!boxes.length) return;
+    const stops: (() => void)[] = [];
+    let gone = false;
+    import("../lib/world/vignette-stage").then(({ mountScene }) => {
+      if (!gone) for (const box of boxes) stops.push(mountScene(box, box.dataset.scene));
+    });
+    return () => {
+      gone = true;
+      for (const stop of stops) stop();
+    };
   }, [pathname]);
 
   useEffect(() => {

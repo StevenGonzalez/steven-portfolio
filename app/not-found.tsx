@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ProjectScene from "../components/ProjectScene";
 
 export const metadata = {
   title: "Page not found | Steven Gonzalez",
@@ -24,9 +23,11 @@ export default function NotFound() {
           <Link href="/insights">Writing</Link>
         </p>
         <figure className="doc-figure">
-          <ProjectScene
-            slug="lost"
-            label="A mooring post on a floating island with a snapped rope, and a small island drifting away in the distance."
+          <div
+            className="scene-cv"
+            data-scene="lost"
+            role="img"
+            aria-label="A mooring post on a floating island with a snapped rope, and a small island drifting away in the distance."
           />
         </figure>
       </section>
