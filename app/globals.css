@@ -113,6 +113,27 @@ a {
   border-radius: 2px;
 }
 
+/* Hidden until a keyboard user tabs to it, then it sits above the header. */
+.skip {
+  position: fixed;
+  z-index: 30;
+  top: 10px;
+  left: 10px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 500 14px/1 var(--body);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip:focus-visible {
+  transform: none;
+}
+main:focus {
+  outline: none;
+}
+
 /* ─── Header ───────────────────────────────────────────────────────────────── */
 
 /* Transparent over the world, solid once the page scrolls past it, and solid

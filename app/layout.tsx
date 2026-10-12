@@ -84,8 +84,13 @@ export default function RootLayout({
     >
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+        <a className="skip" href="#main">
+          Skip to content
+        </a>
         <Header />
-        <main>{children}</main>
+        <main id="main" tabIndex={-1}>
+          {children}
+        </main>
         <Footer />
         <SiteEffects />
       </body>
