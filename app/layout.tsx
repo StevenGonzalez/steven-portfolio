@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, IBM_Plex_Mono, Schibsted_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -7,25 +7,31 @@ import SiteEffects from "../components/SiteEffects";
 import { siteUrl } from "../lib/site";
 import { themeBootstrapScript } from "../lib/theme";
 
-const cormorant = Cormorant_Garamond({
+// The fonts are Google Fonts' Latin files, kept in the repo. next/font/google fetched them from Google on every build,
+// and a deploy failed when Google answered in a URL format that next/font could not read.
+const cormorant = localFont({
   variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  style: ["normal", "italic"],
+  src: [
+    { path: "./fonts/cormorant-garamond.woff2", weight: "500 600", style: "normal" },
+    { path: "./fonts/cormorant-garamond-italic.woff2", weight: "500 600", style: "italic" },
+  ],
   display: "swap",
+  adjustFontFallback: "Times New Roman",
 });
 
-const schibsted = Schibsted_Grotesk({
+const schibsted = localFont({
   variable: "--font-schibsted",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  src: "./fonts/schibsted-grotesk.woff2",
+  weight: "400 600",
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
+const plexMono = localFont({
   variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  src: [
+    { path: "./fonts/ibm-plex-mono-400.woff2", weight: "400" },
+    { path: "./fonts/ibm-plex-mono-500.woff2", weight: "500" },
+  ],
   display: "swap",
 });
 
