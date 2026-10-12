@@ -427,6 +427,18 @@ main:focus {
 .guide li small { display: block; font: 400 12.5px/1.4 var(--body); color: var(--hero-muted); }
 .guide li.extra :is(.n, small) { color: var(--hero-gold); opacity: 1; }
 .guide-foot { margin: 10px 0 0; font: 400 12px/1.4 var(--body); color: var(--hero-muted); }
+.guide-card {
+  margin: 0 0 10px;
+  padding: 0;
+  font: 500 10.5px/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hero-gold);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.guide-card:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* The seam starts inside the hero's bottom fade and reaches into the top of the page, behind its content. It arrives
    after the world has woken, so it never shows over the dark of the arrival. The low seam closes the page: it is
