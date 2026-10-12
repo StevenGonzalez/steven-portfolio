@@ -109,6 +109,9 @@ export default function Home() {
               about {worldKb()} KB gzipped, and it holds still if your system asks for reduced motion.
             </p>
           </div>
+          <Link className="more" href="/insights/how-the-sky-islands-work" data-rv>
+            How it&apos;s built, in more detail
+          </Link>
           <a className="more" href={`${gitHub.href}/steven-portfolio/tree/main/lib/world`}
             target="_blank"
             rel="noopener noreferrer"

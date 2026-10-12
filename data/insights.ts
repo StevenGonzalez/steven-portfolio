@@ -2,6 +2,15 @@ import type { InsightPost } from "../types/content";
 
 export const insights: InsightPost[] = [
   {
+    slug: "how-the-sky-islands-work",
+    title: "How the Sky Islands at the Top of This Site Work",
+    summary: "A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with.",
+    date: "Oct 11, 2026",
+    category: "Web Graphics",
+    readTime: "5 min read",
+    tags: ["Canvas", "Web Workers", "Performance"],
+  },
+  {
     slug: "ci-cd-templates-that-work",
     title: "What Makes CI/CD Templates Actually Useful",
     summary: "What I learned moving our Azure DevOps pipelines to YAML and into one shared, versioned template repository.",

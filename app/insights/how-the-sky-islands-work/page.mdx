@@ -1,0 +1,89 @@
+export const metadata = {
+  title: "How the Sky Islands at the Top of This Site Work | Steven",
+  description: "A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with.",
+};
+
+import ThoughtPost from "../../../components/ThoughtPost";
+
+<ThoughtPost
+  title="How the Sky Islands at the Top of This Site Work"
+  date="Oct 11, 2026"
+  category="Web Graphics"
+  readTime="5 min read"
+  tags={["Canvas", "Web Workers", "Performance"]}
+  toc={[
+    { title: "No images, one seed", href: "#no-images-one-seed" },
+    { title: "Paint once, draw what moves", href: "#paint-once-draw-what-moves" },
+    { title: "Off the main thread", href: "#getting-it-off-the-main-thread" },
+    { title: "The theme switch", href: "#the-theme-switch" },
+    { title: "When a device can't keep up", href: "#when-a-device-cant-keep-up" },
+    { title: "Rules for touching it", href: "#rules-for-touching-it" },
+  ]}
+  description="A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with."
+>
+
+The top of this site is a small world: a floating island with a lantern tree, a sea of clouds, whales, a mill, and a field guide that fills in as you look around. I wanted a home page that shows how I build things instead of only describing it. It also had to load like a normal page, which turned out to be the harder part.
+
+## No images, one seed
+
+There are no image files in it. Every rock, leaf and cloud is drawn with the Canvas 2D API when the page loads. The randomness comes from a seeded generator, so it is the same island on every visit.
+
+That kept the download small. The whole engine, with every scene and creature, is about 80 KB of gzipped JavaScript and uses no libraries. A painted background image at full resolution would usually weigh more than that, and it couldn't move.
+
+## Paint once, draw what moves
+
+Most of the scene never changes: the sky, the far mountains, the ridges, the island's rock. Redrawing those every frame would waste nearly all the work. So the world is split into 11 stacked canvases. Eight are painted once for each size and theme, and after that they only slide. The other three hold everything that moves, and only those are redrawn each frame.
+
+```js
+export const LAYERS = [
+  { d: 0, res: .6, paint: 'sky' },
+  { d: D_FAR, res: .5, paint: 'far' },
+  { d: D_BACK, res: .5, paint: 'ridge', band: K => woodBand(K.land.ridge) },
+  { d: D_BACK, res: .8, draw: 'back', half: 'odd' },
+  { d: .3, res: .5, paint: 'mid', band: K => [K.HZ - 280, 1000 + K.EX] },
+  { d: .4, res: .5, paint: 'flanks', band: K => woodBand(...K.land.flanks) },
+  { d: D_ISLE, res: 1, paint: 'island' },
+  { d: D_ISLE, res: 1, draw: 'isle' },
+  { d: .65, res: .45, paint: 'front' },
+  { d: D_FRONT, res: 1, half: 'even', draw: 'front' },
+  { d: 1, res: .3, paint: 'fg' },
+];
+```
+
+Each layer has a depth, `d`, which sets how far it slides with the pointer and how much it lags behind the page as you scroll. That alone gives the shadow-box look. Each layer also has its own resolution. The sky is a soft gradient, so it renders at 60% of full resolution. The dark ferns in the foreground are blurred anyway, so 30% is enough. The island, which is what you look at, gets all of it. A layer that only covers a band of the scene, like the wooded ridge, gets a canvas only that tall, so the browser has less to composite.
+
+## Getting it off the main thread
+
+The static layers were always painted in a web worker, which sends them back as `ImageBitmap`s that move between threads without being copied. But the first version drew every frame on the page's main thread. Desktop Lighthouse scored it 97. Mobile Lighthouse, which slows the CPU down four times, scored it 61. The cost was the drawing, not the download.
+
+A second worker fixed that. The render worker owns the canvases themselves: the page calls `transferControlToOffscreen()` on each one and hands it over, and from then on the worker draws every frame. The main thread reads the pointer and the scroll position, posts them across, and moves the finished layers with CSS transforms.
+
+Browsers without `OffscreenCanvas` run the same renderer on the main thread. It sends and receives the same messages either way, so there is one renderer to test, and if the worker fails to start, the page falls back to it on fresh canvases.
+
+After the move, mobile Lighthouse scores between 94 and 97 from run to run, desktop scores 99, and nothing shifts while the page loads. The largest contentful paint is my name in the header, not the world.
+
+## The theme switch
+
+The world has two palettes: golden hour for the light theme and night for the dark one. My first theme switch repainted the static layers on the spot, which froze the page for about a second. Now the paint worker paints the other theme in the background as soon as the first one is up, so switching only swaps bitmaps. The change spreads out from the sun or the moon, using the View Transitions API with a soft circular mask.
+
+## When a device can't keep up
+
+The renderer keeps a running average of how long frames take. If they run long for a while, it switches to a lite mode for the rest of the visit: the animated layers drop to a pixel ratio of 1, and the two busiest ones redraw on alternate frames, so no single frame carries both. It never switches back, because flipping in and out would be more noticeable than either mode.
+
+If your system asks for reduced motion, the world draws once and holds still.
+
+## Rules for touching it
+
+I wanted it to be something you play with, without any instructions on screen. A few rules made that work:
+
+- **Hovering only looks.** It names a thing in the field guide and may change it in place, but nothing moves out from under the cursor.
+- **A click touches.** It pops a bubble, pushes the swing or startles a fish in the clouds.
+- **Not everything arrives at once.** On a first visit the world opens with only places and weather, and the creatures arrive one at a time over about a minute.
+
+The hit tests behind the hover labels run in the render worker too, against the same shapes it draws, and the answer comes back with each frame.
+
+The world also follows your calendar: leaves fall from the tree in autumn, blossom in spring and snow in winter. The case studies have small painted scenes made with the same code, and the field guide can save a postcard of the view, postmarked with the date and season.
+
+The source is in [`lib/world`](https://github.com/StevenGonzalez/steven-portfolio/tree/main/lib/world) if you want to read it.
+
+</ThoughtPost>
