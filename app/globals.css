@@ -838,10 +838,13 @@ main:focus {
   border-radius: 4px;
   background: var(--panel);
 }
-.doc-figure img {
+.scene-cv {
+  aspect-ratio: 16 / 9;
+}
+.scene-cv canvas {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 .rail {
   position: sticky;

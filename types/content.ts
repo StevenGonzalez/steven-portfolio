@@ -8,7 +8,8 @@ export type ProjectDetail = {
   title: string;
   timeline?: string;
   summary: string;
-  image: string;
+  /** What the case study's painted scene shows, read out in place of the picture. */
+  scene: string;
   tags: string[];
   links?: ContentLink[];
   role?: string;

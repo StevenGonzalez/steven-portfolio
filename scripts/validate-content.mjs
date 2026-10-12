@@ -38,7 +38,7 @@ function validateProjects(projects) {
     assertRequiredString(project.slug, `Project ${project.title ?? "<unknown>"} slug`);
     assertRequiredString(project.title, `Project ${project.slug} title`);
     assertRequiredString(project.summary, `Project ${project.slug} summary`);
-    assertRequiredString(project.image, `Project ${project.slug} image`);
+    assertRequiredString(project.scene, `Project ${project.slug} scene`);
     assertRequiredString(project.problem, `Project ${project.slug} problem`);
     assertRequiredString(project.approach, `Project ${project.slug} approach`);
     assertRequiredString(project.architecture, `Project ${project.slug} architecture`);

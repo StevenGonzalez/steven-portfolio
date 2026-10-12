@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
+import ProjectScene from "../../../components/ProjectScene";
 import SectionRail from "../../../components/SectionRail";
 import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug } from "../../../lib/content";
 
@@ -68,14 +68,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </header>
 
             <figure className="doc-figure">
-              <Image
-                src={project.image}
-                alt={project.title}
-                width={1280}
-                height={720}
-                sizes="(max-width: 860px) 100vw, 820px"
-                priority
-              />
+              <ProjectScene slug={project.slug} label={project.scene} />
             </figure>
 
             <div className="prose doc-body">

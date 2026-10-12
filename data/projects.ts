@@ -6,7 +6,7 @@ export const projects: ProjectDetail[] = [
     title: "Virtual Trainer",
     summary:
       "A fitness app I co-founded and built: React Native on iOS and Android, a .NET API on Azure, and an AI trainer that answers from your own workout history.",
-    image: "/virtual-trainer.svg",
+    scene: "A barbell resting on a squat rack on a floating island, lifted through its reps by two bunches of balloons.",
     tags: [
       "React Native",
       ".NET Core",
@@ -78,7 +78,7 @@ export const projects: ProjectDetail[] = [
     title: "Fitness Business Management Platform",
     summary:
       "Engineer on the SaaS platform that runs studios, gyms and multi-location operators: scheduling, billing, CRM, member experience and reporting.",
-    image: "/fitness-platform.svg",
+    scene: "Five floating islands, each with a small lit studio, joined by lines that lights travel along.",
     tags: ["C#", ".NET", "SaaS", "SQL", "Web", "Fitness Tech"],
     role: "Software engineer",
     scope: "Full stack, across most of the product",
@@ -115,7 +115,7 @@ export const projects: ProjectDetail[] = [
     title: "Industrial Saw Control Platform",
     summary:
       "I build and maintain the software that runs industrial saws: an Angular operator interface, a C# API, Electron.NET desktop packaging, RabbitMQ messaging and PLC integration.",
-    image: "/saw-blade-minimal.svg",
+    scene: "A mill on a floating island whose water wheel is a circular saw blade, turned by a waterfall from the rock above.",
     tags: ["Angular", "C#", "Electron.NET", "RabbitMQ", "PLC", "Desktop"],
     role: "Software engineer",
     scope: "Front end, back end, machine integration and how we ship",
@@ -154,7 +154,7 @@ export const projects: ProjectDetail[] = [
     title: ".NET Framework to .NET 8 Upgrade",
     summary:
       "Led the move of a business-critical application from .NET Framework 4.6 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
-    image: "/winforms-modernization.svg",
+    scene: "An old stone tower on a floating island, with new stone going on top and a crane lifting the next block up.",
     tags: ["C#", ".NET 8", ".NET Framework", "Upgrade", "Compatibility", "Security"],
     role: "Lead engineer",
     scope: "Upgrading a legacy .NET application",
@@ -191,7 +191,7 @@ export const projects: ProjectDetail[] = [
     title: "Azure DevOps Pipeline Templates",
     summary:
       "Moved our Azure DevOps pipelines from the classic editor to YAML and built a shared, versioned template repository that teams can adopt without being broken by changes.",
-    image: "/azure-devops-templates.svg",
+    scene: "An aqueduct of identical arches carrying water from a spring out to three small islands.",
     tags: ["Azure DevOps", "YAML", "CI/CD", "DevEx", "Templates", "Automation"],
     role: "Lead engineer",
     scope: "Build pipelines and developer workflow",
