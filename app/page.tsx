@@ -33,7 +33,7 @@ export default function Home() {
           </p>
           <div className="about">
             <blockquote data-rv>
-              I like making slow things <em>fast</em> and fragile things boring.
+              If a check can run on <em>every commit</em>, it should.
             </blockquote>
             <div className="body" data-rv>
               <p>
@@ -43,8 +43,8 @@ export default function Home() {
                 on, and co-founded Virtual Trainer, which I built end to end.
               </p>
               <p>
-                I love automation, and it&apos;s how I get to quality. If a check can run on every commit, it should, so
-                people can spend their attention on the hard problems instead. Virtual Trainer has more than 6,000
+                I love automation, and it&apos;s how I get to quality. Letting machines run the checks frees people to
+                spend their attention on the hard problems. Virtual Trainer has more than 6,000
                 automated tests across the app and the API. At work I moved our build pipelines into shared, versioned
                 YAML templates that every team builds on.
               </p>
