@@ -68,7 +68,7 @@ The world has two palettes: golden hour for the light theme and night for the da
 
 ## When a device can't keep up
 
-The renderer keeps a running average of how long frames take. If they run long for a while, it switches to a lite mode for the rest of the visit: the animated layers drop to a pixel ratio of 1, and the two busiest ones redraw on alternate frames, so no single frame carries both. It never switches back, because flipping in and out would be more noticeable than either mode.
+The renderer keeps a running average of how long frames take. If they run long for a while, it switches to a lite mode for the rest of the visit: the animated layers drop to a pixel ratio of 1, and the two busiest ones redraw on alternate frames, so no single frame carries both. If frames still run long after that, the animated layers drop again, to 70% of that resolution. Firefox on Linux needs this second step, because it draws canvases on the CPU, where the cost follows the number of pixels. It never switches back, because flipping in and out would be more noticeable than either mode.
 
 If your system asks for reduced motion, the world draws once and holds still.
 
