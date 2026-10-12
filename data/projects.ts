@@ -39,6 +39,7 @@ export const projects: ProjectDetail[] = [
     ],
     role: "Co-founder • Lead engineer",
     scope: "Product, iOS and Android apps, .NET API, Azure",
+    timeline: "2019 – present",
     keyDecision:
       "SQL Server for workout and account data, Cosmos DB for document-shaped data, and Service Bus for background work",
     highlights: [
@@ -47,6 +48,7 @@ export const projects: ProjectDetail[] = [
       "Context-aware AI trainer grounded in user data",
       "Automated routine generation and workout progression",
       "Event-driven supporting services with Azure Service Bus",
+      "More than 6,000 automated tests across the app and the API",
     ],
     card: {
       blurb:
@@ -65,11 +67,11 @@ export const projects: ProjectDetail[] = [
     approach:
       "I led product and engineering across the app and the back end. The React Native client is built around a model of how training actually works: routines, workouts, exercises, timers, warmups, supersets and history. Each user arranges their own dashboard; widget placement is O(1) and results are cached per user, so it stays quick as people add more. Guided workouts progress automatically, using the same rules of thumb a coach would. Later I added an AI trainer that answers questions from the user's own training data instead of giving generic fitness advice.",
     architecture:
-      "The apps talk to a C# .NET API that is split along the same lines as the training model. On Azure, SQL Server holds workouts and accounts, Cosmos DB holds the data that is naturally document-shaped, and Service Bus carries background work like notifications so it never holds up a request. In the app I kept screen state, shared app state and server data apart, which kept long workout sessions responsive.",
+      "The apps talk to a C# .NET API, 86 endpoints across 14 controllers, split along the same lines as the training model. On Azure, SQL Server holds workouts and accounts, Cosmos DB holds the data that is naturally document-shaped, and Service Bus carries background work like notifications so it never holds up a request. In the app I kept screen state, shared app state and server data apart, which kept long workout sessions responsive.",
     tradeoffs:
       "Training logic, personalization and AI each add complexity, and together they add a lot. Automatic progression needed limits so it could adapt without suggesting unsafe jumps. Running both SQL Server and Cosmos DB costs more to operate, so I kept a clear rule for what lives where. Moving work to the background made the app faster, but anything the user needs to see right away stays out of the queue.",
     outcome:
-      "Virtual Trainer shipped on the App Store and Google Play with generated routines and workouts, guided training, progress reports, custom exercises, automatic progression and the AI trainer. I designed and ran the whole stack in production, from the mobile apps down to the cloud.",
+      "Virtual Trainer shipped on the App Store and Google Play with generated routines and workouts, guided training, progress reports, custom exercises, automatic progression and the AI trainer. I designed and ran the whole stack in production, from the mobile apps down to the cloud. The app and the API carry more than 6,000 automated tests between them, which is what keeps it safe to change.",
   },
   {
     slug: "fitness-platform",
