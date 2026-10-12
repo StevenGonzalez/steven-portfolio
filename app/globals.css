@@ -862,6 +862,123 @@ main:focus {
   height: 100%;
 }
 
+/* The résumé: one column, set to print cleanly on paper or to PDF. */
+.resume {
+  max-width: 50rem;
+}
+.resume h2 {
+  margin: clamp(36px, 5vw, 56px) 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  font: 500 clamp(1.6rem, 3vw, 2rem)/1.1 var(--display);
+}
+.job {
+  padding-top: 20px;
+}
+.job h3 {
+  margin: 0;
+  font: 600 17px/1.35 var(--body);
+}
+.job h3 span {
+  font-weight: 400;
+}
+.job .meta {
+  margin: 4px 0 0;
+  font: 400 12.5px/1.5 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.job p,
+.job ul {
+  margin: 10px 0 0;
+}
+.job ul {
+  padding-left: 1.2em;
+  list-style: disc;
+  display: grid;
+  gap: 6px;
+}
+.job li::marker {
+  color: var(--glow);
+}
+.resume .facts {
+  margin-top: 20px;
+}
+.resume-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 24px;
+  margin: 0;
+  font-size: 15px;
+}
+.resume-links a {
+  color: var(--accent);
+}
+.print-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: none;
+  color: var(--fg);
+  font: 500 14px/1 var(--body);
+  cursor: pointer;
+}
+.print-btn:hover {
+  border-color: var(--accent);
+}
+@media print {
+  :root,
+  :root:not([data-theme="light"]),
+  :root[data-theme="dark"] {
+    color-scheme: light;
+    --bg: #fff;
+    --fg: #111;
+    --muted: #555;
+    --line: #ccc;
+    --accent: #111;
+    --glow: #111;
+  }
+  .nav,
+  .foot,
+  .skip,
+  .print-btn,
+  .resume .label {
+    display: none;
+  }
+  .page {
+    padding: 0;
+  }
+  .page .sec:first-child {
+    padding-top: 0;
+  }
+  .resume {
+    max-width: none;
+    font-size: 11pt;
+  }
+  .resume .page-h {
+    margin-bottom: 6pt;
+    font-size: 26pt;
+  }
+  .resume .intro {
+    margin: 0 0 8pt;
+  }
+  .resume h2 {
+    margin-top: 16pt;
+    font-size: 15pt;
+  }
+  .job {
+    padding-top: 9pt;
+    break-inside: avoid;
+  }
+  .job ul {
+    gap: 2pt;
+  }
+  .resume-links a {
+    text-decoration: none;
+  }
+}
+
 /* The 404 page: its scene, then a way home. */
 .lost .doc-figure {
   max-width: 960px;

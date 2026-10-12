@@ -8,6 +8,7 @@ export default function Footer() {
       <nav aria-label="More">
         <Link href="/projects">Case studies</Link>
         <Link href="/insights">Writing</Link>
+        <Link href="/resume">Résumé</Link>
         {externalProfiles.map((profile) => (
           <a key={profile.href} href={profile.href} target="_blank" rel="noopener noreferrer">
             {profile.label}

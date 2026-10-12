@@ -135,6 +135,9 @@ export default function Home() {
             <a className="btn line" href={gitHub.href} target="_blank" rel="noopener noreferrer">
               GitHub
             </a>
+            <Link className="btn line" href="/resume">
+              Résumé
+            </Link>
           </div>
         </section>
       </div>
