@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Modernizing Legacy Systems Without Rewriting Everything | Steven",
-  description: "How to upgrade software the business depends on in stages, keeping its behavior intact while you fix what is underneath.",
+  description: "How I moved a business-critical app from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without changing how people used it.",
 };
 
 import ThoughtPost from "../../../components/ThoughtPost";
@@ -9,121 +9,66 @@ import ThoughtPost from "../../../components/ThoughtPost";
   title="Modernizing Legacy Systems Without Rewriting Everything"
   date="Mar 12, 2026"
   category="Architecture"
-  readTime="7 min read"
+  readTime="4 min read"
   tags={["Modernization", ".NET", "Risk"]}
   toc={[
-    { title: "Start with risk", href: "#start-with-risk-not-code" },
-    { title: "Preserve behavior", href: "#preserve-behavior-before-improving-design" },
-    { title: "Audit dependencies", href: "#audit-dependencies-early" },
-    { title: "Avoid the rewrite trap", href: "#avoid-the-rewrite-trap" },
-    { title: "Create validation gates", href: "#create-validation-gates" },
-    { title: "Modernize in layers", href: "#modernize-in-layers" },
+    { title: "The old code is the spec", href: "#the-old-code-is-the-spec" },
+    { title: "Audit dependencies first", href: "#audit-the-dependencies-first" },
+    { title: "One kind of change at a time", href: "#change-one-kind-of-thing-at-a-time" },
+    { title: "Fix the dangerous parts", href: "#fix-the-dangerous-parts-on-purpose" },
+    { title: "Checks that can fail", href: "#end-each-stage-with-a-check-that-can-fail" },
+    { title: "When something can't move", href: "#when-something-cant-move" },
   ]}
-  description="How to upgrade software the business depends on in stages, keeping its behavior intact while you fix what is underneath."
+  description="How I moved a business-critical app from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without changing how people used it."
 >
 
-Legacy systems usually become legacy because they worked.
+I led the move of a business-critical application from .NET Framework 4.6 to .NET 8. We didn't rewrite it. We moved it in stages, and the people who depend on it kept working the whole time. This is how I'd approach the next one.
 
-That is easy to forget. An old application may be frustrating to maintain, tied to outdated dependencies, or running on a runtime that no longer belongs in a modern environment. But if the business still depends on it, the system has accumulated real operational knowledge. Replacing it casually can destroy that knowledge faster than a team can recreate it.
+## The old code is the spec
 
-Modernization is not the same thing as rewriting. The better question is usually: how do we move the system onto healthier foundations while protecting the behavior people already rely on?
+An old app that people still rely on got old by working. Any odd branch in it might be a bug, or it might be a rule someone depends on, and from the code alone you often can't tell which.
 
-## Start with risk, not code
+That is the main reason I don't rewrite. A rewrite throws away the only complete description of what the system does, and then you rediscover the rules one bug report at a time. Upgrading in place keeps the running app as the reference. If the new version behaves differently, that difference gets explained before it ships.
 
-The first step is understanding what can break.
+## Audit the dependencies first
 
-Before changing frameworks, packages, deployment paths, or architecture, map the risky areas:
+Most of the cost of an upgrade like this hides in the packages. Before changing a target framework, I went through the dependencies and sorted each one:
 
-- Business workflows users depend on every day
-- Security-sensitive code such as authentication, encryption, or secrets
-- External integrations and file formats
-- Database assumptions and migration paths
-- Unsupported packages or runtime APIs
-- Areas with little test coverage and high business impact
+- upgrade it directly
+- replace it with something supported
+- remove it, because nothing needs it anymore
+- isolate it for now, because it can't move yet
 
-This changes the shape of the work. Instead of treating modernization as one large technical task, you can treat it as a series of controlled risk reductions.
+That list became the plan. It also gave a better answer to "how far along are we?" than a percentage: these risks are gone, and these are left.
 
-## Preserve behavior before improving design
+## Change one kind of thing at a time
 
-When an application is business-critical, users care more about continuity than elegance.
+If one step changes the runtime, swaps libraries, restructures the code and renames things, every bug has four possible causes.
 
-That does not mean design quality is unimportant. It means sequencing matters. If you change the runtime, reorganize the architecture, rename core concepts, replace dependencies, and redesign workflows all at once, every bug becomes harder to explain. Was it the framework upgrade? The refactor? The new library? The misunderstood business rule?
+So each stage changed one kind of thing. Moving the runtime didn't come with a redesign. Some awkward structure went over to .NET 8 exactly as it was, and that was fine. Once the app runs on a supported runtime, cleaning that up is a small, normal change instead of part of a huge one.
 
-A safer modernization effort preserves known behavior first, then improves the system once the new foundation is stable.
+## Fix the dangerous parts on purpose
 
-That often means carrying some imperfect structure forward temporarily. It can feel unsatisfying, but it gives the team a stable baseline. Once the application runs on supported technology, the next improvements become easier and less risky.
+Some old code isn't just ugly. It's unsafe on a modern stack. In this app that was encryption code built on APIs that are now obsolete.
 
-## Audit dependencies early
+That kind of code doesn't get swept along with everything else. I replaced the obsolete cryptography with current APIs as its own piece of work, with the old and new behavior written down and tests aimed at exactly that path. If anything encrypted the old way still has to be read, the new code has to read it.
 
-Dependencies are where many upgrades get expensive.
+## End each stage with a check that can fail
 
-Some packages move cleanly. Others have breaking changes, abandoned maintainers, runtime constraints, or hidden assumptions about old APIs. Security-sensitive dependencies deserve extra attention because "it still compiles" is not the same as "it is still appropriate."
+A stage isn't done when it compiles. Each one ended with the main workflows tested before it went out more widely. The checks were things like:
 
-A useful dependency audit separates packages into groups:
+- it builds and starts on the new runtime
+- the main workflows behave the same as before
+- data reads and writes the same way
+- the security-sensitive paths still work
+- we know how to deploy it and how to roll it back
 
-- Upgrade directly
-- Replace with a supported alternative
-- Remove because the application no longer needs them
-- Isolate temporarily behind a boundary
-- Investigate because the risk is unclear
+Without gates like these, an upgrade turns into a long-lived branch that nobody trusts enough to merge.
 
-That classification gives the work a map. It also helps explain progress to stakeholders in terms of risk removed, not just files changed.
+## When something can't move
 
-## Replace sharp edges deliberately
+Sometimes a component can't move forward cleanly. Instead of holding the whole upgrade back for it, I isolated it behind a boundary or replaced it, and the rest of the app kept moving. A little temporary complexity is fine, as long as everyone knows it's temporary.
 
-Legacy systems often contain code that was reasonable when it was written but no longer belongs in the system.
-
-Obsolete encryption APIs are a common example. So are old serialization patterns, global configuration assumptions, hard-coded paths, framework-specific lifecycle hooks, or libraries that only work because nobody has touched them in years.
-
-These areas should not be modernized casually. They should be handled deliberately, with clear before-and-after behavior and focused validation. The goal is not to make every line beautiful. The goal is to remove the parts of the system that create ongoing operational or security risk.
-
-## Avoid the rewrite trap
-
-Rewrites are tempting because they promise a clean slate.
-
-Sometimes they are justified. But they are also expensive because they require the team to rediscover years of behavior, edge cases, integrations, and user expectations. The old system may have ugly code, but it also contains decisions. Some are accidental. Some are essential. A rewrite often cannot tell the difference until late.
-
-Incremental modernization keeps the running system as a source of truth. You can compare behavior, validate workflows, and move one boundary at a time.
-
-The most useful question is not "would this be cleaner if we rewrote it?" It is "what is the smallest change that gets us onto a safer path?"
-
-## Create validation gates
-
-Modernization needs checkpoints.
-
-A good gate proves something specific:
-
-- The app builds on the new runtime
-- Critical workflows still behave the same way
-- Data can be read and written safely
-- Authentication and security-sensitive paths work correctly
-- Deployment and rollback are understood
-- Users can complete the work they depend on
-
-These gates keep the project from becoming a long-running branch of hope. They also make it easier to communicate status. Instead of saying "the upgrade is 70 percent done," you can say which risks have been retired and which ones still remain.
-
-## Modernize in layers
-
-A practical sequence often looks like this:
-
-1. Map workflows, dependencies, and high-risk areas.
-2. Add or strengthen tests around critical behavior.
-3. Upgrade or replace dependencies that block the runtime move.
-4. Move the application to the supported runtime.
-5. Validate core workflows and deployment paths.
-6. Improve architecture where the new foundation makes it easier.
-7. Remove temporary compatibility code once it is no longer needed.
-
-The exact order depends on the system, but the principle holds: reduce uncertainty first, then improve aggressively where the risk is understood.
-
-## The real outcome
-
-The best modernization projects do more than change a version number.
-
-They make the application easier to maintain, safer to operate, and more realistic to improve. They remove unsupported dependencies. They replace fragile or obsolete paths. They give the team a healthier platform for future work without forcing users through unnecessary disruption.
-
-Modernization is successful when the business keeps moving and the engineering floor gets stronger underneath it.
-
-That is quieter than a rewrite, but often much more valuable.
+The app now runs on .NET 8 with supported dependencies and current encryption. The team stopped working around the old stack and went back to shipping changes, and the people using it didn't have to change how they work.
 
 </ThoughtPost>

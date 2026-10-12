@@ -9,74 +9,50 @@ import ThoughtPost from "../../../components/ThoughtPost";
   title="How I Think About Pulling AI Into Real Products"
   date="Dec 18, 2025"
   category="Product Engineering"
-  readTime="8 min read"
+  readTime="4 min read"
   tags={["AI", "Product", "Guardrails"]}
   toc={[
-    { title: "Start with the job", href: "#start-with-the-job" },
-    { title: "Ground it in context", href: "#ground-it-in-context" },
-    { title: "Keep deterministic logic", href: "#keep-deterministic-logic" },
-    { title: "Design for trust", href: "#design-for-trust" },
-    { title: "Evaluate the behavior", href: "#evaluate-the-behavior" },
+    { title: "Start from the job", href: "#start-from-the-job" },
+    { title: "Context is the feature", href: "#context-is-the-feature" },
+    { title: "Keep the rules in code", href: "#keep-the-rules-in-code" },
+    { title: "Easy to trust, easy to ignore", href: "#easy-to-trust-easy-to-ignore" },
+    { title: "Test the behavior", href: "#test-the-behavior-not-the-demo" },
   ]}
   description="Where AI actually helps a product, where plain deterministic code is still the right call, and how to build AI features people can trust."
 >
 
-AI becomes useful in products when it is treated as a capability, not a spectacle.
+Virtual Trainer has an AI trainer. You can ask it about your progress or your plan, and it answers from your own workout history instead of giving generic fitness advice. Building it shaped how I think about AI in products in general.
 
-The least interesting version of an AI feature is a text box attached to a model. The more useful version understands the user's goal, has access to the right context, respects product boundaries, and knows when a deterministic path is better than a generated answer.
+## Start from the job
 
-That distinction matters because users do not care that a feature is powered by AI. They care whether it helps them make progress with less friction and more confidence.
+I start with what the person is trying to do, not with where a model could fit.
 
-## Start with the job
+Explaining, summarizing, drafting and answering questions about your own data are things language models are good at. Exact transactions, strict business rules and anything that has to come out the same every time are not.
 
-The first question is not "where can we add AI?" It is "what job is the user trying to get done?"
+In Virtual Trainer that line is clear. Workout history, timers, completed sets, account state and progression are plain code. The AI trainer reads from them and explains them. It doesn't own them.
 
-If the job is repetitive interpretation, summarization, drafting, coaching, classification, or exploration, AI may be a good fit. If the job is a precise transaction, a safety-critical decision, or a workflow with strict business rules, AI may still help around the edges, but it should not become the source of truth.
+## Context is the feature
 
-For example, a training product can use AI to explain a routine, answer questions about progress, or help a user reason through soreness and schedule constraints. But progression rules, workout history, timers, completed sets, and account state should remain deterministic. Users need the system to be predictable where predictability matters.
+A model with no context gives the answer it would give anyone. That's easy to build and doesn't help much.
 
-AI should reduce cognitive load. It should not move important product behavior into a fog.
+What makes the trainer useful is that it answers from the user's own training data. Choosing what goes into that context is engineering work, more than prompt wording: what's relevant to this question, what's out of date, and what's sensitive enough that it shouldn't be sent at all. More data doesn't automatically mean a better answer.
 
-## Ground it in context
+## Keep the rules in code
 
-Generic AI responses are easy to build and easy to disappoint with.
+The model can interpret, suggest, summarize and explain. The app validates, saves, authorizes, calculates and enforces rules. If a model suggests a change, the change goes through the same checks as anything else before it touches real data.
 
-The value usually comes from grounding. A useful assistant needs the right slice of product context: user preferences, recent activity, relevant history, domain rules, and current workflow state. Without that, the model can sound confident while being disconnected from what the user is actually doing.
+This matters most where the product already has rules. Automatic progression in Virtual Trainer has limits, so it can adapt without suggesting unsafe jumps. A model shouldn't invent a second progression system next to that one. It can explain what the rules decided and why, and help someone choose between options that are already safe.
 
-Context needs boundaries too. More data is not automatically better. The product should decide what is relevant, what is sensitive, what is stale, and what should never be sent into a generated workflow. Grounding is an engineering problem as much as a prompt-writing problem.
+## Easy to trust, easy to ignore
 
-The best AI features feel less like a general chat session and more like the product has become better at explaining itself.
+People trust an AI feature when they can see what it's doing. They should know when they're reading generated text and what it's based on. "Based on your last four workouts" is easier to believe than advice that comes from nowhere. When the system isn't sure, it should say so. When it can't answer safely, it should say that instead of reaching.
 
-## Keep deterministic logic
+There should always be a way out too: look at the underlying data, edit what was generated, or skip the suggestion entirely. A generated plan that someone reviews before it's applied is safer than one that quietly changes their account.
 
-Generated output is powerful because it is flexible. That flexibility is also why it should not own everything.
+## Test the behavior, not the demo
 
-I like to separate AI responsibilities from system responsibilities. The model can interpret, suggest, summarize, and explain. The application should validate, persist, authorize, calculate, and enforce rules. If a model suggests an action, the product still needs normal software boundaries before that action changes state.
+Looking good in a demo doesn't tell you much. Collect real examples: normal questions, edge cases, things it should refuse, and answers that came out wrong. Run them again whenever the prompt, the context or the model changes. That doesn't need a framework on day one, just the habit.
 
-This is especially important when recommendations affect user trust. If the product has domain logic that already knows how progression should work, the model should not improvise a competing progression system. It can explain the result, answer questions about it, or help the user choose between options within safe limits.
-
-AI works best when it is surrounded by ordinary, boring, reliable software.
-
-## Design for trust
-
-Trust is not created by making the model sound polished. It is created by making the experience understandable.
-
-Users should know when they are seeing generated guidance. They should understand what information the answer is based on. When the system is uncertain, it should behave like it is uncertain. When the product cannot safely answer, it should say so instead of stretching.
-
-Good AI product design also includes escape routes. Let users inspect source data, edit generated output, choose a deterministic workflow, or ignore the suggestion entirely. The feature should feel helpful, not coercive.
-
-This is where small interface decisions matter. A recommendation that shows "based on your last four workouts" is more trustworthy than one that appears from nowhere. A generated plan that can be reviewed before it is applied is safer than one that silently changes the user's state.
-
-## Evaluate the behavior
-
-AI features need evaluation beyond "it seemed good in a demo."
-
-The team should collect examples of expected behavior, edge cases, refusal cases, and bad answers. Those examples become a test set for prompts, retrieval changes, model upgrades, and product logic. Evaluation does not need to start as a giant framework. It can start as a disciplined habit: keep the cases that matter and run them when the system changes.
-
-The important thing is to evaluate the product outcome, not just the model output. Did the answer help the user? Did it respect constraints? Did it avoid unsafe confidence? Did it preserve the product's rules? Did it fail in a way the interface could handle?
-
-AI can make software feel more personal and capable. It can also make systems harder to reason about if teams skip the boring parts: context design, validation, observability, evaluation, and product boundaries.
-
-The best AI features are not magic tricks. They are carefully integrated systems where generated intelligence has a clear job, a clear boundary, and enough surrounding structure that users can trust the result.
+Check the outcome as well as the text. Did the answer help? Did it stay inside the product's rules? When it failed, could the UI show that clearly? I hold the rest of the app to the same questions.
 
 </ThoughtPost>

@@ -9,72 +9,54 @@ import ThoughtPost from "../../../components/ThoughtPost";
   title="What Production SaaS Teaches You About Edge Cases"
   date="Oct 23, 2025"
   category="SaaS Engineering"
-  readTime="7 min read"
+  readTime="4 min read"
   tags={["SaaS", "Multi-tenancy", "Operations"]}
   toc={[
-    { title: "Simple features are not simple", href: "#simple-features-are-not-simple" },
-    { title: "Configuration multiplies behavior", href: "#configuration-multiplies-behavior" },
-    { title: "Data boundaries matter", href: "#data-boundaries-matter" },
-    { title: "Reporting exposes assumptions", href: "#reporting-exposes-assumptions" },
-    { title: "Operational empathy", href: "#operational-empathy" },
+    { title: "Let a member book a class", href: "#let-a-member-book-a-class" },
+    { title: "Every setting multiplies the cases", href: "#every-setting-multiplies-the-cases" },
+    { title: "Whose data is it?", href: "#whose-data-is-it" },
+    { title: "Reports find the vague parts", href: "#reports-find-the-vague-parts" },
+    { title: "Somebody's normal day", href: "#somebodys-normal-day" },
   ]}
   description="How multi-tenancy, billing, scheduling, reporting and permissions turn simple-looking features into hard ones."
 >
 
-Production SaaS teaches humility quickly.
+Before the saws, I worked on a SaaS platform that gyms, studios and multi-location operators run their businesses on: scheduling, billing, leads, member features and reporting. The same code serves a single studio and a national franchise, and each of them runs differently.
 
-A feature that sounds straightforward in a planning conversation can become complicated once it meets real customers, real data, and real operational workflows. The work is not only building the happy path. It is making the feature behave correctly across different customer configurations, permissions, schedules, billing rules, reporting needs, and historical data.
+What I learned there is that most of the work in a feature is everything else it touches.
 
-That is where a SaaS platform becomes interesting. The edge cases are not weird exceptions. They are often the product.
+## "Let a member book a class"
 
-## Simple features are not simple
+It sounds like one button. Then the questions start.
 
-"Let a member book a class" sounds simple until the system has to answer the real questions.
+Is the membership active? Does it include this class? Is the class full, and is there a waitlist? Can staff override that? What if the last payment failed? What if the member belongs to another location? What if the class moved, got cancelled or changed instructors after they booked? And reporting will later want to tell a no-show from a late cancel.
 
-Is the member active? Does the membership allow this class? Is there a capacity limit? Is there a waitlist? Can staff override it? What happens if payment failed? What if the member belongs to a different location? What if the class was moved, canceled, or assigned to a different instructor? What if reporting needs to distinguish no-shows from late cancellations?
+That one button reaches into scheduling, billing, membership rules, permissions and reporting. The UI is small and the behavior isn't. So before changing anything, I learned to map what it touches.
 
-The same pattern shows up in billing, CRM, permissions, and reporting. The visible UI may be small, but the underlying behavior crosses several domains.
+## Every setting multiplies the cases
 
-Senior engineering work often means seeing those intersections early enough to design for them.
+Configuration is how one product fits many different businesses. It's also how a change that works for one customer breaks for another, because of a membership rule, a tax setting, a staff permission or a location policy nobody thought to test.
 
-## Configuration multiplies behavior
+The default setup almost never looks like a real customer's. I treat settings as part of what needs testing: which ones interact, which combinations are common, and which are risky. Sometimes the better fix is changing the model so a bad combination can't exist, instead of adding one more if-statement.
 
-SaaS products become powerful by supporting many customers with one platform. That power usually comes from configuration.
+## Whose data is it?
 
-Configuration lets customers adapt the product to their business. It also multiplies the number of states the system must support. A change that works for one operator may behave differently for another because of membership rules, location settings, taxes, staff permissions, schedule policies, or integrations.
+In a multi-tenant system, every query carries a second question: is this the right customer's data? Tenant IDs, location scoping, role checks and report filters look like plumbing. They are what lets many businesses share one system safely.
 
-The danger is assuming the default configuration is representative. It rarely is.
+They also shape how features get built. A query that's fast on a dev database can be slow on production data. A report that's right for one location can be wrong across several. A background job that touches shared tables needs the same filtering as a request, and logs that show it did.
 
-Good SaaS engineering treats configuration as part of the test surface. It asks which settings interact, which combinations are common, which combinations are risky, and which combinations should not be allowed at all. Sometimes the best fix is not more conditional logic. It is clarifying the product model so invalid combinations cannot exist.
+A correct number belongs to the right customer, follows that customer's rules, and means what they think it means.
 
-## Data boundaries matter
+## Reports find the vague parts
 
-Multi-tenant systems depend on trust.
+Day to day, staff can work around a fuzzy state because they know the context. Reports can't. They add things up, and owners make decisions from them: revenue, attendance, payroll, retention.
 
-Customers expect their data to remain isolated, correct, and available. That makes data boundaries central to the architecture. Tenant identifiers, permissions, location scoping, role checks, and reporting filters are not boring plumbing. They are the foundation that lets the platform serve many customers safely.
+So reporting is where an unclear workflow shows itself. What counts as a completed booking? When does revenue count? How does a refund show up? Is a staff override recorded as one? Each of those is a product decision. If the data model doesn't record the answer clearly, every report answers it a little differently.
 
-Data boundaries also affect feature design. A query that works in development can become expensive in production. A report that looks correct for one tenant may be misleading across locations. A background job that touches shared tables needs careful filtering and observability.
+## Somebody's normal day
 
-In SaaS, correctness is not only whether the code returns a value. It is whether the value belongs to the right customer, respects the right rules, and means what the user thinks it means.
+Bugs here land on real people. A billing mistake can reach someone's payroll. A scheduling bug can leave a member at the front desk for a class that isn't there. A permissions mistake can show data to the wrong person.
 
-## Reporting exposes assumptions
-
-Reporting is where hidden product assumptions become visible.
-
-Operational workflows can tolerate some ambiguity because users understand context. Reports are less forgiving. They aggregate behavior and turn it into decisions: revenue, attendance, conversion, retention, utilization, payroll, and performance.
-
-If the underlying workflow has vague states, reporting will reveal it. What counts as a completed booking? When is revenue recognized? How should refunds be represented? Are staff overrides tracked separately? Is a canceled event excluded, reversed, or counted as a different category?
-
-These are product questions expressed as data questions. The engineering work is to make the data model honest enough that reports do not become folklore.
-
-## Operational empathy
-
-The best SaaS engineers develop empathy for the operators using the product.
-
-They understand that a billing bug may affect payroll. A scheduling issue may affect customers standing in a lobby. A permissions mistake may expose data. A reporting mismatch may cause a business owner to make a bad decision.
-
-That empathy changes how features are built. It encourages better validation, clearer failure states, safer migrations, and more careful rollout plans. It also encourages engineers to ask better questions: who depends on this behavior, how will they notice a problem, and what support path exists if something goes wrong?
-
-Production SaaS is a reminder that edge cases are often just other people's normal work. Building for them is not overengineering. It is respecting the reality of the platform.
+Keeping that in mind changed how I build: more validation, clearer error states, careful migrations, and asking who relies on a behavior and how they'd notice if it broke.
 
 </ThoughtPost>
