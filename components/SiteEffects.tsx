@@ -67,7 +67,7 @@ export default function SiteEffects() {
     if (greeted) return;
     greeted = true;
     console.info(
-      "%cHi, you opened the console.%c\n\nThe sky islands at the top of the home page are plain JavaScript drawing on canvas in web workers, with no images and no libraries.\n\nHow it works: %s\nThe source: %s\n\nAdd ?season=winter, spring, summer or autumn to the home page's address to see another season.",
+      "%cHi, you opened the console.%c\n\nThe sky islands at the top of the home page are plain JavaScript drawing on canvas in web workers, with no images and no libraries.\n\nHow it works: %s\nThe source: %s\n\nAdd ?season=winter, spring, summer or autumn to the home page's address to see another season, or ?season=halloween or newyear for the days it dresses up.",
       "font: italic 500 20px Georgia, serif; color: #78dccb",
       "font: 12px/1.6 ui-monospace, monospace",
       `${location.origin}/insights/how-the-sky-islands-work`,
