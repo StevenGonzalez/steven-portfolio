@@ -1,11 +1,11 @@
-export const metadata = {
-  title: "How the Sky Islands at the Top of This Site Work | Steven",
-  description: "A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with.",
-};
-
 import ThoughtPost from "../../../components/ThoughtPost";
+import { insightMetadata } from "../../../lib/meta";
+import { worldKb } from "../../../lib/world-size";
+
+export const metadata = insightMetadata("how-the-sky-islands-work");
 
 <ThoughtPost
+  slug="how-the-sky-islands-work"
   title="How the Sky Islands at the Top of This Site Work"
   date="Oct 11, 2026"
   category="Web Graphics"
@@ -28,7 +28,7 @@ The top of this site is a small world: a floating island with a lantern tree, a 
 
 There are no image files in it. Every rock, leaf and cloud is drawn with the Canvas 2D API when the page loads. The randomness comes from a seeded generator, so it is the same island on every visit.
 
-That kept the download small. The whole engine, with every scene and creature, is about 80 KB of gzipped JavaScript and uses no libraries. A painted background image at full resolution would usually weigh more than that, and it couldn't move.
+That kept the download small. The whole engine, with every scene and creature, is about {worldKb()} KB of gzipped JavaScript and uses no libraries. A painted background image at full resolution would usually weigh more than that, and it couldn't move.
 
 ## Paint once, draw what moves
 

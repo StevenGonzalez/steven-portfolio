@@ -1,10 +1,13 @@
 import PostList from "../../components/PostList";
 import { insights } from "../../lib/content";
+import { pageMetadata } from "../../lib/meta";
 
-export const metadata = {
-  title: "Writing | Steven Gonzalez",
-  description: "Notes on software architecture and delivery.",
-};
+export const metadata = pageMetadata({
+  title: "Writing",
+  description:
+    "I write when I run into something that took longer to figure out than it should have. Maybe it saves someone else the time.",
+  path: "/insights",
+});
 
 export default function InsightsPage() {
   return (

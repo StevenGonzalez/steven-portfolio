@@ -1,11 +1,10 @@
-export const metadata = {
-  title: "Modernizing Legacy Systems Without Rewriting Everything | Steven",
-  description: "How I moved a business-critical app from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without changing how people used it.",
-};
-
 import ThoughtPost from "../../../components/ThoughtPost";
+import { insightMetadata } from "../../../lib/meta";
+
+export const metadata = insightMetadata("modernizing-legacy-systems-without-rewriting");
 
 <ThoughtPost
+  slug="modernizing-legacy-systems-without-rewriting"
   title="Modernizing Legacy Systems Without Rewriting Everything"
   date="Mar 12, 2026"
   category="Architecture"

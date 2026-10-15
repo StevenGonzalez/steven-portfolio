@@ -1,10 +1,12 @@
 import ProjectGrid from "../../components/ProjectGrid";
 import { projects } from "../../lib/content";
+import { pageMetadata } from "../../lib/meta";
 
-export const metadata = {
-  title: "Case studies | Steven Gonzalez",
+export const metadata = pageMetadata({
+  title: "Case studies",
   description: "The problem, what I built, the tradeoffs and how it turned out, for each project.",
-};
+  path: "/projects",
+});
 
 export default function ProjectsPage() {
   return (

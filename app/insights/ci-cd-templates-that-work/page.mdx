@@ -1,11 +1,10 @@
-export const metadata = {
-  title: "What Makes CI/CD Templates Actually Useful | Steven",
-  description: "What I learned moving our Azure DevOps pipelines to YAML and into one shared, versioned template repository.",
-};
-
 import ThoughtPost from "../../../components/ThoughtPost";
+import { insightMetadata } from "../../../lib/meta";
+
+export const metadata = insightMetadata("ci-cd-templates-that-work");
 
 <ThoughtPost
+  slug="ci-cd-templates-that-work"
   title="What Makes CI/CD Templates Actually Useful"
   date="Apr 21, 2026"
   category="Developer Experience"

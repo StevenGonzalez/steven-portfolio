@@ -1,21 +1,10 @@
-import { readdirSync, readFileSync } from "node:fs";
-import path from "node:path";
-import { gzipSync } from "node:zlib";
 import Link from "next/link";
 import PostList from "../components/PostList";
 import ProjectGrid from "../components/ProjectGrid";
 import World from "../components/World";
 import { insights, projects } from "../lib/content";
 import { externalProfiles } from "../lib/site";
-
-/** What the world costs to send: its own source, gzipped, measured when the page is built. */
-function worldKb() {
-  const dir = path.join(process.cwd(), "lib", "world");
-  const source = readdirSync(dir)
-    .filter((name) => name.endsWith(".js"))
-    .map((name) => readFileSync(path.join(dir, name)));
-  return Math.round(gzipSync(Buffer.concat(source)).length / 1024);
-}
+import { worldKb } from "../lib/world-size";
 
 const linkedIn = externalProfiles.find((profile) => profile.label === "LinkedIn")!;
 const gitHub = externalProfiles.find((profile) => profile.label === "GitHub")!;

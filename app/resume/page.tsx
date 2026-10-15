@@ -1,11 +1,13 @@
 import { Fragment } from "react";
 import PrintButton from "../../components/PrintButton";
+import { pageMetadata } from "../../lib/meta";
 import { externalProfiles } from "../../lib/site";
 
-export const metadata = {
-  title: "Résumé | Steven Gonzalez",
+export const metadata = pageMetadata({
+  title: "Résumé",
   description: "Steven Gonzalez's experience, education and skills.",
-};
+  path: "/resume",
+});
 
 const jobs = [
   {

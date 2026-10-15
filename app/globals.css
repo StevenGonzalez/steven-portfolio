@@ -831,6 +831,34 @@ main:focus {
 .doc-body {
   margin-top: clamp(32px, 5vw, 56px);
 }
+.next-up {
+  max-width: 68ch;
+  margin-top: clamp(48px, 7vw, 80px);
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.next-up a {
+  display: block;
+  text-decoration: none;
+}
+.next-up b {
+  display: block;
+  font: 500 clamp(1.6rem, 3vw, 2.1rem)/1.1 var(--display);
+  text-wrap: balance;
+  transition: color 0.2s;
+}
+.next-up b::after {
+  content: " \2192";
+}
+.next-up a:hover b {
+  color: var(--accent);
+}
+.next-up span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 15.5px;
+}
 .doc-figure {
   margin: clamp(28px, 4vw, 48px) 0 0;
   overflow: hidden;

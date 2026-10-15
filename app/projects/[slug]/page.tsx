@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import BackCrumb from "../../../components/BackCrumb";
+import NextUp from "../../../components/NextUp";
 import ProjectScene from "../../../components/ProjectScene";
 import SectionRail from "../../../components/SectionRail";
-import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug } from "../../../lib/content";
+import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug, projects } from "../../../lib/content";
+import { pageMetadata } from "../../../lib/meta";
 
 const sectionDefinitions = [
   { id: "problem", title: "Problem", key: "problem" },
@@ -20,10 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const project = getProjectBySlug(slug);
   if (!project) return {};
-  return {
-    title: `${project.title} | Steven Gonzalez`,
-    description: project.summary,
-  };
+  return pageMetadata({ title: project.title, description: project.summary, path: `/projects/${slug}` });
 }
 
 export default async function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
@@ -37,6 +36,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     body: project[section.key],
   }));
   const sectionItems = sections.map((section) => ({ id: section.id, label: section.title }));
+  const next = projects[(projects.indexOf(project) + 1) % projects.length];
 
   return (
     <div className="page">
@@ -77,6 +77,13 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                 </section>
               ))}
             </div>
+
+            <NextUp
+              label="Next case study"
+              href={`/projects/${next.slug}`}
+              title={next.title}
+              summary={next.card.blurb}
+            />
           </div>
 
           <aside className="rail">

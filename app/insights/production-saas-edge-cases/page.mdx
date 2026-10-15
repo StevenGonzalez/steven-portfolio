@@ -1,11 +1,10 @@
-export const metadata = {
-  title: "What Production SaaS Teaches You About Edge Cases | Steven",
-  description: "How multi-tenancy, billing, scheduling, reporting and permissions turn simple-looking features into hard ones.",
-};
-
 import ThoughtPost from "../../../components/ThoughtPost";
+import { insightMetadata } from "../../../lib/meta";
+
+export const metadata = insightMetadata("production-saas-edge-cases");
 
 <ThoughtPost
+  slug="production-saas-edge-cases"
   title="What Production SaaS Teaches You About Edge Cases"
   date="Oct 23, 2025"
   category="SaaS Engineering"
