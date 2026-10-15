@@ -905,6 +905,34 @@ main:focus {
   height: 100%;
 }
 
+/* Screens from a shipped app, three to a row, or two on a phone. */
+.shots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 16px;
+  margin-block: 1.8rem;
+}
+.shots figure {
+  margin: 0;
+}
+.shots img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.shots figcaption {
+  margin-top: 6px;
+  font: 400 12px/1.5 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-align: center;
+}
+@media (max-width: 520px) {
+  .shots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* The résumé: one column, set to print cleanly on paper or to PDF. */
 .resume {
   max-width: 50rem;

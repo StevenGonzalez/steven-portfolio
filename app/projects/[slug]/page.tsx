@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import BackCrumb from "../../../components/BackCrumb";
 import NextUp from "../../../components/NextUp";
@@ -5,6 +6,7 @@ import ProjectScene from "../../../components/ProjectScene";
 import SectionRail from "../../../components/SectionRail";
 import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug, projects } from "../../../lib/content";
 import { pageMetadata } from "../../../lib/meta";
+import type { ProjectShot } from "../../../types/content";
 
 const sectionDefinitions = [
   { id: "problem", title: "Problem", key: "problem" },
@@ -74,6 +76,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                 <section key={section.id} id={section.id}>
                   <h2>{section.title}</h2>
                   <p>{section.body}</p>
+                  {section.id === "approach" && project.shots ? <Shots shots={project.shots} /> : null}
                 </section>
               ))}
             </div>
@@ -109,6 +112,21 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           </aside>
         </div>
       </article>
+    </div>
+  );
+}
+
+/** The app's own screens, three to a row. They are phone screenshots saved at 520 by 1009, already sized for the
+ *  screen, so they skip the image optimizer. */
+function Shots({ shots }: { shots: ProjectShot[] }) {
+  return (
+    <div className="shots">
+      {shots.map((shot) => (
+        <figure key={shot.src}>
+          <Image src={shot.src} alt={shot.alt} width={520} height={1009} unoptimized />
+          <figcaption>{shot.caption}</figcaption>
+        </figure>
+      ))}
     </div>
   );
 }

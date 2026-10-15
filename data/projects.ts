@@ -37,6 +37,38 @@ export const projects: ProjectDetail[] = [
         href: "https://virtualtrainerapp.com/terms-of-use/",
       },
     ],
+    shots: [
+      {
+        src: "/projects/virtual-trainer/dashboard.webp",
+        caption: "The dashboard",
+        alt: "The Virtual Trainer dashboard with charts for workouts completed, weekly streak, workout frequency and volume.",
+      },
+      {
+        src: "/projects/virtual-trainer/guided-session.webp",
+        caption: "A guided set",
+        alt: "A guided session on Bench Press: 4 sets of 10 reps at 150 lbs with 1:15 rest, and a note from the trainer on where you left off.",
+      },
+      {
+        src: "/projects/virtual-trainer/exercise-library.webp",
+        caption: "The exercise library",
+        alt: "Bench Press in the exercise library, with its demo, the member's personal records and step-by-step instructions.",
+      },
+      {
+        src: "/projects/virtual-trainer/safety-check.webp",
+        caption: "Planning a routine",
+        alt: "Before building a plan, the trainer asks whether anything has changed with your health, with the answers Nothing new and Something's changed.",
+      },
+      {
+        src: "/projects/virtual-trainer/trainer-change.webp",
+        caption: "Asking for a change",
+        alt: "After a member asks to swap the bench press for dumbbells, the trainer confirms the swap and the Upper Body day shows Bench Press with dumbbells.",
+      },
+      {
+        src: "/projects/virtual-trainer/ask-trainer.webp",
+        caption: "Asking the trainer",
+        alt: "A member asks the trainer how to breathe during a heavy squat, and the trainer answers with a link to the squat walkthrough.",
+      },
+    ],
     role: "Co-founder • Lead engineer",
     scope: "Product, iOS and Android apps, .NET API, Azure",
     timeline: "2019 – present",

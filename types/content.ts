@@ -3,6 +3,13 @@ export type ContentLink = {
   href: string;
 };
 
+/** A screen from a shipped app. */
+export type ProjectShot = {
+  src: string;
+  alt: string;
+  caption: string;
+};
+
 export type ProjectDetail = {
   slug: string;
   title: string;
@@ -16,6 +23,8 @@ export type ProjectDetail = {
   scope?: string;
   keyDecision?: string;
   highlights?: string[];
+  /** Screens from the shipped app, shown after the approach. */
+  shots?: ProjectShot[];
   /** The short version for the project's card: a one-line pitch, the points worth a glance, and the stack. */
   card: {
     blurb: string;
