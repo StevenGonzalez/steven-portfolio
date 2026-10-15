@@ -16,9 +16,9 @@ const jobs = [
     when: "October 2019 – present",
     where: "Chesterfield, MO",
     points: [
-      "Leading the full rewrite of a legacy software platform, from architecture and feature planning to building it across teams.",
+      "Led the full rewrite of a legacy software platform for a year and a half, from architecture and feature planning to building it across teams.",
       "Designed and built a new API from scratch, including the endpoints that control the machines.",
-      "Building new Angular features for the rewrite.",
+      "Built new Angular features for the rewrite.",
       "Created a shared repository of CI/CD pipeline templates, so every team builds, tests and deploys the same way.",
       "Build and maintain the Azure DevOps pipelines behind automated testing and deployment.",
       "Moved legacy systems from .NET Framework to .NET 8, and converted VB code to C#.",

@@ -2,6 +2,24 @@ import type { InsightPost } from "../types/content";
 
 export const insights: InsightPost[] = [
   {
+    slug: "sound-with-no-audio-files",
+    title: "Sound With No Audio Files",
+    summary: "How the world at the top of this site makes its sound with the Web Audio API, from wind to whale song, without a single recording.",
+    date: "Oct 15, 2026",
+    category: "Web Audio",
+    readTime: "4 min read",
+    tags: ["Web Audio", "Sound", "Testing"],
+  },
+  {
+    slug: "canvas-26-fps-firefox-linux",
+    title: "Why My Canvas Ran at 26 fps in Firefox on Linux",
+    summary: "The world at the top of this site lagged in my own browser. The cause was pixel count, and the fix was a second step down in resolution.",
+    date: "Oct 15, 2026",
+    category: "Web Graphics",
+    readTime: "3 min read",
+    tags: ["Canvas", "Firefox", "Performance"],
+  },
+  {
     slug: "how-the-sky-islands-work",
     title: "How the Sky Islands at the Top of This Site Work",
     summary: "A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with.",
@@ -22,7 +40,7 @@ export const insights: InsightPost[] = [
   {
     slug: "modernizing-legacy-systems-without-rewriting",
     title: "Modernizing Legacy Systems Without Rewriting Everything",
-    summary: "How I moved a business-critical app from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without changing how people used it.",
+    summary: "How I moved a business-critical app from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without changing how people used it.",
     date: "Mar 12, 2026",
     category: "Architecture",
     readTime: "4 min read",

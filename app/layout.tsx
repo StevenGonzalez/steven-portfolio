@@ -40,18 +40,18 @@ const siteDescription =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Steven Gonzalez | Senior Software Engineer",
+  title: "Steven Gonzalez | Software Engineer",
   description: siteDescription,
   openGraph: {
     type: "website",
-    title: "Steven Gonzalez | Senior Software Engineer",
+    title: "Steven Gonzalez | Software Engineer",
     description: siteDescription,
     siteName: "Steven Gonzalez",
     url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Steven Gonzalez | Senior Software Engineer",
+    title: "Steven Gonzalez | Software Engineer",
     description: siteDescription,
   },
 };

@@ -1,0 +1,89 @@
+import ThoughtPost from "../../../components/ThoughtPost";
+import { insightMetadata } from "../../../lib/meta";
+
+export const metadata = insightMetadata("sound-with-no-audio-files");
+
+<ThoughtPost
+  slug="sound-with-no-audio-files"
+  title="Sound With No Audio Files"
+  date="Oct 15, 2026"
+  category="Web Audio"
+  readTime="4 min read"
+  tags={["Web Audio", "Sound", "Testing"]}
+  toc={[
+    { title: "Off until you ask", href: "#off-until-you-ask" },
+    { title: "Every click in tune", href: "#every-click-in-tune" },
+    { title: "A hall made of noise", href: "#a-hall-made-of-noise" },
+    { title: "Sound from a worker", href: "#sound-from-a-worker" },
+    { title: "Quiet when you look away", href: "#quiet-when-you-look-away" },
+    { title: "Checking levels without listening", href: "#checking-levels-without-listening" },
+  ]}
+  description="How the world at the top of this site makes its sound with the Web Audio API, from wind to whale song, without a single recording."
+>
+
+The world at the top of this site has a Sound button. Turn it on and you hear wind, a wind chime somewhere far off now and then, and a note wherever you click. The mill, the whales, the koi and most of the other things that react to a click have sounds of their own.
+
+None of it is a recording. Every sound is built from oscillators and noise with the Web Audio API while the page runs. The code for all of it is about 4 KB gzipped, and the page only downloads it when you turn sound on.
+
+## Off until you ask
+
+Browsers don't let a page play sound until the visitor has done something on it, and an `AudioContext` made outside a click starts out suspended. So the context is made inside the click on the Sound button, before anything else happens. Then the sound code loads, and the context is handed to it.
+
+```js
+soundBtn.addEventListener('click', () => {
+  // ...
+  const job = ++soundJob;
+  // ...
+  const ac = new AudioContext();
+  import('./sound').then(({ makeSound }) => {
+    if (job !== soundJob || signal.aborted) return ac.close();
+    sound = makeSound(ac, P.night);
+    sound.active(visible && !document.hidden);
+  });
+}, { signal });
+```
+
+The `job` counter covers someone clicking the button twice quickly. If sound was turned off again before the code arrived, the context is closed and nothing plays.
+
+## Every click in tune
+
+A click rings a bell. Its pitch depends on where the click lands: low on the left, high on the right, across two octaves. The notes come from a pentatonic scale, D major at dusk and A minor at night:
+
+```js
+const SCALES = { dusk: [62, 64, 66, 69, 71], night: [57, 60, 62, 64, 67] };
+const hz = m => 440 * 2 ** ((m - 69) / 12);
+```
+
+The numbers are MIDI notes, and `hz` turns them into frequencies. A pentatonic scale has no two notes a half step apart, so any notes from it sound fine together. However fast someone clicks, it comes out as a tune and not a mess. Switching the theme plays a soft chord in the new key, and every click after that is in the new key too.
+
+The bell is a sine wave plus three quieter overtones that die away faster than it does, which is roughly what a struck metal bar does. The other sounds are made the same way, from a few simple parts. A whale's call is a triangle wave that slides up and back down with a wobble, through a filter that keeps it low. Knocking on the arch is two short sine tones that drop in pitch, each with a tap of noise on top.
+
+## A hall made of noise
+
+Synthesized sounds on their own sound small and close, as if they are right next to your ear. Reverb gives them a room. Most reverb uses a recording of a real space, called an impulse response. Here the impulse response is 3.4 seconds of random noise, smoothed to take the edge off and faded out over its length. Run through a `ConvolverNode`, that sounds like a big, soft hall, which suits a world in the sky.
+
+Each sound decides how much of itself goes into the hall. A whale's call is mostly hall, so it seems to come from far off. A knock on the arch is mostly dry, so it sounds close. Everything then goes through a gentle compressor, so when several things happen at once, the output can't clip.
+
+## Sound from a worker
+
+The world is drawn in a web worker, and web workers can't play audio. So when something makes a sound, the renderer adds its name and where it is across the world to the message it already sends the page each frame. The page plays it, panned left or right to match where it happened on screen.
+
+## Quiet when you look away
+
+When the world scrolls out of view, or you switch tabs, the sound fades out. About a second later the audio context is suspended, so the browser stops running audio for it at all. It resumes when you come back.
+
+## Checking levels without listening
+
+Fifteen sounds in two keys are hard to balance by ear. So I rendered every sound offline. An `OfflineAudioContext` runs the same code as fast as it can and hands back the samples instead of playing them.
+
+For each sound, in both themes, I checked three things:
+
+- the peak level
+- that no sample came out as `NaN`
+- that no two neighboring samples were far enough apart to make an audible click
+
+The peak levels made the balancing a matter of numbers. Every sound now peaks between about -12 and -23 dB, so nothing jumps out over the rest.
+
+The source is in [`lib/world/sound.js`](https://github.com/StevenGonzalez/steven-portfolio/blob/main/lib/world/sound.js) if you want to read it.
+
+</ThoughtPost>

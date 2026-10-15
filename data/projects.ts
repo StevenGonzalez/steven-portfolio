@@ -76,12 +76,13 @@ export const projects: ProjectDetail[] = [
   {
     slug: "fitness-platform",
     title: "Fitness Business Management Platform",
+    timeline: "2017 – 2019",
     summary:
-      "Engineer on the SaaS platform that runs studios, gyms and multi-location operators: scheduling, billing, CRM, member experience and reporting.",
+      "Developer on the SaaS platform that runs studios, gyms and multi-location operators. I helped build its new ASP.NET Core API, sped up high-impact queries and pages, and was the link between engineering and product.",
     scene: "Five floating islands, each with a small lit studio, joined by lines that lights travel along.",
-    tags: ["C#", ".NET", "SaaS", "SQL", "Web", "Fitness Tech"],
-    role: "Software engineer",
-    scope: "Full stack, across most of the product",
+    tags: ["C#", "ASP.NET Core", "SQL", "LINQ", "SaaS", "Multi-tenancy"],
+    role: "Software developer",
+    scope: "API, database and requirements, across most of the product",
     keyDecision:
       "Built each feature to work for every tenant's setup, from a single studio to a national franchise",
     highlights: [
@@ -94,31 +95,32 @@ export const projects: ProjectDetail[] = [
       blurb:
         "Multi-tenant SaaS for studios, gyms and multi-location operators: scheduling, billing, CRM, member experience and reporting.",
       points: [
+        "Helped build a new ASP.NET Core API, with endpoints across several service areas",
+        "Sped up high-impact queries and pages, and rewrote legacy stored procedures",
         "Shipped features used by national operators across hundreds of locations",
-        "Worked on product features and the shared platform under them",
       ],
-      stack: ["C#", ".NET", "SQL", "Web"],
+      stack: ["C#", "ASP.NET Core", "SQL", "LINQ"],
     },
     problem:
       "The platform serves everyone from a single studio to a national franchise, and each one runs differently. Scheduling, billing, leads, member experience, staff workflows and reporting all have to behave the same way for every customer, however they are set up. The hard part is shipping new features without breaking anything for the operators already relying on it.",
     approach:
-      "I worked across the product instead of owning one area: scheduling, billing and payments, CRM and leads, member-facing features and internal reporting, wherever the work was. Seeing that much of the system showed me where the real dependencies were, and that shaped both my feature work and the fixes I pushed for underneath it.",
+      "I worked across the product instead of owning one area: scheduling, billing and payments, CRM and leads, member-facing features and internal reporting, wherever the work was. I helped build a new ASP.NET Core API and wrote endpoints in several of its service areas, with unit tests for the domain services behind them. I was the point of contact between development and product for requirements, and I worked with a third-party development company to set requirements and break the project into tasks. Seeing that much of the system showed me where the real dependencies were, and that shaped both my feature work and the fixes I pushed for underneath it.",
     architecture:
-      "It is a multi-tenant web app with a .NET back end, serving many operator setups from shared infrastructure. That only works with strict data isolation, behavior driven by configuration, and clear boundaries between services, so a change in one area cannot break an unrelated workflow for another customer. Reporting has to stay accurate while many operators write to the same data at once.",
+      "It is a multi-tenant web app with a .NET back end, serving many operator setups from shared infrastructure. That only works with strict data isolation, behavior driven by configuration, and clear boundaries between services, so a change in one area cannot break an unrelated workflow for another customer. Reporting has to stay accurate while many operators write to the same data at once. On the data side, I designed tables, triggers, indexes and stored procedures across several databases, and used LINQ in the new architecture.",
     tradeoffs:
-      "With that many customers on one system, every change trades speed against safety. A billing or scheduling change can reach a lot of code, so I learned to map what a change touches before making it. Working across areas also meant understanding tenancy, permissions and data integrity more deeply than a single feature team would need to.",
+      "With that many customers on one system, every change trades speed against safety. A billing or scheduling change can reach a lot of code, so I learned to map what a change touches before making it. For performance, I went after the queries and pages with the most impact, and rewrote legacy pages and stored procedures. Working across areas also meant understanding tenancy, permissions and data integrity more deeply than a single feature team would need to.",
     outcome:
-      "My work shipped to national fitness operators across hundreds of locations. I came away knowing what it takes to keep changing a production SaaS that businesses run on every day, where a mistake is visible to customers right away.",
+      "My work shipped to national fitness operators across hundreds of locations, and the internal tools I built cut down support tickets. I came away knowing what it takes to keep changing a production SaaS that businesses run on every day, where a mistake is visible to customers right away.",
   },
   {
     slug: "industrial-saw-control-platform",
     title: "Industrial Saw Control Platform",
     summary:
-      "I build and maintain the software that runs industrial saws: an Angular operator interface, a C# API, Electron.NET desktop packaging, RabbitMQ messaging and PLC integration.",
+      "For a year and a half I led the rewrite of the software that runs industrial saws: a new C# API with the machine-control endpoints, an Angular operator interface, Electron.NET desktop packaging, RabbitMQ messaging and PLC integration.",
     scene: "A mill on a floating island whose water wheel is a circular saw blade, turned by a waterfall from the rock above.",
     tags: ["Angular", "C#", "Electron.NET", "RabbitMQ", "PLC", "Desktop"],
-    role: "Software engineer",
-    scope: "Front end, back end, machine integration and how we ship",
+    role: "Lead engineer",
+    scope: "Architecture, a new API, the Angular front end, and planning across teams",
     keyDecision:
       "Kept the Angular UI, C# API and messaging as separate layers that can change independently, with fixed, predictable paths for talking to the machine",
     highlights: [
@@ -131,29 +133,30 @@ export const projects: ProjectDetail[] = [
     ],
     card: {
       blurb:
-        "The software that runs industrial saws: an Angular operator interface, a C# API, Electron.NET desktop packaging and RabbitMQ messaging.",
+        "Led the rewrite of the software that runs industrial saws: a new C# API with the machine-control endpoints, an Angular operator interface and Electron.NET desktop packaging.",
       points: [
+        "Designed and built the new API from scratch, machine control included",
         "UI, API and messaging layers that change independently",
-        "Deterministic machine communication for control and status",
+        "Planned the architecture and features across teams",
       ],
       stack: ["Angular", "C#", "Electron.NET", "RabbitMQ"],
     },
     problem:
-      "The software keeps track of what the operator is doing, what the machine is doing, and the messages passing between programs, on machines that people rely on to run production. Writing the UI or the API on its own is the easy part. The hard part is keeping the desktop app, the back end, messaging and the PLC predictable while the machine is running, and still shipping every sprint.",
+      "The saws ran on a legacy software platform, and the company set out to replace it with a full rewrite. The software keeps track of what the operator is doing, what the machine is doing, and the messages passing between programs, on machines that people rely on to run production. Writing the UI or the API on its own is the easy part. The hard part is keeping the desktop app, the back end, messaging and the PLC predictable while the machine is running.",
     approach:
-      "I work on the Angular front end and the C# API together, building operator workflows end to end. I package the whole stack with Electron.NET so every desktop release ships as one consistent build. I also work on messaging and machine integration, including RabbitMQ flows and PLC communication, and take part in architecture reviews, sprint planning and estimation.",
+      "I led the rewrite: the architecture, the plan for which features came first, and building it with the other teams involved. I designed and built a new C# API from the ground up, including the endpoints that control the machines, and built Angular features for the new operator interface on top of it. The whole stack ships through Electron.NET as one desktop build, so a release never pairs one version of the UI with another version of the API. I also worked on messaging and machine integration, including RabbitMQ flows and PLC communication, and took part in architecture reviews, sprint planning and estimation.",
     architecture:
-      "The app is an Angular UI on a C# API, shipped as a desktop application through Electron.NET. RabbitMQ carries messages between the saw software and other programs, and the PLC integration handles control and telemetry to and from the machine. The UI stays quick locally, while anything that talks to the machine goes through explicit services and message contracts that we can watch and control.",
+      "The app is an Angular UI on a C# API, shipped as a desktop application through Electron.NET. RabbitMQ carries messages between the saw software and other programs, and the PLC integration handles control and telemetry to and from the machine. The API checks a machine command before it goes anywhere, messaging moves it between programs, and the PLC layer handles the protocol. The UI stays quick locally, while anything that talks to the machine goes through explicit services and message contracts that we can watch and control.",
     tradeoffs:
-      "Shipping the UI and services together gives us control over deployment and the operator's experience, but every change has to line up across the UI, the API, the machine and the message contracts. Machine control rewards predictability over experimentation, so changes are sequenced and tested carefully. In practice that means small, well-scoped improvements that make the system better without putting what already works at risk.",
+      "Shipping the UI and services together gives control over deployment and the operator's experience, but every change has to line up across the UI, the API, the machine and the message contracts. Machine control rewards predictability over experimentation, so changes were sequenced and tested carefully. A rewrite also has to be planned across teams that each own a piece of it, so a lot of my job was making sure those pieces would fit together before anyone built them.",
     outcome:
-      "The platform runs day-to-day machine operations with one consistent UI, back end, packaging model and integration layer. Along the way it has improved how the team makes architecture decisions, runs sprints and estimates work, so the system keeps changing without becoming less reliable in the field.",
+      "After a year and a half, the company cancelled the rewrite to put its people on other work. By then I had designed and built the new API, machine-control endpoints included, and built Angular features for the new operator interface.",
   },
   {
     slug: "dotnet-framework-to-dotnet-8-upgrade",
     title: ".NET Framework to .NET 8 Upgrade",
     summary:
-      "Led the move of a business-critical application from .NET Framework 4.6 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
+      "Led the move of a business-critical application from .NET Framework 4.7.1 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
     scene: "An old stone tower on a floating island, with new stone going on top and a crane lifting the next block up.",
     tags: ["C#", ".NET 8", ".NET Framework", "Upgrade", "Compatibility", "Security"],
     role: "Lead engineer",
@@ -168,7 +171,7 @@ export const projects: ProjectDetail[] = [
     ],
     card: {
       blurb:
-        "Moved a business-critical application from .NET Framework 4.6 to .NET 8 in stages, without a rewrite and without disrupting the workflows people relied on.",
+        "Moved a business-critical application from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without disrupting the workflows people relied on.",
       points: [
         "Audited high-risk dependencies before changing targets",
         "Replaced obsolete encryption with current APIs",
@@ -176,7 +179,7 @@ export const projects: ProjectDetail[] = [
       stack: ["C#", ".NET 8", "Migration", "Security"],
     },
     problem:
-      "The application was still central to the business, but it ran on .NET Framework 4.6 with fragile library assumptions, old dependencies and encryption code that had become obsolete. Staying put made every change harder, closed off future upgrades, and left security-sensitive code on a stack that was getting hard to defend.",
+      "The application was still central to the business, but it ran on .NET Framework 4.7.1 with fragile library assumptions, old dependencies and encryption code that had become obsolete. Staying put made every change harder, closed off future upgrades, and left security-sensitive code on a stack that was getting hard to defend.",
     approach:
       "I treated the upgrade as a series of discoveries, not one version bump. I audited the dependencies, listed where things were likely to break, and split the work into packages that could simply be upgraded and ones that had to be replaced. I replaced the obsolete cryptography with supported APIs and fixed runtime, package and API breaks as the app moved to .NET 8. Each stage ended with the main workflows tested before it went out more widely.",
     architecture:

@@ -108,7 +108,7 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [] }: OgCardProp
           <div style={{ display: "flex", alignItems: "baseline", gap: 18 }}>
             <div style={{ fontFamily: "Cormorant", fontSize: 34, color: FG }}>Steven Gonzalez</div>
             <div style={{ fontFamily: "Plex Mono", fontSize: 15, letterSpacing: 3, textTransform: "uppercase", color: MUTED }}>
-              Senior Software Engineer
+              Software Engineer
             </div>
           </div>
         </div>

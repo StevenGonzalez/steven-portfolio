@@ -1,0 +1,59 @@
+import ThoughtPost from "../../../components/ThoughtPost";
+import { insightMetadata } from "../../../lib/meta";
+
+export const metadata = insightMetadata("canvas-26-fps-firefox-linux");
+
+<ThoughtPost
+  slug="canvas-26-fps-firefox-linux"
+  title="Why My Canvas Ran at 26 fps in Firefox on Linux"
+  date="Oct 15, 2026"
+  category="Web Graphics"
+  readTime="3 min read"
+  tags={["Canvas", "Firefox", "Performance"]}
+  toc={[
+    { title: "Measure it first", href: "#measure-it-first" },
+    { title: "Pixels are the bill", href: "#pixels-are-the-bill" },
+    { title: "Why lite mode didn't help", href: "#why-lite-mode-didnt-help" },
+    { title: "A second step", href: "#a-second-step" },
+    { title: "Never step back up", href: "#never-step-back-up" },
+  ]}
+  description="The world at the top of this site lagged in my own browser. The cause was pixel count, and the fix was a second step down in resolution."
+>
+
+I use Firefox on Linux. A while after the world at the top of this site went live, I noticed it lagged when I clicked around in it.
+
+## Measure it first
+
+In a real Firefox window on my machine, the world ran at about 30 fps and dropped to 26 while I clicked. Every so often a frame hitched for more than 100 ms, and the worst was 112 ms. Each frame took about 14 ms to draw and about 9 ms more to hand over to the page. That's 23 ms a frame, which caps it below 45 fps before anything else happens.
+
+## Pixels are the bill
+
+Chrome draws a 2D canvas on the graphics card. Firefox on Linux, on my setup, draws it on the CPU. On the CPU, the cost of a canvas follows its pixel count closely: twice the pixels, about twice the time.
+
+The world is 11 stacked canvases. Eight are painted once and only slide after that, so they cost almost nothing per frame. The other three hold everything that moves, and they are cleared and redrawn in full on every frame, across the whole width of the screen. Those three were the bill.
+
+## Why lite mode didn't help
+
+The renderer already had a lite mode for slow devices. When frames run long for a while, the animated layers drop to a pixel ratio of 1, and the two busiest of them redraw on alternate frames. On a high-density phone screen, the first part alone removes about a third of the pixels.
+
+Lite mode did switch on in my Firefox. It didn't help, because my monitor already has a pixel ratio of 1. The animated layers were already drawing at 1, so there was nothing to take away.
+
+## A second step
+
+So there is now a second step. Once lite mode has had 150 frames to settle, if frames still average over 22 ms, the animated layers drop to 70% resolution:
+
+```js
+l.r = l.res * Math.min(dpr, l.draw ? (lite ? 1 : 1.25) : 1.75) * (l.draw && lower ? .7 : 1);
+```
+
+70% in each direction is about half the pixels. CSS stretches each canvas back to full size. Only the animated layers change, so the sky, the rock and everything else that was painted once keep the resolution they had.
+
+In the same Firefox window, the world now runs at 67 to 83 fps while I move the pointer and 53 fps while I click, and the worst hitch dropped from 112 ms to 29 ms. Chrome on a desktop never enters lite mode, so it looks exactly as it did before.
+
+## Never step back up
+
+Each step stays on for the rest of the visit. A renderer that stepped back up whenever frames got fast again would flip back and forth near the threshold, and the flipping would be more noticeable than either mode. A single slow frame barely moves the average, and hitches over 50 ms are left out of it. A long run of hitches does switch on lite mode, because that's a device that can't keep up at all.
+
+The same lesson came up once more. The monitor on the desk behind the arch shows the world, and it first did that by copying every layer on every frame, which made the page lag while the arch was open. It now copies the world once, as the arch opens.
+
+</ThoughtPost>
