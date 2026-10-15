@@ -1,26 +1,15 @@
 import Link from "next/link";
 import { getPrimaryProjectLinks, type ProjectDetail } from "../lib/content";
 
-/** The work, as cards. The first project leads across the full width; the rest pair up beneath it. */
+/** The work, as cards. The first project leads across the full width and the rest pair up beneath it; if one would be
+ *  left on its own at the end, it runs the full width too. */
 export default function ProjectGrid({ projects }: { projects: ProjectDetail[] }) {
   const [lead, ...rest] = projects;
+  const last = rest.length % 2 ? rest.pop() : undefined;
 
   return (
     <div className="work">
-      {lead ? (
-        <article className="proj lead-proj" data-glow data-rv>
-          <div className="side">
-            {lead.role ? <p className="meta">{lead.role}</p> : null}
-            <h3>{lead.title}</h3>
-            <p>{lead.card.blurb}</p>
-            <ProjectLinks project={lead} />
-          </div>
-          <div className="side">
-            <Points points={lead.card.points} />
-            <p className="stack">{lead.card.stack.join(" / ")}</p>
-          </div>
-        </article>
-      ) : null}
+      {lead ? <WideCard project={lead} /> : null}
       {rest.map((project) => (
         <article key={project.slug} className="proj" data-glow data-rv>
           {project.role ? <p className="meta">{project.role}</p> : null}
@@ -31,7 +20,25 @@ export default function ProjectGrid({ projects }: { projects: ProjectDetail[] })
           <ProjectLinks project={project} />
         </article>
       ))}
+      {last ? <WideCard project={last} /> : null}
     </div>
+  );
+}
+
+function WideCard({ project }: { project: ProjectDetail }) {
+  return (
+    <article className="proj lead-proj" data-glow data-rv>
+      <div className="side">
+        {project.role ? <p className="meta">{project.role}</p> : null}
+        <h3>{project.title}</h3>
+        <p>{project.card.blurb}</p>
+        <ProjectLinks project={project} />
+      </div>
+      <div className="side">
+        <Points points={project.card.points} />
+        <p className="stack">{project.card.stack.join(" / ")}</p>
+      </div>
+    </article>
   );
 }
 

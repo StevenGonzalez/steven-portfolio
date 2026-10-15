@@ -393,6 +393,36 @@ main:focus {
 }
 .guide-btn b { font-weight: 500; color: var(--hero-glow); }
 .guide-btn:hover { border-color: rgb(159 230 218 / 0.6); }
+.sound-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  padding: 8px 12px 8px 10px;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hero-muted);
+  background: rgb(6 14 18 / 0.45);
+  border: 1px solid rgb(159 230 218 / 0.2);
+  border-radius: 999px;
+  cursor: pointer;
+}
+/* Three bars that stand still while it is off and sway while it plays. */
+.sound-btn::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 2px 45% no-repeat,
+    linear-gradient(currentColor, currentColor) 50% 100% / 2px 80% no-repeat,
+    linear-gradient(currentColor, currentColor) 100% 100% / 2px 60% no-repeat;
+}
+.sound-btn:hover { border-color: rgb(159 230 218 / 0.5); color: var(--hero-fg); }
+.sound-btn[aria-pressed="true"] { color: var(--hero-glow); border-color: rgb(159 230 218 / 0.45); }
+.sound-btn[aria-pressed="true"]::before { animation: sway 1.1s ease-in-out infinite alternate; }
+@keyframes sway {
+  to { background-size: 2px 85%, 2px 40%, 2px 100%; }
+}
 .guide-btn.new { animation: found 1.4s ease-out; }
 .guide-btn.done::before { background: var(--hero-gold); box-shadow: 0 0 10px var(--hero-gold); }
 .guide-btn.done b { color: var(--hero-gold); }
@@ -1237,6 +1267,7 @@ main:focus {
   .scene,
   .copy > *,
   .guide-btn.new,
+  .sound-btn[aria-pressed]::before,
   .seam {
     animation: none;
   }

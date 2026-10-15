@@ -17,6 +17,7 @@ export default function World() {
   const guideCount = useRef<HTMLElement>(null);
   const guideFoot = useRef<HTMLParagraphElement>(null);
   const postcardBtn = useRef<HTMLButtonElement>(null);
+  const soundBtn = useRef<HTMLButtonElement>(null);
 
   useEffect(
     () =>
@@ -31,6 +32,7 @@ export default function World() {
         guideCount: guideCount.current,
         guideFoot: guideFoot.current,
         postcardBtn: postcardBtn.current,
+        soundBtn: soundBtn.current,
         seamTop: document.getElementById("seam"),
         seamLow: document.getElementById("seam-low"),
       }),
@@ -69,6 +71,9 @@ export default function World() {
             <ol ref={guideList} />
             <p ref={guideFoot} className="guide-foot" />
           </div>
+          <button ref={soundBtn} type="button" className="sound-btn" aria-pressed="false">
+            Sound
+          </button>
         </div>
       </div>
       <div ref={tag} className="tag" role="status" aria-live="polite" />

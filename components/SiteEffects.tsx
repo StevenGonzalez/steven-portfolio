@@ -3,9 +3,13 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+// The console greeting prints once per load, not once per page.
+let greeted = false;
+
 /** Small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
  *  arrive together; the hidden state is added here, so nothing stays hidden if this never runs. Cards marked
- *  data-glow catch the light where the pointer is. And a box marked data-scene plays that painted scene. */
+ *  data-glow catch the light where the pointer is. A box marked data-scene plays that painted scene. And whoever opens
+ *  the console finds a note about how the world is made, and a switch for it that nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
@@ -57,6 +61,18 @@ export default function SiteEffects() {
     };
     document.addEventListener("pointermove", onMove, { passive: true });
     return () => document.removeEventListener("pointermove", onMove);
+  }, []);
+
+  useEffect(() => {
+    if (greeted) return;
+    greeted = true;
+    console.info(
+      "%cHi, you opened the console.%c\n\nThe sky islands at the top of the home page are plain JavaScript drawing on canvas in web workers, with no images and no libraries.\n\nHow it works: %s\nThe source: %s\n\nAdd ?season=winter, spring, summer or autumn to the home page's address to see another season.",
+      "font: italic 500 20px Georgia, serif; color: #78dccb",
+      "font: 12px/1.6 ui-monospace, monospace",
+      `${location.origin}/insights/how-the-sky-islands-work`,
+      "https://github.com/StevenGonzalez/steven-portfolio/tree/main/lib/world",
+    );
   }, []);
 
   return null;

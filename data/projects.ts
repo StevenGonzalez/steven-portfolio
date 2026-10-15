@@ -223,4 +223,43 @@ export const projects: ProjectDetail[] = [
     outcome:
       "Pipelines are now defined the same way across teams, complex ones take less time to set up, and common steps are easier to maintain. They went from one-off configuration to shared code that is versioned, reviewed and safe to change.",
   },
+  {
+    slug: "sky-islands",
+    title: "Sky Islands",
+    summary:
+      "The painted world at the top of this site: plain JavaScript drawing on canvas in web workers, with no images and no libraries, that still loads like a normal page on a phone.",
+    scene: "An easel on a floating island, where a brush is finishing a painting of a smaller island with a lantern tree, and the lights in the painting drift up out of it into the sky.",
+    tags: ["Canvas 2D", "Web Workers", "OffscreenCanvas", "Web Audio", "View Transitions", "Performance"],
+    links: [
+      {
+        label: "Source",
+        href: "https://github.com/StevenGonzalez/steven-portfolio/tree/main/lib/world",
+      },
+    ],
+    role: "Personal project",
+    scope: "Design, rendering, performance and interaction",
+    timeline: "2026",
+    keyDecision:
+      "Moved all of the drawing into web workers, so the page's own thread only reads the pointer and moves finished layers",
+    card: {
+      blurb:
+        "The painted world at the top of this site: plain JavaScript on canvas in web workers, with no images and no libraries.",
+      points: [
+        "Mobile Lighthouse went from 61 to 94–97 once all drawing moved into web workers",
+        "The theme switch swaps layers painted ahead of time, so it never freezes",
+        "Slow devices get lower resolution instead of dropped frames",
+      ],
+      stack: ["JavaScript", "Canvas 2D", "Web Workers", "Web Audio"],
+    },
+    problem:
+      "I wanted the top of my site to show how I build things instead of describing it: a painted world that people want to stay in and play with. It had to feel alive and full of small surprises, and it still had to load and respond like a normal page on an ordinary phone. A big painted image would have been heavy and couldn't move, and every library I added would have been more to download before anything appeared.",
+    approach:
+      "Everything is drawn with the Canvas 2D API from a seeded random generator, so there are no image files and it is the same island on every visit. The scene is 11 stacked canvases. Eight are painted once for each size and theme and after that only slide; the other three hold everything that moves and are the only ones redrawn each frame. Each layer has its own depth, which gives the parallax, and its own resolution, so a soft sky renders at 60% and the blurred ferns in front at 30%. On top of that sit the parts people remember: a field guide that names whatever you hover, clicks that push, pop and spin things, seasons that follow the calendar, and sound made live with Web Audio for anyone who turns it on.",
+    architecture:
+      "Two web workers do the drawing. The paint worker paints the still layers and sends them back as ImageBitmaps, which pass between threads without being copied, and then paints the other theme in the background. The render worker owns the animated canvases, handed over with transferControlToOffscreen(), and draws every frame. The page's main thread only reads the pointer and the scroll position, posts them across, and moves the finished layers with CSS transforms. The hover hit tests run in the render worker against the same shapes it draws. Browsers without OffscreenCanvas run the same renderer on the main thread through the same messages, so there is one renderer to test.",
+    tradeoffs:
+      "Drawing everything in code made the download small but made the first frame expensive, so most of the work went into deciding what never has to be drawn twice. Quality follows measured frame times, not a list of devices: when frames run long, the renderer drops to half-rate layers and then to lower resolution, and it never steps back up, because flipping between modes would be more noticeable than either one. Interaction follows a few rules: hovering only looks, a click touches, nothing on screen explains how to play, and on a first visit the creatures arrive one at a time instead of all at once.",
+    outcome:
+      "Moving the drawing off the main thread took mobile Lighthouse from 61 to between 94 and 97, with desktop at 99 and nothing shifting while the page loads. Painting the first frame in the worker cut main-thread time at load from 145 to 65 ms on a standard screen and from 282 to 44 ms on a high-density one. The theme switch went from a one-second freeze to an instant swap. In Firefox on Linux, which draws canvas on the CPU, the lower-resolution step took clicking around the world from 26 to 53 frames a second. The painted scenes on these case studies, this one included, run on the same code.",
+  },
 ];
