@@ -8,13 +8,14 @@ export const metadata = insightMetadata("sound-with-no-audio-files");
   title="Sound With No Audio Files"
   date="Oct 15, 2026"
   category="Web Audio"
-  readTime="5 min read"
+  readTime="6 min read"
   tags={["Web Audio", "Sound", "Testing"]}
   toc={[
     { title: "Off until you ask", href: "#off-until-you-ask" },
     { title: "Every click in tune", href: "#every-click-in-tune" },
     { title: "A hall made of noise", href: "#a-hall-made-of-noise" },
     { title: "Sound from a worker", href: "#sound-from-a-worker" },
+    { title: "Room for the waterfalls", href: "#room-for-the-waterfalls" },
     { title: "A song that grows", href: "#a-song-that-grows" },
     { title: "Quiet when you look away", href: "#quiet-when-you-look-away" },
     { title: "Checking levels without listening", href: "#checking-levels-without-listening" },
@@ -22,7 +23,7 @@ export const metadata = insightMetadata("sound-with-no-audio-files");
   description="How the world at the top of this site makes its sound with the Web Audio API, from wind to whale song, without a single recording."
 >
 
-The world at the top of this site has a Sound button. Turn it on and you hear wind, a wind chime somewhere far off now and then, and a note wherever you click. The mill, the whales, the koi and most of the other things that react to a click have sounds of their own. Under it all, a slow song plays, and it grows as you find things in the world.
+The world at the top of this site has a Sound button. Turn it on and you hear wind, the waterfalls, the campfire, a wind chime somewhere far off now and then, and a note wherever you click. The mill, the whales, the koi and most of the other things that react to a click have sounds of their own. Under it all, a slow song plays, and it grows as you find things in the world.
 
 None of it is a recording. Every sound is built from oscillators and noise with the Web Audio API while the page runs. The code for all of it is about 4 KB gzipped, and the page only downloads it when you turn sound on.
 
@@ -76,6 +77,20 @@ Each sound decides how much of itself goes into the hall. A whale's call is most
 
 The world is drawn in a web worker, and web workers can't play audio. So when something makes a sound, the renderer adds its name and where it is across the world to the message it already sends the page each frame. The page plays it, panned left or right to match where it happened on screen.
 
+## Room for the waterfalls
+
+Under everything is the wind: noise through two band-pass filters at about 420 and 640 Hz, with slow gusts that sweep it up and let it fall back. Waterfalls are noise too, and the obvious way to add them, more noise, only thickens the wind into a roar. So they are kept apart from it in three ways.
+
+- **In pitch.** A waterfall's hiss is filtered to above 2.2 kHz, well over the wind. On top of it are drops: tiny sine blips that slide up in pitch as they fade, four to six a second, at random moments. The drops are what make it sound like water and not static.
+- **In place.** Each waterfall is panned to where it is on screen, with very little reverb, so it sounds close and in one spot, while the wind is wide and far off.
+- **In level.** Together they sit about 4.5 LU under the wind. You hear them when you listen for them.
+
+The upfall, the waterfall at the far mill that runs up into the sky, is quieter again, and its drops slide down instead of up.
+
+The same idea gives the rest of the world a voice. The campfire ticks and now and then pops. Every so often the tree's leaves stir. At dusk a bird calls from one side and another answers from the other, and at night two crickets chirp, a little out of step. Each one sits in its own part of the spectrum, and none of them is loud, so together they make something you could leave on in the background.
+
+The renderer tells the page where the waterfalls, the campfire and the tree are whenever the layout changes, so each sound pans to its own place. A timer every 250 ms works out what falls in the next quarter of a second: how many drops and crackles, each at a random moment so they never settle into a beat, and whether a bird, a rustle or a chirp is due.
+
 ## A song that grows
 
 The field guide lists the things to find in the world, and the song follows it. The first find brings in a low drone and a little tune rung on bells. A quarter of the guide adds a soft chord, half adds plucked notes, and three quarters adds two whales calling to each other. A finished guide adds the far mountains, echoing the tune back from one side and then the other.
@@ -111,6 +126,8 @@ For each sound, in both themes, I checked three things:
 - that no two neighboring samples were far enough apart to make an audible click
 
 The peak levels made the balancing a matter of numbers. Every sound now peaks between about -14 and -32 dB, so nothing jumps out over the rest.
+
+Peaks say little about a sound that never stops, so the waterfalls, the fire and the rest were balanced by loudness instead, measured in LU over a long render and set against the wind's.
 
 The song was harder to render, because its timer reads `ac.currentTime`, and an offline context's clock stands still until it renders. The test gives the context a fake clock, steps it forward a second at a time while the timer schedules the bars, and then renders. Even with the whole guide found, the song never peaks above about -16 dB, so a knock on the arch still stands out over it.
 
