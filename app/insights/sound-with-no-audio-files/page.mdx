@@ -78,9 +78,11 @@ The world is drawn in a web worker, and web workers can't play audio. So when so
 
 ## A song that grows
 
-The field guide lists the things to find in the world, and the song follows it. The first find brings in a low drone. A quarter of the guide adds a soft chord, half adds plucked notes, and three quarters adds two whales calling to each other. A finished guide adds a melody over the top.
+The field guide lists the things to find in the world, and the song follows it. The first find brings in a low drone and a little tune rung on bells. A quarter of the guide adds a soft chord, half adds plucked notes, and three quarters adds two whales calling to each other. A finished guide adds the far mountains, echoing the tune back from one side and then the other.
 
-The song is four chords, one bar of four seconds each, taken from the `chords` in the key. A timer runs every 250 ms and schedules any bar that starts within the next second, at an exact time on the audio clock:
+The tune uses the same scale as the clicks, so clicking along to it makes a tune of your own over the top.
+
+The song is four chords, one bar of four seconds each, taken from the `chords` in the key. The tune is eight bars long and goes round the chords twice. A timer runs every 250 ms and schedules any bar that starts within the next second, at an exact time on the audio clock:
 
 ```js
 function schedule() {
@@ -100,7 +102,7 @@ When the world scrolls out of view, or you switch tabs, the sound fades out. Abo
 
 ## Checking levels without listening
 
-Twenty-two sounds and a song, in four keys, are hard to balance by ear. So I rendered every sound offline. An `OfflineAudioContext` runs the same code as fast as it can and hands back the samples instead of playing them.
+Forty-five sounds and a song, in four keys, are hard to balance by ear. So I rendered every sound offline. An `OfflineAudioContext` runs the same code as fast as it can and hands back the samples instead of playing them.
 
 For each sound, in both themes, I checked three things:
 
@@ -108,9 +110,9 @@ For each sound, in both themes, I checked three things:
 - that no sample came out as `NaN`
 - that no two neighboring samples were far enough apart to make an audible click
 
-The peak levels made the balancing a matter of numbers. Every sound now peaks between about -12 and -26 dB, except the faint whistle of a firework going up, so nothing jumps out over the rest.
+The peak levels made the balancing a matter of numbers. Every sound now peaks between about -14 and -32 dB, so nothing jumps out over the rest.
 
-The song was harder to render, because its timer reads `ac.currentTime`, and an offline context's clock stands still until it renders. The test gives the context a fake clock, steps it forward a second at a time while the timer schedules the bars, and then renders. Even with the whole guide found, the song never peaks above about -17 dB, so a knock on the arch still stands out over it.
+The song was harder to render, because its timer reads `ac.currentTime`, and an offline context's clock stands still until it renders. The test gives the context a fake clock, steps it forward a second at a time while the timer schedules the bars, and then renders. Even with the whole guide found, the song never peaks above about -16 dB, so a knock on the arch still stands out over it.
 
 The source is in [`lib/world/sound.js`](https://github.com/StevenGonzalez/steven-portfolio/blob/main/lib/world/sound.js) if you want to read it.
 
