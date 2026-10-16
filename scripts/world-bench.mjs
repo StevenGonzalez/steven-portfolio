@@ -49,6 +49,8 @@ if (existsSync(fastCores) && !process.env.WORLD_BENCH_PINNED) {
 
 const SCENARIOS = [
   { name: "desktop, dusk, idle", w: 1440, h: 900, dpr: 1, night: 0, scene: "idle" },
+  // A window filling a 1440p monitor: the most pixels a frame has to fill, so it is the scenario profiled.
+  { name: "1440p, dusk, clicking", w: 2560, h: 1300, dpr: 1, night: 0, scene: "clicking" },
   { name: "desktop, dusk, clicking", w: 1440, h: 900, dpr: 1, night: 0, scene: "clicking" },
   { name: "desktop, night, clicking", w: 1440, h: 900, dpr: 1, night: 1, scene: "clicking" },
   { name: "phone, night, clicking", w: 390, h: 844, dpr: 3, night: 1, scene: "clicking" },
