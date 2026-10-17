@@ -456,6 +456,18 @@ main:focus {
 .guide li:not(.got) b { color: var(--hero-muted); opacity: 0.6; }
 .guide li small { display: block; font: 400 12.5px/1.4 var(--body); color: var(--hero-muted); }
 .guide li.extra :is(.n, small) { color: var(--hero-gold); opacity: 1; }
+.guide .pressed { display: flex; gap: 3px; margin-top: 4px; }
+.guide .pressed svg { width: 26px; height: 26px; filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.5)); }
+/* A leaf caught as it fell, on its way into the field guide. */
+.pressing {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.35));
+}
+.pressing svg { display: block; width: 100%; height: 100%; }
 .guide-foot { margin: 10px 0 0; font: 400 12px/1.4 var(--body); color: var(--hero-muted); }
 .guide-card {
   margin: 0 0 10px;
