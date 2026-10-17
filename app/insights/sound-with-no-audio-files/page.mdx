@@ -79,7 +79,7 @@ The world is drawn in a web worker, and web workers can't play audio. So when so
 
 ## Room for the waterfalls
 
-Under everything is the wind: noise through two band-pass filters at about 420 and 640 Hz, with slow gusts that sweep it up and let it fall back. Waterfalls are noise too, and the obvious way to add them, more noise, only thickens the wind into a roar. So they are kept apart from it in three ways.
+Under everything is the wind: noise through two band-pass filters at about 420 and 640 Hz, drifting slowly from side to side. The gusts come from the world itself. When one crosses the island, bending the grass and pushing the swing as it goes, the renderer sends it like any other sound, with how strong it is and how long it takes to cross. The page plays a rush of air that swells, rises in pitch and travels from the side the gust comes from to the other, so what you hear moves with what you see. Waterfalls are noise too, and the obvious way to add them, more noise, only thickens the wind into a roar. So they are kept apart from it in three ways.
 
 - **In pitch.** A waterfall's hiss is filtered to above 2.2 kHz, well over the wind. On top of it are drops: tiny sine blips that slide up in pitch as they fade, four to six a second, at random moments. The drops are what make it sound like water and not static.
 - **In place.** Each waterfall is panned to where it is on screen, with very little reverb, so it sounds close and in one spot, while the wind is wide and far off.
@@ -87,9 +87,9 @@ Under everything is the wind: noise through two band-pass filters at about 420 a
 
 The upfall, the waterfall at the far mill that runs up into the sky, is quieter again, and its drops slide down instead of up.
 
-The same idea gives the rest of the world a voice. The campfire ticks and now and then pops. Every so often the tree's leaves stir. At dusk a bird calls from one side and another answers from the other, and at night two crickets chirp, a little out of step. Each one sits in its own part of the spectrum, and none of them is loud, so together they make something you could leave on in the background.
+The same idea gives the rest of the world a voice. The campfire ticks and now and then pops. The tree's leaves stir as each gust reaches it. At dusk a bird calls from one side and another answers from the other, and at night two crickets chirp, a little out of step. Each one sits in its own part of the spectrum, and none of them is loud, so together they make something you could leave on in the background.
 
-The renderer tells the page where the waterfalls, the campfire and the tree are whenever the layout changes, so each sound pans to its own place. A timer every 250 ms works out what falls in the next quarter of a second: how many drops and crackles, each at a random moment so they never settle into a beat, and whether a bird, a rustle or a chirp is due.
+The renderer tells the page where the waterfalls, the campfire and the tree are whenever the layout changes, so each sound pans to its own place. A timer every 250 ms works out what falls in the next quarter of a second: how many drops and crackles, each at a random moment so they never settle into a beat, and whether a bird or a chirp is due.
 
 ## A song that grows
 

@@ -7,7 +7,7 @@ export const insights: InsightPost[] = [
     summary: "How the world at the top of this site makes its sound with the Web Audio API, from wind to whale song, without a single recording.",
     date: "Oct 15, 2026",
     category: "Web Audio",
-    readTime: "5 min read",
+    readTime: "6 min read",
     tags: ["Web Audio", "Sound", "Testing"],
   },
   {
