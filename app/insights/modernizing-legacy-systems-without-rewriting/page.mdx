@@ -5,11 +5,6 @@ export const metadata = insightMetadata("modernizing-legacy-systems-without-rewr
 
 <ThoughtPost
   slug="modernizing-legacy-systems-without-rewriting"
-  title="Modernizing Legacy Systems Without Rewriting Everything"
-  date="Mar 12, 2026"
-  category="Architecture"
-  readTime="4 min read"
-  tags={["Modernization", ".NET", "Risk"]}
   toc={[
     { title: "The old code is the spec", href: "#the-old-code-is-the-spec" },
     { title: "Audit dependencies first", href: "#audit-the-dependencies-first" },
@@ -18,7 +13,6 @@ export const metadata = insightMetadata("modernizing-legacy-systems-without-rewr
     { title: "Checks that can fail", href: "#end-each-stage-with-a-check-that-can-fail" },
     { title: "When something can't move", href: "#when-something-cant-move" },
   ]}
-  description="How I moved a business-critical app from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without changing how people used it."
 >
 
 I led the move of a business-critical application from .NET Framework 4.7.1 to .NET 8. We didn't rewrite it. We moved it in stages, and the people who depend on it kept working the whole time. This is how I'd approach the next one.

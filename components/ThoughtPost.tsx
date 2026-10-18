@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { insights } from "../lib/content";
+import { getInsightBySlug, insights } from "../lib/content";
 import BackCrumb from "./BackCrumb";
 import NextUp from "./NextUp";
 import SectionRail from "./SectionRail";
@@ -16,31 +16,14 @@ function tocToSections(toc: TocItem[]) {
   }));
 }
 
-export default function ThoughtPost({
-  slug,
-  title,
-  description,
-  date,
-  category = "Insight",
-  readTime,
-  tags = [],
-  toc = [],
-  children,
-}: {
-  slug: string;
-  title: string;
-  description?: string;
-  date?: string;
-  category?: string;
-  readTime?: string;
-  tags?: string[];
-  toc?: TocItem[];
-  children: ReactNode;
-}) {
+/** An article's page. Everything but its contents comes from its entry in data/insights.ts. */
+export default function ThoughtPost({ slug, toc = [], children }: { slug: string; toc?: TocItem[]; children: ReactNode }) {
+  const post = getInsightBySlug(slug);
+  if (!post) throw new Error(`No insight metadata for ${slug}`);
+  const { title, summary, date, category, readTime, tags } = post;
   const sections = tocToSections(toc);
   // The list runs newest first, so the next article is the one before it in time, and the oldest leads back round.
-  const at = insights.findIndex((post) => post.slug === slug);
-  const next = at < 0 || insights.length < 2 ? null : insights[(at + 1) % insights.length];
+  const next = insights.length < 2 ? null : insights[(insights.indexOf(post) + 1) % insights.length];
 
   return (
     <div className="page">
@@ -51,15 +34,13 @@ export default function ThoughtPost({
             <header className="doc-head">
               <p className="label">{category}</p>
               <h1>{title}</h1>
-              {description ? <p className="sub">{description}</p> : null}
-              <p className="meta">{[date, readTime].filter(Boolean).join(" · ")}</p>
-              {tags.length > 0 ? (
-                <ul className="pills">
-                  {tags.map((tag) => (
-                    <li key={tag}>{tag}</li>
-                  ))}
-                </ul>
-              ) : null}
+              <p className="sub">{summary}</p>
+              <p className="meta">{`${date} · ${readTime}`}</p>
+              <ul className="pills">
+                {tags.map((tag) => (
+                  <li key={tag}>{tag}</li>
+                ))}
+              </ul>
             </header>
             <div className="prose doc-body">
               {children}

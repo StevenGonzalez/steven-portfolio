@@ -7,11 +7,6 @@ export const metadata = insightMetadata("how-the-sky-islands-work");
 
 <ThoughtPost
   slug="how-the-sky-islands-work"
-  title="How the Sky Islands at the Top of This Site Work"
-  date="Oct 11, 2026"
-  category="Web Graphics"
-  readTime="5 min read"
-  tags={["Canvas", "Web Workers", "Performance"]}
   toc={[
     { title: "No images, one seed", href: "#no-images-one-seed" },
     { title: "Paint once, draw what moves", href: "#paint-once-draw-what-moves" },
@@ -20,7 +15,6 @@ export const metadata = insightMetadata("how-the-sky-islands-work");
     { title: "When a device can't keep up", href: "#when-a-device-cant-keep-up" },
     { title: "Rules for touching it", href: "#rules-for-touching-it" },
   ]}
-  description="A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with."
 >
 
 The top of this site is a small world: a floating island with a lantern tree, a sea of clouds, whales, a mill, and a field guide that fills in as you look around. I wanted a home page that shows how I build things instead of only describing it. It also had to load like a normal page, which turned out to be the harder part.
