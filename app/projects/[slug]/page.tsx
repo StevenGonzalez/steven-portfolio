@@ -44,7 +44,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
       <article className="sec">
         <BackCrumb href="/projects" label="Case studies" />
         <div className="doc">
-          <div className="min-w-0">
+          <div>
             <header className="doc-head">
               <p className="label">Case study</p>
               <h1>{project.title}</h1>

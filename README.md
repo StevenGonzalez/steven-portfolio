@@ -22,7 +22,6 @@ The goal was not to ship a generic portfolio template. I wanted something that f
 - Next.js 16
 - React 19
 - TypeScript
-- Tailwind CSS v4
 - MDX
 - Yarn
 

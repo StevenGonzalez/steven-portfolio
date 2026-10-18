@@ -47,7 +47,7 @@ export default function ThoughtPost({
       <article className="sec">
         <BackCrumb href="/insights" label="Writing" />
         <div className="doc">
-          <div className="min-w-0">
+          <div>
             <header className="doc-head">
               <p className="label">{category}</p>
               <h1>{title}</h1>
