@@ -38,6 +38,11 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     body: project[section.key],
   }));
   const sectionItems = sections.map((section) => ({ id: section.id, label: section.title }));
+  const facts = [
+    { term: "Role", detail: project.role },
+    { term: "Scope", detail: project.scope },
+    { term: "Key decision", detail: project.keyDecision },
+  ].filter((fact) => fact.detail);
   const next = projects[(projects.indexOf(project) + 1) % projects.length];
 
   return (
@@ -91,23 +96,16 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           <aside className="rail">
             <SectionRail items={sectionItems} />
-            {project.role ? (
-              <div>
-                <h2>Role</h2>
-                <p>{project.role}</p>
-              </div>
-            ) : null}
-            {project.scope ? (
-              <div>
-                <h2>Scope</h2>
-                <p>{project.scope}</p>
-              </div>
-            ) : null}
-            {project.keyDecision ? (
-              <div>
-                <h2>Key decision</h2>
-                <p>{project.keyDecision}</p>
-              </div>
+            {/* Facts about the project rather than sections of it, so they stay out of the page's headings. */}
+            {facts.length ? (
+              <dl>
+                {facts.map((fact) => (
+                  <div key={fact.term}>
+                    <dt>{fact.term}</dt>
+                    <dd>{fact.detail}</dd>
+                  </div>
+                ))}
+              </dl>
             ) : null}
           </aside>
         </div>

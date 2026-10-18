@@ -1301,14 +1301,21 @@ main:focus {
   gap: 22px;
   font-size: 14.5px;
 }
-.rail h2 {
+.rail dl {
+  display: grid;
+  gap: 22px;
+  margin: 0;
+}
+.rail h2,
+.rail dt {
   margin: 0 0 8px;
   font: 500 11.5px/1.4 var(--mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
 }
-.rail p {
+.rail p,
+.rail dd {
   margin: 0;
   line-height: 1.5;
 }
