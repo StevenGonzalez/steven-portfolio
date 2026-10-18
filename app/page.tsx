@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PostList from "../components/PostList";
 import ProjectGrid from "../components/ProjectGrid";
@@ -5,6 +6,9 @@ import World from "../components/World";
 import { insights, projects } from "../lib/content";
 import { externalProfiles } from "../lib/site";
 import { worldKb } from "../lib/world-size";
+
+// Everything else comes from the layout, which describes the home page.
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const linkedIn = externalProfiles.find((profile) => profile.label === "LinkedIn")!;
 const gitHub = externalProfiles.find((profile) => profile.label === "GitHub")!;
