@@ -1,55 +1,35 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { MDXComponents } from "mdx/types";
+import { isValidElement, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { slugify } from "./lib/slug";
 
-type AnchorProps = ComponentPropsWithoutRef<"a">;
-type HeadingProps = ComponentPropsWithoutRef<"h2">;
-type MDXComponent = (props: unknown) => ReactNode;
-type MDXComponents = Record<string, MDXComponent | undefined>;
 function isExternalHref(href: string) {
   return href.startsWith("http://") || href.startsWith("https://") || href.startsWith("//");
 }
 
+/** The words in a heading, including those inside inline code or emphasis. */
 function textFromNode(node: ReactNode): string {
-  if (typeof node === "string" || typeof node === "number") {
-    return String(node);
-  }
-
-  if (Array.isArray(node)) {
-    return node.map(textFromNode).join("");
-  }
-
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textFromNode).join("");
+  if (isValidElement<{ children?: ReactNode }>(node)) return textFromNode(node.props.children);
   return "";
-}
-
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
 }
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
-    h2: ((props: unknown) => {
-      const { id, children, ...rest } = props as HeadingProps;
-
-      return (
-        <h2 id={id ?? slugify(textFromNode(children))} {...rest}>
-          {children}
-        </h2>
-      );
-    }) satisfies MDXComponent,
-    a: ((props: unknown) => {
-      const { href, rel, target, ...rest } = props as AnchorProps;
-
-      if (!href || typeof href !== "string" || !isExternalHref(href)) {
+    h2: ({ id, children, ...rest }: ComponentPropsWithoutRef<"h2">) => (
+      <h2 id={id ?? slugify(textFromNode(children))} {...rest}>
+        {children}
+      </h2>
+    ),
+    a: ({ href, rel, target, ...rest }: ComponentPropsWithoutRef<"a">) => {
+      if (!href || !isExternalHref(href)) {
         return <a href={href} rel={rel} target={target} {...rest} />;
       }
 
       const safeRel = rel ? `${rel} noopener noreferrer` : "noopener noreferrer";
 
       return <a href={href} target={target ?? "_blank"} rel={safeRel} {...rest} />;
-    }) satisfies MDXComponent,
+    },
   };
 }
