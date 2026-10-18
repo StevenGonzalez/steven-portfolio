@@ -1423,13 +1423,15 @@ main:focus {
 .prose :where(li)::marker {
   color: var(--accent);
 }
-.prose :where(a) {
+.prose :where(a),
+.about :where(a) {
   color: var(--accent);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
-.prose :where(a:hover) {
+.prose :where(a:hover),
+.about :where(a:hover) {
   text-decoration-color: var(--accent);
 }
 .prose :where(strong) {

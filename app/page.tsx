@@ -25,20 +25,23 @@ export default function Home() {
           <div className="about" data-rv>
             <p>
               I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the .NET
-              APIs and databases behind them, iOS and Android apps in React Native, and a desktop app that runs
-              industrial saws. Before the saws I worked on a SaaS platform that gyms and studios across the country run
-              on, and co-founded Virtual Trainer, which I built end to end.
+              APIs and databases behind them, iOS and Android apps in React Native, and{" "}
+              <Link href="/projects/industrial-saw-control-platform">a desktop app that runs industrial saws</Link>.
+              Before the saws I worked on{" "}
+              <Link href="/projects/fitness-platform">a SaaS platform that gyms and studios across the country run on</Link>
+              , and co-founded <Link href="/projects/virtual-trainer">Virtual Trainer</Link>, which I built end to end.
             </p>
             <p>
               I love automation, and it&apos;s how I get to quality. Letting machines run the checks frees people to
               spend their attention on the hard problems. Virtual Trainer has more than 6,000
-              automated tests across the app and the API. At work I moved our build pipelines into shared, versioned
-              YAML templates that every team builds on.
+              automated tests across the app and the API. At work I moved our build pipelines into{" "}
+              <Link href="/projects/azure-devops-pipeline-templates">shared, versioned YAML templates</Link> that every
+              team builds on.
             </p>
             <p>
               I sweat the details people feel: how fast a page loads, how it holds up on a cheap phone, whether it works
-              from the keyboard. The world at the top of this page is drawn in a background worker, so the page stays
-              responsive while it moves.
+              from the keyboard. <Link href="/projects/sky-islands">The world at the top of this page</Link> is drawn in
+              a background worker, so the page stays responsive while it moves.
             </p>
             <dl className="facts">
               <dt>Front end</dt>
