@@ -12,7 +12,7 @@ export const metadata = pageMetadata({
 export default function InsightsPage() {
   return (
     <div className="page">
-      <section className="sec archive" aria-labelledby="insights-h">
+      <section className="sec" aria-labelledby="insights-h">
         <p className="label" data-rv>
           Writing
         </p>

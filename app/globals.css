@@ -1354,9 +1354,6 @@ main:focus {
   font: 400 12px/1.4 var(--mono);
   color: var(--muted);
 }
-.archive .posts a {
-  grid-template-columns: 9rem minmax(0, 1fr);
-}
 
 /* ─── Long-form prose ─────────────────────────────────────────────────────── */
 
@@ -1463,8 +1460,7 @@ main:focus {
   .doc {
     grid-template-columns: minmax(0, 1fr);
   }
-  .posts a,
-  .archive .posts a {
+  .posts a {
     grid-template-columns: minmax(0, 1fr);
   }
   .rail {
