@@ -11,6 +11,9 @@ export default function WorldPeek() {
   const readout = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    // Read now, while React holds them: when leaving the page, it lets go of the elements a moment before this
+    // effect's cleanup runs, and the engine can finish loading in between.
+    const [peek, button, ms] = [box.current!, btn.current!, readout.current!];
     let stop: (() => void) | null = null;
     let gone = false;
     const io = new IntersectionObserver(
@@ -18,12 +21,12 @@ export default function WorldPeek() {
         if (!e.isIntersecting) return;
         io.disconnect();
         import("@/lib/world/peek").then(({ mountPeek }) => {
-          if (!gone) stop = mountPeek(box.current, btn.current, readout.current);
+          if (!gone) stop = mountPeek(peek, button, ms);
         });
       },
       { rootMargin: "400px" },
     );
-    io.observe(box.current!);
+    io.observe(peek);
     return () => {
       gone = true;
       io.disconnect();
