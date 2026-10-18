@@ -17,7 +17,7 @@ export default function WorldPeek() {
       ([e]) => {
         if (!e.isIntersecting) return;
         io.disconnect();
-        import("../lib/world/peek").then(({ mountPeek }) => {
+        import("@/lib/world/peek").then(({ mountPeek }) => {
           if (!gone) stop = mountPeek(box.current, btn.current, readout.current);
         });
       },

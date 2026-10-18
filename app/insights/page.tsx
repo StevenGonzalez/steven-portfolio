@@ -1,6 +1,6 @@
-import PostList from "../../components/PostList";
-import { insights } from "../../lib/content";
-import { pageMetadata } from "../../lib/meta";
+import PostList from "@/components/PostList";
+import { insights } from "@/lib/content";
+import { pageMetadata } from "@/lib/meta";
 
 export const metadata = pageMetadata({
   title: "Writing",

@@ -1,4 +1,4 @@
-import type { InsightPost } from "../types/content";
+import type { InsightPost } from "@/types/content";
 
 export const insights: InsightPost[] = [
   {

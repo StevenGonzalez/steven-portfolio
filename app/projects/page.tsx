@@ -1,6 +1,6 @@
-import ProjectGrid from "../../components/ProjectGrid";
-import { projects } from "../../lib/content";
-import { pageMetadata } from "../../lib/meta";
+import ProjectGrid from "@/components/ProjectGrid";
+import { projects } from "@/lib/content";
+import { pageMetadata } from "@/lib/meta";
 
 export const metadata = pageMetadata({
   title: "Case studies",

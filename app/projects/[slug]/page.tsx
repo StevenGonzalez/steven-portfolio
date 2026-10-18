@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import BackCrumb from "../../../components/BackCrumb";
-import ExternalLink from "../../../components/ExternalLink";
-import NextUp from "../../../components/NextUp";
-import ProjectScene from "../../../components/ProjectScene";
-import SectionRail from "../../../components/SectionRail";
-import { getAllProjectSlugs, getProjectBySlug, projects } from "../../../lib/content";
-import { pageMetadata } from "../../../lib/meta";
-import type { ProjectShot } from "../../../types/content";
+import BackCrumb from "@/components/BackCrumb";
+import ExternalLink from "@/components/ExternalLink";
+import NextUp from "@/components/NextUp";
+import ProjectScene from "@/components/ProjectScene";
+import SectionRail from "@/components/SectionRail";
+import { getAllProjectSlugs, getProjectBySlug, projects } from "@/lib/content";
+import { pageMetadata } from "@/lib/meta";
+import type { ProjectShot } from "@/types/content";
 
 const sectionDefinitions = [
   { id: "problem", title: "Problem", key: "problem" },

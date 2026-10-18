@@ -1,7 +1,7 @@
 import { Fragment } from "react";
-import PrintButton from "../../components/PrintButton";
-import { pageMetadata } from "../../lib/meta";
-import { externalProfiles, productionUrl } from "../../lib/site";
+import PrintButton from "@/components/PrintButton";
+import { pageMetadata } from "@/lib/meta";
+import { externalProfiles, productionUrl } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Résumé",

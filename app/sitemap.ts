@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
-import { insights, projects } from "../lib/content";
-import { siteUrl } from "../lib/site";
+import { insights, projects } from "@/lib/content";
+import { siteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [

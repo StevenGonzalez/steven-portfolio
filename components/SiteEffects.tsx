@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { worldSourceUrl } from "../lib/site";
+import { worldSourceUrl } from "@/lib/site";
 
 // The console greeting prints once per load, not once per page.
 let greeted = false;
@@ -45,7 +45,7 @@ export default function SiteEffects() {
     if (!boxes.length) return;
     const stops: (() => void)[] = [];
     let gone = false;
-    import("../lib/world/vignette-stage").then(({ mountScene }) => {
+    import("@/lib/world/vignette-stage").then(({ mountScene }) => {
       if (!gone) for (const box of boxes) stops.push(mountScene(box, box.dataset.scene));
     });
     return () => {

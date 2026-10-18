@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { displayDate, getInsightBySlug, insights } from "../lib/content";
+import { displayDate, getInsightBySlug, insights } from "@/lib/content";
 import BackCrumb from "./BackCrumb";
 import NextUp from "./NextUp";
 import SectionRail from "./SectionRail";

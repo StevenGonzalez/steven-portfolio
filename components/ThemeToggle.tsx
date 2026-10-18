@@ -7,7 +7,7 @@ import {
   subscribeToTheme,
   switchTheme,
   type ThemeChoice,
-} from "../lib/theme";
+} from "@/lib/theme";
 
 const ICONS: Record<ThemeChoice, ReactNode> = {
   light: (

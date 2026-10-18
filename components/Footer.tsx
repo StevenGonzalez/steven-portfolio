@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { externalProfiles } from "../lib/site";
+import { externalProfiles } from "@/lib/site";
 import ExternalLink from "./ExternalLink";
 
 export default function Footer() {

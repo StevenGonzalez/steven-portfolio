@@ -1,6 +1,6 @@
-import { insights } from "../data/insights";
-import { projects } from "../data/projects";
-import type { InsightPost, ProjectDetail } from "../types/content";
+import { insights } from "@/data/insights";
+import { projects } from "@/data/projects";
+import type { InsightPost, ProjectDetail } from "@/types/content";
 
 export function getProjectBySlug(slug: string) {
   return projects.find((project) => project.slug === slug) ?? null;

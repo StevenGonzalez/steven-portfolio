@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { mountWorld } from "../lib/world/stage";
+import { mountWorld } from "@/lib/world/stage";
 
 /** The painted world at the top of the home page. The markup is React's; everything drawn into it belongs to the engine
  *  in lib/world, which mounts on these elements and hands back its own teardown. The seams live further down the

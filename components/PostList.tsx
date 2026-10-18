@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { displayDate, type InsightPost } from "../lib/content";
+import { displayDate, type InsightPost } from "@/lib/content";
 
 export default function PostList({ posts }: { posts: InsightPost[] }) {
   return (

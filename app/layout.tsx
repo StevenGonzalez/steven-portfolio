@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import "./globals.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import SiteEffects from "../components/SiteEffects";
-import { SITE_NAME } from "../lib/meta";
-import { siteUrl } from "../lib/site";
-import { themeBootstrapScript } from "../lib/theme";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import SiteEffects from "@/components/SiteEffects";
+import { SITE_NAME } from "@/lib/meta";
+import { siteUrl } from "@/lib/site";
+import { themeBootstrapScript } from "@/lib/theme";
 
 // The fonts are Google Fonts' Latin files, kept in the repo. next/font/google fetched them from Google on every build,
 // and a deploy failed when Google answered in a URL format that next/font could not read.

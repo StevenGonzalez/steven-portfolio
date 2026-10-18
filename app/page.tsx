@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import ExternalLink from "../components/ExternalLink";
-import PostList from "../components/PostList";
-import ProjectGrid from "../components/ProjectGrid";
-import World from "../components/World";
-import { insights, projects } from "../lib/content";
-import { externalProfiles, worldSourceUrl } from "../lib/site";
-import { worldKb } from "../lib/world-size";
+import ExternalLink from "@/components/ExternalLink";
+import PostList from "@/components/PostList";
+import ProjectGrid from "@/components/ProjectGrid";
+import World from "@/components/World";
+import { insights, projects } from "@/lib/content";
+import { externalProfiles, worldSourceUrl } from "@/lib/site";
+import { worldKb } from "@/lib/world-size";
 
 // Everything else comes from the layout, which describes the home page.
 export const metadata: Metadata = { alternates: { canonical: "/" } };

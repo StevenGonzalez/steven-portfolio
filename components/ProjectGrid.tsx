@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ProjectDetail } from "../lib/content";
+import type { ProjectDetail } from "@/lib/content";
 import ExternalLink from "./ExternalLink";
 
 /** The work, as cards. The first project leads across the full width and the rest pair up beneath it; if one would be
