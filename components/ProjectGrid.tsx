@@ -6,7 +6,7 @@ type TitleTag = "h2" | "h3";
 
 /** The work, as cards. The first project leads across the full width and the rest pair up beneath it; if one would be
  *  left on its own at the end, it runs the full width too. Each card's title is a `titleAs` heading, one level below
- *  the heading the grid sits under. */
+ *  the heading the grid sits under, and opens the case study. */
 export default function ProjectGrid({ projects, titleAs: Title }: { projects: ProjectDetail[]; titleAs: TitleTag }) {
   const [lead, ...rest] = projects;
   const last = rest.length % 2 ? rest.pop() : undefined;
@@ -17,7 +17,7 @@ export default function ProjectGrid({ projects, titleAs: Title }: { projects: Pr
       {rest.map((project) => (
         <article key={project.slug} className="proj" data-glow data-rv>
           {project.role ? <p className="meta">{project.role}</p> : null}
-          <Title>{project.title}</Title>
+          <CardTitle project={project} titleAs={Title} />
           <p>{project.card.blurb}</p>
           <Points points={project.card.points} />
           <p className="stack">{project.card.stack.join(" / ")}</p>
@@ -34,7 +34,7 @@ function WideCard({ project, titleAs: Title }: { project: ProjectDetail; titleAs
     <article className="proj lead-proj" data-glow data-rv>
       <div className="side">
         {project.role ? <p className="meta">{project.role}</p> : null}
-        <Title>{project.title}</Title>
+        <CardTitle project={project} titleAs={Title} />
         <p>{project.card.blurb}</p>
         <ProjectLinks project={project} />
       </div>
@@ -43,6 +43,14 @@ function WideCard({ project, titleAs: Title }: { project: ProjectDetail; titleAs
         <p className="stack">{project.card.stack.join(" / ")}</p>
       </div>
     </article>
+  );
+}
+
+function CardTitle({ project, titleAs: Title }: { project: ProjectDetail; titleAs: TitleTag }) {
+  return (
+    <Title>
+      <Link href={`/projects/${project.slug}`}>{project.title}</Link>
+    </Title>
   );
 }
 
@@ -59,15 +67,15 @@ function Points({ points }: { points: string[] }) {
 function ProjectLinks({ project }: { project: ProjectDetail }) {
   return (
     <div className="links">
+      {/* Every card has one, so its name says which project it opens, for a screen reader's list of links. */}
+      <Link href={`/projects/${project.slug}`} aria-label={`Case study: ${project.title}`}>
+        Case study
+      </Link>
       {project.links?.map((link) => (
         <ExternalLink key={link.href} href={link.href}>
           {link.label}
         </ExternalLink>
       ))}
-      {/* Every card has one, so its name says which project it opens, for a screen reader's list of links. */}
-      <Link href={`/projects/${project.slug}`} aria-label={`Case study: ${project.title}`}>
-        Case study
-      </Link>
     </div>
   );
 }
