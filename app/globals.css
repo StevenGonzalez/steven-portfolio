@@ -450,19 +450,24 @@ main:focus {
   position: relative;
   margin-top: 26px;
 }
-.guide-btn {
+/* The hero's two pills, the field guide's and the sound's. */
+.guide-btn,
+.sound-btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   padding: 8px 12px 8px 10px;
   font: 500 11px/1 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--hero-fg);
   background: color-mix(in srgb, var(--hero-shade) 45%, transparent);
-  border: 1px solid color-mix(in srgb, var(--hero-glow) 30%, transparent);
+  border: 1px solid;
   border-radius: 999px;
   cursor: pointer;
+}
+.guide-btn {
+  gap: 10px;
+  color: var(--hero-fg);
+  border-color: color-mix(in srgb, var(--hero-glow) 30%, transparent);
 }
 .guide-btn::before {
   content: "";
@@ -475,19 +480,10 @@ main:focus {
 .guide-btn b { font-weight: 500; color: var(--hero-glow); }
 .guide-btn:hover { border-color: color-mix(in srgb, var(--hero-glow) 60%, transparent); }
 .sound-btn {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
   margin-left: 8px;
-  padding: 8px 12px 8px 10px;
-  font: 500 11px/1 var(--mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--hero-muted);
-  background: color-mix(in srgb, var(--hero-shade) 45%, transparent);
-  border: 1px solid color-mix(in srgb, var(--hero-glow) 20%, transparent);
-  border-radius: 999px;
-  cursor: pointer;
+  border-color: color-mix(in srgb, var(--hero-glow) 20%, transparent);
 }
 /* Three bars that stand still while it is off and sway while it plays. */
 .sound-btn::before {
@@ -921,6 +917,23 @@ main:focus {
 .crumb:hover {
   color: var(--accent);
 }
+/* A plain outlined button, for a page's own controls: the peek's, and the résumé's print. */
+.quiet-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: none;
+  color: var(--fg);
+  font: 500 14px/1 var(--body);
+  cursor: pointer;
+}
+.quiet-btn:hover:enabled {
+  border-color: var(--accent);
+}
+.quiet-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
 .doc {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 15rem;
@@ -1116,22 +1129,6 @@ main:focus {
   color: var(--muted);
   font: 500 12.5px/1.4 var(--mono);
 }
-.peek-btn {
-  padding: 8px 14px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  background: none;
-  color: var(--fg);
-  font: 500 14px/1 var(--body);
-  cursor: pointer;
-}
-.peek-btn:hover:enabled {
-  border-color: var(--accent);
-}
-.peek-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
 .peek-ms {
   font-variant-numeric: tabular-nums;
 }
@@ -1222,18 +1219,6 @@ main:focus {
 }
 .resume-links a {
   color: var(--accent);
-}
-.print-btn {
-  padding: 8px 14px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  background: none;
-  color: var(--fg);
-  font: 500 14px/1 var(--body);
-  cursor: pointer;
-}
-.print-btn:hover {
-  border-color: var(--accent);
 }
 @media print {
   :root,

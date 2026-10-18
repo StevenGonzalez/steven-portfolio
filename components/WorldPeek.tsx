@@ -45,7 +45,7 @@ export default function WorldPeek() {
         />
       </div>
       <figcaption>
-        <button ref={btn} type="button" className="peek-btn" aria-pressed="false" disabled>
+        <button ref={btn} type="button" className="quiet-btn" aria-pressed="false" disabled>
           Take it apart
         </button>
         <span ref={readout} className="peek-ms" />
