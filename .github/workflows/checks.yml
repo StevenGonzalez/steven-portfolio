@@ -1,6 +1,6 @@
-# Runs yarn validate (lint, types, and the content and theme checks) on every push to main and every pull request.
-# Vercel builds each push itself, so this does not build. The world and sound checks stay local: they need Firefox and
-# compare the working tree with a revision.
+# Runs yarn validate (lint, formatting, types, and the content and theme checks) on every push to main and every pull
+# request. Vercel builds each push itself, so this does not build. The world and sound checks stay local: they need
+# Firefox and compare the working tree with a revision.
 name: Checks
 
 on:
