@@ -1,9 +1,9 @@
-import ThoughtPost from "../../../components/ThoughtPost";
+import InsightArticle from "../../../components/InsightArticle";
 import { insightMetadata } from "../../../lib/meta";
 
 export const metadata = insightMetadata("canvas-26-fps-firefox-linux");
 
-<ThoughtPost
+<InsightArticle
   slug="canvas-26-fps-firefox-linux"
   toc={[
     { title: "Measure it first", href: "#measure-it-first" },
@@ -50,4 +50,4 @@ Each step stays on for the rest of the visit. A renderer that stepped back up wh
 
 The same lesson came up once more. The monitor on the desk behind the arch shows the world, and it first did that by copying every layer on every frame, which made the page lag while the arch was open. It now copies the world once, as the arch opens.
 
-</ThoughtPost>
+</InsightArticle>

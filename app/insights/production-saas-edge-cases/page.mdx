@@ -1,9 +1,9 @@
-import ThoughtPost from "../../../components/ThoughtPost";
+import InsightArticle from "../../../components/InsightArticle";
 import { insightMetadata } from "../../../lib/meta";
 
 export const metadata = insightMetadata("production-saas-edge-cases");
 
-<ThoughtPost
+<InsightArticle
   slug="production-saas-edge-cases"
   toc={[
     { title: "Let a member book a class", href: "#let-a-member-book-a-class" },
@@ -52,4 +52,4 @@ Bugs here land on real people. A billing mistake can reach someone's payroll. A 
 
 Keeping that in mind changed how I build: more validation, clearer error states, careful migrations, and asking who relies on a behavior and how they'd notice if it broke.
 
-</ThoughtPost>
+</InsightArticle>

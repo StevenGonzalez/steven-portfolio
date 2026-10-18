@@ -17,7 +17,7 @@ function tocToSections(toc: TocItem[]) {
 }
 
 /** An article's page. Everything but its contents comes from its entry in data/insights.ts. */
-export default function ThoughtPost({ slug, toc = [], children }: { slug: string; toc?: TocItem[]; children: ReactNode }) {
+export default function InsightArticle({ slug, toc = [], children }: { slug: string; toc?: TocItem[]; children: ReactNode }) {
   const post = getInsightBySlug(slug);
   if (!post) throw new Error(`No insight metadata for ${slug}`);
   const { title, summary, date, category, readTime, tags } = post;
