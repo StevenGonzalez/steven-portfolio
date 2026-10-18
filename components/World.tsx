@@ -4,8 +4,9 @@ import { useEffect, useRef } from "react";
 import { mountWorld } from "@/lib/world/stage";
 
 /** The painted world at the top of the home page. The markup is React's; everything drawn into it belongs to the engine
- *  in lib/world, which mounts on these elements and hands back its own teardown. The seams live further down the
- *  page, so they are found by id once the page has committed. */
+ *  in lib/world, which mounts on these elements and hands back its own teardown. Each one is rendered below without
+ *  a condition, so its ref is set by the time the effect runs. The seams live further down the page, so they are found
+ *  by id once the page has committed, and checked. */
 export default function World() {
   const hero = useRef<HTMLElement>(null);
   const scene = useRef<HTMLDivElement>(null);
@@ -19,25 +20,28 @@ export default function World() {
   const postcardBtn = useRef<HTMLButtonElement>(null);
   const soundBtn = useRef<HTMLButtonElement>(null);
 
-  useEffect(
-    () =>
-      mountWorld({
-        hero: hero.current,
-        scene: scene.current,
-        tag: tag.current,
-        wake: wake.current,
-        guideBtn: guideBtn.current,
-        guide: guide.current,
-        guideList: guideList.current,
-        guideCount: guideCount.current,
-        guideFoot: guideFoot.current,
-        postcardBtn: postcardBtn.current,
-        soundBtn: soundBtn.current,
-        seamTop: document.getElementById("seam"),
-        seamLow: document.getElementById("seam-low"),
-      }),
-    [],
-  );
+  useEffect(() => {
+    const seamTop = document.getElementById("seam");
+    const seamLow = document.getElementById("seam-low");
+    if (!(seamTop instanceof HTMLCanvasElement && seamLow instanceof HTMLCanvasElement)) {
+      throw new Error("The world needs the page's #seam and #seam-low canvases to draw into.");
+    }
+    return mountWorld({
+      hero: hero.current!,
+      scene: scene.current!,
+      tag: tag.current!,
+      wake: wake.current!,
+      guideBtn: guideBtn.current!,
+      guide: guide.current!,
+      guideList: guideList.current!,
+      guideCount: guideCount.current!,
+      guideFoot: guideFoot.current!,
+      postcardBtn: postcardBtn.current!,
+      soundBtn: soundBtn.current!,
+      seamTop,
+      seamLow,
+    });
+  }, []);
 
   return (
     <section ref={hero} className="hero" aria-label="Introduction">

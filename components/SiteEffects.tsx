@@ -46,7 +46,7 @@ export default function SiteEffects() {
     const stops: (() => void)[] = [];
     let gone = false;
     import("@/lib/world/vignette-stage").then(({ mountScene }) => {
-      if (!gone) for (const box of boxes) stops.push(mountScene(box, box.dataset.scene));
+      if (!gone) for (const box of boxes) stops.push(mountScene(box, box.dataset.scene!));
     });
     return () => {
       gone = true;

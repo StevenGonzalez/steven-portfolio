@@ -7,7 +7,7 @@ import { mountScene } from "@/lib/world/vignette-stage";
 export default function ProjectScene({ slug, label }: { slug: string; label: string }) {
   const box = useRef<HTMLDivElement>(null);
 
-  useEffect(() => mountScene(box.current, slug), [slug]);
+  useEffect(() => mountScene(box.current!, slug), [slug]);
 
   return <div ref={box} className="scene-cv" role="img" aria-label={label} />;
 }
