@@ -13,6 +13,8 @@ export const metadata = insightMetadata("reliable-desktop-software-web-first-wor
   ]}
 >
 
+*Update, Oct 2026: after a year and a half, the company cancelled the rewrite to put its people on other work.*
+
 At work I led a rewrite of the software that runs industrial saws. The operator interface was Angular, the back end was a C# API, and Electron.NET packaged both into one desktop app. RabbitMQ carried messages between the saw software and other programs, and a PLC integration talked to the machine itself.
 
 Most of that stack is ordinary web tech. But it ran a machine that someone was standing next to, and that changed a lot about how I built it.
@@ -49,7 +51,5 @@ When those jobs blur, a small UI change can end up affecting machine behavior. T
 Every change has to line up across the UI, the API, the message contracts and the machine. Machine control rewards being predictable over being clever.
 
 So I'd rather ship small, well-scoped changes that are sequenced and tested carefully than one big improvement that touches four layers at once. The people using it are trying to get work done on the machine. The less they have to think about the software, the better it's doing its job.
-
-*Update, Oct 2026: after a year and a half, the company cancelled the rewrite to put its people on other work.*
 
 </InsightArticle>
