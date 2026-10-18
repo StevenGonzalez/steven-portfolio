@@ -22,7 +22,7 @@ export default function ProjectsPage() {
           For each one: the problem, what I built, the tradeoffs, and how it turned out. Some client details are left
           out.
         </p>
-        <ProjectGrid projects={projects} />
+        <ProjectGrid projects={projects} titleAs="h2" />
       </section>
     </div>
   );

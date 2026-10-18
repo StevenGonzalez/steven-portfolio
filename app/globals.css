@@ -694,7 +694,7 @@ main:focus {
   text-transform: uppercase;
   color: var(--muted);
 }
-.proj h3 {
+.proj :is(h2, h3) {
   margin: 0;
   font: 600 clamp(1.7rem, 2.6vw, 2.3rem)/1.05 var(--display);
   text-wrap: balance;

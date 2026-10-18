@@ -2,36 +2,39 @@ import Link from "next/link";
 import type { ProjectDetail } from "@/lib/content";
 import ExternalLink from "./ExternalLink";
 
+type TitleTag = "h2" | "h3";
+
 /** The work, as cards. The first project leads across the full width and the rest pair up beneath it; if one would be
- *  left on its own at the end, it runs the full width too. */
-export default function ProjectGrid({ projects }: { projects: ProjectDetail[] }) {
+ *  left on its own at the end, it runs the full width too. Each card's title is a `titleAs` heading, one level below
+ *  the heading the grid sits under. */
+export default function ProjectGrid({ projects, titleAs: Title }: { projects: ProjectDetail[]; titleAs: TitleTag }) {
   const [lead, ...rest] = projects;
   const last = rest.length % 2 ? rest.pop() : undefined;
 
   return (
     <div className="work">
-      {lead ? <WideCard project={lead} /> : null}
+      {lead ? <WideCard project={lead} titleAs={Title} /> : null}
       {rest.map((project) => (
         <article key={project.slug} className="proj" data-glow data-rv>
           {project.role ? <p className="meta">{project.role}</p> : null}
-          <h3>{project.title}</h3>
+          <Title>{project.title}</Title>
           <p>{project.card.blurb}</p>
           <Points points={project.card.points} />
           <p className="stack">{project.card.stack.join(" / ")}</p>
           <ProjectLinks project={project} />
         </article>
       ))}
-      {last ? <WideCard project={last} /> : null}
+      {last ? <WideCard project={last} titleAs={Title} /> : null}
     </div>
   );
 }
 
-function WideCard({ project }: { project: ProjectDetail }) {
+function WideCard({ project, titleAs: Title }: { project: ProjectDetail; titleAs: TitleTag }) {
   return (
     <article className="proj lead-proj" data-glow data-rv>
       <div className="side">
         {project.role ? <p className="meta">{project.role}</p> : null}
-        <h3>{project.title}</h3>
+        <Title>{project.title}</Title>
         <p>{project.card.blurb}</p>
         <ProjectLinks project={project} />
       </div>

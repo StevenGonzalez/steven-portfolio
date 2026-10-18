@@ -60,7 +60,7 @@ export default function Home() {
           <h2 id="work-h" data-rv>
             What I&apos;ve built
           </h2>
-          <ProjectGrid projects={projects} />
+          <ProjectGrid projects={projects} titleAs="h3" />
         </section>
 
         <section className="sec" id="writing" aria-labelledby="writing-h">
