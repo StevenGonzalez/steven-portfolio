@@ -193,6 +193,11 @@ a {
   outline-offset: 3px;
   border-radius: 2px;
 }
+/* The world is dark in both themes, so a ring drawn over it takes the world's own glow. */
+.hero :focus-visible,
+.nav:not(.solid) :focus-visible {
+  outline-color: var(--hero-glow);
+}
 
 /* Hidden until a keyboard user tabs to it, then it sits above the header. */
 .skip {
@@ -240,6 +245,19 @@ main:focus {
   border-color: var(--line);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+/* A shade along the top of the world that keeps the links readable over bright sky, gone once the bar is solid. */
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -40px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(rgb(4 11 14 / 0.5), transparent);
+  transition: opacity 0.3s;
+}
+.nav.solid::before {
+  opacity: 0;
 }
 .wordmark {
   font: 600 22px/1 var(--display);
@@ -336,7 +354,7 @@ main:focus {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, rgb(4 11 14 / 0.62), rgb(4 11 14 / 0.28) 34%, transparent 58%);
+  background: linear-gradient(90deg, rgb(4 11 14 / 0.72), rgb(4 11 14 / 0.5) 36%, transparent 62%);
 }
 /* Smoothstep stops, so the fade lands on the page with no visible band where a linear ramp would stop. */
 .fade {
@@ -1488,7 +1506,7 @@ main:focus {
     margin-top: 20px;
   }
   .scrim {
-    background: linear-gradient(180deg, rgb(4 11 14 / 0.66), rgb(4 11 14 / 0.34) 48%, transparent 66%);
+    background: linear-gradient(180deg, rgb(4 11 14 / 0.74), rgb(4 11 14 / 0.5) 50%, transparent 72%);
   }
   .guide-wrap {
     margin-top: 16px;
