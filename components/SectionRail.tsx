@@ -12,22 +12,11 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
   const ids = useMemo(() => items.map((item) => item.id), [items]);
   const activeId = useScrollSpy(ids);
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
-    history.replaceState(null, "", `#${id}`);
-  };
-
+  // The page's scroll-behavior decides whether this glides, and reduced motion turns that off. The section's name comes
+  // off the address, so a reload starts at the top too.
   const handleBackToTop = () => {
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
-    if (items[0]?.id) {
-      history.replaceState(null, "", "#");
-    }
+    window.scrollTo({ top: 0 });
+    history.replaceState(null, "", location.pathname + location.search);
   };
 
   if (!items.length) return null;
@@ -36,13 +25,11 @@ export default function SectionRail({ items }: { items: SectionItem[] }) {
     <nav aria-label="On this page">
       <h2>On this page</h2>
       <ul>
+        {/* Plain links: the browser scrolls to the section, clear of the header, records the step in history and
+            starts keyboard focus from there. */}
         {items.map((item) => (
           <li key={item.id}>
-            <a
-              href={`#${item.id}`}
-              aria-current={item.id === activeId ? "true" : undefined}
-              onClick={(e) => handleLinkClick(e, item.id)}
-            >
+            <a href={`#${item.id}`} aria-current={item.id === activeId ? "true" : undefined}>
               {item.label}
             </a>
           </li>
