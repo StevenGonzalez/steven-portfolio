@@ -1,71 +1,54 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
+// Within this many pixels of the top or the bottom of the page counts as being there.
+const EDGE = 4;
+// A page that scrolls less than this never jumps to its last section for reaching the bottom.
+const SHORT_PAGE = 200;
+// How far below where a link leaves a section, clear of the header, its top may be and still count as reached.
+const SLACK = 24;
+
+/** The id of the section being read: the last one whose top has scrolled up under the header, or the last of all once
+ *  the page is scrolled to the bottom with it in view. */
 export function useScrollSpy(ids: string[]) {
   const [activeId, setActiveId] = useState<string>(ids[0] ?? "");
-  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!ids.length) return;
-
-    const updateFromHash = () => {
-      const hash = window.location.hash.replace("#", "");
-      if (hash && ids.includes(hash)) setActiveId(hash);
-    };
-
-    updateFromHash();
-
     const elements = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => Boolean(el));
+    if (!elements.length) return;
+    let raf = 0;
 
     const pickActiveId = () => {
-      if (!elements.length) return;
-
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const doc = document.documentElement;
-      const maxScroll = doc.scrollHeight - window.innerHeight;
-
-      const focusY = 120;
-
-      if (scrollY <= 4) {
-        setActiveId((prev) => (prev === elements[0].id ? prev : elements[0].id));
-        return;
-      }
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const focusY = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) + SLACK;
 
       let nextId = elements[0].id;
-      for (const el of elements) {
-        const top = el.getBoundingClientRect().top;
-        if (top <= focusY) nextId = el.id;
-        else break;
-      }
-
-      if (maxScroll > 200 && scrollY >= maxScroll - 4) {
-        const lastEl = elements[elements.length - 1];
-        const lastRect = lastEl.getBoundingClientRect();
-        if (lastRect.top <= window.innerHeight) {
-          nextId = lastEl.id;
+      if (window.scrollY > EDGE) {
+        for (const el of elements) {
+          if (el.getBoundingClientRect().top > focusY) break;
+          nextId = el.id;
         }
+        const last = elements[elements.length - 1];
+        const atBottom = maxScroll > SHORT_PAGE && window.scrollY >= maxScroll - EDGE;
+        if (atBottom && last.getBoundingClientRect().top <= window.innerHeight) nextId = last.id;
       }
-
-      setActiveId((prev) => (prev === nextId ? prev : nextId));
+      setActiveId(nextId);
     };
 
     const onScroll = () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(pickActiveId);
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(pickActiveId);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    // Also check on resize as layout shifts
     window.addEventListener("resize", onScroll, { passive: true });
-    
-    // Initial check
     pickActiveId();
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      cancelAnimationFrame(raf);
     };
   }, [ids]);
 
