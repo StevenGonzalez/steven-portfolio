@@ -41,6 +41,7 @@ export type InsightPost = {
   slug: string;
   title: string;
   summary: string;
+  /** The day it was published, as "2026-04-21". */
   date: string;
   category: string;
   readTime: string;

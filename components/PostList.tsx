@@ -1,11 +1,5 @@
 import Link from "next/link";
-import type { InsightPost } from "../lib/content";
-
-/** "Apr 21, 2026" as the machine-readable date a <time> carries. */
-function isoDate(date: string) {
-  const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
+import { displayDate, type InsightPost } from "../lib/content";
 
 export default function PostList({ posts }: { posts: InsightPost[] }) {
   return (
@@ -13,7 +7,7 @@ export default function PostList({ posts }: { posts: InsightPost[] }) {
       {posts.map((post) => (
         <li key={post.slug} data-rv>
           <Link href={`/insights/${post.slug}`}>
-            <time dateTime={isoDate(post.date)}>{post.date}</time>
+            <time dateTime={post.date}>{displayDate(post.date)}</time>
             <div>
               <b>{post.title}</b>
               <span>{post.summary}</span>

@@ -25,6 +25,13 @@ function assertRequiredString(value, label) {
   }
 }
 
+function assertIsoDate(value, label) {
+  const time = typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) ? Date.parse(value) : NaN;
+  if (Number.isNaN(time) || new Date(time).toISOString().slice(0, 10) !== value) {
+    throw new Error(`${label} must be a real date written as YYYY-MM-DD.`);
+  }
+}
+
 function assertStringArray(value, label) {
   if (!Array.isArray(value) || value.length === 0 || value.some((entry) => typeof entry !== "string" || entry.trim().length === 0)) {
     throw new Error(`${label} must be a non-empty string array.`);
@@ -62,10 +69,17 @@ function validateInsights(insights, mdxSlugs) {
     assertRequiredString(insight.slug, `Insight ${insight.title ?? "<unknown>"} slug`);
     assertRequiredString(insight.title, `Insight ${insight.slug} title`);
     assertRequiredString(insight.summary, `Insight ${insight.slug} summary`);
-    assertRequiredString(insight.date, `Insight ${insight.slug} date`);
+    assertIsoDate(insight.date, `Insight ${insight.slug} date`);
     assertRequiredString(insight.category, `Insight ${insight.slug} category`);
     assertRequiredString(insight.readTime, `Insight ${insight.slug} readTime`);
     assertStringArray(insight.tags, `Insight ${insight.slug} tags`);
+  }
+
+  // The site lists them in this order and leads from each article to the one after it, so it must run newest first.
+  for (let i = 1; i < insights.length; i++) {
+    if (insights[i].date > insights[i - 1].date) {
+      throw new Error(`Insight ${insights[i].slug} is newer than ${insights[i - 1].slug}, which comes before it.`);
+    }
   }
 
   const metadataSlugs = new Set(insights.map((insight) => insight.slug));

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { getInsightBySlug, insights } from "../lib/content";
+import { displayDate, getInsightBySlug, insights } from "../lib/content";
 import BackCrumb from "./BackCrumb";
 import NextUp from "./NextUp";
 import SectionRail from "./SectionRail";
@@ -35,7 +35,9 @@ export default function ThoughtPost({ slug, toc = [], children }: { slug: string
               <p className="label">{category}</p>
               <h1>{title}</h1>
               <p className="sub">{summary}</p>
-              <p className="meta">{`${date} · ${readTime}`}</p>
+              <p className="meta">
+                <time dateTime={date}>{displayDate(date)}</time> · {readTime}
+              </p>
               <ul className="pills">
                 {tags.map((tag) => (
                   <li key={tag}>{tag}</li>
