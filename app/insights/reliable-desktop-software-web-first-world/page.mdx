@@ -19,9 +19,9 @@ export const metadata = insightMetadata("reliable-desktop-software-web-first-wor
   description="What changes when an Angular and C# app ships as desktop software that runs industrial saws."
 >
 
-At work I'm leading a rewrite of the software that runs industrial saws. The operator interface is Angular, the back end is a C# API, and Electron.NET packages both into one desktop app. RabbitMQ carries messages between the saw software and other programs, and a PLC integration talks to the machine itself.
+At work I led a rewrite of the software that runs industrial saws. The operator interface was Angular, the back end was a C# API, and Electron.NET packaged both into one desktop app. RabbitMQ carried messages between the saw software and other programs, and a PLC integration talked to the machine itself.
 
-Most of that stack is ordinary web tech. But it runs a machine that someone is standing next to, and that changes a lot about how I build it.
+Most of that stack is ordinary web tech. But it ran a machine that someone was standing next to, and that changed a lot about how I built it.
 
 ## There's no refresh button
 
@@ -44,7 +44,7 @@ I'm careful with optimistic updates here. Showing a state the machine hasn't con
 
 ## Keep the layers apart
 
-The machine has its own timing and its own ways of failing, and none of that belongs in the Angular components. We keep the UI, the API and messaging as separate layers that can change independently, with fixed, predictable paths for talking to the machine.
+The machine has its own timing and its own ways of failing, and none of that belongs in the Angular components. We kept the UI, the API and messaging as separate layers that can change independently, with fixed, predictable paths for talking to the machine.
 
 Each layer gets one job. The UI shows the workflow and stays quick because it works locally. The API checks a command before it goes anywhere. Messaging moves it between programs. The PLC layer handles the protocol. Anything that touches the machine goes through explicit services and message contracts that we can watch.
 
