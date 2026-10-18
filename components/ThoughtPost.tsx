@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { insights } from "../lib/content";
 import BackCrumb from "./BackCrumb";
 import NextUp from "./NextUp";
@@ -34,7 +35,7 @@ export default function ThoughtPost({
   readTime?: string;
   tags?: string[];
   toc?: TocItem[];
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const sections = tocToSections(toc);
   // The list runs newest first, so the next article is the one before it in time, and the oldest leads back round.

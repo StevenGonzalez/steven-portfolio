@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import {
   applyTheme,
   readStoredChoice,
@@ -9,7 +9,7 @@ import {
   type ThemeChoice,
 } from "../lib/theme";
 
-const ICONS: Record<ThemeChoice, React.ReactNode> = {
+const ICONS: Record<ThemeChoice, ReactNode> = {
   light: (
     <>
       <circle cx="12" cy="12" r="4" />
@@ -23,12 +23,6 @@ const ICONS: Record<ThemeChoice, React.ReactNode> = {
     </>
   ),
   dark: <path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.7 6.7 0 0 0 9.5 9.5Z" />,
-};
-
-const LABELS: Record<ThemeChoice, string> = {
-  light: "light",
-  system: "system",
-  dark: "dark",
 };
 
 const ORDER: ThemeChoice[] = ["system", "light", "dark"];
@@ -59,8 +53,8 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      aria-label={`Theme: ${LABELS[choice]}. Switch to ${LABELS[next]}.`}
-      title={`Theme: ${LABELS[choice]}`}
+      aria-label={`Theme: ${choice}. Switch to ${next}.`}
+      title={`Theme: ${choice}`}
       className="theme"
       onClick={(e) => {
         const b = e.currentTarget.getBoundingClientRect();
