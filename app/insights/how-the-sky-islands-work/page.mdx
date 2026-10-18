@@ -1,6 +1,7 @@
 import ThoughtPost from "../../../components/ThoughtPost";
 import { insightMetadata } from "../../../lib/meta";
 import { worldKb } from "../../../lib/world-size";
+import WorldPeek from "../../../components/WorldPeek";
 
 export const metadata = insightMetadata("how-the-sky-islands-work");
 
@@ -51,6 +52,10 @@ export const LAYERS = [
 ```
 
 Each layer has a depth, `d`, which sets how far it slides with the pointer and how much it lags behind the page as you scroll. That alone gives the shadow-box look. Each layer also has its own resolution. The sky is a soft gradient, so it renders at 60% of full resolution. The dark ferns in the foreground are blurred anyway, so 30% is enough. The island, which is what you look at, gets all of it. A layer that only covers a band of the scene, like the wooded ridge, gets a canvas only that tall, so the browser has less to composite.
+
+Here it is running, on the same renderer as the top of the home page. Take it apart to see the canvases: the three edged in gold are drawn every frame, and the rest were painted once. Pick a name to see that canvas alone.
+
+<WorldPeek />
 
 ## Getting it off the main thread
 

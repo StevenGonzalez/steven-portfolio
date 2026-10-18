@@ -917,6 +917,150 @@ main:focus {
   height: 100%;
 }
 
+/* The world taken apart, in the article on how it works. The stage is the world at 1280 by 800, scaled into the box.
+   Apart, its planes spread out in depth and tip back, the ones drawn every frame edged in gold, and the labels stand
+   over the box at its own scale. A picked label leaves its plane's picture alone, the others' only outlined. */
+.peek-fig {
+  margin-block: 1.8rem;
+}
+.peek-wrap {
+  position: relative;
+}
+.peek {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #0b1a20;
+}
+.peek-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1280px;
+  height: 800px;
+  transform-origin: 0 0;
+  perspective: 3200px;
+  perspective-origin: 50% 30%;
+}
+.peek-stack,
+.peek-plane {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 1.2s cubic-bezier(0.6, 0, 0.2, 1);
+}
+.peek-plane {
+  overflow: hidden;
+  transition-property: transform, box-shadow, background-color;
+}
+.peek-plane canvas {
+  position: absolute;
+  left: -72px;
+  top: -72px;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.peek.solo .peek-plane:not(.picked) canvas {
+  opacity: 0.06;
+}
+.peek-pin {
+  position: absolute;
+  left: 0;
+  top: 30%;
+  width: 1px;
+  height: 1px;
+}
+.peek.apart .peek-stack {
+  transform: translate(140px, 90px) scale(0.52) rotateX(40deg) rotateY(-14deg) rotateZ(-8deg);
+}
+.peek.apart .peek-plane {
+  transform: translateZ(calc(var(--i) * 56px));
+  background-color: rgb(159 230 218 / 0.04);
+  box-shadow: inset 0 0 0 3px rgb(159 230 218 / 0.35);
+}
+.peek.apart .peek-plane.live {
+  box-shadow: inset 0 0 0 4px rgb(224 181 101 / 0.8);
+}
+.peek-names {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.peek-names.on {
+  opacity: 1;
+}
+.peek-names svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.peek-names line {
+  stroke: rgb(232 239 233 / 0.55);
+  stroke-width: 1;
+}
+.peek-names button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 3px;
+  background: rgb(8 18 22 / 0.78);
+  color: #e8efe9;
+  font: 500 10.5px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.peek-names button.live {
+  color: #e0b565;
+}
+.peek-names button.picked {
+  background: #e8efe9;
+  color: #0b1a20;
+}
+.peek-fig figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 12px;
+  color: var(--muted);
+  font: 500 12.5px/1.4 var(--mono);
+}
+.peek-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: none;
+  color: var(--fg);
+  font: 500 14px/1 var(--body);
+  cursor: pointer;
+}
+.peek-btn:hover:enabled {
+  border-color: var(--accent);
+}
+.peek-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.peek-ms {
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  .peek-stack,
+  .peek-plane {
+    transition: none;
+  }
+}
+
 /* Screens from a shipped app, three to a row, or two on a phone. */
 .shots {
   display: grid;
