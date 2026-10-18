@@ -87,6 +87,27 @@ function currentTheme(): "light" | "dark" {
   return attribute === "light" || attribute === "dark" ? attribute : resolveTheme("system");
 }
 
+/** Whether the page shows its dark theme: the explicit choice if there is one, otherwise the OS, as the stylesheet
+ *  decides. */
+export function isDarkTheme() {
+  return currentTheme() === "dark";
+}
+
+/** Calls `listener` whenever the theme the page shows may have changed: a switch on this page, or the OS flipping
+ *  while there is no explicit choice. Returns the unsubscribe. */
+export function watchTheme(listener: () => void) {
+  const query = window.matchMedia("(prefers-color-scheme: dark)");
+  const onSystem = () => {
+    if (!document.documentElement.hasAttribute("data-theme")) listener();
+  };
+  query.addEventListener("change", onSystem);
+  const unsubscribe = subscribeToTheme(listener);
+  return () => {
+    query.removeEventListener("change", onSystem);
+    unsubscribe();
+  };
+}
+
 let switching = false;
 
 /** Switches theme with the new one growing outward through a soft-edged circle, from the stage's light or from
