@@ -17,9 +17,9 @@ export default function Home() {
         <canvas className="seam" id="seam" aria-hidden="true" />
 
         <section className="sec" id="about" aria-labelledby="about-h">
-          <p className="label" id="about-h" data-rv>
+          <h2 className="label" id="about-h" data-rv>
             About
-          </p>
+          </h2>
           <div className="about" data-rv>
             <p>
               I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the .NET
@@ -106,9 +106,9 @@ export default function Home() {
         </section>
 
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
-          <p className="label" id="contact-h" data-rv>
+          <h2 className="label" id="contact-h" data-rv>
             Contact
-          </p>
+          </h2>
           <p className="big" data-rv>
             Hiring, or building something interesting? Send me a message.
           </p>

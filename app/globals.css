@@ -546,7 +546,7 @@ main:focus {
   box-shadow: 0 0 10px var(--glow);
   vertical-align: middle;
 }
-.sec > h2,
+.sec > h2:not(.label),
 .page-h {
   margin: 0 0 clamp(28px, 4vw, 48px);
   font: 500 clamp(2.4rem, 5vw, 3.8rem)/1 var(--display);
