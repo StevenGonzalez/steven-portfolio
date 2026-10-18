@@ -56,7 +56,6 @@ Open `http://localhost:3000`.
 - `lib/world/` - the painted world engine behind the homepage hero
 - `data/projects.ts` - project case study metadata and long-form content
 - `data/insights.ts` - insight metadata
-- `drafts/insights/` - articles taken off the site; move one back into `app/insights/` and re-add its metadata to publish it
 - `scripts/validate-content.mjs` - guards against missing or inconsistent content
 
 ## About Me
