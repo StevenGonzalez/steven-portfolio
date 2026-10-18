@@ -40,81 +40,89 @@ function clamp(text: string, max: number) {
 /** A link preview in the site's own look: the world at night, with the words on the dark sky to its left. */
 export function renderOgCard({ eyebrow, title, subtitle, tags = [] }: OgCardProps) {
   return new ImageResponse(
-    (
-      <div style={{ height: "100%", width: "100%", display: "flex", backgroundColor: `rgb(${BG})`, position: "relative" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- this renders to a PNG, not a page */}
-        <img src={night} width={1200} height={630} alt="" style={{ position: "absolute", top: 0, left: 0 }} />
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            backgroundImage: `linear-gradient(90deg, rgba(${BG}, 0.96) 0%, rgba(${BG}, 0.88) 42%, rgba(${BG}, 0) 78%)`,
-          }}
-        />
-        <div
-          style={{
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            width: 720,
-            height: "100%",
-            padding: "70px 0 64px 80px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 9999,
-                display: "flex",
-                backgroundColor: `rgb(${GLOW})`,
-                boxShadow: `0 0 18px 4px rgba(${GLOW}, 0.6)`,
-              }}
-            />
-            <div
-              style={{
-                fontFamily: "Plex Mono",
-                fontSize: 20,
-                letterSpacing: 4,
-                textTransform: "uppercase",
-                color: `rgb(${GLOW})`,
-              }}
-            >
-              {eyebrow}
-            </div>
+    <div
+      style={{ height: "100%", width: "100%", display: "flex", backgroundColor: `rgb(${BG})`, position: "relative" }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element -- this renders to a PNG, not a page */}
+      <img src={night} width={1200} height={630} alt="" style={{ position: "absolute", top: 0, left: 0 }} />
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          backgroundImage: `linear-gradient(90deg, rgba(${BG}, 0.96) 0%, rgba(${BG}, 0.88) 42%, rgba(${BG}, 0) 78%)`,
+        }}
+      />
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          width: 720,
+          height: "100%",
+          padding: "70px 0 64px 80px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 9999,
+              display: "flex",
+              backgroundColor: `rgb(${GLOW})`,
+              boxShadow: `0 0 18px 4px rgba(${GLOW}, 0.6)`,
+            }}
+          />
+          <div
+            style={{
+              fontFamily: "Plex Mono",
+              fontSize: 20,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+              color: `rgb(${GLOW})`,
+            }}
+          >
+            {eyebrow}
           </div>
+        </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-            <div style={{ fontFamily: "Cormorant", fontSize: 76, lineHeight: 1, letterSpacing: -0.5, color: FG }}>
-              {clamp(title, 64)}
-            </div>
-            {subtitle ? (
-              <div style={{ fontFamily: "Schibsted", fontSize: 25, lineHeight: 1.45, color: MUTED, maxWidth: 600 }}>
-                {clamp(subtitle, 120)}
-              </div>
-            ) : null}
-            {tags.length ? (
-              <div style={{ fontFamily: "Plex Mono", fontSize: 17, color: MUTED, letterSpacing: 0.5 }}>
-                {tags.slice(0, 4).join(" / ")}
-              </div>
-            ) : null}
+        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+          <div style={{ fontFamily: "Cormorant", fontSize: 76, lineHeight: 1, letterSpacing: -0.5, color: FG }}>
+            {clamp(title, 64)}
           </div>
-
-          <div style={{ display: "flex", alignItems: "baseline", gap: 18 }}>
-            <div style={{ fontFamily: "Cormorant", fontSize: 34, color: FG }}>{SITE_NAME}</div>
-            <div style={{ fontFamily: "Plex Mono", fontSize: 15, letterSpacing: 3, textTransform: "uppercase", color: MUTED }}>
-              Software Engineer
+          {subtitle ? (
+            <div style={{ fontFamily: "Schibsted", fontSize: 25, lineHeight: 1.45, color: MUTED, maxWidth: 600 }}>
+              {clamp(subtitle, 120)}
             </div>
+          ) : null}
+          {tags.length ? (
+            <div style={{ fontFamily: "Plex Mono", fontSize: 17, color: MUTED, letterSpacing: 0.5 }}>
+              {tags.slice(0, 4).join(" / ")}
+            </div>
+          ) : null}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "baseline", gap: 18 }}>
+          <div style={{ fontFamily: "Cormorant", fontSize: 34, color: FG }}>{SITE_NAME}</div>
+          <div
+            style={{
+              fontFamily: "Plex Mono",
+              fontSize: 15,
+              letterSpacing: 3,
+              textTransform: "uppercase",
+              color: MUTED,
+            }}
+          >
+            Software Engineer
           </div>
         </div>
       </div>
-    ),
+    </div>,
     { ...OG_SIZE, fonts },
   );
 }

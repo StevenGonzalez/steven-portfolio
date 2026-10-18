@@ -27,7 +27,10 @@ const KEYS = [
 ];
 // Every sound the working tree's sound code can play, in the order it lists them.
 const source = readFileSync(path.join(rootDir, "lib/world/sound.js"), "utf8");
-const table = source.slice(source.indexOf("const SOUNDS = {"), source.indexOf("\n  };", source.indexOf("const SOUNDS = {")));
+const table = source.slice(
+  source.indexOf("const SOUNDS = {"),
+  source.indexOf("\n  };", source.indexOf("const SOUNDS = {")),
+);
 const sounds = [...table.matchAll(/^ {4}(\w+)\(t\b/gm)].map((m) => m[1]);
 
 const page = `<!doctype html><meta charset="utf-8"><script type="module" src="/check.js"></script>`;
@@ -49,7 +52,10 @@ try {
     const b = await run(B, key);
     // Both sides play the same script, so they render the same number of seconds.
     const first = a.out.find((x, i) => x.hash !== b.out[i].hash);
-    const faults = [b.broken && `${b.broken} samples that are not numbers`, b.peak > 1 && `a peak of ${b.peak.toFixed(2)}`].filter(Boolean);
+    const faults = [
+      b.broken && `${b.broken} samples that are not numbers`,
+      b.peak > 1 && `a peak of ${b.peak.toFixed(2)}`,
+    ].filter(Boolean);
     if (first || faults.length) differ++;
     const db = (20 * Math.log10(b.peak)).toFixed(1);
     const secs = ((Date.now() - t0) / 1000).toFixed(0);

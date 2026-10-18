@@ -13,9 +13,7 @@ export function useScrollSpy(ids: string[]) {
   const [activeId, setActiveId] = useState<string>(ids[0] ?? "");
 
   useEffect(() => {
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
+    const elements = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => Boolean(el));
     if (!elements.length) return;
     let raf = 0;
 

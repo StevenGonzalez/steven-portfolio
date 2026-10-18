@@ -13,9 +13,7 @@ export default function NotFound() {
         <h1 id="lost-h" className="page-h">
           This page came loose and drifted off
         </h1>
-        <p className="intro">
-          The link may be old, or the page may have moved.
-        </p>
+        <p className="intro">The link may be old, or the page may have moved.</p>
         <p className="lost-links">
           <Link className="btn solid" href="/">
             Back to the islands

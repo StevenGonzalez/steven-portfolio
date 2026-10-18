@@ -4,7 +4,8 @@ export const insights: InsightPost[] = [
   {
     slug: "sound-with-no-audio-files",
     title: "Sound With No Audio Files",
-    summary: "How the world at the top of this site makes its sound with the Web Audio API, from wind to whale song, without a single recording.",
+    summary:
+      "How the world at the top of this site makes its sound with the Web Audio API, from wind to whale song, without a single recording.",
     date: "2026-10-15",
     category: "Web Audio",
     readTime: "6 min read",
@@ -13,7 +14,8 @@ export const insights: InsightPost[] = [
   {
     slug: "canvas-26-fps-firefox-linux",
     title: "Why My Canvas Ran at 26 fps in Firefox on Linux",
-    summary: "The world at the top of this site lagged in my own browser. The cause was pixel count, and the fix was a second step down in resolution.",
+    summary:
+      "The world at the top of this site lagged in my own browser. The cause was pixel count, and the fix was a second step down in resolution.",
     date: "2026-10-15",
     category: "Web Graphics",
     readTime: "3 min read",
@@ -22,7 +24,8 @@ export const insights: InsightPost[] = [
   {
     slug: "how-the-sky-islands-work",
     title: "How the Sky Islands at the Top of This Site Work",
-    summary: "A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with.",
+    summary:
+      "A painted world in Canvas 2D with no images or libraries: layers, two web workers, and the rules that keep it fast and easy to play with.",
     date: "2026-10-11",
     category: "Web Graphics",
     readTime: "5 min read",
@@ -31,7 +34,8 @@ export const insights: InsightPost[] = [
   {
     slug: "ci-cd-templates-that-work",
     title: "What Makes CI/CD Templates Actually Useful",
-    summary: "What I learned moving our Azure DevOps pipelines to YAML and into one shared, versioned template repository.",
+    summary:
+      "What I learned moving our Azure DevOps pipelines to YAML and into one shared, versioned template repository.",
     date: "2026-04-21",
     category: "Developer Experience",
     readTime: "4 min read",
@@ -40,7 +44,8 @@ export const insights: InsightPost[] = [
   {
     slug: "modernizing-legacy-systems-without-rewriting",
     title: "Modernizing Legacy Systems Without Rewriting Everything",
-    summary: "How I moved a business-critical app from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without changing how people used it.",
+    summary:
+      "How I moved a business-critical app from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without changing how people used it.",
     date: "2026-03-12",
     category: "Architecture",
     readTime: "4 min read",
@@ -49,7 +54,8 @@ export const insights: InsightPost[] = [
   {
     slug: "pulling-ai-into-real-products",
     title: "How I Think About Pulling AI Into Real Products",
-    summary: "Where AI actually helps a product, where plain deterministic code is still the right call, and how to build AI features people can trust.",
+    summary:
+      "Where AI actually helps a product, where plain deterministic code is still the right call, and how to build AI features people can trust.",
     date: "2025-12-18",
     category: "Product Engineering",
     readTime: "4 min read",
@@ -67,7 +73,8 @@ export const insights: InsightPost[] = [
   {
     slug: "production-saas-edge-cases",
     title: "What Production SaaS Teaches You About Edge Cases",
-    summary: "How multi-tenancy, billing, scheduling, reporting and permissions turn simple-looking features into hard ones.",
+    summary:
+      "How multi-tenancy, billing, scheduling, reporting and permissions turn simple-looking features into hard ones.",
     date: "2025-10-23",
     category: "SaaS Engineering",
     readTime: "4 min read",

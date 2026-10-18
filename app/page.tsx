@@ -24,17 +24,19 @@ export default function Home() {
           </h2>
           <div className="about" data-rv>
             <p>
-              I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the .NET
-              APIs and databases behind them, iOS and Android apps in React Native, and{" "}
+              I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the
+              .NET APIs and databases behind them, iOS and Android apps in React Native, and{" "}
               <Link href="/projects/industrial-saw-control-platform">a desktop app that runs industrial saws</Link>.
               Before the saws I worked on{" "}
-              <Link href="/projects/fitness-platform">a SaaS platform that gyms and studios across the country run on</Link>
+              <Link href="/projects/fitness-platform">
+                a SaaS platform that gyms and studios across the country run on
+              </Link>
               , and co-founded <Link href="/projects/virtual-trainer">Virtual Trainer</Link>, which I built end to end.
             </p>
             <p>
               I love automation, and it&apos;s how I get to quality. Letting machines run the checks frees people to
-              spend their attention on the hard problems. Virtual Trainer has more than 6,000
-              automated tests across the app and the API. At work I moved our build pipelines into{" "}
+              spend their attention on the hard problems. Virtual Trainer has more than 6,000 automated tests across the
+              app and the API. At work I moved our build pipelines into{" "}
               <Link href="/projects/azure-devops-pipeline-templates">shared, versioned YAML templates</Link> that every
               team builds on.
             </p>
@@ -94,8 +96,8 @@ export default function Home() {
             <p data-rv>
               The scenery is painted once, then stacked in layers that slide with your pointer, and only the things that
               move are redrawn each frame. All of the drawing happens in background workers, so the page itself stays
-              free. It&apos;s plain JavaScript on canvas with no libraries,
-              about {worldKb()} KB gzipped, and it holds still if your system asks for reduced motion.
+              free. It&apos;s plain JavaScript on canvas with no libraries, about {worldKb()} KB gzipped, and it holds
+              still if your system asks for reduced motion.
             </p>
           </div>
           <Link className="more" href="/insights/how-the-sky-islands-work" data-rv>

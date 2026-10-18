@@ -98,7 +98,9 @@ if (problems.length === 0) {
     } else if (inAttribute === undefined) {
       problems.push(`${name} is set when the OS asks for dark but not for an explicit dark choice.`);
     } else if (inMedia !== inAttribute) {
-      problems.push(`${name} disagrees between the two dark blocks:\n    OS dark:       ${inMedia}\n    chosen dark:   ${inAttribute}`);
+      problems.push(
+        `${name} disagrees between the two dark blocks:\n    OS dark:       ${inMedia}\n    chosen dark:   ${inAttribute}`,
+      );
     }
 
     if (!light.has(name)) {
@@ -111,10 +113,20 @@ if (problems.length === 0) {
     if (value === null) problems.push(`Could not find ${name}, so it cannot be checked against ${token}.`);
     else if (value !== expected) problems.push(`${name} is ${value}, but ${token} is ${expected}.`);
   };
-  checkCopy("THEME_COLOR.light in lib/theme.ts", find(themeSource, /^\s*light: "([^"]*)",$/m), "--bg", light.get("--bg"));
+  checkCopy(
+    "THEME_COLOR.light in lib/theme.ts",
+    find(themeSource, /^\s*light: "([^"]*)",$/m),
+    "--bg",
+    light.get("--bg"),
+  );
   checkCopy("THEME_COLOR.dark in lib/theme.ts", find(themeSource, /^\s*dark: "([^"]*)",$/m), "dark --bg", dark("--bg"));
   checkCopy("BG in lib/og.tsx", find(ogSource, /^const BG = "([^"]*)";$/m), "dark --bg", channels(dark("--bg")));
-  checkCopy("GLOW in lib/og.tsx", find(ogSource, /^const GLOW = "([^"]*)";$/m), "dark --glow", channels(dark("--glow")));
+  checkCopy(
+    "GLOW in lib/og.tsx",
+    find(ogSource, /^const GLOW = "([^"]*)";$/m),
+    "dark --glow",
+    channels(dark("--glow")),
+  );
   checkCopy("FG in lib/og.tsx", find(ogSource, /^const FG = "([^"]*)";$/m), "dark --fg", dark("--fg"));
   checkCopy("MUTED in lib/og.tsx", find(ogSource, /^const MUTED = "([^"]*)";$/m), "dark --muted", dark("--muted"));
 }
@@ -127,4 +139,6 @@ if (problems.length > 0) {
 }
 
 const count = parseTokens(blocks[ATTRIBUTE_SELECTOR]).size;
-console.log(`Validated ${count} theme tokens across both dark blocks, and their copies in lib/theme.ts and lib/og.tsx.`);
+console.log(
+  `Validated ${count} theme tokens across both dark blocks, and their copies in lib/theme.ts and lib/og.tsx.`,
+);

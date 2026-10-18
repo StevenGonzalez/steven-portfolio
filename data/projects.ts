@@ -6,15 +6,9 @@ export const projects: ProjectDetail[] = [
     title: "Virtual Trainer",
     summary:
       "A fitness app I co-founded and built: React Native on iOS and Android, a .NET API on Azure, and an AI trainer that answers from your own workout history.",
-    scene: "A barbell resting on a squat rack on a floating island, lifted through its reps by two bunches of balloons.",
-    tags: [
-      "React Native",
-      ".NET Core",
-      "Azure",
-      "SQL Server",
-      "Cosmos DB",
-      "Azure AI",
-    ],
+    scene:
+      "A barbell resting on a squat rack on a floating island, lifted through its reps by two bunches of balloons.",
+    tags: ["React Native", ".NET Core", "Azure", "SQL Server", "Cosmos DB", "Azure AI"],
     links: [
       {
         label: "App Store",
@@ -100,16 +94,15 @@ export const projects: ProjectDetail[] = [
       "Automatic progression needed limits so it could adapt without suggesting unsafe jumps. Running both SQL Server and Cosmos DB costs more to operate, so I kept a clear rule for what lives where. Moving work to the background made the app faster, but anything the user needs to see right away stays out of the queue.",
     outcome:
       "Virtual Trainer shipped on the App Store and Google Play with generated routines and workouts, guided training, progress reports, custom exercises, automatic progression and the AI trainer. I designed and ran the whole stack in production, from the mobile apps down to the cloud. The app and the API carry more than 6,000 automated tests between them, which is what keeps it safe to change.",
-    reading: [
-      "pulling-ai-into-real-products",
-    ],
+    reading: ["pulling-ai-into-real-products"],
   },
   {
     slug: "sky-islands",
     title: "Sky Islands",
     summary:
       "The painted world at the top of this site: plain JavaScript drawing on canvas in two web workers, with no images and no libraries. Moving the drawing off the main thread took mobile Lighthouse from 61 to 94–97.",
-    scene: "An easel on a floating island, where a brush is finishing a painting of a smaller island with a lantern tree, and the lights in the painting drift up out of it into the sky.",
+    scene:
+      "An easel on a floating island, where a brush is finishing a painting of a smaller island with a lantern tree, and the lights in the painting drift up out of it into the sky.",
     tags: ["Canvas 2D", "Web Workers", "OffscreenCanvas", "Web Audio", "View Transitions", "Performance"],
     links: [
       {
@@ -142,18 +135,15 @@ export const projects: ProjectDetail[] = [
       "Drawing everything in code made the download small but made the first frame expensive, so most of the work went into deciding what never has to be drawn twice. Quality follows measured frame times, not a list of devices: when frames run long, the renderer drops to half-rate layers and then to lower resolution, and it never steps back up, because flipping between modes would be more noticeable than either one. A benchmark script drives headless Firefox through fixed scenes, runs the change and the last commit in alternating rounds, and fails if any scene gets more than 1 ms a frame slower, so a new feature either fits or gets cheaper. Two more checks render the change and the last commit side by side and fail if a single pixel or sound sample differs, so a cleanup can never quietly change the picture or the sound.",
     outcome:
       "Moving the drawing off the main thread took mobile Lighthouse from 61 to between 94 and 97, with desktop at 99 and nothing shifting while the page loads. Painting the first frame in the worker cut main-thread time at load from 145 to 65 ms on a standard screen and from 282 to 44 ms on a high-density one. The theme switch went from a one-second freeze to an instant swap. In Firefox on Linux, which draws canvas on the CPU, the lower-resolution step took clicking around the world from 26 to 53 frames a second. The painted scenes on these case studies, this one included, run on the same code.",
-    reading: [
-      "how-the-sky-islands-work",
-      "canvas-26-fps-firefox-linux",
-      "sound-with-no-audio-files",
-    ],
+    reading: ["how-the-sky-islands-work", "canvas-26-fps-firefox-linux", "sound-with-no-audio-files"],
   },
   {
     slug: "industrial-saw-control-platform",
     title: "Industrial Saw Control Platform",
     summary:
       "I led the rewrite of the software that runs industrial saws: a new C# API with the machine-control endpoints, an Angular operator interface, Electron.NET desktop packaging, RabbitMQ messaging and PLC integration. The company cancelled it after a year and a half to put its people on other work.",
-    scene: "A mill on a floating island whose water wheel is a circular saw blade, turned by a waterfall from the rock above.",
+    scene:
+      "A mill on a floating island whose water wheel is a circular saw blade, turned by a waterfall from the rock above.",
     tags: ["Angular", "C#", "Electron.NET", "RabbitMQ", "PLC", "Desktop"],
     role: "Lead engineer",
     scope: "Architecture, a new API, the Angular front end, and planning across teams",
@@ -179,9 +169,7 @@ export const projects: ProjectDetail[] = [
       "Shipping the UI and services together gives control over deployment and the operator's experience, but every change has to line up across the UI, the API, the machine and the message contracts. Machine control rewards predictability over experimentation, so changes were sequenced and tested carefully. A rewrite also has to be planned across teams that each own a piece of it, so a lot of my job was making sure those pieces would fit together before anyone built them.",
     outcome:
       "After a year and a half, the company cancelled the rewrite to put its people on other work. By then I had designed and built the new API, machine-control endpoints included, and built Angular features for the new operator interface.",
-    reading: [
-      "reliable-desktop-software-web-first-world",
-    ],
+    reading: ["reliable-desktop-software-web-first-world"],
   },
   {
     slug: "fitness-platform",
@@ -215,16 +203,15 @@ export const projects: ProjectDetail[] = [
       "With that many customers on one system, every change trades speed against safety. A billing or scheduling change can reach a lot of code, so I learned to map what a change touches before making it. For performance, I went after the queries and pages with the most impact, and rewrote legacy pages and stored procedures. The cost of working across areas was depth, since I didn't own any one of them end to end. What I got for it was knowing where the dependencies were.",
     outcome:
       "My work shipped to national fitness operators across hundreds of locations, and the internal tools I built cut down support tickets. I came away knowing what it takes to keep changing a production SaaS that businesses run on every day, where a mistake is visible to customers right away.",
-    reading: [
-      "production-saas-edge-cases",
-    ],
+    reading: ["production-saas-edge-cases"],
   },
   {
     slug: "dotnet-framework-to-dotnet-8-upgrade",
     title: ".NET Framework to .NET 8 Upgrade",
     summary:
       "Led the move of a business-critical application from .NET Framework 4.7.1 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
-    scene: "An old stone tower on a floating island, with new stone going on top and a crane lifting the next block up.",
+    scene:
+      "An old stone tower on a floating island, with new stone going on top and a crane lifting the next block up.",
     tags: ["C#", ".NET 8", ".NET Framework", "Upgrade", "Compatibility", "Security"],
     role: "Lead engineer",
     scope: "Upgrading a legacy .NET application",
@@ -242,16 +229,14 @@ export const projects: ProjectDetail[] = [
     problem:
       "The application was still central to the business, but it ran on .NET Framework 4.7.1 with old dependencies and encryption code built on APIs that had become obsolete. Staying put made every change harder, closed off future upgrades, and left the security-sensitive code on those obsolete APIs.",
     approach:
-      "I treated the upgrade as a series of discoveries, not one version bump. Before changing a target framework, I sorted every dependency: upgrade it, replace it with something supported, remove it, or isolate it for now. That list became the plan, and it answered \"how far along are we?\" better than a percentage. I replaced the obsolete cryptography with current APIs as its own piece of work, with tests aimed at exactly that path, and fixed runtime, package and API breaks as the app moved to .NET 8. Each stage had to pass the same checks before it went further: it builds and starts on .NET 8, the main workflows behave as before, data reads and writes the same way, the security-sensitive paths still work, and we know how to roll it back.",
+      'I treated the upgrade as a series of discoveries, not one version bump. Before changing a target framework, I sorted every dependency: upgrade it, replace it with something supported, remove it, or isolate it for now. That list became the plan, and it answered "how far along are we?" better than a percentage. I replaced the obsolete cryptography with current APIs as its own piece of work, with tests aimed at exactly that path, and fixed runtime, package and API breaks as the app moved to .NET 8. Each stage had to pass the same checks before it went further: it builds and starts on .NET 8, the main workflows behave as before, data reads and writes the same way, the security-sensitive paths still work, and we know how to roll it back.',
     architecture:
       "The goal was to make the app less fragile on a new runtime while keeping its behavior the same. I moved the target frameworks, tightened dependency boundaries and updated the security-sensitive code without changing how the business workflows behaved. Where an old component could not move forward cleanly, I isolated or replaced it so the rest of the app could keep moving.",
     tradeoffs:
       "A rewrite would have put a system people depended on at risk for no good reason, but a shallow version bump would not have fixed the real problems. So I changed things aggressively where the stack was unsafe or unsupported, and left the rest alone so users could keep trusting how it behaved. That meant deciding piece by piece what to keep, what to replace, and where a little temporary complexity was worth it.",
     outcome:
       "The application now runs on .NET 8 with supported dependencies, current encryption and an easier road for future upgrades. The team stopped working around legacy blockers and went back to shipping changes.",
-    reading: [
-      "modernizing-legacy-systems-without-rewriting",
-    ],
+    reading: ["modernizing-legacy-systems-without-rewriting"],
   },
   {
     slug: "azure-devops-pipeline-templates",
@@ -283,8 +268,6 @@ export const projects: ProjectDetail[] = [
       "Centralizing pipeline logic makes things consistent, but it also creates a shared dependency that teams have to trust. Version tags handled that: teams kept control of when they upgraded, and I could change the templates without surprising anyone. The cost was being strict about versioning and compatibility, which is still far cheaper than every team maintaining its own fragile pipeline logic. And a template that saves ten minutes of setup but costs an hour every time a build breaks is a bad trade, so step names say exactly what they do and failures surface close to their cause.",
     outcome:
       "Pipelines are now defined the same way across teams, complex ones take less time to set up, and common steps are easier to maintain. They went from one-off configuration to shared code that is versioned, reviewed and safe to change.",
-    reading: [
-      "ci-cd-templates-that-work",
-    ],
+    reading: ["ci-cd-templates-that-work"],
   },
 ];

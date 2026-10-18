@@ -135,7 +135,12 @@ export async function switchTheme(choice: ThemeChoice, from: { x: number; y: num
     const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) * 1.5;
     document.documentElement.animate(
       { maskSize: ["0px 0px", `${r * 2}px ${r * 2}px`], maskPosition: [`${x}px ${y}px`, `${x - r}px ${y - r}px`] },
-      { duration: 1300, easing: "cubic-bezier(.45, 0, .2, 1)", fill: "forwards", pseudoElement: "::view-transition-new(root)" },
+      {
+        duration: 1300,
+        easing: "cubic-bezier(.45, 0, .2, 1)",
+        fill: "forwards",
+        pseudoElement: "::view-transition-new(root)",
+      },
     );
     await transition.finished;
   } finally {

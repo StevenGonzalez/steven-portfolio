@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore, type ReactNode } from "react";
-import {
-  applyTheme,
-  readStoredChoice,
-  subscribeToTheme,
-  switchTheme,
-  type ThemeChoice,
-} from "@/lib/theme";
+import { applyTheme, readStoredChoice, subscribeToTheme, switchTheme, type ThemeChoice } from "@/lib/theme";
 
 const ICONS: Record<ThemeChoice, ReactNode> = {
   light: (

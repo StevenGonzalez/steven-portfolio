@@ -62,7 +62,8 @@ const sideProjects = [
   {
     title: "Sky Islands",
     when: "2026",
-    about: "The painted world at the top of stevengonzalez.dev, drawn in code on canvas with no images and no libraries.",
+    about:
+      "The painted world at the top of stevengonzalez.dev, drawn in code on canvas with no images and no libraries.",
     points: [
       "Moved all of the drawing into two web workers with OffscreenCanvas, which took mobile Lighthouse from 61 to 94–97 and main-thread time at load from 145 to 65 ms.",
       "Made the sound live with Web Audio, and wrote checks that render the world and its sound in headless Firefox and fail on a single changed pixel or sample.",
@@ -76,7 +77,10 @@ const schools = [
 ];
 
 const skills = [
-  ["Front end", "TypeScript, JavaScript, React, Next.js, React Native, Angular, HTML, CSS, Canvas 2D, Web Workers, Web Audio"],
+  [
+    "Front end",
+    "TypeScript, JavaScript, React, Next.js, React Native, Angular, HTML, CSS, Canvas 2D, Web Workers, Web Audio",
+  ],
   ["Back end", "C#, ASP.NET Core, Entity Framework Core, Dapper, SQL Server, Cosmos DB, REST API design"],
   ["Messaging", "RabbitMQ, MassTransit, Azure Service Bus"],
   ["Testing", "Jest, React Native Testing Library, xUnit, Moq"],
@@ -94,8 +98,8 @@ export default function ResumePage() {
         </h1>
         <p className="intro">
           Software engineer. I build web and mobile apps, the APIs and databases behind them, and the software that runs
-          industrial machines. I care most about quality: automated tests, shared pipelines, and upgrades that don&apos;t
-          break anything for the people relying on them.
+          industrial machines. I care most about quality: automated tests, shared pipelines, and upgrades that
+          don&apos;t break anything for the people relying on them.
         </p>
         <p className="resume-links">
           {[...Object.values(externalProfiles).map((profile) => profile.href), productionUrl].map((href) => (

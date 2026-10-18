@@ -24,13 +24,84 @@ const only = option("--only", null);
 const frames = numberOption("--frames", 1500);
 
 const SCENARIOS = [
-  { name: "desktop day autumn", w: 1440, h: 900, dpr: 1, night: 0, season: "autumn", turn: 0.7, occasion: null, ask: "calf" },
-  { name: "desktop night autumn", w: 1440, h: 900, dpr: 1, night: 1, season: "autumn", turn: 1, occasion: null, ask: "hamlet" },
-  { name: "phone night spring", w: 390, h: 844, dpr: 3, night: 1, season: "spring", turn: 0.15, occasion: null, ask: "lanternship" },
-  { name: "wide day summer", w: 1920, h: 1000, dpr: 1, night: 0, season: "summer", turn: 0.15, occasion: null, ask: "calf" },
-  { name: "desktop day new year", w: 1440, h: 900, dpr: 1.5, night: 0, season: "winter", turn: 0.15, occasion: "newyear", ask: "hamlet" },
-  { name: "desktop night halloween", w: 1280, h: 800, dpr: 1, night: 1, season: "autumn", turn: 0.9, occasion: "halloween", ask: "lanternship" },
-  { name: "phone day winter, reduced", w: 390, h: 844, dpr: 2, night: 0, season: "winter", turn: 0.15, occasion: null, ask: null, reduce: true },
+  {
+    name: "desktop day autumn",
+    w: 1440,
+    h: 900,
+    dpr: 1,
+    night: 0,
+    season: "autumn",
+    turn: 0.7,
+    occasion: null,
+    ask: "calf",
+  },
+  {
+    name: "desktop night autumn",
+    w: 1440,
+    h: 900,
+    dpr: 1,
+    night: 1,
+    season: "autumn",
+    turn: 1,
+    occasion: null,
+    ask: "hamlet",
+  },
+  {
+    name: "phone night spring",
+    w: 390,
+    h: 844,
+    dpr: 3,
+    night: 1,
+    season: "spring",
+    turn: 0.15,
+    occasion: null,
+    ask: "lanternship",
+  },
+  {
+    name: "wide day summer",
+    w: 1920,
+    h: 1000,
+    dpr: 1,
+    night: 0,
+    season: "summer",
+    turn: 0.15,
+    occasion: null,
+    ask: "calf",
+  },
+  {
+    name: "desktop day new year",
+    w: 1440,
+    h: 900,
+    dpr: 1.5,
+    night: 0,
+    season: "winter",
+    turn: 0.15,
+    occasion: "newyear",
+    ask: "hamlet",
+  },
+  {
+    name: "desktop night halloween",
+    w: 1280,
+    h: 800,
+    dpr: 1,
+    night: 1,
+    season: "autumn",
+    turn: 0.9,
+    occasion: "halloween",
+    ask: "lanternship",
+  },
+  {
+    name: "phone day winter, reduced",
+    w: 390,
+    h: 844,
+    dpr: 2,
+    night: 0,
+    season: "winter",
+    turn: 0.15,
+    occasion: null,
+    ask: null,
+    reduce: true,
+  },
 ];
 
 const page = `<!doctype html><meta charset="utf-8"><script type="module">
@@ -44,11 +115,14 @@ const server = await serveWorld(base, {
 });
 const browser = await launchFirefox();
 const tab = await browser.newPage();
-const run = async (code, scenario) => (await runInPage(tab, server.origin, { ...scenario, code, frames }, `${code}, ${scenario.name}`)).out;
+const run = async (code, scenario) =>
+  (await runInPage(tab, server.origin, { ...scenario, code, frames }, `${code}, ${scenario.name}`)).out;
 
 let differ = 0;
 try {
-  console.log(`The world drawn by ${A === "base" ? base : A} and by ${B === "base" ? base : B === "work" ? "the working tree" : B}, ${frames} frames.\n`);
+  console.log(
+    `The world drawn by ${A === "base" ? base : A} and by ${B === "base" ? base : B === "work" ? "the working tree" : B}, ${frames} frames.\n`,
+  );
   for (const [n, scenario] of SCENARIOS.entries()) {
     if (only !== null && String(n) !== only) continue;
     const t0 = Date.now();
@@ -61,13 +135,16 @@ try {
       if (!x || !y || x.label !== y.label) bad = `checkpoint ${i}, which one side never reached`;
       else {
         const layers = x.layers.flatMap((h, j) => (h !== y.layers[j] ? [j] : []));
-        const said = x.said !== y.said ? `, and the messages differ\n    ${A}: ${x.saidText}\n    ${B}: ${y.saidText}` : "";
+        const said =
+          x.said !== y.said ? `, and the messages differ\n    ${A}: ${x.saidText}\n    ${B}: ${y.saidText}` : "";
         if (layers.length || said) bad = `${x.label}${layers.length ? `, layers ${layers.join(", ")}` : ""}${said}`;
       }
     }
     if (bad) differ++;
     const secs = ((Date.now() - t0) / 1000).toFixed(0);
-    console.log(`${bad ? "DIFFERS" : "same   "}  ${scenario.name.padEnd(28)} ${a.length} checkpoints, ${secs} s${bad ? `\n  first at ${bad}` : ""}`);
+    console.log(
+      `${bad ? "DIFFERS" : "same   "}  ${scenario.name.padEnd(28)} ${a.length} checkpoints, ${secs} s${bad ? `\n  first at ${bad}` : ""}`,
+    );
   }
 } finally {
   await browser.close();

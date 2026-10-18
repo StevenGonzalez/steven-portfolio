@@ -37,7 +37,7 @@ Lite mode did switch on in my Firefox. It didn't help, because my monitor alread
 So there is now a second step. Once lite mode has had 150 frames to settle, if frames still average over 22 ms, the animated layers drop to 70% resolution:
 
 ```js
-l.r = l.res * Math.min(dpr, l.draw ? (lite ? 1 : 1.25) : 1.75) * (l.draw && lower ? .7 : 1);
+l.r = l.res * Math.min(dpr, l.draw ? (lite ? 1 : 1.25) : 1.75) * (l.draw && lower ? 0.7 : 1);
 ```
 
 70% in each direction is about half the pixels. CSS stretches each canvas back to full size. Only the animated layers change, so the sky, the rock and everything else that was painted once keep the resolution they had.

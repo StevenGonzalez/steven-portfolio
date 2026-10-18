@@ -10,17 +10,19 @@ self.onmessage = async ({ data: q }) => {
     // the chain of calls that led to it.
     const total = {};
     const stack = [];
-    self.__T = (name, f) => (...a) => {
-      stack.push(name);
-      const key = stack.join(" > ");
-      const t0 = performance.now();
-      try {
-        return f(...a);
-      } finally {
-        total[key] = (total[key] || 0) + performance.now() - t0;
-        stack.pop();
-      }
-    };
+    self.__T =
+      (name, f) =>
+      (...a) => {
+        stack.push(name);
+        const key = stack.join(" > ");
+        const t0 = performance.now();
+        try {
+          return f(...a);
+        } finally {
+          total[key] = (total[key] || 0) + performance.now() - t0;
+          stack.pop();
+        }
+      };
 
     const { makeRenderer } = await import(`/${q.code}/render`);
     const { LAYERS } = await import(`/${q.code}/layers`);
@@ -43,7 +45,15 @@ self.onmessage = async ({ data: q }) => {
       if (storm && !i) render({ type: "down", x, y });
       if (storm && i > 40) render({ type: "drag", x, y });
       const t0 = performance.now();
-      render({ type: "frame", raw: 1 / 60, mx: act ? (x / W) * 2 - 1 : 0, my: act ? (y / H) * 2 - 1 : 0, scroll: 0, pointer: act ? { x, y } : null, still: 0 });
+      render({
+        type: "frame",
+        raw: 1 / 60,
+        mx: act ? (x / W) * 2 - 1 : 0,
+        my: act ? (y / H) * 2 - 1 : 0,
+        scroll: 0,
+        pointer: act ? { x, y } : null,
+        still: 0,
+      });
       return performance.now() - t0;
     };
     for (let i = 0; i < 120; i++) step(i);

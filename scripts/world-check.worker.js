@@ -5,7 +5,11 @@
 
 import "/seeded-random.js";
 
-const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+const hex = (buf) =>
+  [...new Uint8Array(buf)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 16);
 const digest = async (bytes) => hex(await crypto.subtle.digest("SHA-1", bytes));
 
 self.onmessage = async ({ data: q }) => {
@@ -45,9 +49,32 @@ self.onmessage = async ({ data: q }) => {
     };
 
     render({
-      type: "size", W, H, dpr, night: !!night, season, turn, occasion, grown: 4, jar: 3, sapling: { u: 0.3, age: 2 },
-      first: true, wait: false, rare: RARE.filter((k) => k !== ask), ask,
-      stars: { pts: [[0.5, 150], [0.56, 185], [0.62, 140]], links: [[0, 1], [1, 2]] },
+      type: "size",
+      W,
+      H,
+      dpr,
+      night: !!night,
+      season,
+      turn,
+      occasion,
+      grown: 4,
+      jar: 3,
+      sapling: { u: 0.3, age: 2 },
+      first: true,
+      wait: false,
+      rare: RARE.filter((k) => k !== ask),
+      ask,
+      stars: {
+        pts: [
+          [0.5, 150],
+          [0.56, 185],
+          [0.62, 140],
+        ],
+        links: [
+          [0, 1],
+          [1, 2],
+        ],
+      },
     });
     await check("size");
 
@@ -66,7 +93,7 @@ self.onmessage = async ({ data: q }) => {
       if (storm && i > 760) render({ type: "drag", x, y });
       if (i === 1000) render({ type: "up" });
       if (!storm && i % 9 === 4 && i < 700) {
-        [x, y] = spots[(i / 9) % spots.length | 0];
+        [x, y] = spots[((i / 9) % spots.length) | 0];
         render({ type: "down", x, y });
         held = true;
       } else if (held) {
@@ -75,8 +102,14 @@ self.onmessage = async ({ data: q }) => {
       }
       clock += 1000 / 60;
       render({
-        type: "frame", raw: 1 / 60, mx: (x / W) * 2 - 1, my: (y / H) * 2 - 1, scroll: i > 1300 ? 0.3 : 0, pointer: { x, y },
-        still: i > 1200 && i < 1300 ? (i - 1200) / 60 : 0, idle: i > 1350 ? (i - 1350) / 60 : 0,
+        type: "frame",
+        raw: 1 / 60,
+        mx: (x / W) * 2 - 1,
+        my: (y / H) * 2 - 1,
+        scroll: i > 1300 ? 0.3 : 0,
+        pointer: { x, y },
+        still: i > 1200 && i < 1300 ? (i - 1200) / 60 : 0,
+        idle: i > 1350 ? (i - 1350) / 60 : 0,
       });
     };
     for (let i = 0; i < (reduce ? 200 : frames); i++) {
@@ -100,8 +133,22 @@ self.onmessage = async ({ data: q }) => {
     render({ type: "paint", bitmaps: null });
     await check("repaint");
     render({
-      type: "size", W: Math.round(W * 0.8), H, dpr, night: !night, season, turn, occasion, grown: 1, jar: 0, sapling: null,
-      first: false, wait: false, rare: [], ask: null, stars: null,
+      type: "size",
+      W: Math.round(W * 0.8),
+      H,
+      dpr,
+      night: !night,
+      season,
+      turn,
+      occasion,
+      grown: 1,
+      jar: 0,
+      sapling: null,
+      first: false,
+      wait: false,
+      rare: [],
+      ask: null,
+      stars: null,
     });
     for (let i = 0; i < 60; i++) step(i);
     await check("resized");

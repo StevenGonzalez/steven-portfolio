@@ -40,7 +40,11 @@ function assertIsoDate(value, label) {
 }
 
 function assertStringArray(value, label) {
-  if (!Array.isArray(value) || value.length === 0 || value.some((entry) => typeof entry !== "string" || entry.trim().length === 0)) {
+  if (
+    !Array.isArray(value) ||
+    value.length === 0 ||
+    value.some((entry) => typeof entry !== "string" || entry.trim().length === 0)
+  ) {
     throw new Error(`${label} must be a non-empty string array.`);
   }
 }
@@ -63,7 +67,8 @@ async function validateShot(shot, label) {
   assertRequiredString(shot.alt, `${label} alt`);
   assertRequiredString(shot.caption, `${label} caption`);
   const file = await readFile(path.join(publicDir, shot.src));
-  const size = file.toString("ascii", 0, 4) === "RIFF" && file.toString("ascii", 8, 12) === "WEBP" ? webpSize(file) : null;
+  const size =
+    file.toString("ascii", 0, 4) === "RIFF" && file.toString("ascii", 8, 12) === "WEBP" ? webpSize(file) : null;
   if (!size) throw new Error(`${label} ${shot.src} is not a WebP file.`);
   if (size[0] !== shot.width || size[1] !== shot.height) {
     throw new Error(`${label} ${shot.src} is ${size[0]} by ${size[1]}, not ${shot.width} by ${shot.height}.`);
@@ -95,7 +100,8 @@ function validateProjects(projects, insights) {
     }
 
     for (const slug of project.reading ?? []) {
-      if (!insightSlugs.has(slug)) throw new Error(`Project ${project.slug} lists an article that doesn't exist: ${slug}.`);
+      if (!insightSlugs.has(slug))
+        throw new Error(`Project ${project.slug} lists an article that doesn't exist: ${slug}.`);
     }
   }
 }
@@ -167,7 +173,11 @@ async function getInsightMdxSlugs() {
 
 async function main() {
   validateProjects(projects, insights);
-  await Promise.all(projects.flatMap((project) => (project.shots ?? []).map((shot) => validateShot(shot, `Project ${project.slug} shot`))));
+  await Promise.all(
+    projects.flatMap((project) =>
+      (project.shots ?? []).map((shot) => validateShot(shot, `Project ${project.slug} shot`)),
+    ),
+  );
   const mdxSlugs = await getInsightMdxSlugs();
   validateInsights(insights, mdxSlugs);
   await Promise.all(mdxSlugs.map(validateArticleContents));

@@ -27,18 +27,22 @@ None of it is a recording. Every sound is built from oscillators and noise with 
 Browsers don't let a page play sound until the visitor has done something on it, and an `AudioContext` made outside a click starts out suspended. So the context is made inside the click on the Sound button, before anything else happens. Then the sound code loads, and the context is handed to it.
 
 ```js
-soundBtn.addEventListener('click', () => {
-  // ...
-  const job = ++soundJob;
-  // ...
-  const ac = new AudioContext();
-  import('./sound').then(({ makeSound }) => {
-    if (job !== soundJob || signal.aborted) return ac.close();
-    sound = makeSound(ac, P.night, occasion);
-    sound.song(songLevel());
-    sound.active(visible && !document.hidden);
-  });
-}, { signal });
+soundBtn.addEventListener(
+  "click",
+  () => {
+    // ...
+    const job = ++soundJob;
+    // ...
+    const ac = new AudioContext();
+    import("./sound").then(({ makeSound }) => {
+      if (job !== soundJob || signal.aborted) return ac.close();
+      sound = makeSound(ac, P.night, occasion);
+      sound.song(songLevel());
+      sound.active(visible && !document.hidden);
+    });
+  },
+  { signal },
+);
 ```
 
 The `job` counter covers someone clicking the button twice quickly. If sound was turned off again before the code arrived, the context is closed and nothing plays.
@@ -49,11 +53,27 @@ A click rings a bell. Its pitch depends on where the click lands: low on the lef
 
 ```js
 const KEYS = {
-  dusk: { scale: [62, 64, 66, 69, 71], chords: [[0, 2, 3], [-1, 0, 2], [1, 3, 4], [-2, 0, 1]] },
-  night: { scale: [57, 60, 62, 64, 67], chords: [[0, 1, 3], [1, 3, 4], [-1, 1, 2], [2, 4, 5]] },
+  dusk: {
+    scale: [62, 64, 66, 69, 71],
+    chords: [
+      [0, 2, 3],
+      [-1, 0, 2],
+      [1, 3, 4],
+      [-2, 0, 1],
+    ],
+  },
+  night: {
+    scale: [57, 60, 62, 64, 67],
+    chords: [
+      [0, 1, 3],
+      [1, 3, 4],
+      [-1, 1, 2],
+      [2, 4, 5],
+    ],
+  },
   // ...
 };
-const hz = m => 440 * 2 ** ((m - 69) / 12);
+const hz = (m) => 440 * 2 ** ((m - 69) / 12);
 ```
 
 The numbers are MIDI notes, and `hz` turns them into frequencies. A pentatonic scale has no two notes a half step apart, so any notes from it sound fine together. However fast someone clicks, it comes out as a tune and not a mess. Switching the theme plays a soft chord in the new key, and every click after that is in the new key too.
@@ -96,7 +116,7 @@ The song is four chords, one bar of four seconds each, taken from the `chords` i
 
 ```js
 function schedule() {
-  if (nextBar < ac.currentTime) nextBar = ac.currentTime + .1;
+  if (nextBar < ac.currentTime) nextBar = ac.currentTime + 0.1;
   while (nextBar < ac.currentTime + 1) {
     playBar(nextBar, bar++);
     nextBar += BAR;

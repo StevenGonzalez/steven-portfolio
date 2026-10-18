@@ -37,19 +37,26 @@ export function numberOption(name, fallback) {
 // that variant's transform. The modules import each other without extensions, so those resolve here too. Resolves to
 // the origin, and a function that stops the server.
 export async function serveWorld(base, pages, variants = {}) {
-  pages = { ...pages, "/seeded-random.js": ["text/javascript", readFileSync(path.join(rootDir, "scripts/seeded-random.js"))] };
+  pages = {
+    ...pages,
+    "/seeded-random.js": ["text/javascript", readFileSync(path.join(rootDir, "scripts/seeded-random.js"))],
+  };
   // The revision is pinned to its commit before anything runs, so a commit made during a run that names HEAD cannot
   // move the base under the scenarios still to come.
   let commit;
   try {
-    commit = execFileSync("git", ["-C", rootDir, "rev-parse", "--verify", `${base}^{commit}`], { encoding: "utf8", stdio: "pipe" }).trim();
+    commit = execFileSync("git", ["-C", rootDir, "rev-parse", "--verify", `${base}^{commit}`], {
+      encoding: "utf8",
+      stdio: "pipe",
+    }).trim();
   } catch {
     console.error(`${base} is not a revision of this repository.`);
     process.exit(2);
   }
   const moduleSource = (code, name) => {
     const file = `lib/world/${name}.js`;
-    if (code === "base") return execFileSync("git", ["-C", rootDir, "show", `${commit}:${file}`], { encoding: "utf8", stdio: "pipe" });
+    if (code === "base")
+      return execFileSync("git", ["-C", rootDir, "show", `${commit}:${file}`], { encoding: "utf8", stdio: "pipe" });
     const source = readFileSync(path.join(rootDir, file), "utf8");
     return code === "work" ? source : variants[code](source);
   };
@@ -59,7 +66,8 @@ export async function serveWorld(base, pages, variants = {}) {
     const m = url.pathname.match(/^\/(\w+)\/([\w-]+)(\.js)?$/);
     try {
       if (Object.hasOwn(pages, url.pathname)) return send(...pages[url.pathname]);
-      if (m && (m[1] === "base" || m[1] === "work" || Object.hasOwn(variants, m[1]))) return send("text/javascript", moduleSource(m[1], m[2]));
+      if (m && (m[1] === "base" || m[1] === "work" || Object.hasOwn(variants, m[1])))
+        return send("text/javascript", moduleSource(m[1], m[2]));
     } catch {
       // A module the revision does not have, or a bad path: a 404, which fails the import with its name.
     }
@@ -72,9 +80,18 @@ export async function serveWorld(base, pages, variants = {}) {
 // Headless Firefox with its sound turned all the way down, so nothing it runs is ever heard.
 export function launchFirefox(prefs = {}) {
   const firefox =
-    process.env.FIREFOX || (process.env.PATH ?? "").split(path.delimiter).map((dir) => path.join(dir, "firefox")).find((file) => existsSync(file));
+    process.env.FIREFOX ||
+    (process.env.PATH ?? "")
+      .split(path.delimiter)
+      .map((dir) => path.join(dir, "firefox"))
+      .find((file) => existsSync(file));
   if (!firefox) throw new Error("Firefox not found: set FIREFOX to its path.");
-  return puppeteer.launch({ browser: "firefox", executablePath: firefox, headless: true, extraPrefsFirefox: { "media.volume_scale": "0.0", ...prefs } });
+  return puppeteer.launch({
+    browser: "firefox",
+    executablePath: firefox,
+    headless: true,
+    extraPrefsFirefox: { "media.volume_scale": "0.0", ...prefs },
+  });
 }
 
 // Loads `origin` in `tab` with `run` in its query string, waits for the page to set window.result, and returns it.

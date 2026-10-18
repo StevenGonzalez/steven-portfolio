@@ -29,10 +29,14 @@ const season = { season: occasions[asked] ?? asked, occasion: occasions[asked] ?
 // frame. Pinning the browser to the fast cores keeps the timings steady enough to compare.
 const fastCores = "/sys/devices/cpu_core/cpus";
 if (existsSync(fastCores) && !process.env.WORLD_BENCH_PINNED) {
-  const run = spawnSync("taskset", ["-c", readFileSync(fastCores, "utf8").trim(), process.execPath, ...process.argv.slice(1)], {
-    stdio: "inherit",
-    env: { ...process.env, WORLD_BENCH_PINNED: "1" },
-  });
+  const run = spawnSync(
+    "taskset",
+    ["-c", readFileSync(fastCores, "utf8").trim(), process.execPath, ...process.argv.slice(1)],
+    {
+      stdio: "inherit",
+      env: { ...process.env, WORLD_BENCH_PINNED: "1" },
+    },
+  );
   if (!run.error) process.exit(run.status ?? 1);
   console.warn(`Could not pin the browser to the fast cores (${run.error.message}), so the timings may be unsteady.\n`);
 }
@@ -67,23 +71,30 @@ worker.postMessage(JSON.parse(new URLSearchParams(location.search).get("run")));
 </script>`;
 const server = await serveWorld(
   base,
-  { "/": ["text/html", page], "/bench.worker.js": ["text/javascript", readFileSync(path.join(rootDir, "scripts/world-bench.worker.js"))] },
+  {
+    "/": ["text/html", page],
+    "/bench.worker.js": ["text/javascript", readFileSync(path.join(rootDir, "scripts/world-bench.worker.js"))],
+  },
   { profiled },
 );
 // Firefox rounds performance.now() to the millisecond by default, too coarse to time a frame.
 const browser = await launchFirefox({ "privacy.reduceTimerPrecision": false });
 const tab = await browser.newPage();
-const measure = (code, scenario) => runInPage(tab, server.origin, { ...scenario, ...season, code, frames }, `${code}, ${scenario.name}`);
+const measure = (code, scenario) =>
+  runInPage(tab, server.origin, { ...scenario, ...season, code, frames }, `${code}, ${scenario.name}`);
 
 const fmt = (ms) => ms.toFixed(2).padStart(6);
 const median = (list) => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
 let failed = false;
 try {
-  console.log(`Frame draw time in headless Firefox, ${base} against the working tree, ${rounds} rounds of ${frames} frames, ${asked}.\n`);
+  console.log(
+    `Frame draw time in headless Firefox, ${base} against the working tree, ${rounds} rounds of ${frames} frames, ${asked}.\n`,
+  );
   const runs = SCENARIOS.map(() => ({ base: [], work: [] }));
   for (let round = 0; round < rounds; round++) {
     for (const [i, scenario] of SCENARIOS.entries()) {
-      for (const code of round % 2 ? ["work", "base"] : ["base", "work"]) runs[i][code].push(await measure(code, scenario));
+      for (const code of round % 2 ? ["work", "base"] : ["base", "work"])
+        runs[i][code].push(await measure(code, scenario));
     }
   }
   console.log(`${"".padEnd(26)}${"base".padStart(8)}${"work".padStart(8)}  change`);
@@ -94,16 +105,26 @@ try {
     failed ||= over;
     const mb = median(b.map((r) => r.mean));
     const mw = median(w.map((r) => r.mean));
-    console.log(`${scenario.name.padEnd(26)}${fmt(mb)}  ${fmt(mw)}  ${change >= 0 ? "+" : ""}${change.toFixed(2)} ms (${((change / mb) * 100).toFixed(0)}%)${over ? "  over budget" : ""}`);
+    console.log(
+      `${scenario.name.padEnd(26)}${fmt(mb)}  ${fmt(mw)}  ${change >= 0 ? "+" : ""}${change.toFixed(2)} ms (${((change / mb) * 100).toFixed(0)}%)${over ? "  over budget" : ""}`,
+    );
   }
-  console.log(`\nMilliseconds per frame, mean. A frame at 60 fps has 16.7 ms for drawing, handing over and compositing.`);
+  console.log(
+    `\nMilliseconds per frame, mean. A frame at 60 fps has 16.7 ms for drawing, handing over and compositing.`,
+  );
 
   if (profile) {
     const scenario = SCENARIOS[1];
     const { mean, profile: rows } = await measure("profiled", scenario);
-    console.log(`\nWhere the working tree's time goes, ${scenario.name}: ${mean.toFixed(2)} ms per frame with timers on.`);
+    console.log(
+      `\nWhere the working tree's time goes, ${scenario.name}: ${mean.toFixed(2)} ms per frame with timers on.`,
+    );
     const children = (parent) =>
-      rows.filter(([k]) => (parent ? k.startsWith(parent + " > ") && k.split(" > ").length === parent.split(" > ").length + 1 : !k.includes(" > ")));
+      rows.filter(([k]) =>
+        parent
+          ? k.startsWith(parent + " > ") && k.split(" > ").length === parent.split(" > ").length + 1
+          : !k.includes(" > "),
+      );
     const show = (parent, depth) => {
       for (const [k, ms] of children(parent).sort((a, b) => b[1] - a[1])) {
         if (ms < 0.05) continue;

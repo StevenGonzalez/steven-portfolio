@@ -5,7 +5,11 @@
 import "/seeded-random.js";
 
 const SAMPLE_RATE = 44100;
-const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+const hex = (buf) =>
+  [...new Uint8Array(buf)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 16);
 
 // The sound schedules its notes against ac.currentTime and times its loops with setTimeout and setInterval, and an
 // offline context's clock stands still until it renders. So the script runs on a clock of its own, which both read:
@@ -60,7 +64,13 @@ try {
   // Every sound in turn, from one side and then the other, over the wind and the world's own sounds. Then the song,
   // growing from a quarter of the field guide to all of it, a fire hovered and left, the world dozing off and waking,
   // the theme switched, the world scrolled away and back, and the sound turned off.
-  const script = [[0.5, "the layout", (s) => (s.seat([-0.5, -0.15, 0.2, 0.5]), s.place({ falls: [-0.3, 0.5], up: 0.7, fire: 0.2, tree: 0.3 }))]];
+  const script = [
+    [
+      0.5,
+      "the layout",
+      (s) => (s.seat([-0.5, -0.15, 0.2, 0.5]), s.place({ falls: [-0.3, 0.5], up: 0.7, fire: 0.2, tree: 0.3 })),
+    ],
+  ];
   sounds.forEach((name, i) => script.push([2 + i * 1.5, name, (s) => s.play(name, ((i % 5) - 2) * 0.35, ARGS[name])]));
   let t = 2 + sounds.length * 1.5 + 2;
   for (const [after, label, f] of [
@@ -76,7 +86,8 @@ try {
     [6, "the world out of view", (s) => s.active(false)],
     [3, "the world back", (s) => s.active(true)],
     [4, "sound turned off", (s) => s.stop()],
-  ]) script.push([(t += after), label, f]);
+  ])
+    script.push([(t += after), label, f]);
   const seconds = Math.ceil(t + 2);
 
   const ac = new ScriptedContext({ numberOfChannels: 2, length: seconds * SAMPLE_RATE, sampleRate: SAMPLE_RATE });

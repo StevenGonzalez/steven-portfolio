@@ -10,7 +10,10 @@ const eslintConfig = defineConfig([
   {
     files: ["**/*.{ts,tsx}"],
     rules: {
-      "no-restricted-imports": ["error", { patterns: [{ regex: "^\\.\\./", message: "Import from another folder through @/." }] }],
+      "no-restricted-imports": [
+        "error",
+        { patterns: [{ regex: "^\\.\\./", message: "Import from another folder through @/." }] },
+      ],
     },
   },
 ]);
