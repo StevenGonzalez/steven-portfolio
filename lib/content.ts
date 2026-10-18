@@ -1,17 +1,6 @@
 import { insights } from "../data/insights";
 import { projects } from "../data/projects";
-import type { ContentLink, InsightPost, ProjectDetail } from "../types/content";
-
-const NON_PRIMARY_LINK_LABELS = ["privacy", "terms"];
-
-export function isPrimaryProjectLink(link: ContentLink) {
-  const label = link.label.toLowerCase();
-  return !NON_PRIMARY_LINK_LABELS.some((keyword) => label.includes(keyword));
-}
-
-export function getPrimaryProjectLinks(project: ProjectDetail) {
-  return (project.links ?? []).filter(isPrimaryProjectLink);
-}
+import type { InsightPost, ProjectDetail } from "../types/content";
 
 export function getProjectBySlug(slug: string) {
   return projects.find((project) => project.slug === slug) ?? null;

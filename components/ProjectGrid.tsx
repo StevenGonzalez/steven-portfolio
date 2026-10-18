@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPrimaryProjectLinks, type ProjectDetail } from "../lib/content";
+import type { ProjectDetail } from "../lib/content";
 
 /** The work, as cards. The first project leads across the full width and the rest pair up beneath it; if one would be
  *  left on its own at the end, it runs the full width too. */
@@ -55,7 +55,7 @@ function Points({ points }: { points: string[] }) {
 function ProjectLinks({ project }: { project: ProjectDetail }) {
   return (
     <div className="links">
-      {getPrimaryProjectLinks(project).map((link) => (
+      {project.links?.map((link) => (
         <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
           {link.label}
         </a>

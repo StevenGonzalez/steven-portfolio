@@ -28,14 +28,6 @@ export const projects: ProjectDetail[] = [
         label: "Website",
         href: "https://virtualtrainerapp.com/",
       },
-      {
-        label: "Privacy",
-        href: "https://virtualtrainerapp.com/privacy-policy/",
-      },
-      {
-        label: "Terms",
-        href: "https://virtualtrainerapp.com/terms-of-use/",
-      },
     ],
     shots: [
       {

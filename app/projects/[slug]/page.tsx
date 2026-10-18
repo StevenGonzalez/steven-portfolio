@@ -4,7 +4,7 @@ import BackCrumb from "../../../components/BackCrumb";
 import NextUp from "../../../components/NextUp";
 import ProjectScene from "../../../components/ProjectScene";
 import SectionRail from "../../../components/SectionRail";
-import { getAllProjectSlugs, getPrimaryProjectLinks, getProjectBySlug, projects } from "../../../lib/content";
+import { getAllProjectSlugs, getProjectBySlug, projects } from "../../../lib/content";
 import { pageMetadata } from "../../../lib/meta";
 import type { ProjectShot } from "../../../types/content";
 
@@ -32,7 +32,6 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   const project = getProjectBySlug(slug);
   if (!project) return notFound();
 
-  const primaryLinks = getPrimaryProjectLinks(project);
   const sections = sectionDefinitions.map((section) => ({
     ...section,
     body: project[section.key],
@@ -56,9 +55,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                   <li key={tag}>{tag}</li>
                 ))}
               </ul>
-              {primaryLinks.length ? (
+              {project.links?.length ? (
                 <div className="links">
-                  {primaryLinks.map((link) => (
+                  {project.links.map((link) => (
                     <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
                       {link.label}
                     </a>
