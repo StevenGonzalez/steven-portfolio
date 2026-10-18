@@ -2,14 +2,13 @@ import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 
 const withMDX = createMDX({
-  extension: /\.mdx?$/,
+  extension: /\.mdx$/,
 });
 
 const nextConfig: NextConfig = {
   reactStrictMode: false,
-  compress: true,
   poweredByHeader: false,
-  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  pageExtensions: ["ts", "tsx", "js", "jsx", "mdx"],
   experimental: {
     mdxRs: true,
   },
