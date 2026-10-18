@@ -9,9 +9,13 @@ const names: Record<string, string> = { "/": "Home", "/insights": "Writing", "/p
 
 const nav = () => (globalThis as { navigation?: Nav }).navigation;
 
+// Next pushes the next page's history entry while React is still putting that page in, and the browser reports the
+// change at once, while this page's link is still listening. React must not be told of a change then, so it is told
+// straight after.
 function subscribe(onChange: () => void) {
-  nav()?.addEventListener("currententrychange", onChange);
-  return () => nav()?.removeEventListener("currententrychange", onChange);
+  const later = () => queueMicrotask(onChange);
+  nav()?.addEventListener("currententrychange", later);
+  return () => nav()?.removeEventListener("currententrychange", later);
 }
 
 let back: { steps: number; url: string } | null = null;
