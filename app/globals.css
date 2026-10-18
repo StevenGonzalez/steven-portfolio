@@ -28,6 +28,9 @@
   --hero-muted: #c9d3cc;
   --hero-glow: #9fe6da;
   --hero-gold: #e0b565;
+  /* The world's ground, shown until it paints, and the shade of the panels laid over it. */
+  --hero-ground: #0b1a20;
+  --hero-shade: #060e12;
 
   --display: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
   --body: var(--font-schibsted), "Segoe UI", system-ui, sans-serif;
@@ -278,7 +281,7 @@ main:focus {
   position: relative;
   height: max(620px, min(100svh, 1200px));
   overflow: hidden;
-  background: #0b1a20;
+  background: var(--hero-ground);
   color: var(--hero-fg);
   isolation: isolate;
 }
@@ -405,11 +408,11 @@ main:focus {
   color: #11191c;
 }
 .btn.line {
-  border-color: rgb(242 237 224 / 0.5);
+  border-color: color-mix(in srgb, var(--hero-fg) 50%, transparent);
   color: var(--hero-fg);
 }
 .btn.line:hover {
-  background: rgb(242 237 224 / 0.08);
+  background: color-mix(in srgb, var(--hero-fg) 8%, transparent);
 }
 
 /* Field-guide label that follows the pointer, and the guide itself. */
@@ -422,8 +425,8 @@ main:focus {
   max-width: 250px;
   padding: 10px 12px;
   border-radius: 3px;
-  background: rgb(6 14 18 / 0.9);
-  border: 1px solid rgb(159 230 218 / 0.25);
+  background: color-mix(in srgb, var(--hero-shade) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hero-glow) 25%, transparent);
   color: var(--hero-fg);
   opacity: 0;
   transition: opacity 0.18s;
@@ -437,7 +440,7 @@ main:focus {
   display: block;
   margin-top: 8px;
   padding-top: 7px;
-  border-top: 1px solid rgb(159 230 218 / 0.2);
+  border-top: 1px solid color-mix(in srgb, var(--hero-glow) 20%, transparent);
   font: normal 500 10.5px/1.3 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -456,8 +459,8 @@ main:focus {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--hero-fg);
-  background: rgb(6 14 18 / 0.45);
-  border: 1px solid rgb(159 230 218 / 0.3);
+  background: color-mix(in srgb, var(--hero-shade) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hero-glow) 30%, transparent);
   border-radius: 999px;
   cursor: pointer;
 }
@@ -470,7 +473,7 @@ main:focus {
   box-shadow: 0 0 10px var(--hero-glow);
 }
 .guide-btn b { font-weight: 500; color: var(--hero-glow); }
-.guide-btn:hover { border-color: rgb(159 230 218 / 0.6); }
+.guide-btn:hover { border-color: color-mix(in srgb, var(--hero-glow) 60%, transparent); }
 .sound-btn {
   display: inline-flex;
   align-items: center;
@@ -481,8 +484,8 @@ main:focus {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--hero-muted);
-  background: rgb(6 14 18 / 0.45);
-  border: 1px solid rgb(159 230 218 / 0.2);
+  background: color-mix(in srgb, var(--hero-shade) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hero-glow) 20%, transparent);
   border-radius: 999px;
   cursor: pointer;
 }
@@ -495,8 +498,8 @@ main:focus {
     linear-gradient(currentColor, currentColor) 50% 100% / 2px 80% no-repeat,
     linear-gradient(currentColor, currentColor) 100% 100% / 2px 60% no-repeat;
 }
-.sound-btn:hover { border-color: rgb(159 230 218 / 0.5); color: var(--hero-fg); }
-.sound-btn[aria-pressed="true"] { color: var(--hero-glow); border-color: rgb(159 230 218 / 0.45); }
+.sound-btn:hover { border-color: color-mix(in srgb, var(--hero-glow) 50%, transparent); color: var(--hero-fg); }
+.sound-btn[aria-pressed="true"] { color: var(--hero-glow); border-color: color-mix(in srgb, var(--hero-glow) 45%, transparent); }
 .sound-btn[aria-pressed="true"]::before { animation: sway 1.1s ease-in-out infinite alternate; }
 @keyframes sway {
   to { background-size: 2px 85%, 2px 40%, 2px 100%; }
@@ -505,8 +508,8 @@ main:focus {
 .guide-btn.done::before { background: var(--hero-gold); box-shadow: 0 0 10px var(--hero-gold); }
 .guide-btn.done b { color: var(--hero-gold); }
 @keyframes found {
-  0% { box-shadow: 0 0 0 0 rgb(159 230 218 / 0.7); }
-  100% { box-shadow: 0 0 0 14px rgb(159 230 218 / 0); }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--hero-glow) 70%, transparent); }
+  100% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--hero-glow) 0%, transparent); }
 }
 .guide {
   position: absolute;
@@ -519,15 +522,15 @@ main:focus {
   padding: 16px 16px 12px;
   border-radius: 4px;
   background: #070f13;
-  border: 1px solid rgb(159 230 218 / 0.25);
+  border: 1px solid color-mix(in srgb, var(--hero-glow) 25%, transparent);
   box-shadow: 0 16px 50px rgb(0 0 0 / 0.45);
   scrollbar-width: thin;
-  scrollbar-color: rgb(159 230 218 / 0.3) transparent;
+  scrollbar-color: color-mix(in srgb, var(--hero-glow) 30%, transparent) transparent;
 }
 .guide-h { margin: 0 0 10px; font: italic 500 22px/1.1 var(--display); }
 .guide-h span { display: block; margin-top: 4px; font: normal 500 10.5px/1.3 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--hero-muted); }
 .guide ol { list-style: none; margin: 0; padding: 0; }
-.guide li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr); gap: 4px; padding: 5px 0; border-top: 1px solid rgb(159 230 218 / 0.12); }
+.guide li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr); gap: 4px; padding: 5px 0; border-top: 1px solid color-mix(in srgb, var(--hero-glow) 12%, transparent); }
 .guide .n { font: 400 11px/1.7 var(--mono); color: var(--hero-muted); opacity: 0.7; }
 .guide li i { display: block; font: italic 500 16px/1.2 var(--display); }
 .guide li b { display: block; font: 500 10px/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--hero-glow); }
@@ -1010,7 +1013,7 @@ main:focus {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 4px;
-  background: #0b1a20;
+  background: var(--hero-ground);
 }
 .peek-stage {
   position: absolute;
@@ -1055,11 +1058,11 @@ main:focus {
 }
 .peek.apart .peek-plane {
   transform: translateZ(calc(var(--i) * 56px));
-  background-color: rgb(159 230 218 / 0.04);
-  box-shadow: inset 0 0 0 3px rgb(159 230 218 / 0.35);
+  background-color: color-mix(in srgb, var(--hero-glow) 4%, transparent);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--hero-glow) 35%, transparent);
 }
 .peek.apart .peek-plane.live {
-  box-shadow: inset 0 0 0 4px rgb(224 181 101 / 0.8);
+  box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--hero-gold) 80%, transparent);
 }
 .peek-names {
   position: absolute;
@@ -1098,11 +1101,11 @@ main:focus {
   cursor: pointer;
 }
 .peek-names button.live {
-  color: #e0b565;
+  color: var(--hero-gold);
 }
 .peek-names button.picked {
   background: #e8efe9;
-  color: #0b1a20;
+  color: var(--hero-ground);
 }
 .peek-fig figcaption {
   display: flex;
