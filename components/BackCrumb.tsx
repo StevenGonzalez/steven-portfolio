@@ -14,8 +14,11 @@ function subscribe(onChange: () => void) {
   return () => nav()?.removeEventListener("currententrychange", onChange);
 }
 
-/** How many steps back the last page of this site is, and its name, as "steps name". Jumps within this page add
- *  entries too, so any with the same path are skipped. */
+let back: { steps: number; url: string } | null = null;
+
+/** The last page of this site before this one, and how many steps back it is. Jumps within this page add entries too,
+ *  so any with the same path are skipped. The same object comes back until either changes, as useSyncExternalStore
+ *  needs. */
 function previous() {
   const n = nav();
   if (!n) return null;
@@ -23,30 +26,32 @@ function previous() {
   for (let i = n.currentEntry.index - 1; i >= 0; i--) {
     const url = entries[i].url;
     if (!url) return null;
-    const path = new URL(url).pathname;
-    if (path !== location.pathname) return `${n.currentEntry.index - i} ${names[path] ?? "Back"}`;
+    if (new URL(url).pathname === location.pathname) continue;
+    const steps = n.currentEntry.index - i;
+    if (back?.steps !== steps || back.url !== url) back = { steps, url };
+    return back;
   }
   return null;
 }
 
 /** The link above an article or case study. When the reader came from another page of this site, it goes back there,
  *  to the spot they left, and is named after it. Otherwise it goes to the list the page belongs to. The previous page
- *  comes from the Navigation API, which only lists entries from this site; browsers without it keep the plain link. */
+ *  comes from the Navigation API, which only lists entries from this site; browsers without it keep the plain link. A
+ *  click that asks for a new tab or window opens the page the link names there, and leaves this one as it is. */
 export default function BackCrumb({ href, label }: { href: string; label: string }) {
   const back = useSyncExternalStore(subscribe, previous, () => null);
-  const [steps, name] = back ? [Number(back.slice(0, back.indexOf(" "))), back.slice(back.indexOf(" ") + 1)] : [0, label];
 
   return (
     <Link
       className="crumb"
-      href={href}
+      href={back ? back.url : href}
       onClick={(e) => {
-        if (!steps) return;
+        if (!back || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
-        history.go(-steps);
+        history.go(-back.steps);
       }}
     >
-      ← {name}
+      ← {back ? (names[new URL(back.url).pathname] ?? "Back") : label}
     </Link>
   );
 }
