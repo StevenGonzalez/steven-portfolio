@@ -2,16 +2,10 @@
 // the world's modules, and posts the scenario here. Every run steps the world at a fixed 60 fps with the same seeded
 // randomness, so two versions of the code draw exactly the same frames.
 
+import "/seeded-random.js";
+
 self.onmessage = async ({ data: q }) => {
   try {
-    let seed = 12345;
-    Math.random = () => {
-      seed = (seed + 0x6d2b79f5) | 0;
-      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-
     // In the profiled copy of the modules every draw and update call goes through this, which adds up its time under
     // the chain of calls that led to it.
     const total = {}, stack = [];

@@ -43,7 +43,11 @@ Open `http://localhost:3000`.
 - `yarn lint` - run ESLint
 - `yarn type-check` - run TypeScript checks
 - `yarn validate:content` - validate project and insight content
-- `yarn validate` - run lint, type-check, and content validation
+- `yarn validate:theme` - check that the theme's colour tokens agree
+- `yarn validate` - run lint, type-check, and the content and theme checks
+- `yarn bench:world` - time the world's frames in headless Firefox against a git revision
+- `yarn check:world` - check that the world draws exactly what a git revision drew, canvas by canvas
+- `yarn check:sound` - check that the world's sound is exactly what a git revision made, rendered offline
 
 ## Content Structure
 

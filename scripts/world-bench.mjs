@@ -1,6 +1,5 @@
 // Times how long the world at the top of the home page takes to draw a frame, in headless Firefox, and compares the
-// working tree with a git revision. Firefox on Linux draws canvases on the CPU, so it is the slowest place the world
-// runs, and the one worth guarding.
+// working tree with a git revision.
 //
 //   yarn bench:world                  compare the working tree with HEAD
 //   yarn bench:world --base main      compare it with another revision
@@ -10,28 +9,17 @@
 // Each scenario runs both versions in alternating rounds and compares the median change. The check fails when the
 // working tree is more than --budget milliseconds (default 1) slower per frame in any scenario. Then the new work
 // should be made cheaper, or drawn more cheaply in lite mode, which slow devices switch to.
-//
-// Needs Firefox: set FIREFOX to its path if it is not on the PATH.
 
-import { execFileSync, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
-import http from "node:http";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import puppeteer from "puppeteer-core";
+import { launchFirefox, numberOption, option, rootDir, runInPage, serveWorld } from "./world-harness.mjs";
 
-const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-
-const args = process.argv.slice(2);
-const option = (name, fallback) => {
-  const i = args.indexOf(name);
-  return i >= 0 ? args[i + 1] : fallback;
-};
 const base = option("--base", "HEAD");
-const budget = Number(option("--budget", 1));
-const rounds = Number(option("--rounds", 3));
-const frames = Number(option("--frames", 400));
-const profile = args.includes("--profile");
+const budget = numberOption("--budget", 1);
+const rounds = numberOption("--rounds", 3);
+const frames = numberOption("--frames", 400);
+const profile = process.argv.includes("--profile");
 // An occasion falls in a season, as on the site.
 const asked = option("--season", "autumn"), occasions = { halloween: "autumn", newyear: "winter" };
 const season = { season: occasions[asked] ?? asked, occasion: occasions[asked] ? asked : null };
@@ -57,60 +45,33 @@ const SCENARIOS = [
   { name: "desktop, night, storm", w: 1440, h: 900, dpr: 1, night: 1, scene: "storm" },
 ];
 
-// The profiled copy wraps every draw and update call, and each animated layer, in the worker's timer.
+// The profiled copy wraps every draw and update call, and each animated layer, in the worker's timer. The layers are
+// found by the line in render.js that draws them, so the profile says so if that line changes.
+const LAYER_DRAW = "l.draw(l.c, Lf, K, P, Lf.t, rings);";
+if (profile && !readFileSync(path.join(rootDir, "lib/world/render.js"), "utf8").includes(LAYER_DRAW)) {
+  throw new Error(`--profile can no longer find where render.js draws each layer: update LAYER_DRAW to match it.`);
+}
 const profiled = (source) =>
   source
     .replace(/(?<![\w$])(?<![^.]\.)(?<!function )\b((?:draw|update)[A-Z]\w*)\(/g, "__T('$1', $1)(")
-    .replace("l.draw(l.c, Lf, K, P, Lf.t, rings);", "__T(LAYERS[layers.indexOf(l)].draw + ' layer', l.draw)(l.c, Lf, K, P, Lf.t, rings);");
+    .replace(LAYER_DRAW, `__T(LAYERS[layers.indexOf(l)].draw + ' layer', l.draw)${LAYER_DRAW.slice("l.draw".length)}`);
 
-// Serves the bench page, its worker, and the world's modules: /base/ from the revision, /work/ and /profiled/ from the
-// working tree. The modules import each other without extensions, so those resolve here too.
-function moduleSource(code, name) {
-  const file = `lib/world/${name}.js`;
-  if (code === "base") return execFileSync("git", ["-C", rootDir, "show", `${base}:${file}`], { encoding: "utf8", stdio: "pipe" });
-  const source = readFileSync(path.join(rootDir, file), "utf8");
-  return code === "profiled" ? profiled(source) : source;
-}
+// The bench page and its worker, with the world's modules from the revision, the working tree, and the working tree
+// profiled.
 const page = `<!doctype html><meta charset="utf-8"><script type="module">
 const worker = new Worker("/bench.worker.js", { type: "module" });
 worker.onmessage = (e) => (window.result = e.data);
 worker.postMessage(JSON.parse(new URLSearchParams(location.search).get("run")));
 </script>`;
-const server = http.createServer((req, res) => {
-  const url = new URL(req.url, "http://localhost");
-  const send = (type, body) => res.writeHead(200, { "content-type": type, "cache-control": "no-store" }).end(body);
-  const m = url.pathname.match(/^\/(base|work|profiled)\/([\w-]+)(\.js)?$/);
-  try {
-    if (url.pathname === "/") return send("text/html", page);
-    if (url.pathname === "/bench.worker.js") return send("text/javascript", readFileSync(path.join(rootDir, "scripts/world-bench.worker.js")));
-    if (m) return send("text/javascript", moduleSource(m[1], m[2]));
-  } catch {
-    // A module the revision does not have, or a bad path: a 404, which fails the import with its name.
-  }
-  res.writeHead(404).end();
-});
-await new Promise((done) => server.listen(0, "127.0.0.1", done));
-const origin = `http://127.0.0.1:${server.address().port}`;
-
-const firefox =
-  process.env.FIREFOX || (process.env.PATH ?? "").split(path.delimiter).map((dir) => path.join(dir, "firefox")).find((file) => existsSync(file));
-if (!firefox) throw new Error("Firefox not found: set FIREFOX to its path.");
-const browser = await puppeteer.launch({
-  browser: "firefox",
-  executablePath: firefox,
-  headless: true,
-  // Firefox rounds performance.now() to the millisecond by default, too coarse to time a frame.
-  extraPrefsFirefox: { "privacy.reduceTimerPrecision": false },
-});
+const server = await serveWorld(
+  base,
+  { "/": ["text/html", page], "/bench.worker.js": ["text/javascript", readFileSync(path.join(rootDir, "scripts/world-bench.worker.js"))] },
+  { profiled },
+);
+// Firefox rounds performance.now() to the millisecond by default, too coarse to time a frame.
+const browser = await launchFirefox({ "privacy.reduceTimerPrecision": false });
 const tab = await browser.newPage();
-
-async function measure(code, scenario) {
-  await tab.goto(`${origin}/?run=${encodeURIComponent(JSON.stringify({ ...scenario, ...season, code, frames }))}`);
-  await tab.waitForFunction(() => window.result, { timeout: 300000, polling: 100 });
-  const result = await tab.evaluate(() => window.result);
-  if (result.error) throw new Error(`${code}, ${scenario.name}: ${result.error}`);
-  return result;
-}
+const measure = (code, scenario) => runInPage(tab, server.origin, { ...scenario, ...season, code, frames }, `${code}, ${scenario.name}`);
 
 const fmt = (ms) => ms.toFixed(2).padStart(6);
 const median = (list) => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
