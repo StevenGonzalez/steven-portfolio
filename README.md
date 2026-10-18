@@ -42,7 +42,7 @@ Open `http://localhost:3000`.
 - `yarn lint` - run ESLint
 - `yarn format` - format the code with Prettier
 - `yarn format:check` - check that the code is formatted, without changing it
-- `yarn type-check` - run TypeScript checks
+- `yarn type-check` - run TypeScript checks, on the app and on the world's JavaScript
 - `yarn validate:content` - validate project and insight content
 - `yarn validate:theme` - check that the theme's colour tokens agree
 - `yarn validate` - run lint, the format check, type-check, and the content and theme checks
