@@ -1,5 +1,6 @@
 import ThoughtPost from "../../../components/ThoughtPost";
 import { insightMetadata } from "../../../lib/meta";
+import { soundKb } from "../../../lib/world-size";
 
 export const metadata = insightMetadata("sound-with-no-audio-files");
 
@@ -25,7 +26,7 @@ export const metadata = insightMetadata("sound-with-no-audio-files");
 
 The world at the top of this site has a Sound button. Turn it on and you hear wind, the waterfalls, the campfire, a wind chime somewhere far off now and then, and a note wherever you click. The mill, the whales, the koi and most of the other things that react to a click have sounds of their own. Under it all, a slow song plays, and it grows as you find things in the world.
 
-None of it is a recording. Every sound is built from oscillators and noise with the Web Audio API while the page runs. The code for all of it is about 4 KB gzipped, and the page only downloads it when you turn sound on.
+None of it is a recording. Every sound is built from oscillators and noise with the Web Audio API while the page runs. The code for all of it is about {soundKb()} KB gzipped, and the page only downloads it when you turn sound on.
 
 ## Off until you ask
 
@@ -117,7 +118,7 @@ When the world scrolls out of view, or you switch tabs, the sound fades out. Abo
 
 ## Checking levels without listening
 
-Forty-five sounds and a song, in four keys, are hard to balance by ear. So I rendered every sound offline. An `OfflineAudioContext` runs the same code as fast as it can and hands back the samples instead of playing them.
+Forty-nine sounds and a song, in four keys, are hard to balance by ear. So I rendered every sound offline. An `OfflineAudioContext` runs the same code as fast as it can and hands back the samples instead of playing them.
 
 For each sound, in both themes, I checked three things:
 
