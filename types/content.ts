@@ -22,7 +22,6 @@ export type ProjectDetail = {
   role?: string;
   scope?: string;
   keyDecision?: string;
-  highlights?: string[];
   /** Screens from the shipped app, shown after the approach. */
   shots?: ProjectShot[];
   /** The short version for the project's card: a one-line pitch, the points worth a glance, and the stack. */

@@ -66,14 +66,6 @@ export const projects: ProjectDetail[] = [
     timeline: "2019 – present",
     keyDecision:
       "SQL Server for workout and account data, Cosmos DB for document-shaped data, and Service Bus for background work",
-    highlights: [
-      "Shipped on App Store + Google Play",
-      "Configurable dashboard with O(1) widget placement and per-user caching",
-      "Context-aware AI trainer grounded in user data",
-      "Automated routine generation and workout progression",
-      "Event-driven supporting services with Azure Service Bus",
-      "More than 6,000 automated tests across the app and the API",
-    ],
     card: {
       blurb:
         "A fitness app I co-founded and built: React Native on iOS and Android, a .NET API on Azure, and an AI trainer that answers from your own workout history.",
@@ -109,12 +101,6 @@ export const projects: ProjectDetail[] = [
     scope: "API, database and requirements, across most of the product",
     keyDecision:
       "Built each feature to work for every tenant's setup, from a single studio to a national franchise",
-    highlights: [
-      "Worked across scheduling, billing, CRM, and member experience domains",
-      "Built and maintained features used by national fitness operators",
-      "Contributed to both product features and underlying platform capabilities",
-      "Operated in a multi-tenant SaaS environment with real operational constraints",
-    ],
     card: {
       blurb:
         "Multi-tenant SaaS for studios, gyms and multi-location operators: scheduling, billing, CRM, member experience and reporting.",
@@ -147,14 +133,6 @@ export const projects: ProjectDetail[] = [
     scope: "Architecture, a new API, the Angular front end, and planning across teams",
     keyDecision:
       "Kept the Angular UI, C# API and messaging as separate layers that can change independently, with fixed, predictable paths for talking to the machine",
-    highlights: [
-      "Built and maintained Angular features for machine operation workflows",
-      "Implemented and supported C# API endpoints consumed by the desktop client",
-      "Used Electron.NET to package and ship integrated desktop releases",
-      "Integrated RabbitMQ messaging between saw software and companion systems",
-      "Implemented PLC communication flows for machine control and status",
-      "Contributed to architecture discussions, sprint planning, and estimation",
-    ],
     card: {
       blurb:
         "Led the rewrite of the software that runs industrial saws: a new C# API with the machine-control endpoints, an Angular operator interface and Electron.NET desktop packaging.",
@@ -187,12 +165,6 @@ export const projects: ProjectDetail[] = [
     scope: "Upgrading a legacy .NET application",
     keyDecision:
       "Upgraded in stages, checking compatibility at each one, instead of rewriting",
-    highlights: [
-      "Audited high-risk dependencies before changing target frameworks",
-      "Resolved runtime and package-level breaking changes during migration",
-      "Modernized obsolete encryption paths to current APIs",
-      "Preserved business-critical behavior through staged validation and release gates",
-    ],
     card: {
       blurb:
         "Moved a business-critical application from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without disrupting the workflows people relied on.",
@@ -224,12 +196,6 @@ export const projects: ProjectDetail[] = [
     scope: "Build pipelines and developer workflow",
     keyDecision:
       "Published the templates behind semantic version tags, so teams upgrade when they choose to and never get broken by a template change",
-    highlights: [
-      "Migrated classic Azure DevOps pipelines to YAML",
-      "Built a shared template repository for cross-team reuse",
-      "Used semantic versioning and tags for safe adoption",
-      "Reduced setup time for more complex delivery workflows",
-    ],
     card: {
       blurb:
         "Moved classic pipelines to YAML and built a versioned template repository that teams can adopt without being broken by changes.",
