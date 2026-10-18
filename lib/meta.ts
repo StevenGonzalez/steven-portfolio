@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { getInsightBySlug } from "./content";
 
-const SITE_NAME = "Steven Gonzalez";
+export const SITE_NAME = "Steven Gonzalez";
 
-/** Title, description and link-preview tags for one page. A page that sets no openGraph or twitter of its own inherits
- *  the layout's, which describe the home page, so every shared article or case study used to preview as the home page
- *  and point back to it. Each page states all of them through here instead. The preview image comes from the page's
- *  opengraph-image file. */
+/** Title, description and link-preview tags for one page. The layout adds the site's name to the title. A page
+ *  states its own openGraph and twitter tags, since one that set none would inherit the layout's, which describe the
+ *  home page. The preview image comes from the page's opengraph-image file. */
 export function pageMetadata({
   title,
   description,
@@ -19,7 +18,7 @@ export function pageMetadata({
   type?: "website" | "article";
 }): Metadata {
   return {
-    title: `${title} | ${SITE_NAME}`,
+    title,
     description,
     openGraph: { type, siteName: SITE_NAME, title, description, url: path },
     twitter: { card: "summary_large_image", title, description },

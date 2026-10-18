@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SiteEffects from "../components/SiteEffects";
+import { SITE_NAME } from "../lib/meta";
 import { siteUrl } from "../lib/site";
 import { themeBootstrapScript } from "../lib/theme";
 
@@ -36,23 +37,24 @@ const plexMono = localFont({
   display: "swap",
 });
 
+const homeTitle = `${SITE_NAME} | Software Engineer`;
 const siteDescription =
   "Steven Gonzalez is a software engineer who builds web apps and the real-time systems behind them, in TypeScript, React, Angular and .NET.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Steven Gonzalez | Software Engineer",
+  title: { default: homeTitle, template: `%s | ${SITE_NAME}` },
   description: siteDescription,
   openGraph: {
     type: "website",
-    title: "Steven Gonzalez | Software Engineer",
+    title: homeTitle,
     description: siteDescription,
-    siteName: "Steven Gonzalez",
+    siteName: SITE_NAME,
     url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Steven Gonzalez | Software Engineer",
+    title: homeTitle,
     description: siteDescription,
   },
 };
