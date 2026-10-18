@@ -6,7 +6,6 @@ const withMDX = createMDX({
 });
 
 const nextConfig: NextConfig = {
-  reactStrictMode: false,
   poweredByHeader: false,
   pageExtensions: ["ts", "tsx", "js", "jsx", "mdx"],
   experimental: {
