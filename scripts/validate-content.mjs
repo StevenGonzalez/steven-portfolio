@@ -2,11 +2,12 @@
 // entry. Node strips the types from the data files as it imports them; it warns that it had to work out that they
 // are modules, which the yarn script turns off.
 
-import { readdir } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { insights } from "../data/insights.ts";
 import { projects } from "../data/projects.ts";
+import { slugify } from "../lib/slug.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -103,6 +104,26 @@ function validateInsights(insights, mdxSlugs) {
   }
 }
 
+// Each article's "On this page" list links to its sections by the ids mdx-components.tsx gives their headings. A
+// heading reworded without its entry would leave a link that goes nowhere, and two headings with the same words would
+// share an id.
+async function validateArticleContents(slug) {
+  const source = await readFile(path.join(insightsDir, slug, "page.mdx"), "utf8");
+  const ids = [...source.matchAll(/^## (.+)$/gm)].map(([, heading]) => slugify(heading.replace(/\]\([^)]*\)/g, "]")));
+  const links = [...source.matchAll(/href: "#([^"]+)"/g)].map(([, id]) => id);
+
+  for (const id of ids) {
+    if (ids.indexOf(id) !== ids.lastIndexOf(id)) throw new Error(`Insight ${slug} has two headings with the id ${id}.`);
+  }
+  let at = -1;
+  for (const id of links) {
+    const next = ids.indexOf(id);
+    if (next < 0) throw new Error(`Insight ${slug} lists #${id} on this page, but no heading has that id.`);
+    if (next < at) throw new Error(`Insight ${slug} lists #${id} out of the order its headings come in.`);
+    at = next;
+  }
+}
+
 async function getInsightMdxSlugs() {
   const entries = await readdir(insightsDir, { withFileTypes: true });
 
@@ -114,7 +135,9 @@ async function getInsightMdxSlugs() {
 
 async function main() {
   validateProjects(projects);
-  validateInsights(insights, await getInsightMdxSlugs());
+  const mdxSlugs = await getInsightMdxSlugs();
+  validateInsights(insights, mdxSlugs);
+  await Promise.all(mdxSlugs.map(validateArticleContents));
 
   process.stdout.write(`Validated ${projects.length} projects and ${insights.length} insights.\n`);
 }
