@@ -58,13 +58,25 @@ const jobs = [
   },
 ];
 
+const sideProjects = [
+  {
+    title: "Sky Islands",
+    when: "2026",
+    about: "The painted world at the top of stevengonzalez.dev, drawn in code on canvas with no images and no libraries.",
+    points: [
+      "Moved all of the drawing into two web workers with OffscreenCanvas, which took mobile Lighthouse from 61 to 94–97 and main-thread time at load from 145 to 65 ms.",
+      "Made the sound live with Web Audio, and wrote checks that render the world and its sound in headless Firefox and fail on a single changed pixel or sample.",
+    ],
+  },
+];
+
 const schools = [
   { degree: "Bachelor's degree in Computer Science", school: "University of Missouri – St. Louis", year: "2018" },
   { degree: "Associate degree", school: "Jefferson Community College, Hillsboro, MO", year: "2015" },
 ];
 
 const skills = [
-  ["Front end", "TypeScript, JavaScript, React, React Native, Angular, HTML, CSS"],
+  ["Front end", "TypeScript, JavaScript, React, Next.js, React Native, Angular, HTML, CSS, Canvas 2D, Web Workers, Web Audio"],
   ["Back end", "C#, ASP.NET Core, Entity Framework Core, Dapper, SQL Server, Cosmos DB, REST API design"],
   ["Messaging", "RabbitMQ, MassTransit, Azure Service Bus"],
   ["Testing", "Jest, React Native Testing Library, xUnit, Moq"],
@@ -105,6 +117,22 @@ export default function ResumePage() {
               {job.about ? <p>{job.about}</p> : null}
               <ul>
                 {job.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        <section aria-labelledby="projects-h">
+          <h2 id="projects-h">Projects</h2>
+          {sideProjects.map((project) => (
+            <div key={project.title} className="job">
+              <h3>{project.title}</h3>
+              <p className="meta">{project.when} · Personal project</p>
+              <p>{project.about}</p>
+              <ul>
+                {project.points.map((point) => (
                   <li key={point}>{point}</li>
                 ))}
               </ul>

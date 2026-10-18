@@ -1272,6 +1272,7 @@ main:focus {
   }
   .resume {
     max-width: none;
+    padding-bottom: 0;
     font-size: 11pt;
   }
   .resume .page-h {
