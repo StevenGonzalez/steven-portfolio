@@ -1472,7 +1472,7 @@ main:focus {
     display: none;
   }
   .copy {
-    top: calc(84px + env(safe-area-inset-top, 0px));
+    top: calc(var(--nav-room) + 12px);
     translate: none;
     width: auto;
     right: 16px;
