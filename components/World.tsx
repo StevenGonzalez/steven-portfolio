@@ -68,7 +68,7 @@ export default function World() {
             <button ref={postcardBtn} type="button" className="guide-card">
               Save a postcard of this view
             </button>
-            <ol ref={guideList} />
+            <ol ref={guideList} role="list" />
             <p ref={guideFoot} className="guide-foot" />
           </div>
           <button ref={soundBtn} type="button" className="sound-btn" aria-pressed="false">
