@@ -79,8 +79,7 @@ export default function RootLayout({
     // server cannot know the stored choice, and the only way to learn it server
     // side is a cookie, which would make every page dynamic to save an
     // attribute. suppressHydrationWarning covers this element's own attributes
-    // and nothing below it, so the only thing it can hide is lang and
-    // data-theme.
+    // only, so a mismatch anywhere below it still shows.
     //
     // The font variables sit on <html> because the tokens that use them are
     // declared on :root. data-scroll-behavior lets Next turn smooth scrolling

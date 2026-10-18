@@ -16,17 +16,26 @@ const THEME_COLOR: Record<"light" | "dark", string> = {
  *  which loses the browser chrome tint and nothing else. */
 const THEME_COLOR_META_ID = "theme-color";
 
-/** Runs before first paint, inlined into the document. The attribute is only
- *  needed for an explicit choice, since with no attribute the stylesheet
- *  already follows the OS; the theme-color tag has to be written either way so
- *  the browser chrome is right on the first frame. */
-export const themeBootstrapScript = `(function(){try{var d=document,s=localStorage.getItem(${JSON.stringify(
-  THEME_STORAGE_KEY,
-)}),e=s==="light"||s==="dark";if(e){d.documentElement.setAttribute("data-theme",s)}var k=e?s==="dark":matchMedia("(prefers-color-scheme: dark)").matches,m=d.createElement("meta");m.id=${JSON.stringify(
-  THEME_COLOR_META_ID,
-)};m.name="theme-color";m.content=k?${JSON.stringify(THEME_COLOR.dark)}:${JSON.stringify(
-  THEME_COLOR.light,
-)};d.head.appendChild(m)}catch(x){}})()`;
+/** Runs before first paint, inlined into the document as its source, so it can use nothing from outside itself. The
+ *  attribute is only needed for an explicit choice, since with no attribute the stylesheet already follows the OS; the
+ *  theme-color tag has to be written either way so the browser chrome is right on the first frame. */
+function bootstrapTheme(storageKey: string, metaId: string, colors: Record<"light" | "dark", string>) {
+  try {
+    const stored = localStorage.getItem(storageKey);
+    const explicit = stored === "light" || stored === "dark";
+    if (explicit) document.documentElement.setAttribute("data-theme", stored);
+    const dark = explicit ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    const meta = document.createElement("meta");
+    meta.id = metaId;
+    meta.name = "theme-color";
+    meta.content = dark ? colors.dark : colors.light;
+    document.head.appendChild(meta);
+  } catch {
+    // Storage can be blocked; the stylesheet then follows the OS, as for a visitor who never chose.
+  }
+}
+
+export const themeBootstrapScript = `(${bootstrapTheme})(...${JSON.stringify([THEME_STORAGE_KEY, THEME_COLOR_META_ID, THEME_COLOR])})`;
 
 export function readStoredChoice(): ThemeChoice {
   try {
