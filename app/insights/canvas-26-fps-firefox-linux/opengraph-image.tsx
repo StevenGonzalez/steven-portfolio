@@ -1,9 +1,11 @@
-import { renderInsightCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+import { insightCardAlt, renderInsightCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+
+const slug = "canvas-26-fps-firefox-linux";
 
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
-export const alt = "Why My Canvas Ran at 26 fps in Firefox on Linux — Steven Gonzalez";
+export const alt = insightCardAlt(slug);
 
 export default function Image() {
-  return renderInsightCard("canvas-26-fps-firefox-linux");
+  return renderInsightCard(slug);
 }

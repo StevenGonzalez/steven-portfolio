@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getInsightBySlug } from "./content";
+import { SITE_NAME } from "./meta";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
@@ -106,7 +107,7 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [] }: OgCardProp
           </div>
 
           <div style={{ display: "flex", alignItems: "baseline", gap: 18 }}>
-            <div style={{ fontFamily: "Cormorant", fontSize: 34, color: FG }}>Steven Gonzalez</div>
+            <div style={{ fontFamily: "Cormorant", fontSize: 34, color: FG }}>{SITE_NAME}</div>
             <div style={{ fontFamily: "Plex Mono", fontSize: 15, letterSpacing: 3, textTransform: "uppercase", color: MUTED }}>
               Software Engineer
             </div>
@@ -118,10 +119,25 @@ export function renderOgCard({ eyebrow, title, subtitle, tags = [] }: OgCardProp
   );
 }
 
-/** The card for one article, from its entry in data/insights.ts. Each article's folder has an opengraph-image that
- *  calls this with its own slug, since the articles are separate routes rather than one dynamic one. */
-export function renderInsightCard(slug: string) {
+/** What a card says in words, for whoever cannot see it. */
+export function cardAlt(title: string) {
+  return `${title} — ${SITE_NAME}`;
+}
+
+function insight(slug: string) {
   const post = getInsightBySlug(slug);
   if (!post) throw new Error(`No insight metadata for ${slug}`);
+  return post;
+}
+
+/** The card for one article, and its alt text, from its entry in data/insights.ts. Each article's folder has an
+ *  opengraph-image that calls these with its own slug, since the articles are separate routes rather than one dynamic
+ *  one. */
+export function renderInsightCard(slug: string) {
+  const post = insight(slug);
   return renderOgCard({ eyebrow: post.category, title: post.title, subtitle: post.summary });
+}
+
+export function insightCardAlt(slug: string) {
+  return cardAlt(insight(slug).title);
 }

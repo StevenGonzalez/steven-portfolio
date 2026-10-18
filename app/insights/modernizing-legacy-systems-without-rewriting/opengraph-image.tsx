@@ -1,9 +1,11 @@
-import { renderInsightCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+import { insightCardAlt, renderInsightCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+
+const slug = "modernizing-legacy-systems-without-rewriting";
 
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
-export const alt = "Modernizing Legacy Systems Without Rewriting Everything — Steven Gonzalez";
+export const alt = insightCardAlt(slug);
 
 export default function Image() {
-  return renderInsightCard("modernizing-legacy-systems-without-rewriting");
+  return renderInsightCard(slug);
 }

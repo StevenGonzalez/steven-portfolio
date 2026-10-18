@@ -1,8 +1,8 @@
-import { renderOgCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+import { cardAlt, renderOgCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
 
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
-export const alt = "Writing — Steven Gonzalez";
+export const alt = cardAlt("Writing");
 
 export default function Image() {
   return renderOgCard({

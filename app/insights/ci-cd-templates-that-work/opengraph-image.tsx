@@ -1,9 +1,11 @@
-import { renderInsightCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+import { insightCardAlt, renderInsightCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
+
+const slug = "ci-cd-templates-that-work";
 
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
-export const alt = "What Makes CI/CD Templates Actually Useful — Steven Gonzalez";
+export const alt = insightCardAlt(slug);
 
 export default function Image() {
-  return renderInsightCard("ci-cd-templates-that-work");
+  return renderInsightCard(slug);
 }
