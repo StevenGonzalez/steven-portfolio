@@ -48,6 +48,8 @@ Open `http://localhost:3000`.
 - `yarn check:world` - check that the world draws exactly what a git revision drew, canvas by canvas
 - `yarn check:sound` - check that the world's sound is exactly what a git revision made, rendered offline
 
+GitHub Actions runs `yarn validate` on every push to main and every pull request.
+
 ## Content Structure
 
 - `app/` - route-level pages and MDX insight entries
