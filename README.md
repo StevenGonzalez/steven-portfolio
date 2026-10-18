@@ -1,20 +1,20 @@
 # Steven Gonzalez Portfolio
 
-Personal portfolio and writing site for Steven Gonzalez, a senior software engineer focused on reliable systems, pragmatic architecture, and software other engineers can safely change.
+Personal portfolio and writing site for Steven Gonzalez, a software engineer focused on reliable systems, pragmatic architecture, and software other engineers can safely change.
 
 Live site: [stevengonzalez.dev](https://stevengonzalez.dev)
 
 ## Overview
 
-This repo powers my portfolio site built with Next.js, TypeScript, and MDX. It is where I showcase project case studies, write about software delivery and architecture, and open with a small painted world: a sky island drawn live in Canvas 2D with no images or libraries.
+This repo powers my portfolio site built with Next.js, TypeScript, and MDX. It is where I showcase project case studies, write about software delivery and architecture, and open with a small painted world: sky islands drawn live in Canvas 2D with no images or libraries.
 
 The goal was not to ship a generic portfolio template. I wanted something that felt deliberate, fast, and personal while still being easy to maintain.
 
 ## What You Will Find Here
 
-- A homepage hero that paints a living sky island in layered canvases, with the static layers painted in a Web Worker
+- A homepage hero that paints living sky islands in layered canvases, with the drawing done in Web Workers
 - Project case studies covering mobile, SaaS, desktop, and platform engineering work
-- An Insights section for longer-form writing on architecture, delivery, and engineering tradeoffs
+- A Writing section for longer pieces on the graphics and sound behind this site, architecture, delivery, and engineering tradeoffs
 - Data-driven content structures for projects and writing
 
 ## Stack
