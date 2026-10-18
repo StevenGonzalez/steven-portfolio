@@ -93,7 +93,13 @@ export async function switchTheme(choice: ThemeChoice, from: { x: number; y: num
     if (reduce || !document.startViewTransition) return setTheme(choice);
 
     const transition = document.startViewTransition(() => setTheme(choice));
-    await transition.ready;
+    // The browser skips the transition when the tab is hidden, and then `ready` rejects. The theme still switches; there
+    // is just nothing to animate.
+    try {
+      await transition.ready;
+    } catch {
+      return;
+    }
     const { x, y } = stage?.origin() ?? from;
     const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) * 1.5;
     document.documentElement.animate(
