@@ -13,6 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const insightsDir = path.join(rootDir, "app", "insights");
+const publicDir = path.join(rootDir, "public");
 
 function assertUniqueSlugs(items, label) {
   const seen = new Set();
@@ -41,6 +42,31 @@ function assertIsoDate(value, label) {
 function assertStringArray(value, label) {
   if (!Array.isArray(value) || value.length === 0 || value.some((entry) => typeof entry !== "string" || entry.trim().length === 0)) {
     throw new Error(`${label} must be a non-empty string array.`);
+  }
+}
+
+// The size a WebP file declares in its header, for each of the format's three kinds of file.
+function webpSize(file) {
+  const kind = file.toString("ascii", 12, 16);
+  if (kind === "VP8X") return [1 + file.readUIntLE(24, 3), 1 + file.readUIntLE(27, 3)];
+  if (kind === "VP8L") {
+    const bits = file.readUInt32LE(21);
+    return [1 + (bits & 0x3fff), 1 + ((bits >>> 14) & 0x3fff)];
+  }
+  if (kind === "VP8 ") return [file.readUInt16LE(26) & 0x3fff, file.readUInt16LE(28) & 0x3fff];
+  return null;
+}
+
+// The page reserves each screenshot's space from the size written beside it, so that has to be the file's.
+async function validateShot(shot, label) {
+  assertRequiredString(shot.src, `${label} src`);
+  assertRequiredString(shot.alt, `${label} alt`);
+  assertRequiredString(shot.caption, `${label} caption`);
+  const file = await readFile(path.join(publicDir, shot.src));
+  const size = file.toString("ascii", 0, 4) === "RIFF" && file.toString("ascii", 8, 12) === "WEBP" ? webpSize(file) : null;
+  if (!size) throw new Error(`${label} ${shot.src} is not a WebP file.`);
+  if (size[0] !== shot.width || size[1] !== shot.height) {
+    throw new Error(`${label} ${shot.src} is ${size[0]} by ${size[1]}, not ${shot.width} by ${shot.height}.`);
   }
 }
 
@@ -135,6 +161,7 @@ async function getInsightMdxSlugs() {
 
 async function main() {
   validateProjects(projects);
+  await Promise.all(projects.flatMap((project) => (project.shots ?? []).map((shot) => validateShot(shot, `Project ${project.slug} shot`))));
   const mdxSlugs = await getInsightMdxSlugs();
   validateInsights(insights, mdxSlugs);
   await Promise.all(mdxSlugs.map(validateArticleContents));

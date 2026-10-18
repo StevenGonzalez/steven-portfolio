@@ -116,14 +116,14 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   );
 }
 
-/** The app's own screens, three to a row. They are phone screenshots saved at 520 by 1009, already sized for the
- *  screen, so they skip the image optimizer. */
+/** The app's own screens, three to a row. They are phone screenshots already sized for the screen, so they skip the
+ *  image optimizer. */
 function Shots({ shots }: { shots: ProjectShot[] }) {
   return (
     <div className="shots">
       {shots.map((shot) => (
         <figure key={shot.src}>
-          <Image src={shot.src} alt={shot.alt} width={520} height={1009} unoptimized />
+          <Image src={shot.src} alt={shot.alt} width={shot.width} height={shot.height} unoptimized />
           <figcaption>{shot.caption}</figcaption>
         </figure>
       ))}

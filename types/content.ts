@@ -3,9 +3,11 @@ export type ContentLink = {
   href: string;
 };
 
-/** A screen from a shipped app. */
+/** A screen from a shipped app. The width and height are the image file's own, which validate-content checks. */
 export type ProjectShot = {
   src: string;
+  width: number;
+  height: number;
   alt: string;
   caption: string;
 };
