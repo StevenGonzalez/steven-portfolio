@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import PrintButton from "../../components/PrintButton";
 import { pageMetadata } from "../../lib/meta";
-import { externalProfiles } from "../../lib/site";
+import { externalProfiles, productionUrl } from "../../lib/site";
 
 export const metadata = pageMetadata({
   title: "Résumé",
@@ -86,12 +86,11 @@ export default function ResumePage() {
           break anything for the people relying on them.
         </p>
         <p className="resume-links">
-          {externalProfiles.map((profile) => (
-            <a key={profile.href} href={profile.href}>
-              {profile.href.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}
+          {[...Object.values(externalProfiles).map((profile) => profile.href), productionUrl].map((href) => (
+            <a key={href} href={href}>
+              {href.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}
             </a>
           ))}
-          <a href="https://stevengonzalez.dev">stevengonzalez.dev</a>
           <PrintButton />
         </p>
 

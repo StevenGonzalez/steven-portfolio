@@ -5,14 +5,11 @@ import PostList from "../components/PostList";
 import ProjectGrid from "../components/ProjectGrid";
 import World from "../components/World";
 import { insights, projects } from "../lib/content";
-import { externalProfiles } from "../lib/site";
+import { externalProfiles, worldSourceUrl } from "../lib/site";
 import { worldKb } from "../lib/world-size";
 
 // Everything else comes from the layout, which describes the home page.
 export const metadata: Metadata = { alternates: { canonical: "/" } };
-
-const linkedIn = externalProfiles.find((profile) => profile.label === "LinkedIn")!;
-const gitHub = externalProfiles.find((profile) => profile.label === "GitHub")!;
 
 export default function Home() {
   return (
@@ -101,7 +98,7 @@ export default function Home() {
           <Link className="more" href="/insights/how-the-sky-islands-work" data-rv>
             How it&apos;s built, in more detail
           </Link>
-          <ExternalLink className="more" href={`${gitHub.href}/steven-portfolio/tree/main/lib/world`} data-rv>
+          <ExternalLink className="more" href={worldSourceUrl} data-rv>
             Read the source on GitHub
           </ExternalLink>
         </section>
@@ -114,10 +111,10 @@ export default function Home() {
             Hiring, or building something interesting? Send me a message.
           </p>
           <div className="row" data-rv>
-            <ExternalLink className="btn solid" href={linkedIn.href}>
+            <ExternalLink className="btn solid" href={externalProfiles.linkedIn.href}>
               Message me on LinkedIn
             </ExternalLink>
-            <ExternalLink className="btn line" href={gitHub.href}>
+            <ExternalLink className="btn line" href={externalProfiles.gitHub.href}>
               GitHub
             </ExternalLink>
             <Link className="btn line" href="/resume">

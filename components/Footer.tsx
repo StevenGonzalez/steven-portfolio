@@ -10,7 +10,7 @@ export default function Footer() {
         <Link href="/projects">Case studies</Link>
         <Link href="/insights">Writing</Link>
         <Link href="/resume">Résumé</Link>
-        {externalProfiles.map((profile) => (
+        {Object.values(externalProfiles).map((profile) => (
           <ExternalLink key={profile.href} href={profile.href}>
             {profile.label}
           </ExternalLink>

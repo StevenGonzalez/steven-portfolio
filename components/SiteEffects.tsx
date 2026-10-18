@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { worldSourceUrl } from "../lib/site";
 
 // The console greeting prints once per load, not once per page.
 let greeted = false;
@@ -73,7 +74,7 @@ export default function SiteEffects() {
       "font: italic 500 20px Georgia, serif; color: #78dccb",
       "font: 12px/1.6 ui-monospace, monospace",
       `${location.origin}/insights/how-the-sky-islands-work`,
-      "https://github.com/StevenGonzalez/steven-portfolio/tree/main/lib/world",
+      worldSourceUrl,
     );
   }, []);
 
