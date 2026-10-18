@@ -38,9 +38,18 @@ export function numberOption(name, fallback) {
 // the origin, and a function that stops the server.
 export async function serveWorld(base, pages, variants = {}) {
   pages = { ...pages, "/seeded-random.js": ["text/javascript", readFileSync(path.join(rootDir, "scripts/seeded-random.js"))] };
+  // The revision is pinned to its commit before anything runs, so a commit made during a run that names HEAD cannot
+  // move the base under the scenarios still to come.
+  let commit;
+  try {
+    commit = execFileSync("git", ["-C", rootDir, "rev-parse", "--verify", `${base}^{commit}`], { encoding: "utf8", stdio: "pipe" }).trim();
+  } catch {
+    console.error(`${base} is not a revision of this repository.`);
+    process.exit(2);
+  }
   const moduleSource = (code, name) => {
     const file = `lib/world/${name}.js`;
-    if (code === "base") return execFileSync("git", ["-C", rootDir, "show", `${base}:${file}`], { encoding: "utf8", stdio: "pipe" });
+    if (code === "base") return execFileSync("git", ["-C", rootDir, "show", `${commit}:${file}`], { encoding: "utf8", stdio: "pipe" });
     const source = readFileSync(path.join(rootDir, file), "utf8");
     return code === "work" ? source : variants[code](source);
   };
