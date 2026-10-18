@@ -21,7 +21,8 @@ const rounds = numberOption("--rounds", 3);
 const frames = numberOption("--frames", 400);
 const profile = process.argv.includes("--profile");
 // An occasion falls in a season, as on the site.
-const asked = option("--season", "autumn"), occasions = { halloween: "autumn", newyear: "winter" };
+const asked = option("--season", "autumn");
+const occasions = { halloween: "autumn", newyear: "winter" };
 const season = { season: occasions[asked] ?? asked, occasion: occasions[asked] ? asked : null };
 
 // Intel's hybrid CPUs have fast and slow cores, and a thread that moves between them takes up to twice as long per
@@ -88,15 +89,18 @@ try {
   console.log(`${"".padEnd(26)}${"base".padStart(8)}${"work".padStart(8)}  change`);
   for (const [i, scenario] of SCENARIOS.entries()) {
     const { base: b, work: w } = runs[i];
-    const change = median(w.map((r, j) => r.mean - b[j].mean)), over = change > budget;
+    const change = median(w.map((r, j) => r.mean - b[j].mean));
+    const over = change > budget;
     failed ||= over;
-    const mb = median(b.map((r) => r.mean)), mw = median(w.map((r) => r.mean));
+    const mb = median(b.map((r) => r.mean));
+    const mw = median(w.map((r) => r.mean));
     console.log(`${scenario.name.padEnd(26)}${fmt(mb)}  ${fmt(mw)}  ${change >= 0 ? "+" : ""}${change.toFixed(2)} ms (${((change / mb) * 100).toFixed(0)}%)${over ? "  over budget" : ""}`);
   }
   console.log(`\nMilliseconds per frame, mean. A frame at 60 fps has 16.7 ms for drawing, handing over and compositing.`);
 
   if (profile) {
-    const scenario = SCENARIOS[1], { mean, profile: rows } = await measure("profiled", scenario);
+    const scenario = SCENARIOS[1];
+    const { mean, profile: rows } = await measure("profiled", scenario);
     console.log(`\nWhere the working tree's time goes, ${scenario.name}: ${mean.toFixed(2)} ms per frame with timers on.`);
     const children = (parent) =>
       rows.filter(([k]) => (parent ? k.startsWith(parent + " > ") && k.split(" > ").length === parent.split(" > ").length + 1 : !k.includes(" > ")));

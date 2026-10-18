@@ -8,10 +8,12 @@ self.onmessage = async ({ data: q }) => {
   try {
     // In the profiled copy of the modules every draw and update call goes through this, which adds up its time under
     // the chain of calls that led to it.
-    const total = {}, stack = [];
+    const total = {};
+    const stack = [];
     self.__T = (name, f) => (...a) => {
       stack.push(name);
-      const key = stack.join(" > "), t0 = performance.now();
+      const key = stack.join(" > ");
+      const t0 = performance.now();
       try {
         return f(...a);
       } finally {
@@ -30,8 +32,11 @@ self.onmessage = async ({ data: q }) => {
     // storm it presses on the sky, holds still until the cloud brews, then drags it about, so it rains and thunders the
     // whole run.
     const step = (i) => {
-      const act = scene !== "idle", storm = scene === "storm", ph = Math.max(0, storm ? i - 40 : i) / 240;
-      const x = W * (0.5 + 0.4 * Math.sin(ph * 2)), y = H * (storm ? 0.2 + 0.05 * Math.sin(ph * 3.1) : 0.45 + 0.3 * Math.sin(ph * 3.1));
+      const act = scene !== "idle";
+      const storm = scene === "storm";
+      const ph = Math.max(0, storm ? i - 40 : i) / 240;
+      const x = W * (0.5 + 0.4 * Math.sin(ph * 2));
+      const y = H * (storm ? 0.2 + 0.05 * Math.sin(ph * 3.1) : 0.45 + 0.3 * Math.sin(ph * 3.1));
       if (scene === "clicking" && i % 45 === 20) render({ type: "down", x, y });
       if (scene === "clicking" && i % 45 === 24) render({ type: "up" });
       if (storm && !i) render({ type: "down", x, y });
