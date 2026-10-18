@@ -1,6 +1,6 @@
 export type ThemeChoice = "system" | "light" | "dark";
 
-export const THEME_STORAGE_KEY = "theme";
+const THEME_STORAGE_KEY = "theme";
 
 const THEME_COLOR: Record<"light" | "dark", string> = {
   light: "#e9ede8",
@@ -37,7 +37,7 @@ export function readStoredChoice(): ThemeChoice {
   }
 }
 
-export function resolveTheme(choice: ThemeChoice): "light" | "dark" {
+function resolveTheme(choice: ThemeChoice): "light" | "dark" {
   if (choice !== "system") return choice;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -106,7 +106,7 @@ export async function switchTheme(choice: ThemeChoice, from: { x: number; y: num
   }
 }
 
-export function setTheme(choice: ThemeChoice) {
+function setTheme(choice: ThemeChoice) {
   applyTheme(choice);
   for (const listener of listeners) listener();
 }

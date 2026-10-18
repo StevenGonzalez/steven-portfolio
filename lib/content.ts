@@ -14,9 +14,5 @@ export function getInsightBySlug(slug: string) {
   return insights.find((insight) => insight.slug === slug) ?? null;
 }
 
-export function getAllInsightSlugs() {
-  return insights.map((insight) => insight.slug);
-}
-
 export { insights, projects };
 export type { InsightPost, ProjectDetail };
