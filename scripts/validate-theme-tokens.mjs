@@ -4,18 +4,22 @@
 // token added to only one of the two blocks fails silently: the theme keeps
 // working for whichever half was edited and quietly falls back to the light
 // value for the other. This asserts the two stay identical.
+//
+// It also checks the copies of the tokens that live outside the stylesheet, in code that cannot read it: the browser
+// chrome's colour in lib/theme.ts and the share cards' night palette in lib/og.tsx.
 
 import { readFile } from "node:fs/promises";
 
 const CSS_PATH = new URL("../app/globals.css", import.meta.url);
+const THEME_PATH = new URL("../lib/theme.ts", import.meta.url);
+const OG_PATH = new URL("../lib/og.tsx", import.meta.url);
 
 const MEDIA_SELECTOR = ':root:not([data-theme="light"])';
 const ATTRIBUTE_SELECTOR = ':root[data-theme="dark"]';
 
 /** Returns the body of the rule whose selector opens a line, by brace counting.
- *  Anchoring to the line start matters: these same selectors also appear inside
- *  the @custom-variant block, where matching them would silently parse a body
- *  holding no tokens at all and make this whole check pass on nothing. */
+ *  Anchoring to the line start keeps it from matching the selector where a
+ *  comment or another rule merely mentions it. */
 function extractBlock(css, selector) {
   const opener = new RegExp(`^[ \\t]*${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[ \\t]*\\{`, "m");
   const found = css.match(opener);
@@ -50,7 +54,19 @@ function parseTokens(block) {
   return tokens;
 }
 
+/** The first group `pattern` captures in `source`, or null. */
+function find(source, pattern) {
+  return source.match(pattern)?.[1] ?? null;
+}
+
+/** "#78dccb" as the "120, 220, 203" that lib/og.tsx writes into rgb() and rgba(). */
+function channels(hex) {
+  return hex && [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ");
+}
+
 const css = await readFile(CSS_PATH, "utf8");
+const themeSource = await readFile(THEME_PATH, "utf8");
+const ogSource = await readFile(OG_PATH, "utf8");
 
 const blocks = {
   ":root": extractBlock(css, ":root"),
@@ -89,6 +105,18 @@ if (problems.length === 0) {
       problems.push(`${name} is declared for dark but has no light value in :root, so light gets nothing.`);
     }
   }
+
+  const dark = (name) => attributeDark.get(name);
+  const checkCopy = (name, value, token, expected) => {
+    if (value === null) problems.push(`Could not find ${name}, so it cannot be checked against ${token}.`);
+    else if (value !== expected) problems.push(`${name} is ${value}, but ${token} is ${expected}.`);
+  };
+  checkCopy("THEME_COLOR.light in lib/theme.ts", find(themeSource, /^\s*light: "([^"]*)",$/m), "--bg", light.get("--bg"));
+  checkCopy("THEME_COLOR.dark in lib/theme.ts", find(themeSource, /^\s*dark: "([^"]*)",$/m), "dark --bg", dark("--bg"));
+  checkCopy("BG in lib/og.tsx", find(ogSource, /^const BG = "([^"]*)";$/m), "dark --bg", channels(dark("--bg")));
+  checkCopy("GLOW in lib/og.tsx", find(ogSource, /^const GLOW = "([^"]*)";$/m), "dark --glow", channels(dark("--glow")));
+  checkCopy("FG in lib/og.tsx", find(ogSource, /^const FG = "([^"]*)";$/m), "dark --fg", dark("--fg"));
+  checkCopy("MUTED in lib/og.tsx", find(ogSource, /^const MUTED = "([^"]*)";$/m), "dark --muted", dark("--muted"));
 }
 
 if (problems.length > 0) {
@@ -99,4 +127,4 @@ if (problems.length > 0) {
 }
 
 const count = parseTokens(blocks[ATTRIBUTE_SELECTOR]).size;
-console.log(`Validated ${count} theme tokens across both dark blocks.`);
+console.log(`Validated ${count} theme tokens across both dark blocks, and their copies in lib/theme.ts and lib/og.tsx.`);

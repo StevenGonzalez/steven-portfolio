@@ -7,7 +7,7 @@ import { SITE_NAME } from "./meta";
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 
-// The night palette from app/globals.css, so shared links look like the site.
+// The night palette from app/globals.css, so shared links look like the site. validate:theme checks they still match.
 const BG = "9, 19, 24";
 const GLOW = "120, 220, 203";
 const FG = "#e7e3d7";

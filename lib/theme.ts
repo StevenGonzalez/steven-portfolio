@@ -2,6 +2,7 @@ export type ThemeChoice = "system" | "light" | "dark";
 
 const THEME_STORAGE_KEY = "theme";
 
+// Each theme's --bg from app/globals.css, for the browser chrome. validate:theme checks they still match.
 const THEME_COLOR: Record<"light" | "dark", string> = {
   light: "#e9ede8",
   dark: "#091318",
