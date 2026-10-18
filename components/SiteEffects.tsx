@@ -7,7 +7,8 @@ import { useEffect } from "react";
 let greeted = false;
 
 /** Small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
- *  arrive together; the hidden state is added here, so nothing stays hidden if this never runs. Cards marked
+ *  arrive together; the hidden state is added here, and only to those not yet on screen, so nothing that has been
+ *  painted blinks out and back, and nothing stays hidden if this never runs. Cards marked
  *  data-glow catch the light where the pointer is. A box marked data-scene plays that painted scene. And whoever opens
  *  the console finds a note about how the world is made, and a switch for it that nothing on the page shows. */
 export default function SiteEffects() {
@@ -29,6 +30,7 @@ export default function SiteEffects() {
       { rootMargin: "0px 0px -8% 0px" },
     );
     for (const el of document.querySelectorAll("[data-rv]")) {
+      if (el.getBoundingClientRect().top < innerHeight) continue;
       el.classList.add("rv");
       io.observe(el);
     }
