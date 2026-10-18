@@ -1,11 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import BackCrumb from "@/components/BackCrumb";
 import ExternalLink from "@/components/ExternalLink";
 import NextUp from "@/components/NextUp";
 import ProjectScene from "@/components/ProjectScene";
 import SectionRail from "@/components/SectionRail";
-import { getAllProjectSlugs, getProjectBySlug, projects } from "@/lib/content";
+import { getAllProjectSlugs, getInsightBySlug, getProjectBySlug, projects } from "@/lib/content";
 import { pageMetadata } from "@/lib/meta";
 import type { ProjectShot } from "@/types/content";
 
@@ -37,7 +38,15 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     ...section,
     body: project[section.key],
   }));
-  const sectionItems = sections.map((section) => ({ id: section.id, label: section.title }));
+  const reading = (project.reading ?? []).map((readingSlug) => {
+    const post = getInsightBySlug(readingSlug);
+    if (!post) throw new Error(`Project ${project.slug} lists an article that doesn't exist: ${readingSlug}.`);
+    return post;
+  });
+  const sectionItems = [
+    ...sections.map((section) => ({ id: section.id, label: section.title })),
+    ...(reading.length ? [{ id: "reading", label: "Further reading" }] : []),
+  ];
   const facts = [
     { term: "Role", detail: project.role },
     { term: "Scope", detail: project.scope },
@@ -84,6 +93,18 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                   {section.id === "approach" && project.shots ? <Shots shots={project.shots} /> : null}
                 </section>
               ))}
+              {reading.length ? (
+                <section id="reading">
+                  <h2>Further reading</h2>
+                  <ul>
+                    {reading.map((post) => (
+                      <li key={post.slug}>
+                        <Link href={`/insights/${post.slug}`}>{post.title}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null}
             </div>
 
             <NextUp

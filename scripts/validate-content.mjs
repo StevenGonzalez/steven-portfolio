@@ -70,7 +70,9 @@ async function validateShot(shot, label) {
   }
 }
 
-function validateProjects(projects) {
+function validateProjects(projects, insights) {
+  const insightSlugs = new Set(insights.map((insight) => insight.slug));
+
   assertUniqueSlugs(projects, "project");
 
   for (const project of projects) {
@@ -90,6 +92,10 @@ function validateProjects(projects) {
         assertRequiredString(link.label, `Project ${project.slug} link label`);
         assertRequiredString(link.href, `Project ${project.slug} link href`);
       }
+    }
+
+    for (const slug of project.reading ?? []) {
+      if (!insightSlugs.has(slug)) throw new Error(`Project ${project.slug} lists an article that doesn't exist: ${slug}.`);
     }
   }
 }
@@ -160,7 +166,7 @@ async function getInsightMdxSlugs() {
 }
 
 async function main() {
-  validateProjects(projects);
+  validateProjects(projects, insights);
   await Promise.all(projects.flatMap((project) => (project.shots ?? []).map((shot) => validateShot(shot, `Project ${project.slug} shot`))));
   const mdxSlugs = await getInsightMdxSlugs();
   validateInsights(insights, mdxSlugs);

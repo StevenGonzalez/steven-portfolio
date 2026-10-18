@@ -19,8 +19,7 @@ export default function ProjectsPage() {
           Each project, in more detail
         </h1>
         <p className="intro" data-rv>
-          For each one: the problem, what I built, the tradeoffs, and how it turned out. Some client details are left
-          out.
+          For each one: the problem, what I built, the tradeoffs, and how it turned out. Some details are left out.
         </p>
         <ProjectGrid projects={projects} titleAs="h2" />
       </section>

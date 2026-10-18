@@ -37,6 +37,8 @@ export type ProjectDetail = {
   architecture: string;
   tradeoffs: string;
   outcome: string;
+  /** The slugs of the articles that go deeper into the project, listed after the outcome. */
+  reading?: string[];
 };
 
 export type InsightPost = {
