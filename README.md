@@ -40,6 +40,8 @@ Open `http://localhost:3000`.
 - `yarn build` - create a production build
 - `yarn start` - run the production build locally
 - `yarn lint` - run ESLint
+- `yarn format` - format the code with Prettier
+- `yarn format:check` - check that the code is formatted, without changing it
 - `yarn type-check` - run TypeScript checks
 - `yarn validate:content` - validate project and insight content
 - `yarn validate:theme` - check that the theme's colour tokens agree

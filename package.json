@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "type-check": "tsc --noEmit",
     "validate:content": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-content.mjs",
     "validate:theme": "node scripts/validate-theme-tokens.mjs",
@@ -29,6 +31,7 @@
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
     "eslint-config-next": "16.1.6",
+    "prettier": "3.9.9",
     "puppeteer-core": "25.12.0",
     "terser": "5.51.2",
     "typescript": "5.9.3"
