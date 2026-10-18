@@ -24,8 +24,9 @@ self.onmessage = async ({ data: q }) => {
       }
     };
 
-    const { makeRenderer, LAYERS } = await import(`/${q.code}/render`);
-    const { RARE } = await import(`/${q.code}/life`);
+    const { makeRenderer } = await import(`/${q.code}/render`);
+    const { LAYERS } = await import(`/${q.code}/layers`);
+    const { RARE } = await import(`/${q.code}/guide`);
     const { w: W, h: H, dpr, night, season, turn, occasion, reduce, ask, frames } = q;
     const canvases = LAYERS.map(() => new OffscreenCanvas(1, 1));
     const sent = [];

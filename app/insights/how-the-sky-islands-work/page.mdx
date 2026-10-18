@@ -33,10 +33,10 @@ Most of the scene never changes: the sky, the far mountains, the ridges, the isl
 export const LAYERS = [
   { d: 0, res: .6, paint: 'sky' },
   { d: D_FAR, res: .5, paint: 'far' },
-  { d: D_BACK, res: .5, paint: 'ridge', band: K => woodBand(K.land.ridge) },
+  { d: D_BACK, res: .5, paint: 'ridge' },
   { d: D_BACK, res: .8, draw: 'back', half: 'odd' },
-  { d: .3, res: .5, paint: 'mid', band: K => [K.HZ - 280, 1000 + K.EX] },
-  { d: .4, res: .5, paint: 'flanks', band: K => woodBand(...K.land.flanks) },
+  { d: .3, res: .5, paint: 'mid' },
+  { d: .4, res: .5, paint: 'flanks' },
   { d: D_ISLE, res: 1, paint: 'island' },
   { d: D_ISLE, res: 1, draw: 'isle' },
   { d: .65, res: .45, paint: 'front' },
