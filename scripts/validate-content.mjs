@@ -1,7 +1,12 @@
-import { readFile, readdir } from "node:fs/promises";
+// Checks the site's content: the projects and articles in data/, and that every article has a page and every page an
+// entry. Node strips the types from the data files as it imports them; it warns that it had to work out that they
+// are modules, which the yarn script turns off.
+
+import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
+import { insights } from "../data/insights.ts";
+import { projects } from "../data/projects.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -107,34 +112,9 @@ async function getInsightMdxSlugs() {
     .sort((left, right) => left.localeCompare(right));
 }
 
-async function loadContentModule(relativePath) {
-  const absolutePath = path.join(rootDir, relativePath);
-  const source = await readFile(absolutePath, "utf8");
-  const transpiled = ts.transpileModule(source, {
-    compilerOptions: {
-      module: ts.ModuleKind.CommonJS,
-      target: ts.ScriptTarget.ES2020,
-    },
-    fileName: absolutePath,
-  });
-
-  const compiledModule = { exports: {} };
-  const evaluateModule = new Function("exports", "module", transpiled.outputText);
-
-  evaluateModule(compiledModule.exports, compiledModule);
-
-  return compiledModule.exports;
-}
-
 async function main() {
-  const [{ projects }, { insights }, mdxSlugs] = await Promise.all([
-    loadContentModule("data/projects.ts"),
-    loadContentModule("data/insights.ts"),
-    getInsightMdxSlugs(),
-  ]);
-
   validateProjects(projects);
-  validateInsights(insights, mdxSlugs);
+  validateInsights(insights, await getInsightMdxSlugs());
 
   process.stdout.write(`Validated ${projects.length} projects and ${insights.length} insights.\n`);
 }

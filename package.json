@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "validate:content": "node scripts/validate-content.mjs",
+    "validate:content": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-content.mjs",
     "validate:theme": "node scripts/validate-theme-tokens.mjs",
     "validate": "yarn lint && yarn type-check && yarn validate:content && yarn validate:theme",
     "bench:world": "node scripts/world-bench.mjs",
