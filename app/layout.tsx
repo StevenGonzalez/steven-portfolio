@@ -39,7 +39,7 @@ const plexMono = localFont({
 
 const homeTitle = `${SITE_NAME} | Software Engineer`;
 const siteDescription =
-  "Steven Gonzalez is a software engineer who builds web apps and the real-time systems behind them, in TypeScript, React, Angular and .NET.";
+  "Steven Gonzalez is a software engineer who builds web apps and the APIs and services behind them, in TypeScript, React, Angular and .NET.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
