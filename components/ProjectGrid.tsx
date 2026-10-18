@@ -60,7 +60,10 @@ function ProjectLinks({ project }: { project: ProjectDetail }) {
           {link.label}
         </a>
       ))}
-      <Link href={`/projects/${project.slug}`}>Case study</Link>
+      {/* Every card has one, so its name says which project it opens, for a screen reader's list of links. */}
+      <Link href={`/projects/${project.slug}`} aria-label={`Case study: ${project.title}`}>
+        Case study
+      </Link>
     </div>
   );
 }
