@@ -33,6 +33,7 @@ if (existsSync(fastCores) && !process.env.WORLD_BENCH_PINNED) {
     env: { ...process.env, WORLD_BENCH_PINNED: "1" },
   });
   if (!run.error) process.exit(run.status ?? 1);
+  console.warn(`Could not pin the browser to the fast cores (${run.error.message}), so the timings may be unsteady.\n`);
 }
 
 const SCENARIOS = [
