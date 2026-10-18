@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import { isValidElement, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import ExternalLink from "./components/ExternalLink";
 import { slugify } from "./lib/slug";
 
 function isExternalHref(href: string) {
@@ -22,14 +23,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </h2>
     ),
-    a: ({ href, rel, target, ...rest }: ComponentPropsWithoutRef<"a">) => {
-      if (!href || !isExternalHref(href)) {
-        return <a href={href} rel={rel} target={target} {...rest} />;
-      }
-
-      const safeRel = rel ? `${rel} noopener noreferrer` : "noopener noreferrer";
-
-      return <a href={href} target={target ?? "_blank"} rel={safeRel} {...rest} />;
-    },
+    // Markdown links only: MDX leaves an <a> written as JSX alone.
+    a: ({ href, ...rest }: ComponentPropsWithoutRef<"a">) =>
+      href && isExternalHref(href) ? <ExternalLink href={href} {...rest} /> : <a href={href} {...rest} />,
   };
 }

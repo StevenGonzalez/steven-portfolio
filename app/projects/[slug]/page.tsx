@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import BackCrumb from "../../../components/BackCrumb";
+import ExternalLink from "../../../components/ExternalLink";
 import NextUp from "../../../components/NextUp";
 import ProjectScene from "../../../components/ProjectScene";
 import SectionRail from "../../../components/SectionRail";
@@ -58,9 +59,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               {project.links?.length ? (
                 <div className="links">
                   {project.links.map((link) => (
-                    <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink key={link.href} href={link.href}>
                       {link.label}
-                    </a>
+                    </ExternalLink>
                   ))}
                 </div>
               ) : null}

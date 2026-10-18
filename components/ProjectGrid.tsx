@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ProjectDetail } from "../lib/content";
+import ExternalLink from "./ExternalLink";
 
 /** The work, as cards. The first project leads across the full width and the rest pair up beneath it; if one would be
  *  left on its own at the end, it runs the full width too. */
@@ -56,9 +57,9 @@ function ProjectLinks({ project }: { project: ProjectDetail }) {
   return (
     <div className="links">
       {project.links?.map((link) => (
-        <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+        <ExternalLink key={link.href} href={link.href}>
           {link.label}
-        </a>
+        </ExternalLink>
       ))}
       {/* Every card has one, so its name says which project it opens, for a screen reader's list of links. */}
       <Link href={`/projects/${project.slug}`} aria-label={`Case study: ${project.title}`}>

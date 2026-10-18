@@ -152,6 +152,16 @@
   }
 }
 
+/* Words for screen readers only: out of sight, but still read out. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--nav-clear);

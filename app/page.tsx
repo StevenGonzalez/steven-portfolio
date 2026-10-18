@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ExternalLink from "../components/ExternalLink";
 import PostList from "../components/PostList";
 import ProjectGrid from "../components/ProjectGrid";
 import World from "../components/World";
@@ -100,13 +101,9 @@ export default function Home() {
           <Link className="more" href="/insights/how-the-sky-islands-work" data-rv>
             How it&apos;s built, in more detail
           </Link>
-          <a className="more" href={`${gitHub.href}/steven-portfolio/tree/main/lib/world`}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-rv
-          >
+          <ExternalLink className="more" href={`${gitHub.href}/steven-portfolio/tree/main/lib/world`} data-rv>
             Read the source on GitHub
-          </a>
+          </ExternalLink>
         </section>
 
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
@@ -117,12 +114,12 @@ export default function Home() {
             Hiring, or building something interesting? Send me a message.
           </p>
           <div className="row" data-rv>
-            <a className="btn solid" href={linkedIn.href} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="btn solid" href={linkedIn.href}>
               Message me on LinkedIn
-            </a>
-            <a className="btn line" href={gitHub.href} target="_blank" rel="noopener noreferrer">
+            </ExternalLink>
+            <ExternalLink className="btn line" href={gitHub.href}>
               GitHub
-            </a>
+            </ExternalLink>
             <Link className="btn line" href="/resume">
               Résumé
             </Link>

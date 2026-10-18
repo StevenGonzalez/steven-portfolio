@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { externalProfiles } from "../lib/site";
+import ExternalLink from "./ExternalLink";
 
 export default function Footer() {
   return (
@@ -10,9 +11,9 @@ export default function Footer() {
         <Link href="/insights">Writing</Link>
         <Link href="/resume">Résumé</Link>
         {externalProfiles.map((profile) => (
-          <a key={profile.href} href={profile.href} target="_blank" rel="noopener noreferrer">
+          <ExternalLink key={profile.href} href={profile.href}>
             {profile.label}
-          </a>
+          </ExternalLink>
         ))}
       </nav>
     </footer>
