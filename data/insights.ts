@@ -45,7 +45,7 @@ export const insights: InsightPost[] = [
     slug: "modernizing-legacy-systems-without-rewriting",
     title: "Modernizing Legacy Systems Without Rewriting Everything",
     summary:
-      "How I moved a business-critical app from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without changing how people used it.",
+      "How I moved a business-critical desktop app from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without changing how people used it.",
     date: "2026-03-12",
     category: "Architecture",
     readTime: "4 min read",

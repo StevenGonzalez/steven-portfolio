@@ -209,17 +209,17 @@ export const projects: ProjectDetail[] = [
     slug: "dotnet-framework-to-dotnet-8-upgrade",
     title: ".NET Framework to .NET 8 Upgrade",
     summary:
-      "Led the move of a business-critical application from .NET Framework 4.7.1 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
+      "Led the move of a business-critical desktop application from .NET Framework 4.7.1 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
     scene:
       "An old stone tower on a floating island, with new stone going on top and a crane lifting the next block up.",
     tags: ["C#", ".NET 8", ".NET Framework", "Upgrade", "Compatibility", "Security"],
     role: "Lead engineer",
-    scope: "Upgrading a legacy .NET application",
+    scope: "Upgrading a legacy .NET desktop application",
     keyDecision:
       "Upgraded in place, in stages, changing one kind of thing per stage, so every break had one likely cause",
     card: {
       blurb:
-        "Moved a business-critical application from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without disrupting the workflows people relied on.",
+        "Moved a business-critical desktop application from .NET Framework 4.7.1 to .NET 8 in stages, without a rewrite and without disrupting the workflows people relied on.",
       points: [
         "Audited high-risk dependencies before changing targets",
         "Replaced obsolete encryption with current APIs",
