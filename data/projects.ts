@@ -168,7 +168,7 @@ export const projects: ProjectDetail[] = [
     tradeoffs:
       "Shipping the UI and services together gives control over deployment and the operator's experience, but every change has to line up across the UI, the API, the machine and the message contracts. Machine control rewards predictability over experimentation, so changes were sequenced and tested carefully. A rewrite also has to be planned across teams that each own a piece of it, so a lot of my job was making sure those pieces would fit together before anyone built them.",
     outcome:
-      "After a year and a half, the company cancelled the rewrite to put its people on other work. By then I had designed and built the new API, machine-control endpoints included, and built Angular features for the new operator interface.",
+      "After a year and a half, the company cancelled the rewrite to put its people on other work. By then I had designed and built the new API, machine-control endpoints included, and built Angular features for the new operator interface. It never ran a production saw: its machine commands were only ever run in testing.",
     reading: ["reliable-desktop-software-web-first-world"],
   },
   {
