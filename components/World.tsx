@@ -17,6 +17,8 @@ export default function World() {
   const guideList = useRef<HTMLOListElement>(null);
   const guideCount = useRef<HTMLElement>(null);
   const guideFoot = useRef<HTMLParagraphElement>(null);
+  const guideViews = useRef<HTMLDivElement>(null);
+  const guideMap = useRef<HTMLDivElement>(null);
   const postcardBtn = useRef<HTMLButtonElement>(null);
   const soundBtn = useRef<HTMLButtonElement>(null);
   const explore = useRef<HTMLDivElement>(null);
@@ -38,6 +40,8 @@ export default function World() {
       guideList: guideList.current!,
       guideCount: guideCount.current!,
       guideFoot: guideFoot.current!,
+      guideViews: guideViews.current!,
+      guideMap: guideMap.current!,
       postcardBtn: postcardBtn.current!,
       soundBtn: soundBtn.current!,
       explore: explore.current!,
@@ -70,13 +74,24 @@ export default function World() {
             Field guide <b ref={guideCount} />
           </button>
           <div ref={guide} className="guide" id="guide" hidden>
-            <p className="guide-h">
-              Field guide <span>Things seen in this world</span>
-            </p>
+            <div className="guide-top">
+              <p className="guide-h">
+                Field guide <span>Things seen in this world</span>
+              </p>
+              <div ref={guideViews} className="guide-views" role="group" aria-label="Show the guide as">
+                <button type="button" data-view="list" aria-pressed="true">
+                  List
+                </button>
+                <button type="button" data-view="map" aria-pressed="false">
+                  Map
+                </button>
+              </div>
+            </div>
             <button ref={postcardBtn} type="button" className="guide-card">
               Save a postcard of this view
             </button>
             <ol ref={guideList} role="list" />
+            <div ref={guideMap} className="guide-map" hidden />
             <p ref={guideFoot} className="guide-foot" />
           </div>
           <button ref={soundBtn} type="button" className="sound-btn" aria-pressed="false">

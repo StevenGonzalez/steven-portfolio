@@ -728,6 +728,147 @@ main:focus {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* The field guide shows as a list or as a map. */
+.guide-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.guide-views {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid color-mix(in srgb, var(--hero-glow) 20%, transparent);
+  border-radius: 999px;
+}
+.guide-views button {
+  padding: 5px 9px;
+  font: 500 10px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hero-muted);
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.guide-views button:hover {
+  color: var(--hero-fg);
+}
+.guide-views [aria-pressed="true"] {
+  color: var(--hero-glow);
+  background: color-mix(in srgb, var(--hero-glow) 14%, transparent);
+}
+/* The map: a point for each entry, roughly where it is in the world, joined to the entries its line mentions. A line
+   that leads to something not found yet is dashed. */
+.guide-map .plot {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--hero-glow) 12%, transparent);
+  border-radius: 4px;
+  background: radial-gradient(
+    ellipse at 70% 40%,
+    color-mix(in srgb, var(--hero-glow) 8%, transparent),
+    transparent 70%
+  );
+}
+.guide-map svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.guide-map line {
+  stroke: color-mix(in srgb, var(--hero-glow) 45%, transparent);
+  stroke-width: 1;
+}
+.guide-map line.toward {
+  stroke: color-mix(in srgb, var(--hero-gold) 60%, transparent);
+  stroke-dasharray: 2 3;
+}
+/* A "?" nothing found mentions yet is faint; one a find mentions stands out, at the end of its line. */
+.guide-map .plot button {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  padding: 0;
+  font: 500 9.5px/1 var(--mono);
+  color: color-mix(in srgb, var(--hero-muted) 55%, transparent);
+  background: #070f13;
+  border: 1px solid color-mix(in srgb, var(--hero-muted) 18%, transparent);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.guide-map .plot button.heard {
+  color: var(--hero-gold);
+  border-color: color-mix(in srgb, var(--hero-gold) 60%, transparent);
+}
+.guide-map .plot button.got {
+  background: none;
+  border: 0;
+}
+.guide-map .plot button.got::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hero-glow);
+  box-shadow: 0 0 8px var(--hero-glow);
+}
+.guide-map .plot button.extra::before {
+  background: var(--hero-gold);
+  box-shadow: 0 0 8px var(--hero-gold);
+}
+.guide-map .plot button.on {
+  outline: 1px solid color-mix(in srgb, var(--hero-fg) 70%, transparent);
+  outline-offset: 1px;
+}
+.guide-map .plot button:focus-visible {
+  outline: 2px solid var(--hero-glow);
+}
+/* Showing the map, the guide stands at its full height, and the words about the point picked keep room for the longest
+   of them, so neither grows or shrinks, and moves the map, as the point picked changes. On a short screen, where the
+   guide scrolls, the words stay in sight at its bottom edge. */
+.guide.mapped {
+  height: 100vh;
+}
+.guide-map .said {
+  position: sticky;
+  bottom: 0;
+  min-height: 6.25em;
+  padding: 10px 0 6px;
+  background: #070f13;
+  box-shadow: 0 -8px 10px #070f13;
+}
+.guide-map .said i {
+  display: block;
+  font: italic 500 16px/1.2 var(--display);
+}
+.guide-map .said b {
+  display: block;
+  font: 500 10px/1.5 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hero-glow);
+}
+.guide-map .said:not(.got) b {
+  color: var(--hero-muted);
+  opacity: 0.6;
+}
+.guide-map .said small {
+  display: block;
+  font: 400 12.5px/1.4 var(--body);
+  color: var(--hero-muted);
+}
+.guide-map .said .by {
+  margin-top: 4px;
+  color: var(--hero-gold);
+}
 
 /* The seam starts inside the hero's bottom fade and reaches into the top of the page, behind its content. It arrives
    after the world has woken, so it never shows over the dark of the arrival. The low seam closes the page: it is
