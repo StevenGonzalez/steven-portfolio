@@ -19,6 +19,8 @@ export default function World() {
   const guideFoot = useRef<HTMLParagraphElement>(null);
   const postcardBtn = useRef<HTMLButtonElement>(null);
   const soundBtn = useRef<HTMLButtonElement>(null);
+  const explore = useRef<HTMLDivElement>(null);
+  const ring = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const seamTop = document.getElementById("seam");
@@ -38,6 +40,8 @@ export default function World() {
       guideFoot: guideFoot.current!,
       postcardBtn: postcardBtn.current!,
       soundBtn: soundBtn.current!,
+      explore: explore.current!,
+      ring: ring.current!,
       seamTop,
       seamLow,
     });
@@ -80,6 +84,15 @@ export default function World() {
           </button>
         </div>
       </div>
+      {/* The world's own stop for the keyboard, out of sight: the ring round whatever it is on shows where focus is. */}
+      <div
+        ref={explore}
+        className="sr-only"
+        tabIndex={0}
+        role="application"
+        aria-label="The world. The arrow keys move between the things in it, and Enter clicks the one you're on."
+      />
+      <span ref={ring} className="aim" hidden />
       <div ref={tag} className="tag" role="status" aria-live="polite" />
     </section>
   );

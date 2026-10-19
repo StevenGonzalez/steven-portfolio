@@ -680,6 +680,20 @@ main:focus {
   height: 26px;
   filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.5));
 }
+/* The ring round whatever the keyboard is on in the world, which is where focus shows while it explores. */
+.aim {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  border: 2px solid var(--hero-glow);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px rgb(4 11 14 / 0.6),
+    inset 0 0 0 1px rgb(4 11 14 / 0.6),
+    0 0 14px color-mix(in srgb, var(--hero-glow) 55%, transparent);
+}
 /* A leaf caught as it fell, on its way into the field guide. */
 .pressing {
   position: absolute;
