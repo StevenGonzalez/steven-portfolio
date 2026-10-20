@@ -19,6 +19,7 @@ export default function World() {
   const guideFoot = useRef<HTMLParagraphElement>(null);
   const guideViews = useRef<HTMLDivElement>(null);
   const guideMap = useRef<HTMLDivElement>(null);
+  const guideMail = useRef<HTMLOListElement>(null);
   const postcardBtn = useRef<HTMLButtonElement>(null);
   const soundBtn = useRef<HTMLButtonElement>(null);
   const explore = useRef<HTMLDivElement>(null);
@@ -42,6 +43,7 @@ export default function World() {
       guideFoot: guideFoot.current!,
       guideViews: guideViews.current!,
       guideMap: guideMap.current!,
+      guideMail: guideMail.current!,
       postcardBtn: postcardBtn.current!,
       soundBtn: soundBtn.current!,
       explore: explore.current!,
@@ -85,6 +87,9 @@ export default function World() {
                 <button type="button" data-view="map" aria-pressed="false">
                   Map
                 </button>
+                <button type="button" data-view="mail" aria-pressed="false" hidden>
+                  Mail
+                </button>
               </div>
             </div>
             <button ref={postcardBtn} type="button" className="guide-card">
@@ -92,6 +97,7 @@ export default function World() {
             </button>
             <ol ref={guideList} role="list" />
             <div ref={guideMap} className="guide-map" hidden />
+            <ol ref={guideMail} className="guide-mail" role="list" hidden />
             <p ref={guideFoot} className="guide-foot" />
           </div>
           <button ref={soundBtn} type="button" className="sound-btn" aria-pressed="false">

@@ -869,6 +869,17 @@ main:focus {
   margin-top: 4px;
   color: var(--hero-gold);
 }
+/* The winged trader's letters, in the order they came. */
+.guide-mail li {
+  display: block;
+  padding: 8px 0 10px;
+}
+.guide-mail li span {
+  display: block;
+  margin-top: 3px;
+  font: 400 13px/1.45 var(--body);
+  color: var(--hero-fg);
+}
 
 /* The seam starts inside the hero's bottom fade and reaches into the top of the page, behind its content. It arrives
    after the world has woken, so it never shows over the dark of the arrival. The low seam closes the page: it is
