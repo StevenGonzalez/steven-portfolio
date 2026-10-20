@@ -18,14 +18,14 @@ import { numberOption, rootDir } from "./world-harness.mjs";
 
 const runs = numberOption("--runs", 3);
 const PAGES = ["/", "/projects/sky-islands"];
-// The limit for each measurement, with how to show it. The paints and blocking time are in milliseconds. Each is set
-// with room above what the pages measure on GitHub's runners. The largest paint lands on one of two values about
-// 0.7 s apart, depending on whether the scripts were asked for before the first paint, so its room is above the
-// higher one. The blocking time depends most on the machine's speed.
+// The limit for each measurement, with how to show it. The paints and blocking time are in milliseconds. On GitHub's
+// runners the pages first paint at 0.76 s, block for about 20 ms and never shift. The largest paint is 2.4, 2.95 or
+// 3.1 s, depending on how much was asked for before the first paint, so its room is above the highest. The blocking
+// time, which depends most on the machine, may go as high as Lighthouse's own line for good.
 const LIMITS = [
-  ["first-contentful-paint", "FCP", 1200, (v) => `${(v / 1000).toFixed(2)} s`],
-  ["largest-contentful-paint", "LCP", 4000, (v) => `${(v / 1000).toFixed(2)} s`],
-  ["total-blocking-time", "TBT", 400, (v) => `${Math.round(v)} ms`],
+  ["first-contentful-paint", "FCP", 1000, (v) => `${(v / 1000).toFixed(2)} s`],
+  ["largest-contentful-paint", "LCP", 3500, (v) => `${(v / 1000).toFixed(2)} s`],
+  ["total-blocking-time", "TBT", 200, (v) => `${Math.round(v)} ms`],
   ["cumulative-layout-shift", "CLS", 0.02, (v) => v.toFixed(3)],
 ];
 
