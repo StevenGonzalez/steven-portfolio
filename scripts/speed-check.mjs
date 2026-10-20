@@ -18,14 +18,16 @@ import { numberOption, rootDir } from "./world-harness.mjs";
 
 const runs = numberOption("--runs", 3);
 const PAGES = ["/", "/projects/sky-islands"];
-// The limit for each measurement, with how to show it. The paints and blocking time are in milliseconds. On GitHub's
-// runners the pages first paint at 0.76 s, block for about 20 ms and never shift. The largest paint is 2.4, 2.95 or
-// 3.1 s, depending on how much was asked for before the first paint, so its room is above the highest. The blocking
-// time, which depends most on the machine, may go as high as Lighthouse's own line for good.
+// The limit for each measurement, with how to show it. The paints are in milliseconds. On GitHub's runners the pages
+// first paint at 0.76 s and never shift. The largest paint is 2.4, 2.95 or 3.1 s, depending on how much was asked for
+// before the first paint, so its room is above the highest. The blocking time is shown but has no limit: Lighthouse
+// gets it by timing the page's scripts on the machine it runs on and multiplying by four, so it measures that machine
+// as much as the page. Two runs on GitHub of the same pages measured 20 ms and 405 ms, while the paints, which are
+// mostly the simulated network, stayed within 20 ms.
 const LIMITS = [
   ["first-contentful-paint", "FCP", 1000, (v) => `${(v / 1000).toFixed(2)} s`],
   ["largest-contentful-paint", "LCP", 3500, (v) => `${(v / 1000).toFixed(2)} s`],
-  ["total-blocking-time", "TBT", 200, (v) => `${Math.round(v)} ms`],
+  ["total-blocking-time", "TBT", null, (v) => `${Math.round(v)} ms`],
   ["cumulative-layout-shift", "CLS", 0.02, (v) => v.toFixed(3)],
 ];
 
@@ -100,13 +102,15 @@ console.log(
   `Lighthouse on a phone, on slow 4G with a slow CPU, the median of ${runs} load${runs > 1 ? "s" : ""} of each page.\n`,
 );
 console.log(`${"".padEnd(24)}${LIMITS.map(([, name]) => name.padStart(10)).join("")}`);
-console.log(`${"limit".padEnd(24)}${LIMITS.map(([, , limit, show]) => show(limit).padStart(10)).join("")}`);
+console.log(
+  `${"limit".padEnd(24)}${LIMITS.map(([, , limit, show]) => (limit === null ? "none" : show(limit)).padStart(10)).join("")}`,
+);
 let failed = false;
 for (const page of PAGES) {
   const loads = [];
   for (let i = 0; i < runs; i++) loads.push(await measure(origin + page));
   const got = LIMITS.map((_, m) => median(loads.map((load) => load[m])));
-  const over = LIMITS.filter(([, , limit], m) => !(got[m] <= limit)).map(([, name]) => name);
+  const over = LIMITS.filter(([, , limit], m) => limit !== null && !(got[m] <= limit)).map(([, name]) => name);
   failed ||= over.length > 0;
   console.log(
     `${page.padEnd(24)}${LIMITS.map(([, , , show], m) => show(got[m]).padStart(10)).join("")}${over.length ? `  ${over.join(", ")} over` : ""}`,
