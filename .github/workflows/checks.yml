@@ -1,6 +1,8 @@
 # Runs yarn validate (lint, formatting, types, and the content and theme checks) on every push to main and every pull
-# request. Vercel builds each push itself, so this does not build. The world and sound checks stay local: they need
-# Firefox and compare the working tree with a revision.
+# request, and alongside it builds the site and runs yarn check:speed, which loads its pages in Lighthouse as a phone
+# would and fails if they load slower or shift about more than set limits. Vercel builds each push itself; the build
+# here is only for the speed check. The world and sound checks stay local: they need Firefox and compare the working
+# tree with a revision.
 name: Checks
 
 on:
@@ -30,3 +32,19 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn validate
+
+  speed:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      # Uses the runner's own Google Chrome.
+      - run: yarn check:speed

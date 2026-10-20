@@ -49,8 +49,11 @@ Open `http://localhost:3000`.
 - `yarn bench:world` - time the world's frames in headless Firefox against a git revision
 - `yarn check:world` - check that the world draws exactly what a git revision drew, canvas by canvas
 - `yarn check:sound` - check that the world's sound is exactly what a git revision made, rendered offline
+- `yarn check:speed` - load the production build's pages in Lighthouse as a phone would, and check their load speed and
+  layout shift against set limits (run `yarn build` first; needs Chrome)
 
-GitHub Actions runs `yarn validate` on every push to main and every pull request.
+GitHub Actions runs `yarn validate`, and `yarn check:speed` on a fresh build, on every push to main and every pull
+request.
 
 ## Content Structure
 

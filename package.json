@@ -16,7 +16,8 @@
     "validate": "yarn lint && yarn format:check && yarn type-check && yarn validate:content && yarn validate:theme",
     "bench:world": "node scripts/world-bench.mjs",
     "check:world": "node scripts/world-check.mjs",
-    "check:sound": "node scripts/sound-check.mjs"
+    "check:sound": "node scripts/sound-check.mjs",
+    "check:speed": "node scripts/speed-check.mjs"
   },
   "dependencies": {
     "@next/mdx": "16.1.6",
@@ -31,6 +32,7 @@
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
     "eslint-config-next": "16.1.6",
+    "lighthouse": "13.5.0",
     "prettier": "3.9.9",
     "puppeteer-core": "25.12.0",
     "terser": "5.51.2",
