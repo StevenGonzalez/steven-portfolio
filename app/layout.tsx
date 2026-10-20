@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -101,6 +102,8 @@ export default function RootLayout({
         </main>
         <Footer />
         <SiteEffects />
+        {/* Sends how fast each page loaded for real visitors to Vercel, once Speed Insights is on for the project. */}
+        <SpeedInsights />
       </body>
     </html>
   );
