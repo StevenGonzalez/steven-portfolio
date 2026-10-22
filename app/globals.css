@@ -318,6 +318,23 @@ main:focus {
   will-change: transform;
   pointer-events: none;
 }
+/* The light shafts breathe, and the sun's warm light comes and goes far more slowly, out of step with them. */
+.scene canvas.breathe {
+  animation: breathe 9s ease-in-out infinite alternate;
+}
+.scene canvas.warm {
+  animation: warm 37s ease-in-out -14s infinite alternate;
+}
+@keyframes breathe {
+  from {
+    opacity: 0.55;
+  }
+}
+@keyframes warm {
+  from {
+    opacity: 0.1;
+  }
+}
 .copy > * {
   animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
@@ -1866,6 +1883,7 @@ main:focus {
     transition: none;
   }
   .scene,
+  .scene canvas,
   .copy > *,
   .guide-btn.new,
   .sound-btn[aria-pressed]::before,
