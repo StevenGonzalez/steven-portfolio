@@ -1,0 +1,56 @@
+import InsightArticle from "@/components/InsightArticle";
+import { insightMetadata } from "@/lib/meta";
+
+export const metadata = insightMetadata("one-number-one-place");
+
+<InsightArticle
+  slug="one-number-one-place"
+  toc={[
+    { title: "Two copies of the rules", href: "#two-copies-of-the-rules" },
+    { title: "One set of rules", href: "#one-set-of-rules" },
+    { title: "One fetch, one key", href: "#one-fetch-one-key" },
+    { title: "Whose week it is", href: "#whose-week-it-is" },
+    { title: "Pounds, always", href: "#pounds-always" },
+    { title: "What it costs", href: "#what-it-costs" },
+  ]}
+>
+
+Virtual Trainer shows the same numbers in more than one place. The dashboard has cards for workouts completed, your weekly streak and your volume each week, and tapping a card opens a chart of it. The achievement badges count the same things: workouts finished, weeks in a row, weight lifted. If a card says one thing and the badge for the same thing says another, people stop trusting both. That happened, and fixing it changed where the dashboard is worked out.
+
+## Two copies of the rules
+
+The dashboard's values used to come from the API. One endpoint worked out every card in C# from the member's workout history, and cached the result per member and time zone so it stayed quick. The badges were worked out on the phone in TypeScript, because they are awarded the moment a workout ends.
+
+So every rule that turns logged training into a number was written twice, in two languages. Does a session with only warm-up sets count as a workout? Do warm-ups count toward volume? Each copy answered on its own, and small differences crept in. At one point there were three separate copies of the rule for what counts as a workout.
+
+## One set of rules
+
+I moved the rules into one small module on the phone. A working set is any set that isn't a warm-up. A session counts as a workout if it has at least one working set. A set's volume is its load times its reps, with the member's body weight added for bodyweight exercises. The workout summary, the badges, the dashboard cards and their charts all work from those few functions, so they can't disagree.
+
+Then the dashboard moved to the phone too. The app already needed the whole history to award badges, so working out the cards there as well meant one implementation instead of two that had to be kept in step. The server now sends only the layout: which cards a member has picked, and in what order.
+
+## One fetch, one key
+
+Sharing the rules isn't enough if the two features read different copies of the data. The dashboard and the badges read the workout history through one React Query cache key, so one request serves both, and neither can see a version the other hasn't.
+
+That key includes the end of the time window it asks for. If the end were "now plus a day", every screen that mounted it would build a different key. So the end is rounded to the start of tomorrow in the member's own time, and every part of the app agrees on it all day.
+
+When a workout ends, the app adds it to that shared cache straight away, so the cards and the badges both update at once, even offline. When the server's copy arrives it replaces the one the app added. The update matches any full-history key rather than today's exact one, so a phone left on the dashboard past midnight still updates.
+
+Working the numbers out on the phone means waiting for the history before anything shows. So the last values are saved on the device, and a cold launch paints them straight away, then swaps in the fresh ones when the history arrives.
+
+## Whose week it is
+
+"This week" and "weeks in a row" depend on where you are. Every workout is shifted into the member's local time before it is counted, weeks start on Sunday, and every "last four weeks" card uses the same window. That window is bounded on both sides, so a workout with a wrong future date can't inflate one card while the weekly bars leave it out.
+
+## Pounds, always
+
+Stored weights are always pounds, whatever the member has picked for display. This matters more than it looks. The badges are worked out again from the whole history every time the app starts, and a volume badge can be taken back if a recount comes in under its level. If volume depended on the display setting, switching to kilograms would quietly take away badges people had earned. So the rules never see a unit, and only the cards convert for display.
+
+## What it costs
+
+The phone downloads the member's whole history, and that grows with every year of training. It is the same request the badges already needed, so the dashboard adds none of its own. Changing what the dashboard's query returns also meant throwing away the old, server-shaped answer that phones had saved under the same name, which a version tag on the saved cache does. The server's endpoint for worked-out cards still exists, but the app no longer calls it.
+
+The lesson is short. When one number shows up in two places, work it out in one place, from one copy of the data.
+
+</InsightArticle>

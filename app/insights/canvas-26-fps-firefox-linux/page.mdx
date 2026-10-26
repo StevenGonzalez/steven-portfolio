@@ -24,7 +24,7 @@ In a real Firefox window on my machine, the world ran at about 30 fps and droppe
 
 Chrome draws a 2D canvas on the graphics card. Firefox on Linux, on my setup, draws it on the CPU. On the CPU, the cost of a canvas follows its pixel count closely: twice the pixels, about twice the time.
 
-The world is 11 stacked canvases. Eight are painted once and only slide after that, so they cost almost nothing per frame. The other three hold everything that moves, and they are cleared and redrawn in full on every frame, across the whole width of the screen. Those three were the bill.
+At the time, the world was 11 stacked canvases. Eight are painted once and only slide after that, so they cost almost nothing per frame. The other three hold everything that moves, and they are cleared and redrawn in full on every frame, across the whole width of the screen. Those three were the bill.
 
 ## Why lite mode didn't help
 

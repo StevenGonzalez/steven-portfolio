@@ -2,6 +2,16 @@ import type { InsightPost } from "@/types/content";
 
 export const insights: InsightPost[] = [
   {
+    slug: "one-number-one-place",
+    title: "When the Dashboard and the Badge Disagreed",
+    summary:
+      "Virtual Trainer worked out the same numbers twice, in two languages, and they drifted. The fix was one set of rules and one copy of the data.",
+    date: "2026-10-26",
+    category: "Mobile Engineering",
+    readTime: "4 min read",
+    tags: ["React Native", "React Query", "Consistency"],
+  },
+  {
     slug: "sound-with-no-audio-files",
     title: "Sound With No Audio Files",
     summary:

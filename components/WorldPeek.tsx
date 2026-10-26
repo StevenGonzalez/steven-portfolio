@@ -41,7 +41,7 @@ export default function WorldPeek() {
           ref={box}
           className="peek"
           role="img"
-          aria-label="The world from the top of the home page, running live: eleven stacked canvases, from the sky at the back to the ferns at the front."
+          aria-label="The world from the top of the home page, running live: fourteen stacked canvases, from the sky at the back to the ferns at the front."
         />
       </div>
       <figcaption>
