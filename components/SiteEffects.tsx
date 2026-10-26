@@ -67,6 +67,27 @@ export default function SiteEffects() {
     return () => document.removeEventListener("pointermove", onMove);
   }, []);
 
+  // The page scrolls smoothly, and the browser's own Back and Forward buttons honour that when they put the reader's
+  // place back, gliding down from the top of the page instead of arriving there. So a step through history scrolls at
+  // once, and smooth scrolling comes back with the reader's next touch, before any link on the page can use it.
+  useEffect(() => {
+    const root = document.documentElement;
+    const smooth = () => {
+      root.style.scrollBehavior = "";
+      for (const type of ["pointerdown", "keydown", "wheel", "touchstart"]) removeEventListener(type, smooth, true);
+    };
+    const onPop = () => {
+      root.style.scrollBehavior = "auto";
+      for (const type of ["pointerdown", "keydown", "wheel", "touchstart"])
+        addEventListener(type, smooth, { capture: true, passive: true });
+    };
+    addEventListener("popstate", onPop);
+    return () => {
+      removeEventListener("popstate", onPop);
+      smooth();
+    };
+  }, []);
+
   // The service worker keeps the site for offline use (public/sw.js). Once it is in charge it is handed everything this
   // page loaded before then, so the first visit is kept as well. Development builds go without it, so a stale copy
   // never stands in for code being edited.
