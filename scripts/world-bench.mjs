@@ -5,6 +5,7 @@
 //   yarn bench:world --base main      compare it with another revision
 //   yarn bench:world --profile        also show where the working tree's frame time goes
 //   yarn bench:world --season winter  run in another season (autumn by default), or an occasion: halloween, newyear
+//   yarn bench:world --weather rain   run in the visitor's weather at its heaviest: rain, snow, fog, storm or wind
 //
 // Each scenario runs both versions in alternating rounds and compares the median change. The check fails when the
 // working tree is more than --budget milliseconds (default 1) slower per frame in any scenario. Then the new work
@@ -24,6 +25,8 @@ const profile = process.argv.includes("--profile");
 const asked = option("--season", "autumn");
 const occasions = { halloween: "autumn", newyear: "winter" };
 const season = { season: occasions[asked] ?? asked, occasion: occasions[asked] ? asked : null };
+const kind = option("--weather", null);
+const weather = kind && { kind, level: 1, wind: 50 };
 
 // Intel's hybrid CPUs have fast and slow cores, and a thread that moves between them takes up to twice as long per
 // frame. Pinning the browser to the fast cores keeps the timings steady enough to compare.
@@ -81,14 +84,14 @@ const server = await serveWorld(
 const browser = await launchFirefox({ "privacy.reduceTimerPrecision": false });
 const tab = await browser.newPage();
 const measure = (code, scenario) =>
-  runInPage(tab, server.origin, { ...scenario, ...season, code, frames }, `${code}, ${scenario.name}`);
+  runInPage(tab, server.origin, { ...scenario, ...season, weather, code, frames }, `${code}, ${scenario.name}`);
 
 const fmt = (ms) => ms.toFixed(2).padStart(6);
 const median = (list) => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
 let failed = false;
 try {
   console.log(
-    `Frame draw time in headless Firefox, ${base} against the working tree, ${rounds} rounds of ${frames} frames, ${asked}.\n`,
+    `Frame draw time in headless Firefox, ${base} against the working tree, ${rounds} rounds of ${frames} frames, ${asked}${kind ? `, ${kind}` : ""}.\n`,
   );
   const runs = SCENARIOS.map(() => ({ base: [], work: [] }));
   for (let round = 0; round < rounds; round++) {
