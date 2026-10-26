@@ -1765,6 +1765,7 @@ main:focus {
 .prose :where(a),
 .about :where(a) {
   color: var(--accent);
+  text-decoration-line: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);

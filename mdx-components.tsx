@@ -23,6 +23,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </h2>
     ),
+    // A code block too wide for the page scrolls sideways, so it takes focus, for the arrow keys to scroll it.
+    pre: (props: ComponentPropsWithoutRef<"pre">) => <pre tabIndex={0} {...props} />,
     // Markdown links only: MDX leaves an <a> written as JSX alone.
     a: ({ href, ...rest }: ComponentPropsWithoutRef<"a">) =>
       href && isExternalHref(href) ? <ExternalLink href={href} {...rest} /> : <a href={href} {...rest} />,
