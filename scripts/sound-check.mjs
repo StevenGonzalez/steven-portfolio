@@ -22,8 +22,8 @@ const B = option("--b", "work");
 const KEYS = [
   { name: "dusk", night: false, occasion: null },
   { name: "night", night: true, occasion: null },
-  { name: "dusk, Halloween week", night: false, occasion: "halloween" },
-  { name: "night, Halloween week", night: true, occasion: "halloween" },
+  { name: "dusk, Halloween", night: false, occasion: "halloween" },
+  { name: "night, Halloween", night: true, occasion: "halloween" },
 ];
 // Every sound the working tree's sound code can play, in the order it lists them.
 const source = readFileSync(path.join(rootDir, "lib/world/sound.js"), "utf8");
