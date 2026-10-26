@@ -52,10 +52,43 @@ export default function BackCrumb({ href, label }: { href: string; label: string
       onClick={(e) => {
         if (!back || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
-        history.go(-back.steps);
+        goBack(back.steps);
       }}
     >
       ← {back ? (names[new URL(back.url).pathname] ?? "Back") : label}
     </Link>
   );
+}
+
+const named = () => document.querySelectorAll<HTMLElement>("[data-vt]");
+
+/** Goes `steps` back in history. React animates the page change of a link, but it applies a step through history at
+ *  once, so the browser can put the scroll back; going back here runs the same transition itself. Whatever carries a
+ *  data-vt name on this page and on the one it returns to (a case study's heading and scene, its card) is named for the
+ *  transition, and only while it runs, so nothing else ever sees two elements of one name. */
+function goBack(steps: number) {
+  const go = () => history.go(-steps);
+  const here = [...named()];
+  if (!here.length || !document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches)
+    return go();
+
+  for (const el of here) el.style.viewTransitionName = el.dataset.vt!;
+  const root = document.documentElement;
+  const arrive = () => {
+    root.style.scrollBehavior = "";
+    for (const el of named())
+      if (here.some((old) => old.dataset.vt === el.dataset.vt)) el.style.viewTransitionName = el.dataset.vt!;
+  };
+  const transition = document.startViewTransition(() =>
+    new Promise<void>((done) => {
+      // The page scrolls smoothly, so the browser would glide back to the reader's place only after the page it
+      // returns to is pictured, and the card would be pictured where it was before. Put back at once, it is in place.
+      root.style.scrollBehavior = "auto";
+      addEventListener("popstate", () => setTimeout(done), { once: true });
+      go();
+    }).then(arrive),
+  );
+  transition.finished.finally(() => {
+    for (const el of named()) el.style.viewTransitionName = "";
+  });
 }

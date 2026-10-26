@@ -123,6 +123,7 @@ export async function switchTheme(choice: ThemeChoice, from: { x: number; y: num
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce || !document.startViewTransition) return setTheme(choice);
 
+    document.documentElement.classList.add("theming");
     const transition = document.startViewTransition(() => setTheme(choice));
     // The browser skips the transition when the tab is hidden, and then `ready` rejects. The theme still switches; there
     // is just nothing to animate.
@@ -144,6 +145,7 @@ export async function switchTheme(choice: ThemeChoice, from: { x: number; y: num
     );
     await transition.finished;
   } finally {
+    document.documentElement.classList.remove("theming");
     switching = false;
   }
 }

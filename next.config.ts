@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "js", "jsx", "mdx"],
   experimental: {
     mdxRs: true,
+    viewTransition: true,
   },
   // The policy stops other sites framing these pages and a stray <base> or plugin changing what a page loads. It
   // leaves scripts alone: Next writes each page's data into inline scripts, so limiting scripts would take a nonce,

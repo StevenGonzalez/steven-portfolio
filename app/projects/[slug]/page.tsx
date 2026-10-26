@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ViewTransition } from "react";
 import BackCrumb from "@/components/BackCrumb";
 import ExternalLink from "@/components/ExternalLink";
 import NextUp from "@/components/NextUp";
@@ -62,7 +63,11 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           <div>
             <header className="doc-head">
               <p className="label">Case study</p>
-              <h1>{project.title}</h1>
+              {/* Named like the project's card and its title, so opening a card grows it into this page, and the back link
+                  shrinks it again (data-vt, see BackCrumb). */}
+              <ViewTransition name={`proj-title-${project.slug}`}>
+                <h1 data-vt={`proj-title-${project.slug}`}>{project.title}</h1>
+              </ViewTransition>
               <p className="sub">{project.summary}</p>
               {project.timeline ? <p className="meta">{project.timeline}</p> : null}
               <ul className="pills">
@@ -81,9 +86,11 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               ) : null}
             </header>
 
-            <figure className="doc-figure">
-              <ProjectScene slug={project.slug} label={project.scene} />
-            </figure>
+            <ViewTransition name={`proj-${project.slug}`}>
+              <figure className="doc-figure" data-vt={`proj-${project.slug}`}>
+                <ProjectScene slug={project.slug} label={project.scene} />
+              </figure>
+            </ViewTransition>
 
             <div className="prose doc-body">
               {sections.map((section) => (

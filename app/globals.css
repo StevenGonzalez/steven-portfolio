@@ -1861,20 +1861,31 @@ main:focus {
   }
 }
 
-/* Theme changes: the new theme grows outward through a soft-edged circle (see switchTheme in lib/theme.ts). */
-::view-transition-old(root),
-::view-transition-new(root) {
+/* Theme changes: the new theme grows outward through a soft-edged circle (see switchTheme in lib/theme.ts). The class
+   is there only while the theme switches, so moving between pages keeps the browser's own fade. */
+html.theming::view-transition-old(root),
+html.theming::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
-::view-transition-new(root) {
+html.theming::view-transition-new(root) {
   mask: radial-gradient(closest-side, #000 72%, transparent) no-repeat;
   mask-size: 0 0;
+}
+/* Moving between pages: a project card grows into its case study, and its title into the heading. */
+::view-transition-group(*) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none;
   }
   .btn,
   .tag,
