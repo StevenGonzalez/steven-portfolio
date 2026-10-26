@@ -147,6 +147,10 @@ function validateInsights(insights, mdxSlugs) {
 // share an id.
 async function validateArticleContents(slug) {
   const source = await readFile(path.join(insightsDir, slug, "page.mdx"), "utf8");
+  // Without its own card, a shared link to the article shows the Writing page's card instead.
+  await readFile(path.join(insightsDir, slug, "opengraph-image.tsx"), "utf8").catch(() => {
+    throw new Error(`Insight ${slug} has no opengraph-image.tsx, so a shared link to it gets no card of its own.`);
+  });
   const ids = [...source.matchAll(/^## (.+)$/gm)].map(([, heading]) => slugify(heading.replace(/\]\([^)]*\)/g, "]")));
   const links = [...source.matchAll(/href: "#([^"]+)"/g)].map(([, id]) => id);
 
