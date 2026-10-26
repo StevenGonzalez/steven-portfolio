@@ -10,8 +10,9 @@ let greeted = false;
 /** Small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
  *  arrive together; the hidden state is added here, and only to those not yet on screen, so nothing that has been
  *  painted blinks out and back, and nothing stays hidden if this never runs. Cards marked
- *  data-glow catch the light where the pointer is. A box marked data-scene plays that painted scene. And whoever opens
- *  the console finds a note about how the world is made, and a switch for it that nothing on the page shows. */
+ *  data-glow catch the light where the pointer is. A box marked data-scene plays that painted scene. A service worker
+ *  keeps the site for offline use. And whoever opens the console finds a note about how the world is made, and a
+ *  switch for it that nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
@@ -64,6 +65,23 @@ export default function SiteEffects() {
     };
     document.addEventListener("pointermove", onMove, { passive: true });
     return () => document.removeEventListener("pointermove", onMove);
+  }, []);
+
+  // The service worker keeps the site for offline use (public/sw.js). Once it is in charge it is handed everything this
+  // page loaded before then, so the first visit is kept as well. Development builds go without it, so a stale copy
+  // never stands in for code being edited.
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production" || !("serviceWorker" in navigator)) return;
+    const sw = navigator.serviceWorker;
+    sw.register("/sw.js")
+      .then(() => sw.ready)
+      .then((reg) =>
+        reg.active?.postMessage({
+          type: "keep",
+          urls: [location.href, ...performance.getEntriesByType("resource").map((r) => r.name)],
+        }),
+      )
+      .catch(() => {});
   }, []);
 
   useEffect(() => {

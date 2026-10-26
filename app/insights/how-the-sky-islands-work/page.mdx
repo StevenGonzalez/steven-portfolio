@@ -71,6 +71,8 @@ The renderer keeps a running average of how long frames take. If they run long f
 
 If your system asks for reduced motion, the world draws once and holds still.
 
+It works offline too. A small service worker keeps each page you visit and the files it used, the world's scripts included, and hands back the kept copy when there is no connection. Pages come from the network whenever it answers, so a new version shows straight away. Offline, the field guide tells you the trader can't fly today, and its letter waits for a day you're online.
+
 ## Rules for touching it
 
 I wanted it to be something you play with, without any instructions on screen. A few rules made that work:
