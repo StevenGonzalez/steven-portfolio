@@ -6,8 +6,8 @@ export const metadata = insightMetadata("canvas-26-fps-firefox-linux");
 <InsightArticle
   slug="canvas-26-fps-firefox-linux"
   toc={[
-    { title: "Measure it first", href: "#measure-it-first" },
-    { title: "Pixels are the bill", href: "#pixels-are-the-bill" },
+    { title: "Measuring it", href: "#measuring-it" },
+    { title: "Where the time went", href: "#where-the-time-went" },
     { title: "Why lite mode didn't help", href: "#why-lite-mode-didnt-help" },
     { title: "A second step", href: "#a-second-step" },
     { title: "Never step back up", href: "#never-step-back-up" },
@@ -16,15 +16,15 @@ export const metadata = insightMetadata("canvas-26-fps-firefox-linux");
 
 I use Firefox on Linux. A while after the world at the top of this site went live, I noticed it lagged when I clicked around in it.
 
-## Measure it first
+## Measuring it
 
 In a real Firefox window on my machine, the world ran at about 30 fps and dropped to 26 while I clicked. Every so often a frame hitched for more than 100 ms, and the worst was 112 ms. Each frame took about 14 ms to draw and about 9 ms more to hand over to the page. That's 23 ms a frame, which caps it below 45 fps before anything else happens.
 
-## Pixels are the bill
+## Where the time went
 
 Chrome draws a 2D canvas on the graphics card. Firefox on Linux, on my setup, draws it on the CPU. On the CPU, the cost of a canvas follows its pixel count closely: twice the pixels, about twice the time.
 
-At the time, the world was 11 stacked canvases. Eight are painted once and only slide after that, so they cost almost nothing per frame. The other three hold everything that moves, and they are cleared and redrawn in full on every frame, across the whole width of the screen. Those three were the bill.
+At the time, the world was 11 stacked canvases. Eight are painted once and only slide after that, so they cost almost nothing per frame. The other three hold everything that moves, and they are cleared and redrawn in full on every frame, across the whole width of the screen. Those three were where the time went.
 
 ## Why lite mode didn't help
 
@@ -48,6 +48,6 @@ In the same Firefox window, the world now runs at 67 to 83 fps while I move the 
 
 Each step stays on for the rest of the visit. A renderer that stepped back up whenever frames got fast again would flip back and forth near the threshold, and the flipping would be more noticeable than either mode. A single slow frame barely moves the average, and hitches over 50 ms are left out of it. A long run of hitches does switch on lite mode, because that's a device that can't keep up at all.
 
-The same lesson came up once more. The monitor on the desk behind the arch shows the world, and it first did that by copying every layer on every frame, which made the page lag while the arch was open. It now copies the world once, as the arch opens.
+The monitor on the desk behind the arch had a similar problem. It shows the world, and it first did that by copying every layer on every frame, which made the page lag while the arch was open. It now copies the world once, as the arch opens.
 
 </InsightArticle>

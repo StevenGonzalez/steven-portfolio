@@ -76,7 +76,7 @@ const KEYS = {
 const hz = (m) => 440 * 2 ** ((m - 69) / 12);
 ```
 
-The numbers are MIDI notes, and `hz` turns them into frequencies. A pentatonic scale has no two notes a half step apart, so any notes from it sound fine together. However fast someone clicks, it comes out as a tune and not a mess. Switching the theme plays a soft chord in the new key, and every click after that is in the new key too.
+The numbers are MIDI notes, and `hz` turns them into frequencies. A pentatonic scale has no two notes a half step apart, so any notes from it sound fine together. So however fast someone clicks, it still sounds like a tune. Switching the theme plays a soft chord in the new key, and every click after that is in the new key too.
 
 The lanterns in the tree use the same scale. Drag across them and each one rings the next note up from left to right, so a swipe plays a run, like wind chimes. On Halloween itself both keys switch to a darker Japanese scale on the same roots, and everything, clicks and lanterns and song, turns a little spooky.
 
@@ -96,7 +96,7 @@ The world is drawn in a web worker, and web workers can't play audio. So when so
 
 Under everything is the wind: noise through two band-pass filters at about 420 and 640 Hz, drifting slowly from side to side. The gusts come from the world itself. When one crosses the island, bending the grass and pushing the swing as it goes, the renderer sends it like any other sound, with how strong it is and how long it takes to cross. The page plays a rush of air that swells, rises in pitch and travels from the side the gust comes from to the other, so what you hear moves with what you see. Waterfalls are noise too, and the obvious way to add them, more noise, only thickens the wind into a roar. So they are kept apart from it in three ways.
 
-- **In pitch.** A waterfall's hiss is filtered to above 2.2 kHz, well over the wind. On top of it are drops: tiny sine blips that slide up in pitch as they fade, four to six a second, at random moments. The drops are what make it sound like water and not static.
+- **In pitch.** A waterfall's hiss is filtered to above 2.2 kHz, well over the wind. On top of it are drops: tiny sine blips that slide up in pitch as they fade, four to six a second, at random moments. Without the drops it sounds like static.
 - **In place.** Each waterfall is panned to where it is on screen, with very little reverb, so it sounds close and in one spot, while the wind is wide and far off.
 - **In level.** Together they sit about 4.5 LU under the wind. You hear them when you listen for them.
 
@@ -132,7 +132,7 @@ When the world scrolls out of view, or you switch tabs, the sound fades out. Abo
 
 ## Checking levels without listening
 
-Forty-nine sounds and a song, in four keys, are hard to balance by ear. So I rendered every sound offline. An `OfflineAudioContext` runs the same code as fast as it can and hands back the samples instead of playing them.
+Fifty-three sounds and a song, in four keys, are hard to balance by ear. So I rendered every sound offline. An `OfflineAudioContext` runs the same code as fast as it can and hands back the samples instead of playing them.
 
 For each sound, in both themes, I checked three things:
 

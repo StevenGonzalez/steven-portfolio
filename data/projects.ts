@@ -77,7 +77,7 @@ export const projects: ProjectDetail[] = [
         "A fitness app I co-founded and built: React Native on iOS and Android, a .NET API on Azure, and an AI trainer that answers from your own workout history.",
       points: [
         "Live on the App Store and Google Play",
-        "Customizable dashboard whose numbers always match the badges",
+        "Customizable dashboard, calculated on the phone",
         "AI trainer that answers from the user's own training history",
         "Generates routines and progresses workouts automatically",
         "Background work runs through Azure Service Bus",
@@ -87,14 +87,14 @@ export const projects: ProjectDetail[] = [
     problem:
       "My co-founder and I wanted a trainer, not a tracker. Most fitness apps we tried logged workouts well enough but planned them badly, made you fight the screen mid-set, or hid your progress. We wanted an app you could trust to plan your training, that stayed quick between sets, and that still made sense after months of use.",
     approach:
-      "I led the product and built the app and the back end on my own. The React Native client is built around a model of how training actually works: routines, workouts, exercises, timers, warmups, supersets and history. Each user arranges their own dashboard, and its cards are worked out on the phone with the same rules as the achievement badges, so the two always agree. Guided workouts progress automatically, using the same rules of thumb a coach would. Later I added an AI trainer that answers from the user's own training data instead of giving generic fitness advice. Most of the work there is choosing what goes into the model's context for each question: what's relevant, what's out of date, and what's too sensitive to send at all. If the trainer suggests a change, like swapping the bench press for dumbbells, the change goes through the same checks as one made in the app before it touches real data.",
+      "I led the product and built the app and the back end on my own. The React Native client is built around a model of how training actually works: routines, workouts, exercises, timers, warmups, supersets and history. Each user arranges their own dashboard, and its cards are calculated on the phone with the same rules as the achievement badges. Guided workouts progress automatically, using the same rules of thumb a coach would. Later I added an AI trainer that answers from the user's own training data instead of giving generic fitness advice. Most of the work there is choosing what goes into the model's context for each question: what's relevant, what's out of date, and what's too sensitive to send at all. If the trainer suggests a change, like swapping the bench press for dumbbells, the change goes through the same checks as one made in the app before it touches real data.",
     architecture:
       "The apps talk to a C# .NET API, 86 endpoints across 14 controllers, split along the same lines as the training model. On Azure, SQL Server holds workouts and accounts, Cosmos DB holds the data that is naturally document-shaped, and Service Bus carries background work like notifications so it never holds up a request. In the app I kept screen state, shared app state and server data apart, which kept long workout sessions responsive.",
     tradeoffs:
       "Automatic progression needed limits so it could adapt without suggesting unsafe jumps. Running both SQL Server and Cosmos DB costs more to operate, so I kept a clear rule for what lives where. Moving work to the background made the app faster, but anything the user needs to see right away stays out of the queue.",
     outcome:
       "Virtual Trainer shipped on the App Store and Google Play with generated routines and workouts, guided training, progress reports, custom exercises, automatic progression and the AI trainer. I designed and ran the whole stack in production, from the mobile apps down to the cloud. The app and the API carry more than 6,000 automated tests between them, which is what keeps it safe to change.",
-    reading: ["one-number-one-place", "pulling-ai-into-real-products"],
+    reading: ["moving-the-dashboard-onto-the-phone", "pulling-ai-into-real-products"],
   },
   {
     slug: "sky-islands",

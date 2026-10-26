@@ -6,30 +6,26 @@ export const metadata = insightMetadata("ci-cd-templates-that-work");
 <InsightArticle
   slug="ci-cd-templates-that-work"
   toc={[
-    { title: "Only share what repeats", href: "#only-share-what-already-repeats" },
-    { title: "Treat it like an API", href: "#treat-it-like-an-api" },
-    { title: "Version it with tags", href: "#version-it-with-tags" },
-    { title: "Leave a few doors open", href: "#leave-a-few-doors-open" },
-    { title: "Make failures easy to read", href: "#make-failures-easy-to-read" },
-    { title: "Write down how to use it", href: "#write-down-how-to-use-it" },
+    { title: "What went into templates", href: "#what-went-into-templates" },
+    { title: "Parameters", href: "#parameters" },
+    { title: "Versioning", href: "#versioning" },
+    { title: "Where projects differ", href: "#where-projects-differ" },
+    { title: "Failures", href: "#failures" },
+    { title: "Docs", href: "#docs" },
   ]}
 >
 
-Most pipelines start as a copy of another pipeline. That works until there are enough copies that nobody knows which one is right.
+Most of our Azure DevOps pipelines had started as copies of other pipelines. Many still lived in the classic UI editor, where a change can't be reviewed and has no history next to the code. Teams kept rebuilding the same build, test, packaging and deploy steps, and the copies drifted apart.
 
-Our Azure DevOps setup got there. Many pipelines still lived in the classic UI editor, where a change can't be reviewed and has no history next to the code. Teams kept rebuilding the same build, test, packaging and deploy steps, and the copies drifted apart. I moved the pipelines to YAML, then pulled the repeated steps into one shared template repository. Here is what made teams willing to depend on it.
+I moved the pipelines to YAML, then pulled the repeated steps into one shared template repository.
 
-## Only share what already repeats
+## What went into templates
 
-I didn't start by designing a template library. I started with what the pipelines were already doing. Building, running tests, packaging and deploying showed up in nearly all of them, each with small differences nobody had chosen on purpose.
+I started from what the pipelines were already doing instead of designing a library. Building, running tests, packaging and deploying showed up in nearly all of them, each with small differences nobody had chosen on purpose. A step only one project needed stayed in that project's pipeline.
 
-If only one project needs a step, it stays in that project's pipeline. A template with one user only gives people one more file to open.
+## Parameters
 
-## Treat it like an API
-
-Once other pipelines depend on a template, its parameters are a public interface. Rename one and you break someone's build.
-
-So I keep the parameter list short, give each one a default that works for the common case, and name them after what they mean to the person using the template. A team should be able to read its own pipeline and know what it does without opening the template repository. Using one looks something like this:
+Once other pipelines depend on a template, its parameters are a public interface, and renaming one breaks someone's build. I kept the list short, gave each parameter a default that works for the common case, and named them for what they mean to the person using the template. A team should be able to read its own pipeline without opening the template repository. Using one looks like this:
 
 ```yaml
 resources:
@@ -45,36 +41,30 @@ steps:
       solution: src/App.sln
 ```
 
-If a template needs twenty parameters, it isn't saving anyone much. If it hides every step behind one vague name, nobody can tell what broke when it fails.
+A template with twenty parameters doesn't save anyone much. One that hides every step behind a vague name is hard to debug when it fails.
 
-## Version it with tags
+## Versioning
 
-This is the part that made it safe. Pipelines don't point at the template repository's main branch. They point at a semantic version tag:
+Pipelines don't point at the template repository's main branch. They point at a semantic version tag:
 
 - A patch release fixes something without changing behavior.
 - A minor release adds something optional.
 - A major release changes the contract.
 
-Each team decides when to move up. I can keep improving the templates, and nothing I merge can break another team's release build that afternoon. A breaking change goes into a new major version, and the old tag keeps working for anyone who isn't ready.
+Each team decides when to move up. I can keep improving the templates without breaking another team's release build, and a breaking change goes into a new major version while the old tag keeps working for anyone who isn't ready.
 
-It takes some discipline to decide which kind of change you're making. That is still far cheaper than every team maintaining its own copy of the same YAML.
+## Where projects differ
 
-## Leave a few doors open
+Projects differ in paths, test projects and deploy targets, so the templates need room for that. If every step can be overridden, though, the template keeps nothing consistent. I allowed the variations that were real, like paths, optional stages and environment values, and kept the order of the steps and the safety checks the same for everyone.
 
-Every project is a little different: paths, test projects, deploy targets. Templates need room for that.
+## Failures
 
-The trap is letting every step be overridden. Then the template keeps nothing consistent and just moves the confusion into one file. I allow the variations that are real, like paths, optional stages and environment values. The order of the steps and the safety checks stay the same for everyone.
+Step names say exactly what they do, so the failing one is obvious in the log. Failures happen close to their cause, and artifact names and variables are predictable enough that you can work out what happened without reading the template's source.
 
-## Make failures easy to read
+## Docs
 
-A template that saves ten minutes of setup and costs an hour every time a build breaks is a bad trade.
+Short docs live next to the templates: a minimal example, a fuller one, what each parameter does, and what changed in each major version.
 
-Step names should say exactly what they do, so the failing one is obvious in the log. Failures should happen close to their cause. Artifact names and variables should be predictable enough that you can work out what happened without reading the template's source.
-
-## Write down how to use it
-
-Short docs, kept next to the templates: a minimal example, a fuller one, what each parameter does, and what changed in each major version. Most of what stops people from adopting shared tooling is not knowing what they're signing up for, and a page of notes answers most of that.
-
-Pipelines are now defined the same way across teams, complex ones take less time to set up, and a fix to a shared step is written once. They went from settings in a UI to code we review and version like everything else.
+Pipelines are now defined the same way across teams, complex ones take less time to set up, and a fix to a shared step is made once. They're code we review and version instead of settings in a UI.
 
 </InsightArticle>

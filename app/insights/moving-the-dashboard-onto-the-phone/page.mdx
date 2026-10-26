@@ -1,0 +1,62 @@
+import InsightArticle from "@/components/InsightArticle";
+import { insightMetadata } from "@/lib/meta";
+
+export const metadata = insightMetadata("moving-the-dashboard-onto-the-phone");
+
+<InsightArticle
+  slug="moving-the-dashboard-onto-the-phone"
+  toc={[
+    { title: "How it was built", href: "#how-it-was-built" },
+    { title: "Moving it", href: "#moving-it" },
+    { title: "One copy of the history", href: "#one-copy-of-the-history" },
+    { title: "Pounds", href: "#pounds" },
+    { title: "Trade-offs", href: "#trade-offs" },
+  ]}
+>
+
+Virtual Trainer has a dashboard of cards (workouts completed, weekly streak, volume per week and a few others) and a set of achievement badges. Many of them count the same things. For a while they were counted by two different pieces of code, and a card and a badge could show different numbers for the same thing.
+
+## How it was built
+
+The cards came from the API. An endpoint loaded the member's workout history, calculated every card in C#, and saved the result as a snapshot per member and time zone, so the next request didn't have to do it again.
+
+The badges were calculated on the phone, in TypeScript, when a workout finished.
+
+So the rules for turning logged sets into numbers existed in two languages: what counts as a workout, which sets count toward volume, where a week starts in the member's time zone. They drifted. I also found three separate copies of the check for whether a session counts as a workout.
+
+## Moving it
+
+I moved the cards to the phone. The badges already needed the whole history on the device, so calculating the cards there too meant one implementation instead of two. The server now only sends the layout: which cards the member picked, in what order.
+
+The rules went into one file, `workoutMetrics.ts`. The post-workout summary, the badges, the cards and the charts behind the cards all use it. Most of the rules are small:
+
+```ts
+export const isWorkingSet = (set: { setTypeId?: number }): boolean => set.setTypeId !== SetTypes.WarmUp;
+
+export const isQualifyingHistory = (history: WorkoutHistoryDto): boolean =>
+  (history.workout?.exercises ?? []).some((wrapper) => (wrapper.exercise?.exerciseSets ?? []).some(isWorkingSet));
+```
+
+A warm-up set never counts toward anything, and a session with only warm-ups isn't a workout.
+
+## One copy of the history
+
+Shared rules don't help much if the dashboard and the badges read different copies of the data. Both read the history through one React Query key, so one request feeds both.
+
+The key includes the end of the date range. If the end were "now plus 24 hours", every screen that mounted a few seconds apart would get its own key and its own request. So the end is rounded to the start of tomorrow in the member's time zone, and it stays the same all day.
+
+When a workout finishes, the app appends it to that cached history right away. The cards and badges update before the server answers, and without a connection. The refetch replaces the appended copy later. The append matches any full-history key, not only today's, so a phone left open on the dashboard past midnight still gets it.
+
+## Pounds
+
+Weights are stored in pounds, whatever unit the member reads them in. The badges are recalculated from the full history every time the app starts, and a volume badge can drop a tier if the recount comes in lower. If volume were calculated in the display unit, switching to kilograms would take badges away. So nothing in `workoutMetrics.ts` takes a unit, and the cards convert when they display a number.
+
+## Trade-offs
+
+The phone now downloads the member's whole workout history, which grows every month they train. The badges already made that request, so the dashboard didn't add one, but it is the main cost of doing it this way.
+
+Calculating on the phone also means waiting for that history before the cards have numbers. The last values are saved on the device, so the dashboard shows those on launch and replaces them when the new ones are ready.
+
+Phones had also cached the old server response, in the old shape, under the same query key. I changed the persisted cache's buster string so the update threw those away instead of trying to read them.
+
+</InsightArticle>

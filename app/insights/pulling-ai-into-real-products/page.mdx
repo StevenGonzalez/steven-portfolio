@@ -6,46 +6,42 @@ export const metadata = insightMetadata("pulling-ai-into-real-products");
 <InsightArticle
   slug="pulling-ai-into-real-products"
   toc={[
-    { title: "Start from the job", href: "#start-from-the-job" },
-    { title: "Context is the feature", href: "#context-is-the-feature" },
-    { title: "Keep the rules in code", href: "#keep-the-rules-in-code" },
-    { title: "Easy to trust, easy to ignore", href: "#easy-to-trust-easy-to-ignore" },
-    { title: "Test the behavior", href: "#test-the-behavior-not-the-demo" },
+    { title: "What the model does", href: "#what-the-model-does" },
+    { title: "Context", href: "#context" },
+    { title: "Rules stay in code", href: "#rules-stay-in-code" },
+    { title: "Where answers come from", href: "#where-answers-come-from" },
+    { title: "Testing it", href: "#testing-it" },
   ]}
 >
 
-Virtual Trainer has an AI trainer. You can ask it about your progress or your plan, and it answers from your own workout history instead of giving generic fitness advice. Building it shaped how I think about AI in products in general.
+Virtual Trainer has an AI trainer. You can ask it about your progress or your plan, and it answers from your own workout history instead of with generic fitness advice. These are the rules I ended up following while building it.
 
-## Start from the job
+## What the model does
 
-I start with what the person is trying to do, not with where a model could fit.
+Language models are good at explaining, summarizing, drafting, and answering questions about data you give them. They're bad at anything that has to come out exactly the same every time, like transactions, strict business rules and calculations.
 
-Explaining, summarizing, drafting and answering questions about your own data are things language models are good at. Exact transactions, strict business rules and anything that has to come out the same every time are not.
+So in Virtual Trainer, workout history, timers, completed sets, account state and progression are all plain code. The AI trainer reads that data and explains it. When it wants to change something, it goes through the app like everything else.
 
-In Virtual Trainer that line is clear. Workout history, timers, completed sets, account state and progression are plain code. The AI trainer reads from them and explains them. It doesn't own them.
+## Context
 
-## Context is the feature
+Without context, a model gives the answer it would give anyone. The trainer is useful because it answers from the member's own training data, and most of the work was deciding what goes into that context for each question: what's relevant, what's out of date, and what's too sensitive to send at all. More data didn't always give a better answer.
 
-A model with no context gives the answer it would give anyone. That's easy to build and doesn't help much.
+## Rules stay in code
 
-What makes the trainer useful is that it answers from the user's own training data. Choosing what goes into that context is engineering work, more than prompt wording: what's relevant to this question, what's out of date, and what's sensitive enough that it shouldn't be sent at all. More data doesn't automatically mean a better answer.
+If the trainer suggests a change, like swapping the bench press for dumbbells, the change goes through the same checks as one made by hand before it touches real data.
 
-## Keep the rules in code
+Progression is where this matters most. Automatic progression in Virtual Trainer has limits, so it can adapt without suggesting unsafe jumps. The trainer doesn't get a second progression system of its own. It can explain what the rules decided and help someone pick between options that are already safe.
 
-The model can interpret, suggest, summarize and explain. The app validates, saves, authorizes, calculates and enforces rules. If a model suggests a change, the change goes through the same checks as anything else before it touches real data.
+## Where answers come from
 
-This matters most where the product already has rules. Automatic progression in Virtual Trainer has limits, so it can adapt without suggesting unsafe jumps. A model shouldn't invent a second progression system next to that one. It can explain what the rules decided and why, and help someone choose between options that are already safe.
+People believe an answer more when they can see what it's based on. "Based on your last four workouts" is easier to trust than advice with no source. When the trainer isn't sure, it should say so, and when it can't answer safely, it should say that instead of guessing.
 
-## Easy to trust, easy to ignore
+There should also be a way around it: look at the data yourself, edit what it generated, or ignore the suggestion. I'd rather a generated plan get reviewed before it's applied than have it quietly change someone's account.
 
-People trust an AI feature when they can see what it's doing. They should know when they're reading generated text and what it's based on. "Based on your last four workouts" is easier to believe than advice that comes from nowhere. When the system isn't sure, it should say so. When it can't answer safely, it should say that instead of reaching.
+## Testing it
 
-There should always be a way out too: look at the underlying data, edit what was generated, or skip the suggestion entirely. A generated plan that someone reviews before it's applied is safer than one that quietly changes their account.
+A good demo doesn't tell you much. I keep a set of real examples: normal questions, edge cases, things it should refuse, and answers that came out wrong before. They get run again whenever the prompt, the context or the model changes.
 
-## Test the behavior, not the demo
-
-Looking good in a demo doesn't tell you much. Collect real examples: normal questions, edge cases, things it should refuse, and answers that came out wrong. Run them again whenever the prompt, the context or the model changes. That doesn't need a framework on day one, just the habit.
-
-Check the outcome as well as the text. Did the answer help? Did it stay inside the product's rules? When it failed, could the UI show that clearly? I hold the rest of the app to the same questions.
+Besides reading the text, I check whether the answer helped, whether it stayed inside the app's rules, and whether the UI made a failure obvious.
 
 </InsightArticle>

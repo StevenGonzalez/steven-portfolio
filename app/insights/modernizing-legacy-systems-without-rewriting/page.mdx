@@ -6,49 +6,49 @@ export const metadata = insightMetadata("modernizing-legacy-systems-without-rewr
 <InsightArticle
   slug="modernizing-legacy-systems-without-rewriting"
   toc={[
-    { title: "The old code is the spec", href: "#the-old-code-is-the-spec" },
-    { title: "Audit dependencies first", href: "#audit-the-dependencies-first" },
-    { title: "One kind of change at a time", href: "#change-one-kind-of-thing-at-a-time" },
-    { title: "Fix the dangerous parts", href: "#fix-the-dangerous-parts-on-purpose" },
-    { title: "Checks that can fail", href: "#end-each-stage-with-a-check-that-can-fail" },
-    { title: "When something can't move", href: "#when-something-cant-move" },
+    { title: "Why not rewrite", href: "#why-not-rewrite" },
+    { title: "Dependencies first", href: "#dependencies-first" },
+    { title: "One kind of change per stage", href: "#one-kind-of-change-per-stage" },
+    { title: "Encryption", href: "#encryption" },
+    { title: "Checks for each stage", href: "#checks-for-each-stage" },
+    { title: "Parts that couldn't move", href: "#parts-that-couldnt-move" },
   ]}
 >
 
-I led the move of a business-critical desktop application from .NET Framework 4.7.1 to .NET 8. We didn't rewrite it. We moved it in stages, and the people who depend on it kept working the whole time. This is how I'd approach the next one.
+I led the move of a business-critical desktop application from .NET Framework 4.7.1 to .NET 8. We didn't rewrite it. We moved it in stages, and the people who depend on it kept working the whole time.
 
-## The old code is the spec
+## Why not rewrite
 
-An old app that people still rely on got old by working. Any odd branch in it might be a bug, or it might be a rule someone depends on, and from the code alone you often can't tell which.
+An app people have relied on for years has rules in it that nobody wrote down. An odd branch might be a bug, or it might be something a customer depends on, and the code alone often can't tell you which.
 
-That is the main reason I don't rewrite. A rewrite throws away the only complete description of what the system does, and then you rediscover the rules one bug report at a time. Upgrading in place keeps the running app as the reference. If the new version behaves differently, that difference gets explained before it ships.
+A rewrite loses all of that, and you find the rules again one bug report at a time. Upgrading in place keeps the running app as the reference. If the new version behaves differently, the difference gets explained before it ships.
 
-## Audit the dependencies first
+## Dependencies first
 
-Most of the cost of an upgrade like this hides in the packages. Before changing a target framework, I went through the dependencies and sorted each one:
+Most of the cost was in the packages. Before changing the target framework, I went through the dependencies and put each one in a group:
 
 - upgrade it directly
 - replace it with something supported
 - remove it, because nothing needs it anymore
 - isolate it for now, because it can't move yet
 
-That list became the plan. It also gave a better answer to "how far along are we?" than a percentage: these risks are gone, and these are left.
+That list became the plan. It was also a better way to report progress than a percentage: these risks are gone, and these are left.
 
-## Change one kind of thing at a time
+## One kind of change per stage
 
-If one step changes the runtime, swaps libraries, restructures the code and renames things, every bug has four possible causes.
+If one step changes the runtime, swaps libraries, restructures the code and renames things, every bug has four possible causes. So each stage changed one kind of thing.
 
-So each stage changed one kind of thing. Moving the runtime didn't come with a redesign. Some awkward structure went over to .NET 8 exactly as it was, and that was fine. Once the app runs on a supported runtime, cleaning that up is a small, normal change instead of part of a huge one.
+Moving the runtime didn't come with a redesign. Some awkward code went over to .NET 8 exactly as it was. Cleaning it up later, on a supported runtime, was a small normal change instead of part of a huge one.
 
-## Fix the dangerous parts on purpose
+## Encryption
 
-Some old code isn't just ugly. It's unsafe on a modern stack. In this app that was encryption code built on APIs that are now obsolete.
+Some of the old code wasn't only ugly, it was unsafe on a modern stack. In this app that was encryption code built on APIs that are now obsolete.
 
-That kind of code doesn't get swept along with everything else. I replaced the obsolete cryptography with current APIs as its own piece of work, with the old and new behavior written down and tests aimed at exactly that path. If anything encrypted the old way still has to be read, the new code has to read it.
+I replaced it with current APIs as its own piece of work, with the old and new behavior written down and tests aimed at exactly that path. Anything already encrypted the old way still had to be readable by the new code.
 
-## End each stage with a check that can fail
+## Checks for each stage
 
-A stage isn't done when it compiles. Each one ended with the main workflows tested before it went out more widely. The checks were things like:
+A stage wasn't done when it compiled. Each one ended with the main workflows tested before it went out more widely:
 
 - it builds and starts on the new runtime
 - the main workflows behave the same as before
@@ -56,12 +56,10 @@ A stage isn't done when it compiles. Each one ended with the main workflows test
 - the security-sensitive paths still work
 - we know how to deploy it and how to roll it back
 
-Without gates like these, an upgrade turns into a long-lived branch that nobody trusts enough to merge.
+## Parts that couldn't move
 
-## When something can't move
+When a component couldn't move forward cleanly, I isolated it behind a boundary or replaced it, so it didn't hold up the rest of the app.
 
-Sometimes a component can't move forward cleanly. Instead of holding the whole upgrade back for it, I isolated it behind a boundary or replaced it, and the rest of the app kept moving. A little temporary complexity is fine, as long as everyone knows it's temporary.
-
-The app now runs on .NET 8 with supported dependencies and current encryption. The team stopped working around the old stack and went back to shipping changes, and the people using it didn't have to change how they work.
+The app now runs on .NET 8 with supported dependencies and current encryption. The team no longer has to work around the old stack, and the people using it didn't have to change how they work.
 
 </InsightArticle>

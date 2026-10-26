@@ -6,50 +6,52 @@ export const metadata = insightMetadata("production-saas-edge-cases");
 <InsightArticle
   slug="production-saas-edge-cases"
   toc={[
-    { title: "Let a member book a class", href: "#let-a-member-book-a-class" },
-    { title: "Every setting multiplies the cases", href: "#every-setting-multiplies-the-cases" },
-    { title: "Whose data is it?", href: "#whose-data-is-it" },
-    { title: "Reports find the vague parts", href: "#reports-find-the-vague-parts" },
-    { title: "Somebody's normal day", href: "#somebodys-normal-day" },
+    { title: "Booking a class", href: "#booking-a-class" },
+    { title: "Settings", href: "#settings" },
+    { title: "Tenants", href: "#tenants" },
+    { title: "Reports", href: "#reports" },
+    { title: "Who it affects", href: "#who-it-affects" },
   ]}
 >
 
-Before the saws, I worked on a SaaS platform that gyms, studios and multi-location operators run their businesses on: scheduling, billing, leads, member features and reporting. The same code serves a single studio and a national franchise, and each of them runs differently.
+Before the saws, I worked on a SaaS platform that gyms, studios and multi-location operators use to run their business: scheduling, billing, leads, member features and reporting. The same code serves a single studio and a national franchise, and they run very differently.
 
-What I learned there is that most of the work in a feature is everything else it touches.
+The main thing I learned there is that the UI is usually the small part of a feature.
 
-## "Let a member book a class"
+## Booking a class
 
-It sounds like one button. Then the questions start.
+"Let a member book a class" looks like one button. Before it can work, the code has to know:
 
-Is the membership active? Does it include this class? Is the class full, and is there a waitlist? Can staff override that? What if the last payment failed? What if the member belongs to another location? What if the class moved, got cancelled or changed instructors after they booked? And reporting will later want to tell a no-show from a late cancel.
+- whether the membership is active and includes this class
+- whether the class is full, whether there's a waitlist, and whether staff can override it
+- whether the last payment failed
+- whether the member belongs to a different location
+- what happens if the class moves, gets cancelled or changes instructor after they book
 
-That one button reaches into scheduling, billing, membership rules, permissions and reporting. The UI is small and the behavior isn't. So before changing anything, I learned to map what it touches.
+Later, reporting needs to tell a no-show from a late cancel too. That one button touches scheduling, billing, membership rules, permissions and reporting, so I got into the habit of mapping all of that before changing anything.
 
-## Every setting multiplies the cases
+## Settings
 
-Configuration is how one product fits many different businesses. It's also how a change that works for one customer breaks for another, because of a membership rule, a tax setting, a staff permission or a location policy nobody thought to test.
+Configuration is how one product fits many different businesses. It's also how a change that works for one customer breaks for another, because of a membership rule, a tax setting, a staff permission or a location policy nobody tested.
 
-The default setup almost never looks like a real customer's. I treat settings as part of what needs testing: which ones interact, which combinations are common, and which are risky. Sometimes the better fix is changing the model so a bad combination can't exist, instead of adding one more if-statement.
+The default setup rarely looks like a real customer's, so I test settings like any other input: which ones interact, which combinations are common, and which are risky. Sometimes the better fix is changing the model so a bad combination can't exist, instead of adding another if-statement.
 
-## Whose data is it?
+## Tenants
 
-In a multi-tenant system, every query carries a second question: is this the right customer's data? Tenant IDs, location scoping, role checks and report filters look like plumbing. They are what lets many businesses share one system safely.
+In a multi-tenant system, every query also has to get the right customer's data. Tenant IDs, location scoping, role checks and report filters look like plumbing, but they're what lets many businesses share one system safely.
 
-They also shape how features get built. A query that's fast on a dev database can be slow on production data. A report that's right for one location can be wrong across several. A background job that touches shared tables needs the same filtering as a request, and logs that show it did.
+They change how features get built, too. A query that's fast on a dev database can be slow on production data. A report that's right for one location can be wrong across several. A background job that touches shared tables needs the same filtering as a request, and logs that show it applied it.
 
-A correct number belongs to the right customer, follows that customer's rules, and means what they think it means.
+## Reports
 
-## Reports find the vague parts
+Day to day, staff can work around a vague state because they know the context. Reports can't. They add things up, and owners make decisions from them: revenue, attendance, payroll, retention.
 
-Day to day, staff can work around a fuzzy state because they know the context. Reports can't. They add things up, and owners make decisions from them: revenue, attendance, payroll, retention.
+That makes reporting the place where unclear workflows show up. What counts as a completed booking? When does revenue count? How does a refund show up? Is a staff override recorded as one? Each of those is a product decision, and if the data model doesn't record the answer clearly, every report answers it a little differently.
 
-So reporting is where an unclear workflow shows itself. What counts as a completed booking? When does revenue count? How does a refund show up? Is a staff override recorded as one? Each of those is a product decision. If the data model doesn't record the answer clearly, every report answers it a little differently.
+## Who it affects
 
-## Somebody's normal day
+Bugs on this kind of platform land on real people. A billing mistake can reach someone's payroll. A scheduling bug can leave a member at the front desk for a class that isn't there. A permissions mistake can show data to the wrong person.
 
-Bugs here land on real people. A billing mistake can reach someone's payroll. A scheduling bug can leave a member at the front desk for a class that isn't there. A permissions mistake can show data to the wrong person.
-
-Keeping that in mind changed how I build: more validation, clearer error states, careful migrations, and asking who relies on a behavior and how they'd notice if it broke.
+Working there made me add more validation, clearer error states and more careful migrations, and ask who relies on a behavior before I change it.
 
 </InsightArticle>

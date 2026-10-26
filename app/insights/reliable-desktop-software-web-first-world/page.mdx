@@ -6,10 +6,10 @@ export const metadata = insightMetadata("reliable-desktop-software-web-first-wor
 <InsightArticle
   slug="reliable-desktop-software-web-first-world"
   toc={[
-    { title: "No refresh button", href: "#theres-no-refresh-button" },
-    { title: "The screen has to tell the truth", href: "#the-screen-has-to-tell-the-truth" },
-    { title: "Keep the layers apart", href: "#keep-the-layers-apart" },
-    { title: "Small changes, in order", href: "#small-changes-in-order" },
+    { title: "Releases", href: "#releases" },
+    { title: "What the screen shows", href: "#what-the-screen-shows" },
+    { title: "Layers", href: "#layers" },
+    { title: "Small changes", href: "#small-changes" },
   ]}
 >
 
@@ -17,39 +17,33 @@ _Update, Oct 2026: after a year and a half, the company cancelled the rewrite to
 
 At work I led a rewrite of the software that runs industrial saws. The operator interface was Angular, the back end was a C# API, and Electron.NET packaged both into one desktop app. RabbitMQ carried messages between the saw software and other programs, and a PLC integration talked to the machine itself.
 
-Most of that stack is ordinary web tech. But it ran a machine that someone was standing next to, and that changed a lot about how I built it.
+Most of that stack is ordinary web tech. But it ran a machine with someone standing next to it, and that changed how I built it.
 
-## There's no refresh button
+## Releases
 
-A website ships when you deploy it. Everyone gets the new version on their next page load. A desktop release is a build that gets installed on a machine and then runs there.
+A website updates when you deploy it, and everyone gets the new version on their next page load. A desktop release is a build that gets installed on a machine and stays there.
 
-So the release is part of the product. Every desktop release ships as one build with the UI, the API and the runtime together, so there's never a question of which front end is talking to which back end. For any release, I want to be able to answer:
+So every release shipped as one build with the UI, the API and the runtime together, and there was never a question of which front end was talking to which back end. For any release, I wanted to be able to say:
 
 - what version of each piece is inside it
 - how the app finds its local services
 - where it writes its logs
 - what the operator sees if startup fails
 
-## The screen has to tell the truth
+## What the screen shows
 
-In a web app, a button stuck waiting on a slow API is an annoyance. When the button controls a saw, the operator needs to know for certain whether the command happened.
+In a web app, a button stuck waiting on a slow API is annoying. When the button controls a saw, the operator needs to know whether the command actually happened.
 
-Every command crosses boundaries: UI to API, API to the message bus, then on to the machine. Any of those can be slow, down, or only partly done. The UI shouldn't guess. It shows what the system actually knows: connected or not, busy, waiting, done, failed.
+Every command goes from the UI to the API, from the API to the message bus, and then to the machine, and any of those steps can be slow, down or only partly done. So the UI shows only what the system knows: connected or not, busy, waiting, done, failed. I avoided optimistic updates here, because operators stop believing a screen that shows states the machine hasn't confirmed.
 
-I'm careful with optimistic updates here. Showing a state the machine hasn't confirmed is how people learn not to trust the screen.
+## Layers
 
-## Keep the layers apart
+The machine has its own timing and its own ways of failing, and none of that belonged in the Angular components. We kept the UI, the API and messaging as separate layers that could change independently, with fixed paths for talking to the machine.
 
-The machine has its own timing and its own ways of failing, and none of that belongs in the Angular components. We kept the UI, the API and messaging as separate layers that can change independently, with fixed, predictable paths for talking to the machine.
+The UI shows the workflow and stays quick because it runs locally. The API checks a command before it goes anywhere. Messaging moves it between programs. The PLC layer handles the protocol. Anything that touches the machine goes through explicit services and message contracts that we can watch, so a change to the UI can't quietly change how the machine behaves.
 
-Each layer gets one job. The UI shows the workflow and stays quick because it works locally. The API checks a command before it goes anywhere. Messaging moves it between programs. The PLC layer handles the protocol. Anything that touches the machine goes through explicit services and message contracts that we can watch.
+## Small changes
 
-When those jobs blur, a small UI change can end up affecting machine behavior. That's the kind of change you want to catch in review, not next to the saw.
-
-## Small changes, in order
-
-Every change has to line up across the UI, the API, the message contracts and the machine. Machine control rewards being predictable over being clever.
-
-So I'd rather ship small, well-scoped changes that are sequenced and tested carefully than one big improvement that touches four layers at once. The people using it are trying to get work done on the machine. The less they have to think about the software, the better it's doing its job.
+Most changes had to line up across the UI, the API, the message contracts and the machine. I preferred small changes, done in order and tested one at a time, over one bigger change across all four layers at once, so that when something went wrong there were fewer places to look.
 
 </InsightArticle>

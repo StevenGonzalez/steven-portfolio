@@ -2,10 +2,10 @@ import type { InsightPost } from "@/types/content";
 
 export const insights: InsightPost[] = [
   {
-    slug: "one-number-one-place",
-    title: "When the Dashboard and the Badge Disagreed",
+    slug: "moving-the-dashboard-onto-the-phone",
+    title: "Moving Virtual Trainer's Dashboard onto the Phone",
     summary:
-      "Virtual Trainer worked out the same numbers twice, in two languages, and they drifted. The fix was one set of rules and one copy of the data.",
+      "The dashboard cards and the achievement badges counted workouts with two copies of the same rules, one in C# and one in TypeScript. This is how I merged them.",
     date: "2026-10-26",
     category: "Mobile Engineering",
     readTime: "4 min read",
@@ -65,7 +65,7 @@ export const insights: InsightPost[] = [
     slug: "pulling-ai-into-real-products",
     title: "How I Think About Pulling AI Into Real Products",
     summary:
-      "Where AI actually helps a product, where plain deterministic code is still the right call, and how to build AI features people can trust.",
+      "What I learned adding an AI trainer to Virtual Trainer: what the model does, what stays in plain code, and how I test it.",
     date: "2025-12-18",
     category: "Product Engineering",
     readTime: "4 min read",
