@@ -1,6 +1,7 @@
-// Type-checks the world's engine, which is plain JavaScript, with the browser's types. Strict, except that a value with
-// no type written for it is allowed to be anything: the engine's types are inferred, and JSDoc says only what inference
-// can't work out. The workers are checked here too; they only use what a window also has.
+// Type-checks the world's engine, and the edge of the world's in lib/edge, which are plain JavaScript, with the
+// browser's types. Strict, except that a value with no type written for it is allowed to be anything: the engines'
+// types are inferred, and JSDoc says only what inference can't work out. The workers are checked here too; they only
+// use what a window also has.
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -16,5 +17,5 @@
     "isolatedModules": true,
     "types": []
   },
-  "include": ["*.js"]
+  "include": ["*.js", "../edge/*.js"]
 }

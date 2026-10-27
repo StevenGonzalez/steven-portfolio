@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/insights",
     ...insights.map((insight) => `/insights/${insight.slug}`),
     "/resume",
+    "/edge",
   ];
   return paths.map((path) => ({ url: new URL(path, siteUrl).href }));
 }
