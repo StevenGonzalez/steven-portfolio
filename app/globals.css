@@ -956,6 +956,20 @@ main:focus {
   position: absolute;
   will-change: translate;
 }
+/* The handle on the sun or moon, which drags it down. Touch on it drags
+   rather than scrolls. */
+.edge-grip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+.edge-grip:active {
+  cursor: grabbing;
+}
 .edge-copy {
   position: absolute;
   z-index: 2;
