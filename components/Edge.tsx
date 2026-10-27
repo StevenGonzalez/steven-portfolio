@@ -11,6 +11,7 @@ export default function Edge() {
   const count = useRef<HTMLParagraphElement>(null);
   const release = useRef<HTMLButtonElement>(null);
   const soundBtn = useRef<HTMLButtonElement>(null);
+  const tag = useRef<HTMLDivElement>(null);
 
   useEffect(
     () =>
@@ -19,6 +20,7 @@ export default function Edge() {
         count: count.current!,
         release: release.current!,
         soundBtn: soundBtn.current!,
+        tag: tag.current!,
       }),
     [],
   );
@@ -29,8 +31,9 @@ export default function Edge() {
         ref={box}
         className="edge-scene"
         role="img"
-        aria-label="The edge of the world at night. A sea of cloud pours over the edge in falls, and far below them a galaxy turns. In front, a lighthouse stands on a floating rock with a pier running out over nothing."
+        aria-label="The edge of the world. A sea of cloud pours over the edge in falls, and far below them a galaxy turns. In front, a lighthouse stands on a floating rock with a pier running out over nothing."
       />
+      <div ref={tag} className="tag" aria-hidden="true" />
       <div className="edge-copy">
         <h1 id="edge-h">The edge of the world</h1>
         <p>

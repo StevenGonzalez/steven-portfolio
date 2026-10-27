@@ -932,8 +932,8 @@ main:focus {
 
 /* ─── The edge of the world ────────────────────────────────────────────────── */
 
-/* A page of its own: the scene fills the screen, always at night, with the bar
-   transparent over it. Its layers are made and placed by lib/edge/stage.js. */
+/* A page of its own: the scene fills the screen, with the bar transparent over
+   it. Its layers are made and placed by lib/edge/stage.js. */
 .edge {
   position: relative;
   height: max(560px, 100svh);
@@ -972,7 +972,12 @@ main:focus {
   position: absolute;
   inset: -60px -140px -40px -100px;
   z-index: -1;
-  background: radial-gradient(closest-side, rgb(4 4 14 / 0.75), rgb(4 4 14 / 0.4) 60%, transparent);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--hero-shade) 75%, transparent),
+    color-mix(in srgb, var(--hero-shade) 40%, transparent) 60%,
+    transparent
+  );
 }
 .edge-copy h1 {
   font: 500 clamp(36px, 5vw, 58px)/1.05 var(--display);
