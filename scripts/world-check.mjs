@@ -134,7 +134,10 @@ try {
       const y = b[i];
       if (!x || !y || x.label !== y.label) bad = `checkpoint ${i}, which one side never reached`;
       else {
-        const layers = x.layers.flatMap((h, j) => (h !== y.layers[j] ? [j] : []));
+        // A layer only one side has differs only if it drew something.
+        const layers = [...new Set([...Object.keys(x.layers), ...Object.keys(y.layers)])].filter(
+          (k) => (x.layers[k] ?? "blank") !== (y.layers[k] ?? "blank"),
+        );
         const said =
           x.said !== y.said ? `, and the messages differ\n    ${A}: ${x.saidText}\n    ${B}: ${y.saidText}` : "";
         if (layers.length || said) bad = `${x.label}${layers.length ? `, layers ${layers.join(", ")}` : ""}${said}`;

@@ -6,6 +6,7 @@
 //   yarn bench:world --profile        also show where the working tree's frame time goes
 //   yarn bench:world --season winter  run in another season (autumn by default), or an occasion: halloween, newyear
 //   yarn bench:world --weather rain   run in the visitor's weather at its heaviest: rain, snow, fog, storm or wind
+//   yarn bench:world --aurora         run with the northern lights out as strongly as they come
 //
 // Each scenario runs both versions in alternating rounds and compares the median change. The check fails when the
 // working tree is more than --budget milliseconds (default 1) slower per frame in any scenario. Then the new work
@@ -27,6 +28,7 @@ const occasions = { halloween: "autumn", newyear: "winter" };
 const season = { season: occasions[asked] ?? asked, occasion: occasions[asked] ? asked : null };
 const kind = option("--weather", null);
 const weather = kind && { kind, level: 1, wind: 50 };
+const aurora = process.argv.includes("--aurora") && { kp: 9, level: 1, south: false };
 
 // Intel's hybrid CPUs have fast and slow cores, and a thread that moves between them takes up to twice as long per
 // frame. Pinning the browser to the fast cores keeps the timings steady enough to compare.
@@ -84,14 +86,14 @@ const server = await serveWorld(
 const browser = await launchFirefox({ "privacy.reduceTimerPrecision": false });
 const tab = await browser.newPage();
 const measure = (code, scenario) =>
-  runInPage(tab, server.origin, { ...scenario, ...season, weather, code, frames }, `${code}, ${scenario.name}`);
+  runInPage(tab, server.origin, { ...scenario, ...season, weather, aurora, code, frames }, `${code}, ${scenario.name}`);
 
 const fmt = (ms) => ms.toFixed(2).padStart(6);
 const median = (list) => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
 let failed = false;
 try {
   console.log(
-    `Frame draw time in headless Firefox, ${base} against the working tree, ${rounds} rounds of ${frames} frames, ${asked}${kind ? `, ${kind}` : ""}.\n`,
+    `Frame draw time in headless Firefox, ${base} against the working tree, ${rounds} rounds of ${frames} frames, ${asked}${kind ? `, ${kind}` : ""}${aurora ? ", northern lights" : ""}.\n`,
   );
   const runs = SCENARIOS.map(() => ({ base: [], work: [] }));
   for (let round = 0; round < rounds; round++) {
@@ -100,7 +102,7 @@ try {
         runs[i][code].push(await measure(code, scenario));
     }
   }
-  console.log(`${"".padEnd(26)}${"base".padStart(8)}${"work".padStart(8)}  change`);
+  console.log(`${"".padEnd(26)}${"base".padStart(8)}${"work".padStart(8)}  change${"".padEnd(14)}p95 base, work`);
   for (const [i, scenario] of SCENARIOS.entries()) {
     const { base: b, work: w } = runs[i];
     const change = median(w.map((r, j) => r.mean - b[j].mean));
@@ -108,8 +110,10 @@ try {
     failed ||= over;
     const mb = median(b.map((r) => r.mean));
     const mw = median(w.map((r) => r.mean));
+    // The slowest frames too, which a mean hides: work done every few frames shows here.
+    const p95 = `${fmt(median(b.map((r) => r.p95)))}  ${fmt(median(w.map((r) => r.p95)))}`;
     console.log(
-      `${scenario.name.padEnd(26)}${fmt(mb)}  ${fmt(mw)}  ${change >= 0 ? "+" : ""}${change.toFixed(2)} ms (${((change / mb) * 100).toFixed(0)}%)${over ? "  over budget" : ""}`,
+      `${scenario.name.padEnd(26)}${fmt(mb)}  ${fmt(mw)}  ${`${change >= 0 ? "+" : ""}${change.toFixed(2)} ms (${((change / mb) * 100).toFixed(0)}%)`.padEnd(18)}${p95}${over ? "  over budget" : ""}`,
     );
   }
   console.log(

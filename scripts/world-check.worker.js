@@ -36,14 +36,22 @@ self.onmessage = async ({ data: q }) => {
     const sent = [];
     const render = makeRenderer(canvases, reduce, (m) => sent.push(m));
     const out = [];
-    // Frame times are left out of the messages' fingerprint, since they differ from run to run.
+    // Each layer is fingerprinted under its name, with where the page is told to put it, so a layer added or taken
+    // away shows as that one layer rather than moving every one after it. A layer that has drawn nothing says so.
+    const names = LAYERS.map((l) => (l.draw ? `${l.draw} (drawn)` : l.paint));
+    let css = [];
     const check = async (label) => {
-      const layers = [];
-      for (const cv of canvases) {
-        const c = cv.getContext("2d");
-        layers.push(cv.width && cv.height ? await digest(c.getImageData(0, 0, cv.width, cv.height).data) : "empty");
+      // Frame times are left out of the messages' fingerprint, since they differ from run to run, and so are the
+      // layers' places, which go with each layer.
+      const said = JSON.stringify(sent, (k, v) => {
+        if (k === "css") css = v;
+        return k === "ms" || k === "css" ? undefined : v;
+      });
+      const layers = {};
+      for (const [i, cv] of canvases.entries()) {
+        const px = cv.width && cv.height ? cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data : null;
+        layers[names[i]] = px?.some((b) => b) ? `${await digest(px)} ${JSON.stringify(css[i])}` : "blank";
       }
-      const said = JSON.stringify(sent, (k, v) => (k === "ms" ? undefined : v));
       out.push({ label, layers, said: await digest(new TextEncoder().encode(said)), saidText: said.slice(0, 400) });
       sent.length = 0;
     };

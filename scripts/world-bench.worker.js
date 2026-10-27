@@ -26,10 +26,23 @@ self.onmessage = async ({ data: q }) => {
 
     const { makeRenderer } = await import(`/${q.code}/render`);
     const { LAYERS } = await import(`/${q.code}/layers`);
-    const { w: W, h: H, dpr, night, scene, frames, season, occasion, weather } = q;
+    const { w: W, h: H, dpr, night, scene, frames, season, occasion, weather, aurora } = q;
     const canvases = LAYERS.map(() => new OffscreenCanvas(1, 1));
     const render = makeRenderer(canvases, false, () => {});
-    render({ type: "size", W, H, dpr, night: !!night, season, occasion, weather, grown: 0, first: false, wait: false });
+    render({
+      type: "size",
+      W,
+      H,
+      dpr,
+      night: !!night,
+      season,
+      occasion,
+      weather,
+      aurora,
+      grown: 0,
+      first: false,
+      wait: false,
+    });
 
     // The pointer wanders over the world; when clicking, it clicks every 45 frames, so a few rings are always out. In a
     // storm it presses on the sky, holds still until the cloud brews, then drags it about, so it rains and thunders the
