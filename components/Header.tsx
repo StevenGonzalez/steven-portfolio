@@ -6,12 +6,10 @@ import { useEffect, useRef } from "react";
 import ThemeToggle from "./ThemeToggle";
 
 /** Over the world on the home page the bar is transparent, and turns solid as soon as the hero copy reaches it so the
- *  two never overlap. Over the edge of the world it stays transparent. Every other page has no world behind the bar,
- *  so it is solid from the start. The scroll state goes straight onto the element rather than through React, since it
- *  changes on every scroll frame. */
+ *  two never overlap. Every other page has no world behind the bar, so it is solid from the start. The scroll state
+ *  goes straight onto the element rather than through React, since it changes on every scroll frame. */
 export default function Header() {
-  const path = usePathname(),
-    home = path === "/";
+  const home = usePathname() === "/";
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -29,7 +27,7 @@ export default function Header() {
   }, [home]);
 
   return (
-    <header ref={ref} className={home || path === "/edge" ? "nav" : "nav solid"}>
+    <header ref={ref} className={home ? "nav" : "nav solid"}>
       <Link className="wordmark" href="/">
         Steven Gonzalez
       </Link>

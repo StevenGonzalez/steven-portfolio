@@ -930,101 +930,6 @@ main:focus {
   mask-image: linear-gradient(to top, #000 25%, transparent);
 }
 
-/* ─── The edge of the world ────────────────────────────────────────────────── */
-
-/* A page of its own: the scene fills the screen, with the bar transparent over
-   it. Its layers are made and placed by lib/edge/stage.js. */
-.edge {
-  position: relative;
-  height: max(560px, 100svh);
-  overflow: hidden;
-  background: #04040e;
-  color: var(--hero-fg);
-  isolation: isolate;
-}
-.edge-scene {
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 1.2s;
-}
-.edge-scene.ready {
-  opacity: 1;
-}
-.edge-scene canvas {
-  position: absolute;
-  will-change: translate;
-}
-/* The handle on the sun or moon, which drags it down. Touch on it drags
-   rather than scrolls. */
-.edge-grip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  border-radius: 50%;
-  cursor: grab;
-  touch-action: none;
-}
-.edge-grip:active {
-  cursor: grabbing;
-}
-.edge-copy {
-  position: absolute;
-  z-index: 2;
-  top: var(--nav-room);
-  left: clamp(16px, 4vw, 48px);
-  right: clamp(16px, 4vw, 48px);
-  max-width: 440px;
-  padding-top: 24px;
-  pointer-events: none;
-}
-/* A soft shade behind the words, so they read over the bright cloud sea. */
-.edge-copy::before {
-  content: "";
-  position: absolute;
-  inset: -60px -140px -40px -100px;
-  z-index: -1;
-  background: radial-gradient(
-    closest-side,
-    color-mix(in srgb, var(--hero-shade) 75%, transparent),
-    color-mix(in srgb, var(--hero-shade) 40%, transparent) 60%,
-    transparent
-  );
-}
-.edge-copy h1 {
-  font: 500 clamp(36px, 5vw, 58px)/1.05 var(--display);
-  text-wrap: balance;
-}
-.edge-copy p {
-  margin-top: 12px;
-  color: var(--hero-muted);
-  font-size: 15px;
-}
-.edge-copy .edge-count {
-  min-height: 1.5em;
-  color: var(--hero-gold);
-}
-.edge-acts {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 16px;
-  margin-top: 8px;
-  pointer-events: auto;
-}
-.edge-acts .sound-btn {
-  margin-left: 0;
-}
-.edge-acts a {
-  font: 500 14px/1 var(--body);
-  opacity: 0.82;
-}
-.edge-acts a:hover {
-  opacity: 1;
-}
-
 /* ─── Site ─────────────────────────────────────────────────────────────────── */
 
 .sec {
@@ -1996,9 +1901,6 @@ html.theming::view-transition-new(root) {
   .sound-btn[aria-pressed]::before,
   .seam {
     animation: none;
-  }
-  .edge-scene {
-    transition: none;
   }
   .wake {
     display: none;

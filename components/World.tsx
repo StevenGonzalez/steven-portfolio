@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { mountWorld } from "@/lib/world/stage";
 
 /** The painted world at the top of the home page. The markup is React's; everything drawn into it belongs to the engine
@@ -9,7 +8,6 @@ import { mountWorld } from "@/lib/world/stage";
  *  a condition, so its ref is set by the time the effect runs. The seams live further down the page, so they are found
  *  by id once the page has committed, and checked. */
 export default function World() {
-  const router = useRouter();
   const hero = useRef<HTMLElement>(null);
   const scene = useRef<HTMLDivElement>(null);
   const tag = useRef<HTMLDivElement>(null);
@@ -52,9 +50,8 @@ export default function World() {
       ring: ring.current!,
       seamTop,
       seamLow,
-      sail: () => router.push("/edge"),
     });
-  }, [router]);
+  }, []);
 
   return (
     <section ref={hero} className="hero" aria-label="Introduction">
