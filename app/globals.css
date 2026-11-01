@@ -2030,6 +2030,59 @@ main:focus {
 .about :where(a:hover) {
   text-decoration-color: var(--accent);
 }
+/* Under the pointer, or in focus, a link's thin underline gives way to a stroke of ink that draws itself in from the
+   left, across every line the link runs over. The stroke is a picture in the accent colour, so each theme has its own. */
+:root {
+  --ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath fill='%238c5a10' d='M0 5.67L10 5.59L20 5.46L30 5.04L40 4.63L50 4.47L60 4.44L70 4.18L80 3.51L90 2.68L100 2.18L110 2.23L120 2.6L130 2.83L140 2.73L150 2.55L160 2.73L170 3.39L180 4.26L190 4.95L200 5.59L200 6.22L190 6.73L180 6.62L170 6.12L160 5.63L150 5.53L140 5.8L130 6.11L120 6.19L110 6.14L100 6.3L90 6.8L80 7.41L70 7.72L60 7.61L50 7.35L40 7.33L30 7.57L20 7.72L10 7.37L0 6.3Z'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath fill='%23e0b565' d='M0 5.67L10 5.59L20 5.46L30 5.04L40 4.63L50 4.47L60 4.44L70 4.18L80 3.51L90 2.68L100 2.18L110 2.23L120 2.6L130 2.83L140 2.73L150 2.55L160 2.73L170 3.39L180 4.26L190 4.95L200 5.59L200 6.22L190 6.73L180 6.62L170 6.12L160 5.63L150 5.53L140 5.8L130 6.11L120 6.19L110 6.14L100 6.3L90 6.8L80 7.41L70 7.72L60 7.61L50 7.35L40 7.33L30 7.57L20 7.72L10 7.37L0 6.3Z'/%3E%3C/svg%3E");
+  }
+}
+:root[data-theme="dark"] {
+  --ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath fill='%23e0b565' d='M0 5.67L10 5.59L20 5.46L30 5.04L40 4.63L50 4.47L60 4.44L70 4.18L80 3.51L90 2.68L100 2.18L110 2.23L120 2.6L130 2.83L140 2.73L150 2.55L160 2.73L170 3.39L180 4.26L190 4.95L200 5.59L200 6.22L190 6.73L180 6.62L170 6.12L160 5.63L150 5.53L140 5.8L130 6.11L120 6.19L110 6.14L100 6.3L90 6.8L80 7.41L70 7.72L60 7.61L50 7.35L40 7.33L30 7.57L20 7.72L10 7.37L0 6.3Z'/%3E%3C/svg%3E");
+}
+.prose :where(a),
+.about :where(a),
+.links a,
+.more {
+  background: var(--ink) left bottom / 0 0.34em no-repeat;
+  transition:
+    background-size 0.45s cubic-bezier(0.3, 0, 0.2, 1),
+    text-decoration-color 0.2s,
+    border-color 0.2s;
+}
+.prose :where(a:hover, a:focus-visible),
+.about :where(a:hover, a:focus-visible),
+.links a:is(:hover, :focus-visible),
+.more:is(:hover, :focus-visible) {
+  background-size: 100% 0.34em;
+  text-decoration-color: transparent;
+  border-color: transparent;
+}
+/* The stroke keeps below the descenders. Padding on a link in running text moves nothing around it; the others give the
+   room back with a margin, so nothing around them moves either. */
+.prose :where(a),
+.about :where(a) {
+  padding-bottom: 0.14em;
+}
+.links a {
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+}
+.more {
+  padding-bottom: 0.32em;
+  margin-bottom: -0.32em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .prose :where(a),
+  .about :where(a),
+  .links a,
+  .more {
+    transition: none;
+  }
+}
 .prose :where(strong) {
   font-weight: 600;
 }

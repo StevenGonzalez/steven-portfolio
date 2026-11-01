@@ -10,12 +10,24 @@ const COLUMN = 1120,
   MIN_GUTTER = 60;
 
 type Bit = { x: number; y: number; vy: number; r: number; spin: number; turn: number; size: number; tint: number };
+type Fly = {
+  left: boolean;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  tx: number;
+  ty: number;
+  next: number;
+  ph: number;
+};
 
 /** A few things falling from the island, down the empty margins either side of the home page's sections, for the
  *  season: maple leaves in autumn, snow in winter, petals in spring and seeds in summer. They fall in front of the page,
  *  like weather seen through a window, so scrolling leaves them be; carried along with the page, they shot up the
  *  screen with every scroll. Only in the margins, and only while the sections are on screen; not at all on a screen too
- *  narrow to have margins, or when the system asks for reduced motion. */
+ *  narrow to have margins, or when the system asks for reduced motion. In the dark theme a few fireflies wander the
+ *  margins too, and gather beside the pointer when it comes near. */
 export default function MarginDrift() {
   const ref = useRef<HTMLCanvasElement>(null);
 
@@ -30,9 +42,31 @@ export default function MarginDrift() {
       gutter = 0,
       dark = isDarkTheme(),
       bits: Bit[] = [],
+      flies: Fly[] = [],
+      ptr: { x: number; y: number } | null = null,
       raf = 0,
       last = 0,
       seen = false;
+
+    // A firefly keeps to its own margin: a point across it, from 0 at the outer edge to 1 at the column.
+    const across = (left: boolean, u: number) => (left ? gutter * (0.1 + u * 0.8) : W - gutter * (0.1 + u * 0.8));
+    const newFly = (): Fly => {
+      const left = Math.random() < 0.5,
+        x = across(left, Math.random()),
+        y = H * (0.1 + Math.random() * 0.8);
+      return { left, x, y, vx: 0, vy: 0, tx: x, ty: y, next: 0, ph: Math.random() * 6.3 };
+    };
+    // Its glow, drawn once.
+    const glow = document.createElement("canvas");
+    glow.width = glow.height = 48;
+    const g = glow.getContext("2d")!,
+      grad = g.createRadialGradient(24, 24, 0, 24, 24, 24);
+    grad.addColorStop(0, "rgb(250 255 210 / 1)");
+    grad.addColorStop(0.08, "rgb(240 252 170 / 1)");
+    grad.addColorStop(0.25, "rgb(214 240 120 / 0.45)");
+    grad.addColorStop(1, "rgb(214 240 120 / 0)");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 48, 48);
 
     const spawn = (y: number): Bit => {
       const left = Math.random() < 0.5,
@@ -58,6 +92,41 @@ export default function MarginDrift() {
       gutter = (W - Math.min(COLUMN, site.clientWidth)) / 2;
       const n = gutter < MIN_GUTTER ? 0 : Math.round(Math.min(12, (H / 900) * 10));
       bits = Array.from({ length: n }, () => spawn(Math.random() * H));
+      flies = Array.from({ length: Math.round(n * 0.8) }, newFly);
+    };
+
+    const fly = (f: Fly, dt: number, t: number) => {
+      // It wanders to a new spot in its margin every few seconds. When the pointer comes within reach of its margin,
+      // it heads for the pointer instead, kept to the margin's side of it, and circles there.
+      if (t > f.next) {
+        f.tx = across(f.left, Math.random());
+        f.ty = Math.min(H - 40, Math.max(40, f.y + (Math.random() - 0.5) * 260));
+        f.next = t + 2 + Math.random() * 3;
+      }
+      let gx = f.tx,
+        gy = f.ty;
+      if (ptr) {
+        const lo = f.left ? 0 : W - gutter,
+          hi = f.left ? gutter : W,
+          reach = ptr.x < lo ? lo - ptr.x : ptr.x > hi ? ptr.x - hi : 0;
+        if (reach < 220 && Math.abs(ptr.y - f.y) < 400) {
+          gx = Math.min(hi - 10, Math.max(lo + 10, ptr.x)) + Math.cos(t * 0.9 + f.ph) * 26;
+          gy = ptr.y + Math.sin(t * 1.1 + f.ph) * 22;
+        }
+      }
+      f.vx = (f.vx + (gx - f.x) * 0.9 * dt) * Math.pow(0.35, dt);
+      f.vy = (f.vy + (gy - f.y) * 0.9 * dt) * Math.pow(0.35, dt);
+      const speed = Math.hypot(f.vx, f.vy);
+      if (speed > 70) {
+        f.vx *= 70 / speed;
+        f.vy *= 70 / speed;
+      }
+      f.x += f.vx * dt;
+      f.y += f.vy * dt;
+      // It glows and fades in slow pulses.
+      const a = 0.3 + 0.7 * Math.max(0, Math.sin(t * 1.4 + f.ph)) ** 2;
+      ctx.globalAlpha = a;
+      ctx.drawImage(glow, f.x - 20, f.y - 20, 40, 40);
     };
 
     const draw = (b: Bit, t: number) => {
@@ -127,6 +196,12 @@ export default function MarginDrift() {
         if (b.y > H + 30) Object.assign(b, spawn(-30 - Math.random() * H * 0.3));
         draw(b, t);
       }
+      if (dark) {
+        ctx.globalCompositeOperation = "lighter";
+        for (const f of flies) fly(f, dt, t);
+        ctx.globalCompositeOperation = "source-over";
+        ctx.globalAlpha = 1;
+      }
       ctx.restore();
     };
     const run = () => {
@@ -150,11 +225,20 @@ export default function MarginDrift() {
     addEventListener("resize", onResize);
     document.addEventListener("visibilitychange", run);
     const unwatch = watchTheme(() => (dark = isDarkTheme()));
+    // Only a mouse or a pen draws the fireflies; a finger lifts off, and they would gather where it last touched.
+    const onPointer = (e: PointerEvent) => {
+      ptr = e.pointerType === "touch" ? null : { x: e.clientX, y: e.clientY };
+    };
+    const onLeave = () => (ptr = null);
+    addEventListener("pointermove", onPointer, { passive: true });
+    document.documentElement.addEventListener("pointerleave", onLeave);
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
       removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", run);
+      removeEventListener("pointermove", onPointer);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
       unwatch();
     };
   }, []);
