@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+  <!-- The tab icon in summer: the sun (SiteEffects swaps it in for the season). -->
+  <g stroke="#ec9a2c" stroke-width="15" stroke-linecap="round">
+    <path id="ray" d="M0 -64V-90"/>
+    <use href="#ray" transform="rotate(45)"/>
+    <use href="#ray" transform="rotate(90)"/>
+    <use href="#ray" transform="rotate(135)"/>
+    <use href="#ray" transform="rotate(180)"/>
+    <use href="#ray" transform="rotate(225)"/>
+    <use href="#ray" transform="rotate(270)"/>
+    <use href="#ray" transform="rotate(315)"/>
+  </g>
+  <circle r="46" fill="#f5be3f"/>
+</svg>

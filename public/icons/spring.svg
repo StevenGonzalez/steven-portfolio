@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+  <!-- The tab icon in spring: a cherry blossom (SiteEffects swaps it in for the season). -->
+  <g fill="#ef9fbb">
+    <path id="petal" d="M0 -6C-30 -30 -40 -64 -22 -88L-6 -76L0 -94L6 -76L22 -88C40 -64 30 -30 0 -6Z"/>
+    <use href="#petal" transform="rotate(72)"/>
+    <use href="#petal" transform="rotate(144)"/>
+    <use href="#petal" transform="rotate(216)"/>
+    <use href="#petal" transform="rotate(288)"/>
+  </g>
+  <circle r="17" fill="#f4c94f"/>
+</svg>

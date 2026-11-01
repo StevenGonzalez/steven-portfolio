@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { seasonNow } from "@/lib/season";
 import { worldSourceUrl } from "@/lib/site";
+import { isDarkTheme, watchTheme } from "@/lib/theme";
 
 // The console greeting prints once per load, not once per page.
 let greeted = false;
@@ -11,20 +12,33 @@ let greeted = false;
 /** Small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
  *  arrive together; the hidden state is added here, and only to those not yet on screen, so nothing that has been
  *  painted blinks out and back, and nothing stays hidden if this never runs. The page is marked with the season, for
- *  the ornaments. Cards marked data-glow catch the light where the pointer is. A box marked data-scene plays that
- *  painted scene. A link marked data-seal is sealed in wax as it is clicked. Articles read are dog-eared in the
- *  lists. A service worker keeps the site for offline use. And whoever opens the console finds a note about how the
- *  world is made, and a switch for it that nothing on the page shows. */
+ *  the ornaments, and the tab's icon follows the season. Cards marked data-glow catch the light where the pointer is.
+ *  A box marked data-scene plays that painted scene. A link marked data-seal is sealed in wax as it is clicked.
+ *  Articles read are dog-eared in the lists. In the dark, a reading lamp follows the pointer, and a click on the paper
+ *  leaves a spatter of ink. A service worker keeps the site for offline use. And whoever opens the console finds a
+ *  note about how the world is made, and a switch for it that nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
-  // The flourishes' ornaments follow the season (globals.css).
+  // The flourishes' ornaments follow the season (globals.css), and so does the tab's icon: the maple leaf (app/icon.svg)
+  // is autumn's, and the other seasons have their own in public/icons.
   useEffect(() => {
     const { season, occasion } = seasonNow(),
       root = document.documentElement.dataset;
     root.season = season;
     if (occasion) root.occasion = occasion;
     else delete root.occasion;
+    // React puts in its own copy of the server's icon link after this has run, so each copy is pointed at the season's
+    // icon as it arrives.
+    if (season === "autumn") return;
+    const point = () => {
+      for (const icon of document.head.querySelectorAll<HTMLLinkElement>('link[rel="icon"][type="image/svg+xml"]'))
+        if (icon.getAttribute("href") !== `/icons/${season}.svg`) icon.href = `/icons/${season}.svg`;
+    };
+    point();
+    const mo = new MutationObserver(point);
+    mo.observe(document.head, { childList: true });
+    return () => mo.disconnect();
   }, [pathname]);
 
   useEffect(() => {
@@ -156,6 +170,82 @@ export default function SiteEffects() {
       seal.addEventListener("animationend", () => seal.remove());
       a.append(seal);
       setTimeout(() => open(a.href, "_blank", "noopener,noreferrer"), 450);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
+  // In the dark, a reading lamp: a soft warm pool of light follows the pointer over the paper, below the world at the
+  // top. Only for a mouse or a pen, and not when the system asks for reduced motion. The pool is one element moved by
+  // a transform, so following the pointer repaints nothing.
+  useEffect(() => {
+    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const lamp = document.createElement("div");
+    lamp.className = "lamp";
+    lamp.setAttribute("aria-hidden", "true");
+    document.body.append(lamp);
+    let dark = isDarkTheme();
+    const onMove = (e: PointerEvent) => {
+      const on = dark && !!(e.target as Element).closest?.(".site, .page");
+      lamp.classList.toggle("on", on);
+      if (on) lamp.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+    };
+    const off = () => lamp.classList.remove("on");
+    const unwatch = watchTheme(() => {
+      dark = isDarkTheme();
+      if (!dark) off();
+    });
+    document.addEventListener("pointermove", onMove, { passive: true });
+    document.documentElement.addEventListener("pointerleave", off);
+    return () => {
+      document.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", off);
+      unwatch();
+      lamp.remove();
+    };
+  }, []);
+
+  // A click on the paper itself, not on anything that does something, leaves a small spatter of ink that soaks in and
+  // fades. Not for a double click, which is selecting a word, nor when the system asks for reduced motion.
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const NS = "http://www.w3.org/2000/svg";
+    const onClick = (e: MouseEvent) => {
+      if (e.button !== 0 || e.detail !== 1) return;
+      const t = e.target as Element;
+      if (
+        !t.closest?.(".site, .page") ||
+        t.closest("a, button, input, textarea, select, label, summary, canvas, .plate")
+      )
+        return;
+      if (getSelection()?.toString()) return;
+      const svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("class", "splash");
+      svg.setAttribute("viewBox", "-24 -24 48 48");
+      svg.setAttribute("aria-hidden", "true");
+      svg.style.left = `${e.pageX}px`;
+      svg.style.top = `${e.pageY}px`;
+      const drop = (x: number, y: number, r: number) => {
+        const c = document.createElementNS(NS, "circle");
+        c.setAttribute("cx", x.toFixed(1));
+        c.setAttribute("cy", y.toFixed(1));
+        c.setAttribute("r", r.toFixed(1));
+        svg.append(c);
+      };
+      // The drop, lumpy at its edge, and the droplets thrown off it, smaller the further they flew.
+      drop(0, 0, 4 + Math.random() * 1.5);
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * 6.28 + Math.random() * 0.8;
+        drop(Math.cos(a) * 3.6, Math.sin(a) * 3.6, 1.6 + Math.random() * 1.1);
+      }
+      for (let i = 0, n = 5 + Math.floor(Math.random() * 4); i < n; i++) {
+        const a = Math.random() * 6.28,
+          d = 8 + Math.random() * 13;
+        drop(Math.cos(a) * d, Math.sin(a) * d, Math.max(0.7, 2.2 - d / 12 + Math.random() * 0.5));
+      }
+      svg.addEventListener("animationend", () => svg.remove());
+      document.body.append(svg);
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);

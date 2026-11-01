@@ -20,7 +20,8 @@ const ORDER: ThemeChoice[] = ["system", "light", "dark"];
 const serverChoice = (): ThemeChoice => "system";
 
 /** The switch is a candle: lit while the page is dark, and blown out, with a wisp of smoke, when it turns light. While
- *  the theme follows the system, a small half-filled circle sits beside it. */
+ *  the theme follows the system, a small half-filled circle sits beside it. Hovered while lit, it draws a moth, which
+ *  circles the flame and flutters off when the pointer leaves or the flame goes out. */
 export default function ThemeToggle() {
   const choice = useSyncExternalStore(subscribeToTheme, readStoredChoice, serverChoice);
   const lit = useSyncExternalStore(watchTheme, isDarkTheme, () => false);
@@ -33,6 +34,8 @@ export default function ThemeToggle() {
     setWasLit(lit);
     if (wasLit) setSmoke(smoke + 1);
   }
+  const [moth, setMoth] = useState<"in" | "off" | null>(null);
+  if (moth === "in" && !lit) setMoth("off");
 
   // While following the system, the OS flipping does not change the attribute
   // (the stylesheet handles that on its own), but the browser chrome colour
@@ -54,6 +57,12 @@ export default function ThemeToggle() {
       aria-label={`Theme: ${choice}. Switch to ${next}.`}
       title={`Theme: ${choice}`}
       className={lit ? "theme lit" : "theme"}
+      onPointerEnter={(e) => {
+        if (lit && e.pointerType !== "touch") setMoth("in");
+      }}
+      onPointerLeave={() => {
+        if (moth === "in") setMoth("off");
+      }}
       onClick={(e) => {
         const b = e.currentTarget.getBoundingClientRect();
         switchTheme(next, { x: b.left + b.width / 2, y: b.top + b.height / 2 });
@@ -82,6 +91,19 @@ export default function ThemeToggle() {
           </>
         )}
       </svg>
+      {moth && (
+        <span
+          className={`moth ${moth}`}
+          aria-hidden
+          onAnimationEnd={(e) => {
+            if (e.target === e.currentTarget && moth === "off") setMoth(null);
+          }}
+        >
+          <span>
+            <span />
+          </span>
+        </span>
+      )}
     </button>
   );
 }

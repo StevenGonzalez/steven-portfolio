@@ -350,6 +350,94 @@ main:focus {
     transform: translateY(-3px);
   }
 }
+/* The moth the lit candle draws (ThemeToggle): a pale body and two wings beating, wandering round the flame on two
+   unequal swings, so its path never quite repeats. It arrives from below and flutters off up and away. */
+.theme {
+  position: relative;
+}
+.moth {
+  position: absolute;
+  left: 15px;
+  top: 10px;
+  pointer-events: none;
+  animation: moth-in 0.5s ease-out;
+}
+.moth.off {
+  animation: moth-off 0.7s ease-in forwards;
+}
+.moth > span {
+  display: block;
+  animation: moth-x 0.9s ease-in-out infinite alternate;
+}
+.moth > span > span {
+  position: absolute;
+  left: -1px;
+  top: -3px;
+  width: 2px;
+  height: 7px;
+  border-radius: 1px;
+  background: #8f7f66;
+  animation: moth-y 0.65s ease-in-out -0.3s infinite alternate;
+}
+.moth > span > span::before,
+.moth > span > span::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  width: 7px;
+  height: 8px;
+  background: rgb(230 218 194 / 0.92);
+  animation: moth-wing 0.07s linear infinite alternate;
+}
+/* Each wing a broad forewing over a smaller hindwing, folded at the body. */
+.moth > span > span::before {
+  right: 1px;
+  clip-path: polygon(100% 15%, 0 0, 20% 50%, 50% 100%, 100% 80%);
+  transform-origin: 100% 50%;
+}
+.moth > span > span::after {
+  left: 1px;
+  clip-path: polygon(0 15%, 100% 0, 80% 50%, 50% 100%, 0 80%);
+  transform-origin: 0 50%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .moth {
+    display: none;
+  }
+}
+@keyframes moth-in {
+  from {
+    opacity: 0;
+    transform: translate(-22px, 22px);
+  }
+}
+@keyframes moth-off {
+  to {
+    opacity: 0;
+    transform: translate(34px, -30px);
+  }
+}
+@keyframes moth-x {
+  from {
+    transform: translateX(-11px);
+  }
+  to {
+    transform: translateX(11px);
+  }
+}
+@keyframes moth-y {
+  from {
+    transform: translateY(-8px) rotate(-14deg);
+  }
+  to {
+    transform: translateY(5px) rotate(14deg);
+  }
+}
+@keyframes moth-wing {
+  to {
+    transform: scaleX(0.25);
+  }
+}
 
 /* ─── The world ────────────────────────────────────────────────────────────── */
 
@@ -2289,6 +2377,57 @@ main:focus {
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) ::selection {
     background: rgb(224 181 101 / 0.32);
+  }
+}
+
+/* The reading lamp (SiteEffects): a warm pool of light at the pointer, in the dark, over the paper. Placed by a
+   transform at the pointer, so its own box is centred on it by the margins. */
+.lamp {
+  position: fixed;
+  z-index: 15;
+  top: 0;
+  left: 0;
+  width: 560px;
+  height: 560px;
+  margin: -280px 0 0 -280px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 196 120 / 0.13), rgb(255 186 104 / 0.06) 45%, rgb(255 180 96 / 0));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.lamp.on {
+  opacity: 1;
+}
+
+/* A spatter of ink where the paper is clicked (SiteEffects): it lands, soaks in and fades. */
+.splash {
+  position: absolute;
+  z-index: 5;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  fill: var(--accent);
+  pointer-events: none;
+  animation: splash 1s ease-out forwards;
+}
+@keyframes splash {
+  from {
+    opacity: 0.95;
+    transform: scale(0.35);
+  }
+  14% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  45% {
+    opacity: 0.7;
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(1.2px);
   }
 }
 .prose :where(strong) {
