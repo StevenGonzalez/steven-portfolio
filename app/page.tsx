@@ -3,7 +3,6 @@ import Link from "next/link";
 import ExternalLink from "@/components/ExternalLink";
 import PostList from "@/components/PostList";
 import ProjectGrid from "@/components/ProjectGrid";
-import Specimens from "@/components/Specimens";
 import World from "@/components/World";
 import { insights, projects } from "@/lib/content";
 import { externalProfiles, worldSourceUrl } from "@/lib/site";
@@ -111,7 +110,6 @@ export default function Home() {
           <ExternalLink className="more" href={worldSourceUrl} data-rv>
             Read the source on GitHub
           </ExternalLink>
-          <Specimens />
         </section>
 
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
