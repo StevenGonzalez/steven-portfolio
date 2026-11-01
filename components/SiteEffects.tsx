@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { seasonNow } from "@/lib/season";
 import { worldSourceUrl } from "@/lib/site";
 
 // The console greeting prints once per load, not once per page.
@@ -9,12 +10,21 @@ let greeted = false;
 
 /** Small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
  *  arrive together; the hidden state is added here, and only to those not yet on screen, so nothing that has been
- *  painted blinks out and back, and nothing stays hidden if this never runs. Cards marked
- *  data-glow catch the light where the pointer is. A box marked data-scene plays that painted scene. A service worker
- *  keeps the site for offline use. And whoever opens the console finds a note about how the world is made, and a
+ *  painted blinks out and back, and nothing stays hidden if this never runs. The page is marked with the season, for
+ *  the ornaments. Cards marked data-glow catch the light where the pointer is. A box marked data-scene plays that
+ *  painted scene. A service worker keeps the site for offline use. And whoever opens the console finds a note about how the world is made, and a
  *  switch for it that nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
+
+  // The flourishes' ornaments follow the season (globals.css).
+  useEffect(() => {
+    const { season, occasion } = seasonNow(),
+      root = document.documentElement.dataset;
+    root.season = season;
+    if (occasion) root.occasion = occasion;
+    else delete root.occasion;
+  }, [pathname]);
 
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;

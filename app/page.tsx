@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ExternalLink from "@/components/ExternalLink";
+import MarginDrift from "@/components/MarginDrift";
 import PostList from "@/components/PostList";
 import ProjectGrid from "@/components/ProjectGrid";
 import World from "@/components/World";
@@ -17,6 +18,7 @@ export default function Home() {
       <World />
       <div className="site">
         <canvas className="seam" id="seam" aria-hidden="true" />
+        <MarginDrift />
 
         <section className="sec" id="about" aria-labelledby="about-h">
           <p className="chap" data-rv>
