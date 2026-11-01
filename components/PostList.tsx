@@ -7,14 +7,15 @@ export default function PostList({ posts }: { posts: InsightPost[] }) {
       {posts.map((post) => (
         <li key={post.slug} data-rv>
           <Link href={`/insights/${post.slug}`}>
-            <time dateTime={post.date}>{displayDate(post.date)}</time>
-            <div>
+            <span className="toc">
               <b>{post.title}</b>
-              <span>{post.summary}</span>
-              <small>
-                {post.category} · {post.readTime}
-              </small>
-            </div>
+              <span className="leader" aria-hidden="true" />
+              <span className="mins">{post.readTime}</span>
+            </span>
+            <span className="sum">{post.summary}</span>
+            <small>
+              <time dateTime={post.date}>{displayDate(post.date)}</time> · {post.category}
+            </small>
           </Link>
         </li>
       ))}

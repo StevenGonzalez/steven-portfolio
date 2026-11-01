@@ -62,7 +62,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
         <div className="doc">
           <div>
             <header className="doc-head">
-              <p className="label">Case study</p>
+              <p className="chap">Case study</p>
               {/* Named like the project's card and its title, so opening a card grows it into this page, and the back link
                   shrinks it again (data-vt, see BackCrumb). */}
               <ViewTransition name={`proj-title-${project.slug}`}>
@@ -87,8 +87,10 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </header>
 
             <ViewTransition name={`proj-${project.slug}`}>
-              <figure className="doc-figure" data-vt={`proj-${project.slug}`}>
+              <figure className="doc-figure plate" data-vt={`proj-${project.slug}`}>
                 <ProjectScene slug={project.slug} label={project.scene} />
+                {/* The scene's label already reads this out, so the caption is for the eye only. */}
+                <figcaption aria-hidden="true">{project.scene}</figcaption>
               </figure>
             </ViewTransition>
 

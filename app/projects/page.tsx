@@ -12,7 +12,7 @@ export default function ProjectsPage() {
   return (
     <div className="page">
       <section className="sec" aria-labelledby="projects-h">
-        <p className="label" data-rv>
+        <p className="chap" data-rv>
           Case studies
         </p>
         <h1 id="projects-h" className="page-h" data-rv>

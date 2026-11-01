@@ -58,9 +58,11 @@ function WideCard({ project, titleAs: Title }: { project: ProjectDetail; titleAs
 
 function Plate({ project }: { project: ProjectDetail }) {
   return (
-    <div className="plate">
+    <figure className="plate">
       <ProjectScene slug={project.slug} label={project.scene} />
-    </div>
+      {/* The scene's label already reads this out, so the caption is for the eye only. */}
+      <figcaption aria-hidden="true">{project.scene}</figcaption>
+    </figure>
   );
 }
 

@@ -13,7 +13,7 @@ export default function InsightsPage() {
   return (
     <div className="page">
       <section className="sec" aria-labelledby="insights-h">
-        <p className="label" data-rv>
+        <p className="chap" data-rv>
           Writing
         </p>
         <h1 id="insights-h" className="page-h" data-rv>

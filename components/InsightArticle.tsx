@@ -40,7 +40,7 @@ export default function InsightArticle({
         <div className="doc">
           <div>
             <header className="doc-head">
-              <p className="label">{category}</p>
+              <p className="chap">{category}</p>
               <h1>{title}</h1>
               <p className="sub">{summary}</p>
               <p className="meta">

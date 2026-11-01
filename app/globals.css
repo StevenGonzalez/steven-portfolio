@@ -1147,31 +1147,40 @@ main:focus {
   padding: 0;
   display: grid;
 }
-.posts li + li {
-  border-top: 1px solid var(--line);
-}
+/* Set like a book's table of contents: each title runs out to its reading time along a dotted leader. */
 .posts a {
-  display: grid;
-  grid-template-columns: 9rem minmax(0, 1fr);
-  gap: 4px 28px;
+  display: block;
   padding: 20px 0;
   text-decoration: none;
 }
-.posts time {
-  font: 400 13px/1.9 var(--mono);
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
+/* Level with a wrapped title's last line, where a book puts the page number. */
+.posts .toc {
+  display: flex;
+  align-items: last baseline;
+  gap: 12px;
 }
 .posts b {
-  display: block;
   font: 600 1.45rem/1.2 var(--display);
 }
 .posts a:hover b {
   color: var(--accent);
 }
-.posts span {
+/* Empty, so its baseline is its bottom edge; lifted to sit level with the bottom of the title's lowercase. */
+.posts .leader {
+  flex: 1 1 2rem;
+  min-width: 2rem;
+  border-bottom: 2px dotted color-mix(in srgb, var(--muted) 55%, transparent);
+  transform: translateY(-0.3em);
+}
+.posts .mins {
+  font: 400 13px/1 var(--mono);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.posts .sum {
   display: block;
-  margin-top: 4px;
+  margin-top: 6px;
+  max-width: 68ch;
   color: var(--muted);
   font-size: 15.5px;
 }
@@ -1226,17 +1235,24 @@ main:focus {
 
 /* ─── Storybook ───────────────────────────────────────────────────────────── */
 
-/* Below the world, the home page reads like the book the island came out of: grain like paper, each section opening
-   as a chapter under a small flourish, a drop cap to start, and each project's painted scene set in its card like a
-   plate. The flourish is a mask, so it takes the theme's colour. */
-.site::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  opacity: 0.07;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Below the world, the site reads like the book the island came out of: grain like paper, each section opening as a
+   chapter under a small flourish, a drop cap to start, and each project's painted scene set like a captioned plate.
+   The flourish is a mask, so it takes the theme's colour. The grain stays off paper. */
+.page {
+  position: relative;
+  isolation: isolate;
+}
+@media screen {
+  .site::before,
+  .page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
 }
 .site .sec + .sec {
   border-top: 0;
@@ -1262,11 +1278,23 @@ main:focus {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 132 18' fill='none' stroke='%23000' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M4 9h38c8 0 10-6 15-6 4 0 4 5 0 5'/%3E%3Cpath d='M128 9H90c-8 0-10-6-15-6-4 0-4 5 0 5'/%3E%3Cpath d='M66 3l5 6-5 6-5-6z' fill='%23000'/%3E%3C/svg%3E")
     center / contain no-repeat;
 }
+/* Pages other than home keep their headings to the left, so the chapter line does too. */
+.page .chap {
+  text-align: start;
+}
+.page .chap::after {
+  width: 110px;
+  margin-inline: -4px 0;
+}
 .site .about,
 .site .colo {
   margin-inline: auto;
 }
-.cap {
+/* A case study's first section and an article's first paragraph open on a drop cap too, unless that paragraph is a
+   note set in italics. */
+.cap,
+.doc-body > section:first-child > h2 + p::first-letter,
+.doc-body > p:first-child:not(:has(> em:first-child))::first-letter {
   float: left;
   margin: 0.06em 0.1em 0 0;
   font: 600 4.6em/0.8 var(--display);
@@ -1289,6 +1317,7 @@ main:focus {
 }
 
 .plate {
+  margin: 0;
   padding: 5px;
   border: 1px solid var(--line);
   border-radius: 3px;
@@ -1296,9 +1325,18 @@ main:focus {
   box-shadow: inset 0 0 0 3px var(--panel);
 }
 .plate .scene-cv {
-  aspect-ratio: 2 / 1;
   overflow: hidden;
   border-radius: 1px;
+}
+.proj .plate .scene-cv {
+  aspect-ratio: 2 / 1;
+}
+.plate figcaption {
+  margin: 8px 6px 3px;
+  font: italic 500 1rem/1.4 var(--display);
+  text-align: center;
+  text-wrap: balance;
+  color: var(--muted);
 }
 .lead-proj .plate {
   grid-column: 1 / -1;
@@ -1910,9 +1948,6 @@ main:focus {
   .work,
   .proj.lead-proj,
   .doc {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .posts a {
     grid-template-columns: minmax(0, 1fr);
   }
   .rail {
