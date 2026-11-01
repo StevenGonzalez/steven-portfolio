@@ -295,6 +295,61 @@ main:focus {
 .theme:hover {
   opacity: 1;
 }
+/* The candle (ThemeToggle). Lit, its flame flickers and warms the air around it; blown out, a wisp of smoke rises. */
+.theme .flame {
+  fill: #f2b84b;
+  stroke: none;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.theme .half {
+  fill: currentColor;
+  stroke: none;
+}
+.theme.lit {
+  opacity: 1;
+  box-shadow: 0 0 14px 2px rgb(242 184 75 / 0.22);
+}
+.theme .smoke {
+  stroke-width: 1.4;
+  stroke-dasharray: 12;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .theme .flame {
+    animation: flicker 2.6s ease-in-out infinite;
+  }
+  .theme .smoke {
+    animation: smoke 1.6s ease-out;
+  }
+}
+@keyframes flicker {
+  0%,
+  100% {
+    transform: scale(1) skewX(0deg);
+  }
+  20% {
+    transform: scale(0.94, 1.07) skewX(-4deg);
+  }
+  45% {
+    transform: scale(1.04, 0.95) skewX(3deg);
+  }
+  70% {
+    transform: scale(0.97, 1.04) skewX(-2deg);
+  }
+}
+@keyframes smoke {
+  from {
+    opacity: 0.85;
+    stroke-dashoffset: 12;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    stroke-dashoffset: 0;
+    transform: translateY(-3px);
+  }
+}
 
 /* ─── The world ────────────────────────────────────────────────────────────── */
 
@@ -1249,6 +1304,19 @@ main:focus {
   font: 400 13px/1 var(--mono);
   color: var(--muted);
   white-space: nowrap;
+}
+/* An article the reader has finished is dog-eared (SiteEffects): a page with its corner folded down, before its
+   reading time. */
+.posts li[data-read] .mins::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 14px;
+  margin-right: 7px;
+  vertical-align: -2px;
+  background: var(--accent);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 13'%3E%3Cpath d='M0 0h6.5L11 4.5V13H0Z' opacity='0.5'/%3E%3Cpath d='M6.5 0v4.5H11Z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 .posts .sum {
   display: block;

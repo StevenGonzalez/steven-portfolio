@@ -1,23 +1,15 @@
 "use client";
 
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
-import { applyTheme, readStoredChoice, subscribeToTheme, switchTheme, type ThemeChoice } from "@/lib/theme";
-
-const ICONS: Record<ThemeChoice, ReactNode> = {
-  light: (
-    <>
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-    </>
-  ),
-  system: (
-    <>
-      <rect x="3" y="4" width="18" height="12" rx="2" />
-      <path d="M9 20h6M12 16v4" />
-    </>
-  ),
-  dark: <path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.7 6.7 0 0 0 9.5 9.5Z" />,
-};
+import { useEffect, useState, useSyncExternalStore } from "react";
+import {
+  applyTheme,
+  isDarkTheme,
+  readStoredChoice,
+  subscribeToTheme,
+  switchTheme,
+  watchTheme,
+  type ThemeChoice,
+} from "@/lib/theme";
 
 const ORDER: ThemeChoice[] = ["system", "light", "dark"];
 
@@ -27,8 +19,20 @@ const ORDER: ThemeChoice[] = ["system", "light", "dark"];
 // bootstrap script before the first paint.
 const serverChoice = (): ThemeChoice => "system";
 
+/** The switch is a candle: lit while the page is dark, and blown out, with a wisp of smoke, when it turns light. While
+ *  the theme follows the system, a small half-filled circle sits beside it. */
 export default function ThemeToggle() {
   const choice = useSyncExternalStore(subscribeToTheme, readStoredChoice, serverChoice);
+  const lit = useSyncExternalStore(watchTheme, isDarkTheme, () => false);
+
+  // The smoke rises only when the flame goes out, not when the page first loads light. Each puff is a fresh element,
+  // so its animation plays from the start.
+  const [wasLit, setWasLit] = useState(lit);
+  const [smoke, setSmoke] = useState(0);
+  if (wasLit !== lit) {
+    setWasLit(lit);
+    if (wasLit) setSmoke(smoke + 1);
+  }
 
   // While following the system, the OS flipping does not change the attribute
   // (the stylesheet handles that on its own), but the browser chrome colour
@@ -49,7 +53,7 @@ export default function ThemeToggle() {
       type="button"
       aria-label={`Theme: ${choice}. Switch to ${next}.`}
       title={`Theme: ${choice}`}
-      className="theme"
+      className={lit ? "theme lit" : "theme"}
       onClick={(e) => {
         const b = e.currentTarget.getBoundingClientRect();
         switchTheme(next, { x: b.left + b.width / 2, y: b.top + b.height / 2 });
@@ -66,7 +70,17 @@ export default function ThemeToggle() {
         strokeLinejoin="round"
         aria-hidden
       >
-        {ICONS[choice]}
+        <path d="M7 21h10" />
+        <rect x="9.5" y="11" width="5" height="10" rx="0.8" />
+        <path d="M12 11V9" />
+        {lit && <path className="flame" d="M12 2.6c1.7 2 2.5 3.5 2.5 4.6a2.5 2.5 0 0 1-5 0c0-1.1.8-2.6 2.5-4.6Z" />}
+        {smoke > 0 && <path key={smoke} className="smoke" d="M12 8.5c-1.3-1.2 1.3-2.4 0-3.6s1.3-2.4 0-3.6" />}
+        {choice === "system" && (
+          <>
+            <circle cx="19.5" cy="5" r="2.5" strokeWidth="1.4" />
+            <path className="half" d="M19.5 2.5a2.5 2.5 0 0 1 0 5Z" />
+          </>
+        )}
       </svg>
     </button>
   );

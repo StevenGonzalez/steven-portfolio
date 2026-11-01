@@ -12,9 +12,9 @@ let greeted = false;
  *  arrive together; the hidden state is added here, and only to those not yet on screen, so nothing that has been
  *  painted blinks out and back, and nothing stays hidden if this never runs. The page is marked with the season, for
  *  the ornaments. Cards marked data-glow catch the light where the pointer is. A box marked data-scene plays that
- *  painted scene. A link marked data-seal is sealed in wax as it is clicked. A service worker keeps the site for
- *  offline use. And whoever opens the console finds a note about how the world is made, and a switch for it that
- *  nothing on the page shows. */
+ *  painted scene. A link marked data-seal is sealed in wax as it is clicked. Articles read are dog-eared in the
+ *  lists. A service worker keeps the site for offline use. And whoever opens the console finds a note about how the
+ *  world is made, and a switch for it that nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
@@ -47,6 +47,38 @@ export default function SiteEffects() {
       el.classList.add("rv");
       io.observe(el);
     }
+    return () => io.disconnect();
+  }, [pathname]);
+
+  // An article counts as read once its last paragraph has been on screen, and the lists of articles dog-ear the ones
+  // this browser has read. Kept in this browser only.
+  useEffect(() => {
+    const KEY = "read";
+    const load = (): string[] => {
+      try {
+        return JSON.parse(localStorage.getItem(KEY) ?? "[]");
+      } catch {
+        return [];
+      }
+    };
+    const read = load();
+    for (const li of document.querySelectorAll<HTMLElement>(".posts li")) {
+      const slug = li.querySelector("a")?.getAttribute("href")?.split("/").pop();
+      if (slug && read.includes(slug)) li.dataset.read = "";
+    }
+    const slug = pathname.match(/^\/insights\/([^/]+)$/)?.[1];
+    const end = document.querySelector(".doc-body > :last-child");
+    if (!slug || !end || read.includes(slug)) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      try {
+        localStorage.setItem(KEY, JSON.stringify([...load(), slug]));
+      } catch {
+        // Storage can be blocked; the article just is not remembered.
+      }
+    });
+    io.observe(end);
     return () => io.disconnect();
   }, [pathname]);
 
