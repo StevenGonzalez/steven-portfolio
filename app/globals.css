@@ -306,6 +306,9 @@ main:focus {
   fill: currentColor;
   stroke: none;
 }
+.theme .drip {
+  stroke-width: 1.4;
+}
 .theme.lit {
   opacity: 1;
   box-shadow: 0 0 14px 2px rgb(242 184 75 / 0.22);
@@ -1922,6 +1925,89 @@ main:focus {
 }
 .foot a:hover {
   color: var(--accent);
+}
+/* The bookplate (Footer): a mask, so it takes the theme's ink. On a wide screen it sits in the middle of the foot; on a
+   narrow one, on a line of its own. */
+.exlibris {
+  width: 50px;
+  height: 62px;
+  background: var(--muted);
+  opacity: 0.6;
+  rotate: -2deg;
+  mask: url("/foot/exlibris.svg") center / contain no-repeat;
+}
+@media (min-width: 960px) {
+  .exlibris {
+    position: absolute;
+    left: calc(50% - 25px);
+  }
+}
+@media (max-width: 640px) {
+  .exlibris {
+    order: 3;
+    width: 100%;
+    margin-top: 12px;
+    rotate: none;
+  }
+}
+/* The stars over the home page's foot, in the dark theme. The pointer anywhere on the foot joins them into the island,
+   the lines drawn in from left to right like the signature. Not on a narrow screen, where they would sit on the
+   signature and no pointer comes near. */
+.foot {
+  position: relative;
+  align-items: center;
+}
+.stars {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 18px);
+  width: 160px;
+  height: 120px;
+}
+@media (min-width: 900px) {
+  :root[data-theme="dark"]:has(.site) .stars {
+    display: block;
+  }
+}
+@media (min-width: 900px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):has(.site) .stars {
+    display: block;
+  }
+}
+.stars::before,
+.stars::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #eef2df;
+}
+.stars::before {
+  opacity: 0.55;
+  mask: url("/foot/stars.svg") center / contain no-repeat;
+}
+.stars::after {
+  opacity: 0.4;
+  mask:
+    linear-gradient(90deg, #000 40%, transparent 60%) 100% 0 / 250% 100% no-repeat,
+    url("/foot/lines.svg") center / contain no-repeat;
+  mask-composite: intersect;
+  transition: mask-position 1.6s cubic-bezier(0.35, 0, 0.25, 1);
+}
+.foot:hover .stars::after {
+  mask-position:
+    0 0,
+    center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .stars::before {
+    animation: twinkle 3.2s ease-in-out infinite alternate;
+  }
+}
+@keyframes twinkle {
+  to {
+    opacity: 0.3;
+  }
 }
 
 /* ─── Pages without a world ───────────────────────────────────────────────── */

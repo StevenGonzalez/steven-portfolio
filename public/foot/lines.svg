@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 90">
+  <!-- The lines joining the footer's stars (stars.svg) into a floating island, used as a mask (globals.css .stars). -->
+  <path d="M12 40L38 35M38 35L70 36M70 36L104 41M12 40L36 56M36 56L60 80M60 80L84 55M84 55L104 41M38 35L40 22M31 22L40 8L49 22Z" fill="none" stroke="#000" stroke-width="0.6" stroke-linecap="round"/>
+</svg>
