@@ -2380,26 +2380,6 @@ main:focus {
   }
 }
 
-/* The reading lamp (SiteEffects): a warm pool of light at the pointer, in the dark, over the paper. Placed by a
-   transform at the pointer, so its own box is centred on it by the margins. */
-.lamp {
-  position: fixed;
-  z-index: 15;
-  top: 0;
-  left: 0;
-  width: 560px;
-  height: 560px;
-  margin: -280px 0 0 -280px;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(255 196 120 / 0.13), rgb(255 186 104 / 0.06) 45%, rgb(255 180 96 / 0));
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-.lamp.on {
-  opacity: 1;
-}
-
 /* A spatter of ink where the paper is clicked (SiteEffects): it lands, soaks in and fades. */
 .splash {
   position: absolute;

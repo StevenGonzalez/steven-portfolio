@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { seasonNow } from "@/lib/season";
 import { worldSourceUrl } from "@/lib/site";
-import { isDarkTheme, watchTheme } from "@/lib/theme";
 
 // The console greeting prints once per load, not once per page.
 let greeted = false;
@@ -14,9 +13,9 @@ let greeted = false;
  *  painted blinks out and back, and nothing stays hidden if this never runs. The page is marked with the season, for
  *  the ornaments, and the tab's icon follows the season. Cards marked data-glow catch the light where the pointer is.
  *  A box marked data-scene plays that painted scene. A link marked data-seal is sealed in wax as it is clicked.
- *  Articles read are dog-eared in the lists. In the dark, a reading lamp follows the pointer, and a click on the paper
- *  leaves a spatter of ink. A service worker keeps the site for offline use. And whoever opens the console finds a
- *  note about how the world is made, and a switch for it that nothing on the page shows. */
+ *  Articles read are dog-eared in the lists. A click on the paper leaves a spatter of ink. A service worker keeps the
+ *  site for offline use. And whoever opens the console finds a note about how the world is made, and a switch for it
+ *  that nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
@@ -173,37 +172,6 @@ export default function SiteEffects() {
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, []);
-
-  // In the dark, a reading lamp: a soft warm pool of light follows the pointer over the paper, below the world at the
-  // top. Only for a mouse or a pen, and not when the system asks for reduced motion. The pool is one element moved by
-  // a transform, so following the pointer repaints nothing.
-  useEffect(() => {
-    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const lamp = document.createElement("div");
-    lamp.className = "lamp";
-    lamp.setAttribute("aria-hidden", "true");
-    document.body.append(lamp);
-    let dark = isDarkTheme();
-    const onMove = (e: PointerEvent) => {
-      const on = dark && !!(e.target as Element).closest?.(".site, .page");
-      lamp.classList.toggle("on", on);
-      if (on) lamp.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-    };
-    const off = () => lamp.classList.remove("on");
-    const unwatch = watchTheme(() => {
-      dark = isDarkTheme();
-      if (!dark) off();
-    });
-    document.addEventListener("pointermove", onMove, { passive: true });
-    document.documentElement.addEventListener("pointerleave", off);
-    return () => {
-      document.removeEventListener("pointermove", onMove);
-      document.documentElement.removeEventListener("pointerleave", off);
-      unwatch();
-      lamp.remove();
-    };
   }, []);
 
   // A click on the paper itself, not on anything that does something, leaves a small spatter of ink that soaks in and
