@@ -122,7 +122,7 @@ export default function Home() {
             Hiring, or building something interesting? Send me a message.
           </p>
           <div className="row" data-rv>
-            <ExternalLink className="btn solid" href={externalProfiles.linkedIn.href}>
+            <ExternalLink className="btn solid" href={externalProfiles.linkedIn.href} data-seal>
               Message me on LinkedIn
             </ExternalLink>
             <ExternalLink className="btn line" href={externalProfiles.gitHub.href}>

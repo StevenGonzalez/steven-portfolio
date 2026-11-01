@@ -12,8 +12,9 @@ let greeted = false;
  *  arrive together; the hidden state is added here, and only to those not yet on screen, so nothing that has been
  *  painted blinks out and back, and nothing stays hidden if this never runs. The page is marked with the season, for
  *  the ornaments. Cards marked data-glow catch the light where the pointer is. A box marked data-scene plays that
- *  painted scene. A service worker keeps the site for offline use. And whoever opens the console finds a note about how the world is made, and a
- *  switch for it that nothing on the page shows. */
+ *  painted scene. A link marked data-seal is sealed in wax as it is clicked. A service worker keeps the site for
+ *  offline use. And whoever opens the console finds a note about how the world is made, and a switch for it that
+ *  nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
@@ -107,6 +108,27 @@ export default function SiteEffects() {
       rest();
     };
   }, []);
+  // A link marked data-seal is sealed in wax as it is clicked, and opens in its new tab once the seal is pressed, so the
+  // seal is seen. A click that asks for something else (a middle click, a modifier) is left to the browser, and so is
+  // every click when the system asks for reduced motion.
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as Element).closest?.<HTMLAnchorElement>("a[data-seal]");
+      if (!a || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      if (a.querySelector(".seal")) return;
+      const seal = document.createElement("span");
+      seal.className = "seal";
+      seal.setAttribute("aria-hidden", "true");
+      seal.addEventListener("animationend", () => seal.remove());
+      a.append(seal);
+      setTimeout(() => open(a.href, "_blank", "noopener,noreferrer"), 450);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
   // The page scrolls smoothly, and the browser's own Back and Forward buttons honour that when they put the reader's
   // place back, gliding down from the top of the page instead of arriving there. So a step through history scrolls at
   // once, and smooth scrolling comes back with the reader's next touch, before any link on the page can use it.
