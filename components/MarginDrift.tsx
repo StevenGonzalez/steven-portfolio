@@ -12,10 +12,10 @@ const COLUMN = 1120,
 type Bit = { x: number; y: number; vy: number; r: number; spin: number; turn: number; size: number; tint: number };
 
 /** A few things falling from the island, down the empty margins either side of the home page's sections, for the
- *  season: maple leaves in autumn, snow in winter, petals in spring and seeds in summer. They fall on their own and the
- *  page carries them half as far as it scrolls, so they seem to hang between the page and the sky behind it. Only in
- *  the margins, and only while the sections are on screen; not at all on a screen too narrow to have margins, or when
- *  the system asks for reduced motion. */
+ *  season: maple leaves in autumn, snow in winter, petals in spring and seeds in summer. They fall in front of the page,
+ *  like weather seen through a window, so scrolling leaves them be; carried along with the page, they shot up the
+ *  screen with every scroll. Only in the margins, and only while the sections are on screen; not at all on a screen too
+ *  narrow to have margins, or when the system asks for reduced motion. */
 export default function MarginDrift() {
   const ref = useRef<HTMLCanvasElement>(null);
 
@@ -32,7 +32,6 @@ export default function MarginDrift() {
       bits: Bit[] = [],
       raf = 0,
       last = 0,
-      lastY = scrollY,
       seen = false;
 
     const spawn = (y: number): Bit => {
@@ -113,10 +112,8 @@ export default function MarginDrift() {
       // Thirty frames a second is plenty for things this slow.
       if (now - last < 32) return;
       const dt = Math.min(0.1, (now - last) / 1000),
-        t = now / 1000,
-        dy = scrollY - lastY;
+        t = now / 1000;
       last = now;
-      lastY = scrollY;
       ctx.clearRect(0, 0, W, H);
       // Nothing falls over the world above the sections or the footer below them.
       const box = site.getBoundingClientRect();
@@ -124,15 +121,10 @@ export default function MarginDrift() {
       ctx.beginPath();
       ctx.rect(0, box.top, W, box.height);
       ctx.clip();
-      // A jump of more than half a screen (a link to a section, the end key) scatters them afresh, rather than sending
-      // them all off one edge together to come back in a clump.
-      const jump = Math.abs(dy) > H / 2;
       for (const b of bits) {
-        if (jump) Object.assign(b, spawn(Math.random() * H));
-        b.y += b.vy * dt - (jump ? 0 : dy * 0.5);
+        b.y += b.vy * dt;
         b.r += b.spin * dt;
         if (b.y > H + 30) Object.assign(b, spawn(-30 - Math.random() * H * 0.3));
-        else if (b.y < -40 - H * 0.3) Object.assign(b, spawn(H + 20 + Math.random() * H * 0.3));
         draw(b, t);
       }
       ctx.restore();
@@ -141,7 +133,6 @@ export default function MarginDrift() {
       cancelAnimationFrame(raf);
       if (seen && !document.hidden && bits.length) {
         last = performance.now();
-        lastY = scrollY;
         raf = requestAnimationFrame(frame);
       } else ctx.clearRect(0, 0, W, H);
     };
