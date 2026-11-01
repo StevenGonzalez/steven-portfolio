@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+  <!-- A pressed snowdrop, tucked under a project card in winter (globals.css .work::before). -->
+  <path d="M-30 92C-30 20 -10 -50 30 -70Q44 -76 46 -60" fill="none" stroke="#7d9a6c" stroke-width="5" stroke-linecap="round"/>
+  <path d="M-34 90C-60 40 -66 0 -52 -30C-46 6 -40 46 -30 88Z" fill="#8fab7c" opacity="0.85"/>
+  <ellipse cx="46" cy="-52" rx="6" ry="7" fill="#9bb586"/>
+  <g fill="#f4f1e6" stroke="#cfcab8" stroke-width="2">
+    <path d="M46 -46C30 -30 28 4 40 24C50 4 54 -26 46 -46Z"/>
+    <path d="M46 -46C62 -32 70 -2 60 18C48 0 42 -26 46 -46Z"/>
+    <path d="M46 -46C40 -24 42 4 50 20C56 2 54 -24 46 -46Z"/>
+  </g>
+  <path d="M44 14q4 6 10 0" fill="none" stroke="#8fb07a" stroke-width="3"/>
+</svg>

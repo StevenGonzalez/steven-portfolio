@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
+  <!-- A pressed four-leaf clover, tucked under a project card in summer (globals.css .work::before). -->
+  <path d="M0 0Q10 50 -10 96" fill="none" stroke="#6f8f55" stroke-width="6" stroke-linecap="round"/>
+  <g fill="#86a768" stroke="#6f8f55" stroke-width="2">
+    <path id="h" d="M0 -4C-8 -30 -46 -40 -50 -16C-52 -2 -36 6 -4 2Z"/>
+    <use href="#h" transform="rotate(90)"/>
+    <use href="#h" transform="rotate(180)"/>
+    <use href="#h" transform="rotate(270)"/>
+  </g>
+</svg>

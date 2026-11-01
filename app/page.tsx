@@ -20,7 +20,7 @@ export default function Home() {
         <canvas className="seam" id="seam" aria-hidden="true" />
         <MarginDrift />
 
-        <section className="sec" id="about" aria-labelledby="about-h">
+        <section className="sec" id="about" aria-labelledby="about-h" data-head="Chapter I · About">
           <p className="chap" data-rv>
             Chapter I &middot; About
           </p>
@@ -64,7 +64,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="sec" id="work" aria-labelledby="work-h">
+        <section className="sec" id="work" aria-labelledby="work-h" data-head="Chapter II · Selected work">
           <p className="chap" data-rv>
             Chapter II &middot; Selected work
           </p>
@@ -74,7 +74,7 @@ export default function Home() {
           <ProjectGrid projects={projects} titleAs="h3" />
         </section>
 
-        <section className="sec" id="writing" aria-labelledby="writing-h">
+        <section className="sec" id="writing" aria-labelledby="writing-h" data-head="Chapter III · Writing">
           <p className="chap" data-rv>
             Chapter III &middot; Writing
           </p>
@@ -87,7 +87,7 @@ export default function Home() {
           </Link>
         </section>
 
-        <section className="sec" id="colophon" aria-labelledby="colophon-h">
+        <section className="sec" id="colophon" aria-labelledby="colophon-h" data-head="Colophon">
           <p className="chap" data-rv>
             Colophon
           </p>
@@ -114,23 +114,29 @@ export default function Home() {
           </ExternalLink>
         </section>
 
-        <section className="sec contact" id="contact" aria-labelledby="contact-h">
-          <h2 className="chap" id="contact-h" data-rv>
-            Epilogue &middot; Contact
-          </h2>
-          <p className="big" data-rv>
-            Hiring, or building something interesting? Send me a message.
-          </p>
-          <div className="row" data-rv>
-            <ExternalLink className="btn solid" href={externalProfiles.linkedIn.href} data-seal>
-              Message me on LinkedIn
-            </ExternalLink>
-            <ExternalLink className="btn line" href={externalProfiles.gitHub.href}>
-              GitHub
-            </ExternalLink>
-            <Link className="btn line" href="/resume">
-              Résumé
-            </Link>
+        <section className="sec contact" id="contact" aria-labelledby="contact-h" data-head="Epilogue · Contact">
+          <div className="letter">
+            <span className="post" aria-hidden="true">
+              <span className="stamp" />
+              <span className="mark" />
+            </span>
+            <h2 className="chap" id="contact-h" data-rv>
+              Epilogue &middot; Contact
+            </h2>
+            <p className="big" data-rv>
+              Hiring, or building something interesting? Send me a message.
+            </p>
+            <div className="row" data-rv>
+              <ExternalLink className="btn solid" href={externalProfiles.linkedIn.href} data-seal>
+                Message me on LinkedIn
+              </ExternalLink>
+              <ExternalLink className="btn line" href={externalProfiles.gitHub.href}>
+                GitHub
+              </ExternalLink>
+              <Link className="btn line" href="/resume">
+                Résumé
+              </Link>
+            </div>
           </div>
           <p className="fin" data-rv>
             The End

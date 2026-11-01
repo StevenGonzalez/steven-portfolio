@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 96">
+  <!-- The postage stamp on the contact letter (globals.css .stamp): a sky island at dawn. The perforations are a CSS mask. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8fc3dc"/>
+      <stop offset="0.75" stop-color="#f1dcb0"/>
+    </linearGradient>
+  </defs>
+  <rect width="80" height="96" fill="#f7f1e3"/>
+  <rect x="7" y="7" width="66" height="66" fill="url(#sky)"/>
+  <circle cx="54" cy="26" r="7" fill="#f8e7b4"/>
+  <path d="M14 30q4-5 9-2q3-4 8-1q4 0 4 3H14Z" fill="#fffaf0" opacity="0.9"/>
+  <path d="M45 56q3-4 7-1q3-3 7 0q3 0 3 2H45Z" fill="#fffaf0" opacity="0.85"/>
+  <path d="M20 44q20-6 40 0l-6 6q-8 14-14 18q-6-4-14-18Z" fill="#8a6a4c"/>
+  <path d="M20 44q20-6 40 0q-20 4-40 0Z" fill="#6f9a52"/>
+  <path d="M33 42.5v-6" stroke="#5a3f2a" stroke-width="1.4"/>
+  <circle cx="33" cy="34" r="4.6" fill="#4f7f3f"/>
+  <path d="M48 45v14" stroke="#cfe6f0" stroke-width="1.6" opacity="0.9"/>
+  <rect x="7" y="7" width="66" height="66" fill="none" stroke="#3d4a52" stroke-width="0.8" opacity="0.5"/>
+  <text x="40" y="86" text-anchor="middle" font-family="Georgia, serif" font-size="8" letter-spacing="1.2" fill="#6a4a2a">SKY ISLANDS</text>
+</svg>

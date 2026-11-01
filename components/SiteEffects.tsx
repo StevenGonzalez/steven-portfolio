@@ -11,11 +11,11 @@ let greeted = false;
 /** Small touches shared by every page. Sections rise into place as they scroll into view, staggered when several
  *  arrive together; the hidden state is added here, and only to those not yet on screen, so nothing that has been
  *  painted blinks out and back, and nothing stays hidden if this never runs. The page is marked with the season, for
- *  the ornaments, and the tab's icon follows the season. Cards marked data-glow catch the light where the pointer is.
- *  A box marked data-scene plays that painted scene. A link marked data-seal is sealed in wax as it is clicked.
- *  Articles read are dog-eared in the lists. A click on the paper leaves a spatter of ink. A service worker keeps the
- *  site for offline use. And whoever opens the console finds a note about how the world is made, and a switch for it
- *  that nothing on the page shows. */
+ *  the ornaments, and the tab's icon follows the season. The contact letter's postmark is dated today. Cards marked
+ *  data-glow catch the light where the pointer is. A box marked data-scene plays that painted scene. A link marked
+ *  data-seal is sealed in wax as it is clicked. Articles read are dog-eared in the lists. A click on the paper leaves
+ *  a spatter of ink. A service worker keeps the site for offline use. And whoever opens the console finds a note
+ *  about how the world is made, and a switch for it that nothing on the page shows. */
 export default function SiteEffects() {
   const pathname = usePathname();
 
@@ -27,6 +27,10 @@ export default function SiteEffects() {
     root.season = season;
     if (occasion) root.occasion = occasion;
     else delete root.occasion;
+    // The postmark on the contact letter is dated today.
+    const now = new Date(),
+      month = now.toLocaleDateString("en-GB", { month: "short" }).slice(0, 3).toUpperCase();
+    document.documentElement.style.setProperty("--today", `"${now.getDate()} ${month}\\A ${now.getFullYear()}"`);
     // React puts in its own copy of the server's icon link after this has run, so each copy is pointed at the season's
     // icon as it arrives.
     if (season === "autumn") return;

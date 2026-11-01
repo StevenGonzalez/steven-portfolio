@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -108 200 200">
+  <!-- A pressed maple leaf, faded, tucked under a project card in autumn (globals.css .work::before). -->
+  <path d="M2 30Q6 62 16 86" fill="none" stroke="#9a4a30" stroke-width="7" stroke-linecap="round"/>
+  <path fill="#cf7446" d="M0 -100L10 -80L24 -84L18 -50L52 -62L62 -78L66 -56L96 -50L70 -30L78 -16L44 -4L62 30L50 32L52 48L20 26L0 40L-20 26L-52 48L-50 32L-62 30L-44 -4L-78 -16L-70 -30L-96 -50L-66 -56L-62 -78L-52 -62L-18 -50L-24 -84L-10 -80Z"/>
+  <g fill="none" stroke="#a5502e" stroke-width="2.6" stroke-linecap="round" opacity="0.7">
+    <path d="M0 34V-88M0 4L-56 -40M0 4L56 -40M0 18L-40 32M0 18L40 32M0 -30L-14 -60M0 -30L14 -60"/>
+  </g>
+</svg>

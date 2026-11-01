@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-80 -40 120 80">
+  <!-- The postmark on the contact letter (globals.css .mark), used as a mask: two rings, the post office's name around the
+       top, and wavy lines cancelling the stamp. The date in the middle is written by the page. -->
+  <defs><path id="arc" d="M-29 2a29 29 0 0 1 58 0"/></defs>
+  <g fill="none" stroke="#000">
+    <circle r="34" stroke-width="2.4"/>
+    <circle r="21" stroke-width="1.2"/>
+    <path d="M-38 -14q8-6 16 0t16 0M-38 0q8-6 16 0M-38 14q8-6 16 0t16 0" stroke-width="2.2" transform="translate(-36 0)"/>
+  </g>
+  <text font-family="Georgia, serif" font-size="9.5" letter-spacing="2.2" text-anchor="middle"><textPath href="#arc" startOffset="50%">SKY ISLAND POST</textPath></text>
+  <text y="31" font-family="Georgia, serif" font-size="9" text-anchor="middle">★</text>
+</svg>
