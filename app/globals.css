@@ -1596,20 +1596,29 @@ main:focus {
 .fin::before {
   margin: 0 auto 14px;
 }
-/* Signed under The End. Once The End has risen into view and its flourish inked in, the signature writes itself out
-   from the left, behind a soft edge, like ink still running from the pen. */
+/* Signed under The End. The signature is a file of its own (public/signature.svg), so it loads after the page has
+   painted rather than adding to what comes first. Once The End has risen into view and its flourish inked in, it writes
+   itself out from the left, behind a soft edge, like ink still running from the pen. */
 .sig {
   display: block;
   width: min(300px, 72%);
+  aspect-ratio: 4534 / 1136;
   margin: 6px auto 0;
-  fill: var(--accent);
-  mask: linear-gradient(90deg, #000 40%, transparent 60%) 0 0 / 250% 100% no-repeat;
+  background: var(--accent);
+  mask:
+    linear-gradient(90deg, #000 40%, transparent 60%) 0 0 / 250% 100% no-repeat,
+    url("/signature.svg") center / contain no-repeat;
+  mask-composite: intersect;
 }
 .fin.rv + .sig {
-  mask-position: 100% 0;
+  mask-position:
+    100% 0,
+    center;
 }
 .fin.rv.in + .sig {
-  mask-position: 0 0;
+  mask-position:
+    0 0,
+    center;
   transition: mask-position 2.6s cubic-bezier(0.35, 0, 0.25, 1) calc(var(--d, 0ms) + 1.3s);
 }
 
