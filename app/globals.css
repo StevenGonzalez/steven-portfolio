@@ -958,7 +958,7 @@ main:focus {
   box-shadow: 0 0 10px var(--glow);
   vertical-align: middle;
 }
-.sec > h2:not(.label),
+.sec > h2:not(.label, .chap),
 .page-h {
   margin: 0 0 clamp(28px, 4vw, 48px);
   font: 500 clamp(2.4rem, 5vw, 3.8rem)/1 var(--display);
@@ -1222,6 +1222,91 @@ main:focus {
 }
 .contact .btn.line:hover {
   background: var(--panel);
+}
+
+/* ─── Storybook ───────────────────────────────────────────────────────────── */
+
+/* Below the world, the home page reads like the book the island came out of: grain like paper, each section opening
+   as a chapter under a small flourish, a drop cap to start, and each project's painted scene set in its card like a
+   plate. The flourish is a mask, so it takes the theme's colour. */
+.site::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.site .sec + .sec {
+  border-top: 0;
+}
+.site .sec > h2:not(.chap) {
+  text-align: center;
+}
+.chap {
+  margin: 0 0 12px;
+  font: italic 500 clamp(1.05rem, 1.6vw, 1.25rem)/1.4 var(--display);
+  letter-spacing: 0.14em;
+  text-align: center;
+  color: var(--accent);
+}
+.chap::after {
+  content: "";
+  display: block;
+  width: 132px;
+  height: 18px;
+  margin: 10px auto 0;
+  background: currentColor;
+  opacity: 0.8;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 132 18' fill='none' stroke='%23000' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M4 9h38c8 0 10-6 15-6 4 0 4 5 0 5'/%3E%3Cpath d='M128 9H90c-8 0-10-6-15-6-4 0-4 5 0 5'/%3E%3Cpath d='M66 3l5 6-5 6-5-6z' fill='%23000'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+.site .about,
+.site .colo {
+  margin-inline: auto;
+}
+.cap {
+  float: left;
+  margin: 0.06em 0.1em 0 0;
+  font: 600 4.6em/0.8 var(--display);
+  color: var(--accent);
+}
+.site #colophon {
+  text-align: center;
+}
+.site .colo {
+  text-align: start;
+}
+.site .contact {
+  text-align: center;
+}
+.site .contact p.big {
+  margin-inline: auto;
+}
+.site .contact .row {
+  justify-content: center;
+}
+
+.plate {
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 3px var(--panel);
+}
+.plate .scene-cv {
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  border-radius: 1px;
+}
+.lead-proj .plate {
+  grid-column: 1 / -1;
+}
+@media (min-width: 861px) {
+  .lead-proj .plate .scene-cv {
+    aspect-ratio: 3 / 1;
+  }
 }
 
 /* Set by script only, so nothing stays hidden if it never runs. */

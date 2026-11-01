@@ -19,13 +19,17 @@ export default function Home() {
         <canvas className="seam" id="seam" aria-hidden="true" />
 
         <section className="sec" id="about" aria-labelledby="about-h">
-          <h2 className="label" id="about-h" data-rv>
-            About
+          <p className="chap" data-rv>
+            Chapter I &middot; About
+          </p>
+          <h2 id="about-h" data-rv>
+            Who I am
           </h2>
           <div className="about" data-rv>
             <p>
-              I&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React and Angular front ends, the
-              .NET APIs and databases behind them, iOS and Android apps in React Native, and{" "}
+              {/* The drop cap is a span, not ::first-letter, which would carry the apostrophe up with the I. */}
+              <span className="cap">I</span>&apos;m a full-stack engineer, strongest on the web. I&apos;ve built React
+              and Angular front ends, the .NET APIs and databases behind them, iOS and Android apps in React Native, and{" "}
               <Link href="/projects/industrial-saw-control-platform">a desktop app that runs industrial saws</Link>.
               Before the saws I worked on{" "}
               <Link href="/projects/fitness-platform">
@@ -59,8 +63,8 @@ export default function Home() {
         </section>
 
         <section className="sec" id="work" aria-labelledby="work-h">
-          <p className="label" data-rv>
-            Selected work
+          <p className="chap" data-rv>
+            Chapter II &middot; Selected work
           </p>
           <h2 id="work-h" data-rv>
             What I&apos;ve built
@@ -69,8 +73,8 @@ export default function Home() {
         </section>
 
         <section className="sec" id="writing" aria-labelledby="writing-h">
-          <p className="label" data-rv>
-            Writing
+          <p className="chap" data-rv>
+            Chapter III &middot; Writing
           </p>
           <h2 id="writing-h" data-rv>
             Notes on building software
@@ -82,7 +86,7 @@ export default function Home() {
         </section>
 
         <section className="sec" id="colophon" aria-labelledby="colophon-h">
-          <p className="label" data-rv>
+          <p className="chap" data-rv>
             Colophon
           </p>
           <h2 id="colophon-h" data-rv>
@@ -109,8 +113,8 @@ export default function Home() {
         </section>
 
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
-          <h2 className="label" id="contact-h" data-rv>
-            Contact
+          <h2 className="chap" id="contact-h" data-rv>
+            Epilogue &middot; Contact
           </h2>
           <p className="big" data-rv>
             Hiring, or building something interesting? Send me a message.
