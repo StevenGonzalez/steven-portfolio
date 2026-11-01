@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { displayDate, getInsightBySlug, insights } from "@/lib/content";
 import BackCrumb from "./BackCrumb";
 import NextUp from "./NextUp";
+import ProjectScene from "./ProjectScene";
 import SectionRail from "./SectionRail";
 
 type TocItem = {
@@ -53,6 +54,9 @@ export default function InsightArticle({
               </ul>
             </header>
             <div className="prose doc-body">{children}</div>
+            <div className="tailpiece">
+              <ProjectScene slug="end" />
+            </div>
             {next ? (
               <NextUp label="Next article" href={`/insights/${next.slug}`} title={next.title} summary={next.summary} />
             ) : null}

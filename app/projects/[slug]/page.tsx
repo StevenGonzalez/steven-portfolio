@@ -116,6 +116,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               ) : null}
             </div>
 
+            <div className="tailpiece">
+              <ProjectScene slug="end" />
+            </div>
             <NextUp
               label="Next case study"
               href={`/projects/${next.slug}`}

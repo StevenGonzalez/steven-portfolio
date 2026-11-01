@@ -1267,7 +1267,8 @@ main:focus {
   text-align: center;
   color: var(--accent);
 }
-.chap::after {
+.chap::after,
+.fin::before {
   content: "";
   display: block;
   width: 132px;
@@ -1346,6 +1347,25 @@ main:focus {
     aspect-ratio: 3 / 1;
   }
 }
+/* A small painted vignette that ends a case study or article, its edges fading into the page like an old print. */
+.tailpiece {
+  width: min(100%, 420px);
+  margin: clamp(40px, 6vw, 64px) auto 0;
+  mask: radial-gradient(closest-side, #000 62%, transparent);
+}
+.tailpiece .scene-cv {
+  aspect-ratio: 2 / 1;
+}
+/* The last words on the home page, under the flourish the chapters open with. */
+.fin {
+  margin: clamp(48px, 7vw, 80px) 0 0;
+  font: italic 500 clamp(1.3rem, 2.2vw, 1.6rem)/1.4 var(--display);
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.fin::before {
+  margin: 0 auto 14px;
+}
 
 /* Set by script only, so nothing stays hidden if it never runs. */
 .rv {
@@ -1389,16 +1409,31 @@ main:focus {
 .page .sec:first-child {
   padding-top: clamp(40px, 6vw, 72px);
 }
+/* A button, not a breadcrumb, and it stays under the header the length of the page, so the way back is never a scroll
+   away. */
 .crumb {
-  display: inline-block;
-  margin-bottom: 18px;
-  font: 500 12px/1.4 var(--mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
+  position: sticky;
+  top: calc(var(--nav-room) + 12px);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-bottom: 22px;
+  padding: 8px 16px 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--bg) 70%, transparent);
+  color: var(--fg);
+  font: 500 14px/1.2 var(--body);
   text-decoration: none;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 .crumb:hover {
+  border-color: var(--accent);
   color: var(--accent);
 }
 /* A plain outlined button, for a page's own controls: the peek's, and the résumé's print. */
@@ -1825,6 +1860,30 @@ main:focus {
 }
 .rail .top {
   border-left-color: transparent;
+}
+/* The bookmark: a ribbon over the rail's line, from the top of the list down to the section being read, with a
+   swallowtail end. SectionRail sets its top and height. */
+.rail nav {
+  position: relative;
+}
+.rail nav a,
+.rail nav button {
+  padding-left: 18px;
+}
+.ribbon {
+  position: absolute;
+  left: -4px;
+  width: 10px;
+  height: 0;
+  background: linear-gradient(90deg, var(--accent) 50%, color-mix(in srgb, var(--accent) 80%, #000) 50%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 7px), 0 100%);
+  pointer-events: none;
+  transition: height 0.45s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon {
+    transition: none;
+  }
 }
 .pills {
   display: flex;

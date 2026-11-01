@@ -55,9 +55,15 @@ export default function BackCrumb({ href, label }: { href: string; label: string
         goBack(back.steps);
       }}
     >
-      ← {back ? (names[new URL(back.url).pathname] ?? "Back") : label}
+      <span aria-hidden="true">←</span>
+      {backTo(back ? names[new URL(back.url).pathname] : label)}
     </Link>
   );
+}
+
+/** The button's words: "Back to writing", or plain "Back" for a page of this site with no name here. */
+function backTo(name: string | undefined) {
+  return name ? `Back to ${name.toLowerCase()}` : "Back";
 }
 
 const named = () => document.querySelectorAll<HTMLElement>("[data-vt]");

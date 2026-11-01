@@ -130,6 +130,9 @@ export default function Home() {
               Résumé
             </Link>
           </div>
+          <p className="fin" data-rv>
+            The End
+          </p>
         </section>
       </div>
       <canvas className="seam low" id="seam-low" aria-hidden="true" />

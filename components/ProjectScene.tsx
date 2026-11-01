@@ -4,8 +4,9 @@ import { useEffect, useRef } from "react";
 import { mountScene } from "@/lib/world/vignette-stage";
 
 /** A project's painted scene: a box the engine in lib/world draws into and animates while it is on screen. The engine
- *  starts only once the box nears the screen, so a page of cards does not start every scene at load. */
-export default function ProjectScene({ slug, label }: { slug: string; label: string }) {
+ *  starts only once the box nears the screen, so a page of cards does not start every scene at load. A scene with no
+ *  label is decoration, like the tailpiece, and is hidden from screen readers. */
+export default function ProjectScene({ slug, label }: { slug: string; label?: string }) {
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,5 +27,9 @@ export default function ProjectScene({ slug, label }: { slug: string; label: str
     };
   }, [slug]);
 
-  return <div ref={box} className="scene-cv" role="img" aria-label={label} />;
+  return label ? (
+    <div ref={box} className="scene-cv" role="img" aria-label={label} />
+  ) : (
+    <div ref={box} className="scene-cv" aria-hidden="true" />
+  );
 }
