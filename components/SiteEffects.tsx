@@ -179,6 +179,7 @@ export default function SiteEffects() {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const NS = "http://www.w3.org/2000/svg";
+    let splashes = 0;
     const onClick = (e: MouseEvent) => {
       if (e.button !== 0 || e.detail !== 1) return;
       const t = e.target as Element;
@@ -194,12 +195,19 @@ export default function SiteEffects() {
       svg.setAttribute("aria-hidden", "true");
       svg.style.left = `${e.pageX}px`;
       svg.style.top = `${e.pageY}px`;
+      // The ink is the colour of the writing, and its edges are roughened with noise, a fresh pattern each time, so
+      // it reads as ink soaked into paper and not as a stamp.
+      const id = `ink${++splashes}`;
+      svg.innerHTML = `<filter id="${id}" x="-50%" y="-50%" width="200%" height="200%"><feTurbulence type="fractalNoise" baseFrequency="0.3" numOctaves="2" seed="${splashes}"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter>`;
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("filter", `url(#${id})`);
+      svg.append(g);
       const drop = (x: number, y: number, r: number) => {
         const c = document.createElementNS(NS, "circle");
         c.setAttribute("cx", x.toFixed(1));
         c.setAttribute("cy", y.toFixed(1));
         c.setAttribute("r", r.toFixed(1));
-        svg.append(c);
+        g.append(c);
       };
       // The drop, lumpy at its edge, and the droplets thrown off it, smaller the further they flew.
       drop(0, 0, 4 + Math.random() * 1.5);
