@@ -1596,6 +1596,22 @@ main:focus {
 .fin::before {
   margin: 0 auto 14px;
 }
+/* Signed under The End. Once The End has risen into view and its flourish inked in, the signature writes itself out
+   from the left, behind a soft edge, like ink still running from the pen. */
+.sig {
+  display: block;
+  width: min(300px, 72%);
+  margin: 6px auto 0;
+  fill: var(--accent);
+  mask: linear-gradient(90deg, #000 40%, transparent 60%) 0 0 / 250% 100% no-repeat;
+}
+.fin.rv + .sig {
+  mask-position: 100% 0;
+}
+.fin.rv.in + .sig {
+  mask-position: 0 0;
+  transition: mask-position 2.6s cubic-bezier(0.35, 0, 0.25, 1) calc(var(--d, 0ms) + 1.3s);
+}
 
 /* Set by script only, so nothing stays hidden if it never runs. */
 .rv {

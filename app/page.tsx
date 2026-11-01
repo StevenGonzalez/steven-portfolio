@@ -3,6 +3,7 @@ import Link from "next/link";
 import ExternalLink from "@/components/ExternalLink";
 import MarginDrift from "@/components/MarginDrift";
 import PostList from "@/components/PostList";
+import Signature from "@/components/Signature";
 import ProjectGrid from "@/components/ProjectGrid";
 import World from "@/components/World";
 import { insights, projects } from "@/lib/content";
@@ -135,6 +136,7 @@ export default function Home() {
           <p className="fin" data-rv>
             The End
           </p>
+          <Signature />
         </section>
       </div>
       <canvas className="seam low" id="seam-low" aria-hidden="true" />
