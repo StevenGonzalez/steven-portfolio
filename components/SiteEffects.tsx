@@ -77,6 +77,36 @@ export default function SiteEffects() {
     return () => document.removeEventListener("pointermove", onMove);
   }, []);
 
+  // A painted plate leans toward the pointer and its scene slides the other way inside the frame, like a picture seen
+  // through a window as you move your head. Over a card, the card's plate follows anywhere on the card. Only for a
+  // mouse or a pen, and not when the system asks for reduced motion.
+  useEffect(() => {
+    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let current: HTMLElement | null = null;
+    const rest = () => {
+      current?.classList.remove("lean");
+      current = null;
+    };
+    const onMove = (e: PointerEvent) => {
+      const area = (e.target as Element).closest?.<HTMLElement>(".proj, .plate");
+      const plate = area?.matches(".plate") ? area : area?.querySelector<HTMLElement>(".plate");
+      if (plate !== current) rest();
+      if (!area || !plate) return;
+      const b = area.getBoundingClientRect();
+      plate.style.setProperty("--px", (((e.clientX - b.left) / b.width) * 2 - 1).toFixed(3));
+      plate.style.setProperty("--py", (((e.clientY - b.top) / b.height) * 2 - 1).toFixed(3));
+      plate.classList.add("lean");
+      current = plate;
+    };
+    document.addEventListener("pointermove", onMove, { passive: true });
+    document.documentElement.addEventListener("pointerleave", rest);
+    return () => {
+      document.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", rest);
+      rest();
+    };
+  }, []);
   // The page scrolls smoothly, and the browser's own Back and Forward buttons honour that when they put the reader's
   // place back, gliding down from the top of the page instead of arriving there. So a step through history scrolls at
   // once, and smooth scrolling comes back with the reader's next touch, before any link on the page can use it.

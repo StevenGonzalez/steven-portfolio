@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageTurn from "@/components/PageTurn";
 import SiteEffects from "@/components/SiteEffects";
 import { SITE_NAME } from "@/lib/meta";
 import { siteUrl } from "@/lib/site";
@@ -102,6 +103,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <SiteEffects />
+        <PageTurn />
         {/* Sends how fast each page loaded for real visitors to Vercel, once Speed Insights is on for the project. */}
         <SpeedInsights />
       </body>

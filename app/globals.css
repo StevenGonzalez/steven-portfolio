@@ -1389,6 +1389,18 @@ main:focus {
 .lead-proj .plate {
   grid-column: 1 / -1;
 }
+/* A plate leans toward the pointer and its scene slides the other way inside the frame (SiteEffects). The scene is a
+   little larger while it slides, so its edges never show. */
+.plate,
+.plate .scene-cv canvas {
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.plate.lean {
+  transform: perspective(1400px) rotateX(calc(var(--py) * -2deg)) rotateY(calc(var(--px) * 3deg));
+}
+.plate.lean .scene-cv canvas {
+  transform: translate(calc(var(--px) * -10px), calc(var(--py) * -6px)) scale(1.05);
+}
 @media (min-width: 861px) {
   .lead-proj .plate .scene-cv {
     aspect-ratio: 3 / 1;
@@ -1839,7 +1851,22 @@ main:focus {
   }
 }
 
-/* The 404 page: its scene, then a way home. */
+/* The 404 page: a page torn out of the book, a little askew, with its scene and a way home. The shadow is on the wrapper,
+   since the torn edge's mask would cut a shadow on the page itself away. */
+.torn {
+  max-width: 1120px;
+  margin: clamp(40px, 6vw, 72px) auto 0;
+  rotate: -0.8deg;
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, #000 22%, transparent));
+}
+.page .torn .sec {
+  padding: clamp(32px, 5vw, 56px) clamp(28px, 5vw, 64px) clamp(36px, 5vw, 60px) clamp(36px, 6vw, 72px);
+  background: var(--panel);
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='60'%3E%3Cpath d='M14 0L6 0L1 3L3.9 7.8L8.3 10.4L4.3 14L8.6 18.2L7.8 21.9L9.2 25.8L4.7 28.5L8 32.6L7.8 34.8L10.2 38.2L2.2 42.6L10.2 46.2L7.4 50.2L10.1 54L4.7 58.7L6 60L14 60Z'/%3E%3C/svg%3E")
+      left top / 14px 60px repeat-y,
+    linear-gradient(#000 0 0) 13px 0 / calc(100% - 13px) 100% no-repeat;
+}
 .lost .doc-figure {
   max-width: 960px;
 }
@@ -2089,7 +2116,7 @@ main:focus {
 }
 
 /* Theme changes: the new theme grows outward through a soft-edged circle (see switchTheme in lib/theme.ts). The class
-   is there only while the theme switches, so moving between pages keeps the browser's own fade. */
+   is there only while the theme switches, so moving between pages keeps its page turn (below). */
 html.theming::view-transition-old(root),
 html.theming::view-transition-new(root) {
   animation: none;
@@ -2103,6 +2130,35 @@ html.theming::view-transition-new(root) {
 ::view-transition-group(*) {
   animation-duration: 0.45s;
   animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
+}
+/* And the page turns, like a leaf of a book: the page being left lifts from its right edge and turns over its left,
+   uncovering the next. Going back by the back button, the page before turns back down over it (BackCrumb). The
+   browser's own Back steps through history at once, as React leaves it. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.theming)::view-transition-old(root),
+  html:not(.theming)::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+    transform-origin: left center;
+    backface-visibility: hidden;
+  }
+  html:not(.theming, .turn-back)::view-transition-old(root) {
+    z-index: 1;
+    animation: turn-over 0.7s cubic-bezier(0.5, 0, 0.75, 0.4) both;
+  }
+  html.turn-back:not(.theming)::view-transition-new(root) {
+    animation: turn-over 0.7s cubic-bezier(0.25, 0.6, 0.5, 1) reverse both;
+  }
+}
+@keyframes turn-over {
+  from {
+    transform: perspective(3200px) rotateY(0);
+    filter: brightness(1);
+  }
+  to {
+    transform: perspective(3200px) rotateY(-90deg);
+    filter: brightness(0.6);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -69,17 +69,18 @@ function backTo(name: string | undefined) {
 const named = () => document.querySelectorAll<HTMLElement>("[data-vt]");
 
 /** Goes `steps` back in history. React animates the page change of a link, but it applies a step through history at
- *  once, so the browser can put the scroll back; going back here runs the same transition itself. Whatever carries a
- *  data-vt name on this page and on the one it returns to (a case study's heading and scene, its card) is named for the
- *  transition, and only while it runs, so nothing else ever sees two elements of one name. */
+ *  once, so the browser can put the scroll back; going back here runs a transition itself, and the page before turns
+ *  back down over this one (turn-back in globals.css). Whatever carries a data-vt name on this page and on the one it
+ *  returns to (a case study's heading and scene, its card) is named for the transition, and only while it runs, so
+ *  nothing else ever sees two elements of one name. */
 function goBack(steps: number) {
   const go = () => history.go(-steps);
-  const here = [...named()];
-  if (!here.length || !document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return go();
+  if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) return go();
 
+  const here = [...named()];
   for (const el of here) el.style.viewTransitionName = el.dataset.vt!;
   const root = document.documentElement;
+  root.classList.add("turn-back");
   const arrive = () => {
     root.style.scrollBehavior = "";
     for (const el of named())
@@ -96,5 +97,6 @@ function goBack(steps: number) {
   );
   transition.finished.finally(() => {
     for (const el of named()) el.style.viewTransitionName = "";
+    root.classList.remove("turn-back");
   });
 }
