@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 24">
+  <!-- The paper plane that now and then loops through the world at the top of the home page (PaperPlane.tsx). It points
+       along +x, which offset-rotate turns to follow its path. -->
+  <path d="M0 3L40 12L12 13.4Z" fill="#f8f4ea"/>
+  <path d="M12 13.4L40 12L7 22Z" fill="#d8cfbd"/>
+  <path d="M12 13.4L15 17.6L7 22Z" fill="#bfb5a0"/>
+  <path d="M12 13.4L40 12" stroke="#a99f8a" stroke-width="0.6"/>
+</svg>

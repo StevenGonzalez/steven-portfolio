@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { mountWorld } from "@/lib/world/stage";
+import PaperPlane from "./PaperPlane";
 
 /** The painted world at the top of the home page. The markup is React's; everything drawn into it belongs to the engine
  *  in lib/world, which mounts on these elements and hands back its own teardown. Each one is rendered below without
@@ -56,6 +57,7 @@ export default function World() {
   return (
     <section ref={hero} className="hero" aria-label="Introduction">
       <div ref={scene} className="scene" aria-hidden="true" />
+      <PaperPlane />
       <div className="scrim" />
       <div className="fade" />
       <div ref={wake} className="wake" />

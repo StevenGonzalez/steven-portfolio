@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- A pencil doodle in the home page's margin (globals.css .doodle): a hot-air balloon, and two birds. -->
+  <path d="M50 8C24 8 18 34 30 52C36 61 42 66 44 72H56C58 66 64 61 70 52C82 34 76 8 50 8Z"/>
+  <path d="M50 8C40 20 40 50 46 72M50 8C60 20 60 50 54 72" stroke-width="1.1"/>
+  <path d="M50 8C31 22 28 44 37 61M50 8C69 22 72 44 63 61" stroke-width="1.1"/>
+  <path d="M44.5 72.5L45 86M55.5 72.5L55 86" stroke-width="1.1"/>
+  <path d="M43 86H57L56 95H44Z"/>
+  <path d="M44 90.5H56" stroke-width="1"/>
+  <path d="M70 84q3-3.4 6 0q3-3.4 6 0M80 74q2.4-2.6 4.8 0q2.4-2.6 4.8 0" stroke-width="1.2"/>
+</svg>

@@ -21,6 +21,7 @@ export default function Home() {
         <MarginDrift />
 
         <section className="sec" id="about" aria-labelledby="about-h" data-head="Chapter I · About">
+          <span className="doodle island" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter I &middot; About
           </p>
@@ -65,6 +66,7 @@ export default function Home() {
         </section>
 
         <section className="sec" id="work" aria-labelledby="work-h" data-head="Chapter II · Selected work">
+          <span className="doodle balloon" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter II &middot; Selected work
           </p>
@@ -75,6 +77,7 @@ export default function Home() {
         </section>
 
         <section className="sec" id="writing" aria-labelledby="writing-h" data-head="Chapter III · Writing">
+          <span className="doodle plane" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter III &middot; Writing
           </p>
@@ -120,6 +123,7 @@ export default function Home() {
               <span className="stamp" />
               <span className="mark" />
             </span>
+            <span className="doodle arrow" aria-hidden="true" data-rv />
             <h2 className="chap" id="contact-h" data-rv>
               Epilogue &middot; Contact
             </h2>

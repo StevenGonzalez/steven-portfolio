@@ -1561,6 +1561,17 @@ main:focus {
       calc(3 * var(--r)),
     linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
 }
+/* The stamp follows the season, like the tab icon and the pressed leaf. The plain one, in full summer green, is the
+   default, so it shows before SiteEffects sets the season. */
+:root[data-season="autumn"] .stamp::before {
+  background-image: url("/letter/stamp-autumn.svg");
+}
+:root[data-season="winter"] .stamp::before {
+  background-image: url("/letter/stamp-winter.svg");
+}
+:root[data-season="spring"] .stamp::before {
+  background-image: url("/letter/stamp-spring.svg");
+}
 .mark {
   position: absolute;
   top: 26px;
@@ -1594,6 +1605,92 @@ main:focus {
   .letter {
     padding: 150px clamp(24px, 5vw, 48px) 40px;
     background: var(--paper);
+  }
+}
+
+/* Pencil doodles in the wide margin beside the home page's sections, and one beside the postcard pointing at it. Each
+   draws itself in, left to right, the first time it scrolls into view (data-rv). Only where the margin has room. */
+.doodle {
+  display: none;
+  position: absolute;
+  top: 150px;
+  left: calc(100% + 28px);
+  width: 96px;
+  height: 96px;
+  background: rgb(85 96 102 / 0.55);
+  mask:
+    linear-gradient(90deg, #000 40%, transparent 60%) 0 0 / 250% 100% no-repeat,
+    var(--img) center / contain no-repeat;
+  mask-composite: intersect;
+}
+.doodle.rv {
+  transition: mask-position 1.8s cubic-bezier(0.35, 0, 0.25, 1) 0.3s;
+}
+.doodle.rv:not(.in) {
+  mask-position:
+    100% 0,
+    center;
+}
+:root[data-theme="dark"] .doodle {
+  background: rgb(176 188 186 / 0.4);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .doodle {
+    background: rgb(176 188 186 / 0.4);
+  }
+}
+@media (min-width: 1400px) {
+  .site .doodle {
+    display: block;
+  }
+}
+.doodle.island {
+  --img: url("/doodles/island.svg");
+}
+.doodle.balloon {
+  --img: url("/doodles/balloon.svg");
+  height: 106px;
+}
+.doodle.plane {
+  --img: url("/doodles/plane.svg");
+  width: 110px;
+}
+.doodle.arrow {
+  --img: url("/doodles/arrow.svg");
+  top: auto;
+  left: auto;
+  right: calc(100% + 4px);
+  bottom: 44px;
+  width: 92px;
+  height: 54px;
+}
+
+/* The paper plane in the world (PaperPlane.tsx): unseen until it flies, and dimmer by night. It only flies on a wide
+   screen, so a phone never fetches it, which matters while the page is still loading its first view. */
+.paper-plane {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 18px;
+  opacity: 0;
+  offset-rotate: auto;
+  background: url("/plane.svg") center / contain no-repeat;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.25));
+  pointer-events: none;
+}
+:root[data-theme="dark"] .paper-plane {
+  filter: brightness(0.7) drop-shadow(0 2px 2px rgb(0 0 0 / 0.3));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .paper-plane {
+    filter: brightness(0.7) drop-shadow(0 2px 2px rgb(0 0 0 / 0.3));
+  }
+}
+@media (min-width: 900px) {
+  .paper-plane {
+    display: block;
   }
 }
 
