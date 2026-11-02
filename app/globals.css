@@ -295,54 +295,6 @@ main:focus {
 .theme:hover {
   opacity: 1;
 }
-/* The world's sound switch in the bar (SoundToggle): the hero's three bars in a ring like the candle's, swaying in the
-   accent colour while it plays. It folds away to nothing while the world is in view, where the hero's own button is,
-   and opens out once the world is scrolled past. */
-.sound-toggle {
-  display: inline-grid;
-  place-items: center;
-  box-sizing: border-box;
-  width: 30px;
-  height: 30px;
-  margin-left: 0;
-  color: inherit;
-  background: none;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  cursor: pointer;
-  opacity: 0.8;
-  transition:
-    width 0.35s ease,
-    margin 0.35s ease,
-    opacity 0.35s ease,
-    visibility 0.35s;
-}
-.sound-toggle:not(.shown) {
-  width: 0;
-  margin-left: calc(-1 * clamp(10px, 2.4vw, 28px));
-  border-width: 0;
-  opacity: 0;
-  visibility: hidden;
-}
-.sound-toggle:hover {
-  opacity: 1;
-}
-.sound-toggle::before {
-  content: "";
-  width: 11px;
-  height: 11px;
-  background:
-    linear-gradient(currentColor, currentColor) 0 100% / 2px 45% no-repeat,
-    linear-gradient(currentColor, currentColor) 50% 100% / 2px 80% no-repeat,
-    linear-gradient(currentColor, currentColor) 100% 100% / 2px 60% no-repeat;
-}
-.sound-toggle[aria-pressed="true"] {
-  color: var(--accent);
-  opacity: 1;
-}
-.sound-toggle[aria-pressed="true"]::before {
-  animation: sway 1.1s ease-in-out infinite alternate;
-}
 /* The candle (ThemeToggle). Lit, its flame flickers and warms the air around it; blown out, a wisp of smoke rises. */
 .theme .flame {
   fill: #f2b84b;
@@ -2985,7 +2937,6 @@ html.theming::view-transition-new(root) {
   .copy > *,
   .guide-btn.new,
   .sound-btn[aria-pressed]::before,
-  .sound-toggle[aria-pressed]::before,
   .seam {
     animation: none;
   }

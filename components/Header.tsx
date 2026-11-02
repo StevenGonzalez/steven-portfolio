@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import SoundToggle from "./SoundToggle";
 import ThemeToggle from "./ThemeToggle";
 
 /** Over the world on the home page the bar is transparent, and turns solid as soon as the hero copy reaches it so the
@@ -41,7 +40,6 @@ export default function Header() {
         <Link href="/#contact" className="hide-sm">
           Contact
         </Link>
-        {home && <SoundToggle />}
         <ThemeToggle />
       </nav>
     </header>
