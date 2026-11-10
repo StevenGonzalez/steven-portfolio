@@ -33,6 +33,7 @@
   --hero-shade: #060e12;
 
   --display: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
+  --display-italic: var(--font-cormorant-italic), "Iowan Old Style", Georgia, serif;
   --body: var(--font-schibsted), "Segoe UI", system-ui, sans-serif;
   --mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
 
@@ -685,7 +686,7 @@ main:focus {
 }
 .tag i {
   display: block;
-  font: italic 500 19px/1.1 var(--display);
+  font: italic 500 19px/1.1 var(--display-italic);
 }
 .tag b {
   display: block;
@@ -820,7 +821,7 @@ main:focus {
 }
 .guide-h {
   margin: 0 0 10px;
-  font: italic 500 22px/1.1 var(--display);
+  font: italic 500 22px/1.1 var(--display-italic);
 }
 .guide-h span {
   display: block;
@@ -849,7 +850,7 @@ main:focus {
 }
 .guide li i {
   display: block;
-  font: italic 500 16px/1.2 var(--display);
+  font: italic 500 16px/1.2 var(--display-italic);
 }
 .guide li b {
   display: block;
@@ -1048,7 +1049,7 @@ main:focus {
 }
 .guide-map .said i {
   display: block;
-  font: italic 500 16px/1.2 var(--display);
+  font: italic 500 16px/1.2 var(--display-italic);
 }
 .guide-map .said b {
   display: block;
@@ -1749,7 +1750,7 @@ main:focus {
   position: absolute;
   bottom: clamp(18px, 3vw, 32px);
   right: 0;
-  font: italic 500 1.15rem/1 var(--display);
+  font: italic 500 1.15rem/1 var(--display-italic);
   letter-spacing: 0.08em;
   font-variant-numeric: lining-nums;
   white-space: pre;
@@ -1771,7 +1772,7 @@ main:focus {
     margin-left: -64px;
     writing-mode: vertical-rl;
     white-space: nowrap;
-    font: italic 500 0.85rem/1 var(--display);
+    font: italic 500 0.85rem/1 var(--display-italic);
     letter-spacing: 0.18em;
     color: var(--muted);
     opacity: 0.7;
@@ -1803,7 +1804,7 @@ main:focus {
 }
 .chap {
   margin: 0 0 12px;
-  font: italic 500 clamp(1.05rem, 1.6vw, 1.25rem)/1.4 var(--display);
+  font: italic 500 clamp(1.05rem, 1.6vw, 1.25rem)/1.4 var(--display-italic);
   letter-spacing: 0.14em;
   text-align: center;
   color: var(--accent);
@@ -1928,7 +1929,7 @@ main:focus {
 }
 .plate figcaption {
   margin: 8px 6px 3px;
-  font: italic 500 1rem/1.4 var(--display);
+  font: italic 500 1rem/1.4 var(--display-italic);
   text-align: center;
   text-wrap: balance;
   color: var(--muted);
@@ -1965,7 +1966,7 @@ main:focus {
 /* The last words on the home page, under the flourish the chapters open with. */
 .fin {
   margin: clamp(48px, 7vw, 80px) 0 0;
-  font: italic 500 clamp(1.3rem, 2.2vw, 1.6rem)/1.4 var(--display);
+  font: italic 500 clamp(1.3rem, 2.2vw, 1.6rem)/1.4 var(--display-italic);
   letter-spacing: 0.14em;
   color: var(--accent);
 }
@@ -2810,7 +2811,7 @@ main:focus {
   margin-inline: 0;
   padding: 0.2rem 0 0.2rem 1.1rem;
   border-left: 2px solid var(--accent);
-  font: italic 500 1.35rem/1.4 var(--display);
+  font: italic 500 1.35rem/1.4 var(--display-italic);
 }
 .prose :where(hr) {
   border: 0;
