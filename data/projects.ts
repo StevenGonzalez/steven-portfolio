@@ -232,6 +232,7 @@ export const projects: ProjectDetail[] = [
       points: [
         "Audited high-risk dependencies before changing targets",
         "Replaced obsolete encryption with current APIs",
+        "Changed one kind of thing per stage, so each break had one likely cause",
       ],
       stack: ["C#", ".NET 8", "Migration", "Security"],
     },
