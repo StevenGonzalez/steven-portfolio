@@ -229,6 +229,35 @@ export const projects: ProjectDetail[] = [
       "I led the rewrite: the architecture, the plan for which features came first, and building it with the other teams involved. I designed and built a new C# API from the ground up, including the endpoints that control the machines, and built Angular features for the new operator interface on top of it. The whole stack ships through Electron.NET as one desktop build, so a release never pairs one version of the UI with another version of the API. I also worked on messaging and machine integration, including RabbitMQ flows and PLC communication, and led the team's move to agile practices, including sprint planning and retrospectives.",
     architecture:
       "The app is an Angular UI on a C# API, shipped as a desktop application through Electron.NET. RabbitMQ carries messages between the saw software and other programs, and the PLC integration handles control and telemetry to and from the machine. The API checks a machine command before it goes anywhere, messaging moves it between programs, and the PLC layer handles the protocol. The UI doesn't guess. It shows what the system actually knows: connected or not, busy, waiting, done or failed. I was careful with optimistic updates, because showing a state the machine hasn't confirmed is how operators learn not to trust the screen.",
+    diagram: {
+      caption: "The rewrite, from the operator's screen to the machine.",
+      tiers: [
+        {
+          name: "One desktop build",
+          parts: [
+            { name: "Angular UI", note: "Shows what the system knows: connected, busy, waiting, done or failed" },
+            { name: "C# API", note: "Checks each machine command before it goes anywhere" },
+            { name: "Electron.NET", note: "Ships both together, so their versions always match" },
+          ],
+          link: "Machine commands, once the API has checked them",
+        },
+        {
+          name: "Messaging and machine",
+          parts: [
+            { name: "RabbitMQ", note: "Carries messages between the saw software and other programs" },
+            { name: "PLC layer", note: "Handles the protocol the machine speaks" },
+          ],
+          link: "Messages, control and telemetry",
+        },
+        {
+          name: "Outside the app",
+          parts: [
+            { name: "Other programs", note: "Reached over RabbitMQ" },
+            { name: "The saw's PLC", note: "Takes control commands and reports telemetry" },
+          ],
+        },
+      ],
+    },
     tradeoffs:
       "Shipping the UI and services together gives control over deployment and the operator's experience, but every change has to line up across the UI, the API, the machine and the message contracts. Machine control rewards predictability over experimentation, so changes were sequenced and tested carefully. A rewrite also has to be planned across teams that each own a piece of it, so a lot of my job was making sure those pieces would fit together before anyone built them.",
     outcome:
