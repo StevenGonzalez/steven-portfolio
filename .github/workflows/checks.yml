@@ -9,6 +9,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  # A new advisory arrives without anyone pushing, so the audit below also runs on a clock.
+  schedule:
+    - cron: "17 9 * * 1"
 
 permissions:
   contents: read
@@ -32,6 +35,20 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn validate
+
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: yarn
+      # yarn audit's exit code adds up the severities found: 8 is high and 16 is critical, so 8 or more fails the job.
+      - run: yarn audit --groups dependencies || [ $? -lt 8 ]
 
   speed:
     runs-on: ubuntu-24.04
