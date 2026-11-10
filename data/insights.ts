@@ -2,6 +2,16 @@ import type { InsightPost } from "@/types/content";
 
 export const insights: InsightPost[] = [
   {
+    slug: "preloading-fewer-fonts",
+    title: "Preloading Fewer Fonts Failed My Speed Check",
+    summary:
+      "I stopped preloading three fonts and Lighthouse's first paint went from 0.91 s to 1.67 s. Slowing the browser for real showed something else, and a problem I had not been looking for.",
+    date: "2026-11-09",
+    category: "Web Performance",
+    readTime: "4 min read",
+    tags: ["Lighthouse", "Performance", "Fonts"],
+  },
+  {
     slug: "moving-the-dashboard-onto-the-phone",
     title: "Moving Virtual Trainer's Dashboard onto the Phone",
     summary:
