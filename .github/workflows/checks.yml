@@ -103,6 +103,15 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn build
-      # Firefox and WebKit are Playwright's own builds of them, since it cannot drive the ordinary browsers.
-      - run: yarn playwright install --with-deps firefox webkit
+      # Firefox and WebKit are Playwright's own builds of them, since it cannot drive the ordinary browsers. The system
+      # packages and the browsers are separate steps, each with its own limit, so a stalled download fails in minutes and
+      # the failed step says which of the two stalled. Together they normally take a minute or two.
+      - run: yarn playwright install-deps firefox webkit
+        timeout-minutes: 5
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+      - run: yarn playwright install firefox webkit
+        timeout-minutes: 5
       - run: yarn test:engines
