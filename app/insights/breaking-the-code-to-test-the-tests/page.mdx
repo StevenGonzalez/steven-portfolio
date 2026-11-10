@@ -1,0 +1,75 @@
+import InsightArticle from "@/components/InsightArticle";
+import { insightMetadata } from "@/lib/meta";
+
+export const metadata = insightMetadata("breaking-the-code-to-test-the-tests");
+
+<InsightArticle
+  slug="breaking-the-code-to-test-the-tests"
+  toc={[
+    { title: "One row", href: "#one-row" },
+    { title: "What the runner does", href: "#what-the-runner-does" },
+    { title: "What it has found", href: "#what-it-has-found" },
+    { title: "Trade-offs", href: "#trade-offs" },
+  ]}
+>
+
+Virtual Trainer's CI fails a build when test coverage drops below a floor. Coverage tells me a line ran during a test. It can't tell me whether any test would notice that line being wrong.
+
+To check that, both repositories have a small mutation test runner. It changes one piece of code, runs the tests for that code, and expects at least one to go red. The API has 277 of these changes written down and the mobile app has 281.
+
+## One row
+
+A plan is a tab-separated file with one change per line. This row is from the plan for the API's caching layer, spread over several lines so it fits here:
+
+```text
+file     Infrastructure.Data/Caching/CachingWorkoutsRepositoryDecorator.cs
+find     x.CompletedDateUtc >= startDateTime
+replace  x.CompletedDateUtc > startDateTime
+tests    FullyQualifiedName~CachingWorkoutsRepositoryDecoratorTests
+label    workouts: range start bound made exclusive
+```
+
+The change drops a workout that falls exactly on the start of a date range. If every test still passes with it in place, nothing is checking that boundary.
+
+Other rows in the same plan:
+
+- Replace the member's id in a cache key with the string `"shared"`, so one member could be served another member's workouts.
+- Replace the version in a cache key with a constant, so a write no longer makes the old entry unreachable.
+- Pass `default` where the caller's cancellation token belongs.
+- Write to `userId + 1`.
+
+The plan for the AI trainer has rows that switch off the check on what its answers claim to have recorded, one part at a time.
+
+## What the runner does
+
+For each row, `mutate.sh` does this:
+
+1. Runs the row's tests against the unchanged code. If they already fail, the row is reported as inconclusive, because a red suite would make every change look caught. The result is kept per test filter, so a plan with fifteen rows doesn't build fifteen baselines.
+2. Backs up the file and applies the change. The find text has to match exactly once. If it matches nothing or matches twice, the row is skipped and reported.
+3. Runs the tests again.
+4. Restores the file, including on Ctrl-C. If the restore itself fails, the whole run stops, because the next row would overwrite the only backup.
+5. Reports `caught by N test(s)`, `SURVIVED`, or `INCONCLUSIVE`.
+
+A change that doesn't compile counts as inconclusive, since no test got to run. Survived and inconclusive are counted separately in the summary. The script exits 0 only when every row was caught, and a plan with no rows is an error, so it can't print "All 0 mutation(s) caught."
+
+The step that applies the change is a separate Node script with its own tests. A row is one line, so a newline in the find text is written as `\n`, and a literal backslash-n as `\\n`. Getting that right inside a quoted `node -e` was too easy to get wrong with nothing to run against it.
+
+One detail in the plan format came from bash. To delete the matched text, the replace column holds the token `<empty>`. It can't be left blank, because `read` treats tab as whitespace and collapses a run of tabs, which shifts every later column left by one.
+
+## What it has found
+
+The caching layer wraps a cache miss in a null sentinel. A test for a miss on an exercise the member has never done looked like it covered that. Deleting the sentinel left the test green, because the in-memory cache treats a stored plain null as a hit. The test does prove that a miss gets cached, so it stayed, and it now has a comment saying what it pins and what it doesn't.
+
+A test for a `ToUniversalTime()` call kept passing with the call changed. The CI agents run in UTC, where that conversion does nothing, so the test had no way of telling the two apart there.
+
+The plans stay in the repository after the work that produced them is done. Each row breaks a behaviour the code is supposed to have, so if one starts surviving later, a test that used to assert something has stopped asserting it.
+
+## Trade-offs
+
+The rows are written by hand, so the runner only finds what someone thought to break. A tool like Stryker.NET generates changes across a whole project. The plans here cover specific areas: caching, whether the sign-in endpoints reveal that an email is registered, what the AI trainer does when its model calls are spent, the exercise catalog, and the friend list.
+
+Rows depend on exact text. A refactor that renames a variable turns its rows into `pattern not found`, and they have to be updated by hand.
+
+Each row costs a build and a test run, so the plans aren't part of CI. A plan gets run while I'm working on the code it covers.
+
+</InsightArticle>

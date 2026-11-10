@@ -2,6 +2,16 @@ import type { InsightPost } from "@/types/content";
 
 export const insights: InsightPost[] = [
   {
+    slug: "breaking-the-code-to-test-the-tests",
+    title: "Breaking the Code on Purpose to Test the Tests",
+    summary:
+      "Coverage shows a line ran. To find out whether a test would notice that line being wrong, Virtual Trainer keeps 558 deliberate breakages in its repositories and checks that each one turns a test red.",
+    date: "2026-11-10",
+    category: "Testing",
+    readTime: "4 min read",
+    tags: ["Testing", "Mutation Testing", ".NET"],
+  },
+  {
     slug: "moving-the-dashboard-onto-the-phone",
     title: "Moving Virtual Trainer's Dashboard onto the Phone",
     summary:
