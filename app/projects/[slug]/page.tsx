@@ -9,7 +9,7 @@ import ProjectScene from "@/components/ProjectScene";
 import SectionRail from "@/components/SectionRail";
 import { getAllProjectSlugs, getInsightBySlug, getProjectBySlug, projects } from "@/lib/content";
 import { pageMetadata } from "@/lib/meta";
-import type { ProjectShot } from "@/types/content";
+import type { ProjectDiagram, ProjectShot } from "@/types/content";
 
 const sectionDefinitions = [
   { id: "problem", title: "Problem", key: "problem" },
@@ -107,6 +107,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                   <h2>{section.title}</h2>
                   <p>{section.body}</p>
                   {section.id === "approach" && project.shots ? <Shots shots={project.shots.slice(3)} /> : null}
+                  {section.id === "architecture" && project.diagram ? <Diagram diagram={project.diagram} /> : null}
                 </section>
               ))}
               {reading.length ? (
@@ -151,6 +152,31 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
         </div>
       </article>
     </div>
+  );
+}
+
+/** How a project's parts fit together: real text in tiers, so it wraps on a phone and reads in order. */
+function Diagram({ diagram }: { diagram: ProjectDiagram }) {
+  return (
+    <figure className="arch">
+      <ol>
+        {diagram.tiers.map((tier) => (
+          <li key={tier.name}>
+            <h3>{tier.name}</h3>
+            <ul>
+              {tier.parts.map((part) => (
+                <li key={part.name}>
+                  <b>{part.name}</b>
+                  <span>{part.note}</span>
+                </li>
+              ))}
+            </ul>
+            {tier.link ? <p className="arch-link">{tier.link}</p> : null}
+          </li>
+        ))}
+      </ol>
+      <figcaption>{diagram.caption}</figcaption>
+    </figure>
   );
 }
 

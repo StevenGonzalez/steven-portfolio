@@ -28,6 +28,8 @@ export type ProjectDetail = {
   keyDecision?: string;
   /** Screens from the shipped app, shown after the approach. */
   shots?: ProjectShot[];
+  /** How the parts fit together, drawn from the top down after the architecture text. */
+  diagram?: ProjectDiagram;
   /** The short version for the project's card: a one-line pitch, the points worth a glance, and the stack. */
   card: {
     blurb: string;
@@ -41,6 +43,16 @@ export type ProjectDetail = {
   outcome: string;
   /** The slugs of the articles that go deeper into the project, listed after the outcome. */
   reading?: string[];
+};
+
+export type ProjectDiagram = {
+  caption: string;
+  tiers: {
+    name: string;
+    parts: { name: string; note: string }[];
+    /** What crosses from this tier to the next one. The last tier has none. */
+    link?: string;
+  }[];
 };
 
 export type InsightPost = {

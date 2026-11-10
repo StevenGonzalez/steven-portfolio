@@ -91,6 +91,38 @@ export const projects: ProjectDetail[] = [
       "I led the product and built the app and the back end on my own. The React Native client is built around a model of how training actually works: routines, workouts, exercises, timers, warmups, supersets and history. Each user arranges their own dashboard, and its cards are calculated on the phone with the same rules as the achievement badges. Guided workouts progress automatically, using the same rules of thumb a coach would. Later I added an AI trainer that answers from the user's own training data instead of giving generic fitness advice. Most of the work there is choosing what goes into the model's context for each question: what's relevant, what's out of date, and what's too sensitive to send at all. If the trainer suggests a change, like swapping the bench press for dumbbells, the change goes through the same checks as one made in the app before it touches real data.",
     architecture:
       "The apps talk to a C# .NET API, 86 endpoints across 14 controllers, split along the same lines as the training model. On Azure, SQL Server holds workouts and accounts, Cosmos DB holds the data that is naturally document-shaped, and Service Bus carries background work like notifications so it never holds up a request. In the app I kept screen state, shared app state and server data apart, which kept long workout sessions responsive.",
+    diagram: {
+      caption: "Virtual Trainer, from the phone to the services behind the API.",
+      tiers: [
+        {
+          name: "On the phone",
+          parts: [
+            { name: "React Native app", note: "iOS and Android, one codebase" },
+            { name: "TanStack Query", note: "Server data, kept across launches" },
+            { name: "Dashboard and badges", note: "Calculated on the phone from workout history" },
+          ],
+          link: "HTTPS and JSON",
+        },
+        {
+          name: "The API",
+          parts: [
+            { name: ".NET API", note: "86 endpoints across 14 controllers" },
+            { name: "Caching decorators", note: "Wrap the services and repositories" },
+            { name: "AI trainer", note: "Answers from the member's own history" },
+          ],
+          link: "EF Core, SDKs and queues",
+        },
+        {
+          name: "On Azure",
+          parts: [
+            { name: "SQL Server", note: "Workouts and accounts" },
+            { name: "Cosmos DB", note: "Trainer sessions and chat logs" },
+            { name: "Azure OpenAI", note: "The trainer's model" },
+            { name: "Service Bus", note: "Queues email for a separate service" },
+          ],
+        },
+      ],
+    },
     tradeoffs:
       "Automatic progression needed limits so it could adapt without suggesting unsafe jumps. Running both SQL Server and Cosmos DB costs more to operate, so I kept a clear rule for what lives where. Moving work to the background made the app faster, but anything the user needs to see right away stays out of the queue.",
     outcome:
@@ -137,6 +169,31 @@ export const projects: ProjectDetail[] = [
       "Everything is drawn with the Canvas 2D API from a seeded random generator, so there are no image files and it is the same island on every visit. The scene is 14 stacked canvases. Ten are painted once for each size and theme and after that only slide; the other four hold everything that moves and are the only ones redrawn each frame. Each layer has its own depth, which gives the parallax, and its own resolution, so a soft sky renders at 60% and the blurred ferns in front at 30%. On top of that sit a field guide, seasons that follow the calendar, and sound made live with Web Audio. Interaction follows a few rules: hovering only looks, a click touches, nothing on screen explains how to play, and on a first visit the creatures arrive one at a time instead of all at once. The keyboard can play too: after the Sound button, Tab goes into the world, the arrow keys step from thing to thing, Enter clicks, and each name is read out. The field guide and Sound are ordinary buttons, and Escape closes the guide. If your system asks for reduced motion, the world draws once and holds still.",
     architecture:
       "Two web workers do the drawing. The paint worker paints the still layers and sends them back as ImageBitmaps, which pass between threads without being copied, and then paints the other theme in the background. The render worker owns the animated canvases, handed over with transferControlToOffscreen(), and draws every frame. The page's main thread only reads the pointer and the scroll position, posts them across, and moves the finished layers with CSS transforms. The hover hit tests run in the render worker against the same shapes it draws. Browsers without OffscreenCanvas run the same renderer on the main thread through the same messages, so there is one renderer to test. The rest of the site is Next.js 16 and React 19, with every page built ahead of time and the articles written in MDX.",
+    diagram: {
+      caption: "The threads behind the world, and what passes between them.",
+      tiers: [
+        {
+          name: "Main thread",
+          parts: [
+            { name: "Input", note: "Reads the pointer and scroll, and posts them to the workers" },
+            { name: "Layers", note: "Moves the finished canvases with CSS transforms" },
+          ],
+          link: "postMessage, and ImageBitmaps back without copying",
+        },
+        {
+          name: "Web workers",
+          parts: [
+            { name: "Paint worker", note: "Paints the still layers, then the other theme" },
+            { name: "Render worker", note: "Draws every frame and runs the hover hit tests" },
+          ],
+          link: "OffscreenCanvas and ImageBitmap",
+        },
+        {
+          name: "On screen",
+          parts: [{ name: "14 stacked canvases", note: "Ten painted once per size and theme, four drawn every frame" }],
+        },
+      ],
+    },
     tradeoffs:
       "Drawing everything in code made the download small but made the first frame expensive, so most of the work went into deciding what never has to be drawn twice. Quality follows measured frame times, not a list of devices: when frames run long, the renderer drops to half-rate layers and then to lower resolution, and it never steps back up, because flipping between modes would be more noticeable than either one. A benchmark script drives headless Firefox through fixed scenes, runs the change and the last commit in alternating rounds, and fails if any scene gets more than 1 ms a frame slower, so a new feature either fits or gets cheaper. Two more checks render the change and the last commit side by side and fail if a single pixel or sound sample differs, so a cleanup can never quietly change the picture or the sound.",
     outcome:
