@@ -49,9 +49,31 @@ Open `http://localhost:3000`.
 - `yarn check:sound` - check that the world's sound is exactly what a git revision made, rendered offline
 - `yarn check:speed` - load the production build's pages in Lighthouse as a phone would, and check their load speed and
   layout shift against set limits (run `yarn build` first; needs Chrome)
+- `yarn test` - run the unit tests of the packages in `packages/`
+- `yarn test:site` - run the browser tests against the production build in Chrome, at desktop and phone sizes: every
+  page loads without errors and passes an accessibility scan in both themes, and the main paths work (run `yarn build`
+  first)
+- `yarn test:engines` - run the same browser tests in Firefox and WebKit (run `yarn playwright install firefox webkit`
+  once first)
 
-GitHub Actions runs `yarn validate`, and `yarn check:speed` on a fresh build, on every push to main and every pull
-request.
+## Checks
+
+GitHub Actions runs these on every push to main and every pull request:
+
+- `yarn validate`
+- `yarn audit` of the production dependencies, which also runs weekly
+- `yarn check:speed` and `yarn test:site` on a fresh build
+- `yarn test:engines` on a fresh build
+
+On a push to main that touches `lib/world`, it also runs `yarn check:world` against the previous push. That check draws
+1,500 frames of the world in a browser at each revision and compares the canvases pixel by pixel, so a refactor of the
+renderer has to draw exactly what it drew before. A commit that is meant to change the picture says so with a
+`World-change:` line in its message.
+
+## Packages
+
+- [`packages/frame-pacer`](packages/frame-pacer) - the frame pacing used by the world, on its own and with its own
+  tests. It keeps a slow canvas animation on an even rhythm by stepping it every N screen refreshes.
 
 ## Content Structure
 
