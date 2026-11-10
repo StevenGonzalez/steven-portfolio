@@ -1,8 +1,9 @@
 # Runs yarn validate (lint, formatting, types, and the content and theme checks) on every push to main and every pull
 # request, and alongside it builds the site and runs yarn check:speed, which loads its pages in Lighthouse as a phone
 # would and fails if they load slower or shift about more than set limits. Vercel builds each push itself; the build
-# here is only for the speed check. The world and sound checks stay local: they need Firefox and compare the working
-# tree with a revision.
+# here is only for the speed check and the Playwright tests. On a push that touches lib/world, check:world compares the
+# world's pixels with the previous push: a change meant to alter the picture says so with a "World-change:" line in its
+# commit message. The sound check stays local.
 name: Checks
 
 on:
@@ -50,6 +51,28 @@ jobs:
       # yarn audit's exit code adds up the severities found: 8 is high and 16 is critical, so 8 or more fails the job.
       - run: yarn audit --groups dependencies || [ $? -lt 8 ]
 
+  world:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: Compare the world's pixels with the previous push
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if git diff --quiet "$BEFORE" HEAD -- lib/world; then echo "lib/world did not change."; exit 0; fi
+          if git log "$BEFORE..HEAD" --format=%B | grep -q '^World-change:'; then echo "Declared a picture change."; exit 0; fi
+          yarn check:world --base "$BEFORE"
+
   speed:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -65,3 +88,4 @@ jobs:
       - run: yarn build
       # Uses the runner's own Google Chrome.
       - run: yarn check:speed
+      - run: yarn test:site
