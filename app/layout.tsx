@@ -15,22 +15,12 @@ import { themeBootstrapScript } from "@/lib/theme";
 // and a deploy failed when Google answered in a URL format that next/font could not read.
 const cormorant = localFont({
   variable: "--font-cormorant",
-  src: "./fonts/cormorant-garamond.woff2",
-  weight: "500 600",
+  src: [
+    { path: "./fonts/cormorant-garamond.woff2", weight: "500 600", style: "normal" },
+    { path: "./fonts/cormorant-garamond-italic.woff2", weight: "500 600", style: "italic" },
+  ],
   display: "swap",
   adjustFontFallback: "Times New Roman",
-});
-
-// The italic and the mono only set small labels and captions, so they load when used instead of competing with the
-// fonts of the first paint on a slow connection.
-const cormorantItalic = localFont({
-  variable: "--font-cormorant-italic",
-  src: "./fonts/cormorant-garamond-italic.woff2",
-  weight: "500 600",
-  style: "italic",
-  display: "swap",
-  adjustFontFallback: "Times New Roman",
-  preload: false,
 });
 
 const schibsted = localFont({
@@ -47,7 +37,6 @@ const plexMono = localFont({
     { path: "./fonts/ibm-plex-mono-500.woff2", weight: "500" },
   ],
   display: "swap",
-  preload: false,
 });
 
 const homeTitle = `${SITE_NAME} | Software Engineer`;
@@ -100,7 +89,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${cormorant.variable} ${cormorantItalic.variable} ${schibsted.variable} ${plexMono.variable}`}
+      className={`${cormorant.variable} ${schibsted.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <body>
