@@ -81,6 +81,20 @@ test("the header links to the résumé, and the résumé to a real PDF", async (
   expect((await pdf.body()).subarray(0, 5).toString()).toBe("%PDF-");
 });
 
+test("a script from another site is refused", async ({ page }) => {
+  await page.goto("/");
+  const directive = await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        document.addEventListener("securitypolicyviolation", (event) => resolve(event.violatedDirective));
+        const script = document.createElement("script");
+        script.src = "https://example.invalid/script.js";
+        document.head.append(script);
+      }),
+  );
+  expect(directive).toMatch(/^script-src/);
+});
+
 test("the feed lists every article", async ({ request }) => {
   const feed = await request.get("/feed.xml");
   expect(feed.headers()["content-type"]).toContain("application/rss+xml");
