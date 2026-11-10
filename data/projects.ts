@@ -109,6 +109,10 @@ export const projects: ProjectDetail[] = [
         label: "Source",
         href: "https://github.com/StevenGonzalez/steven-portfolio/tree/main/lib/world",
       },
+      {
+        label: "frame-pacer",
+        href: "https://github.com/StevenGonzalez/steven-portfolio/tree/main/packages/frame-pacer",
+      },
     ],
     role: "Personal project",
     scope: "Design, rendering, performance and interaction",

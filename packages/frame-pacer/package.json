@@ -1,0 +1,33 @@
+{
+  "name": "frame-pacer",
+  "version": "0.1.0",
+  "description": "Keeps a slow canvas animation on an even rhythm by stepping it every N screen refreshes.",
+  "keywords": [
+    "requestAnimationFrame",
+    "canvas",
+    "animation",
+    "frame-pacing",
+    "offscreencanvas",
+    "web-worker"
+  ],
+  "license": "MIT",
+  "author": "Steven Gonzalez",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StevenGonzalez/steven-portfolio.git",
+    "directory": "packages/frame-pacer"
+  },
+  "homepage": "https://github.com/StevenGonzalez/steven-portfolio/tree/main/packages/frame-pacer",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "sideEffects": false
+}
