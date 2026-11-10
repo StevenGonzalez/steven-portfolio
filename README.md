@@ -2,6 +2,8 @@
 
 Source for the portfolio and writing site of Steven Gonzalez, a software engineer.
 
+[![The home page at night: a floating island with a glowing tree, waterfalls and a whale in the mist](app/opengraph-image.jpg)](https://stevengonzalez.dev)
+
 Live site: [stevengonzalez.dev](https://stevengonzalez.dev)
 
 ## Overview
@@ -14,6 +16,23 @@ The site is built with Next.js, TypeScript and MDX. It has case studies of my pr
 - Project case studies covering mobile, SaaS, desktop, and platform engineering work
 - A Writing section for longer pieces on the graphics and sound behind this site, architecture, delivery, and engineering tradeoffs
 - Data-driven content structures for projects and writing
+
+## Checks
+
+GitHub Actions runs these on every push to main and every pull request:
+
+- `yarn validate` - lint, formatting, types, and the content and theme checks
+- `yarn audit` of the production dependencies, which also runs weekly
+- `yarn check:speed` - loads the home page and a case study in Lighthouse as a phone would, and fails if largest
+  contentful paint goes over 3.5 s or layout shift over 0.02
+- `yarn test:site` - in Chrome at desktop and phone sizes, every page loads without errors and passes an accessibility
+  scan in both themes, and the main paths work
+- `yarn test:engines` - the same browser tests in Firefox and WebKit
+
+On a push to main that touches `lib/world`, it also runs `yarn check:world` against the previous push. That check draws
+1,500 frames of the world in a browser at each revision and compares the canvases pixel by pixel, so a refactor of the
+renderer has to draw exactly what it drew before. A commit that is meant to change the picture says so with a
+`World-change:` line in its message.
 
 ## Stack
 
@@ -55,20 +74,6 @@ Open `http://localhost:3000`.
   first)
 - `yarn test:engines` - run the same browser tests in Firefox and WebKit (run `yarn playwright install firefox webkit`
   once first)
-
-## Checks
-
-GitHub Actions runs these on every push to main and every pull request:
-
-- `yarn validate`
-- `yarn audit` of the production dependencies, which also runs weekly
-- `yarn check:speed` and `yarn test:site` on a fresh build
-- `yarn test:engines` on a fresh build
-
-On a push to main that touches `lib/world`, it also runs `yarn check:world` against the previous push. That check draws
-1,500 frames of the world in a browser at each revision and compares the canvases pixel by pixel, so a refactor of the
-renderer has to draw exactly what it drew before. A commit that is meant to change the picture says so with a
-`World-change:` line in its message.
 
 ## Packages
 
