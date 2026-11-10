@@ -90,7 +90,7 @@ export default function MarginDrift() {
       cv.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       gutter = (W - Math.min(COLUMN, site.clientWidth)) / 2;
-      const n = gutter < MIN_GUTTER ? 0 : Math.round(Math.min(12, (H / 900) * 10));
+      const n = gutter < MIN_GUTTER ? 0 : Math.round(Math.min(6, (H / 900) * 5));
       bits = Array.from({ length: n }, () => spawn(Math.random() * H));
       flies = Array.from({ length: Math.round(n * 0.8) }, newFly);
     };

@@ -1733,48 +1733,8 @@ main:focus {
   mask-position: 0 0;
   transition: mask-position 1.4s cubic-bezier(0.4, 0, 0.3, 1) calc(var(--d, 0ms) + 0.1s);
 }
-/* Each chapter ends on a page number in its outer corner, odd pages on the right and even on the left, as in a book.
-   On a screen wide enough to have margins, the chapter's name runs down the left margin beside it, like a book's
-   running head, and stays in view while the chapter does. Both are decoration, so neither is read out. */
-.site {
-  counter-reset: page;
-}
 .site .sec {
   position: relative;
-  counter-increment: page;
-}
-.site .sec::after {
-  content: "\2014  " counter(page) "  \2014" / "";
-  position: absolute;
-  bottom: clamp(18px, 3vw, 32px);
-  right: 0;
-  font: italic 500 1.15rem/1 var(--display);
-  letter-spacing: 0.08em;
-  font-variant-numeric: lining-nums;
-  white-space: pre;
-  color: var(--muted);
-  opacity: 0.8;
-}
-.site .sec:nth-of-type(even)::after {
-  right: auto;
-  left: 0;
-}
-@media (min-width: 1440px) {
-  .site .sec[data-head]::before {
-    content: attr(data-head) / "";
-    position: sticky;
-    top: calc(var(--nav-room) + 48px);
-    float: left;
-    width: 0;
-    height: 17rem;
-    margin-left: -64px;
-    writing-mode: vertical-rl;
-    white-space: nowrap;
-    font: italic 500 0.85rem/1 var(--display);
-    letter-spacing: 0.18em;
-    color: var(--muted);
-    opacity: 0.7;
-  }
 }
 /* The ornament in the middle of each flourish follows the visitor's calendar, as the island does: a leaf in autumn,
    a snowflake in winter, a blossom in spring and a sun in summer, a pumpkin for Halloween week and a star at New Year.

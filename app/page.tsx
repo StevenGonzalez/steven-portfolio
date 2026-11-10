@@ -31,7 +31,7 @@ export default function Home() {
         <canvas className="seam" id="seam" aria-hidden="true" />
         <MarginDrift />
 
-        <section className="sec" id="about" aria-labelledby="about-h" data-head="Chapter I · About">
+        <section className="sec" id="about" aria-labelledby="about-h">
           <span className="doodle island" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter I &middot; About
@@ -76,7 +76,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="sec" id="work" aria-labelledby="work-h" data-head="Chapter II · Selected work">
+        <section className="sec" id="work" aria-labelledby="work-h">
           <span className="doodle balloon" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter II &middot; Selected work
@@ -87,7 +87,7 @@ export default function Home() {
           <ProjectGrid projects={projects} titleAs="h3" />
         </section>
 
-        <section className="sec" id="writing" aria-labelledby="writing-h" data-head="Chapter III · Writing">
+        <section className="sec" id="writing" aria-labelledby="writing-h">
           <span className="doodle plane" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter III &middot; Writing
@@ -101,7 +101,7 @@ export default function Home() {
           </Link>
         </section>
 
-        <section className="sec" id="colophon" aria-labelledby="colophon-h" data-head="Colophon">
+        <section className="sec" id="colophon" aria-labelledby="colophon-h">
           <p className="chap" data-rv>
             Colophon
           </p>
@@ -128,7 +128,7 @@ export default function Home() {
           </ExternalLink>
         </section>
 
-        <section className="sec contact" id="contact" aria-labelledby="contact-h" data-head="Epilogue · Contact">
+        <section className="sec contact" id="contact" aria-labelledby="contact-h">
           <div className="letter">
             <span className="post" aria-hidden="true">
               <span className="stamp" />
