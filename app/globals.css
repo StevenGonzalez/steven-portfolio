@@ -1857,6 +1857,10 @@ main:focus {
   font: 600 4.6em/0.8 var(--display);
   color: var(--accent);
 }
+/* The one drop cap set by hand is the I of "I'm", which reads as a separate bar with a full letter's room beside it. */
+.cap {
+  margin-right: 0.03em;
+}
 /* The drop cap is gilded: gold leaf, with a glint that passes over it once, when it comes into view. The leaf is a
    gradient three times the letter's width, and the glint is its middle third, so the letter starts and ends on plain
    gold. */
