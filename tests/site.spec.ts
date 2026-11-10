@@ -36,7 +36,12 @@ for (const path of PAGES) {
     test(`${path} has no accessibility violations in ${colorScheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
       await page.goto(path);
-      const { violations } = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+      // Legacy mode runs axe inside this page. Otherwise axe opens a blank tab to finish in, and in Firefox that new tab
+      // sometimes never answers (about 1 run in 80 on two cores). The site has no iframes for legacy mode to miss.
+      const { violations } = await new AxeBuilder({ page })
+        .setLegacyMode()
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+        .analyze();
       expect(violations.map(({ id, nodes }) => `${id}: ${nodes[0]?.target}`)).toEqual([]);
     });
   }
