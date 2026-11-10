@@ -1,8 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Runs the built site in Chrome: CHROME if it is set, otherwise the installed Google Chrome, so CI downloads no browser.
-// yarn build first.
+// Runs the built site, so yarn build first. yarn test:site uses Chrome: CHROME if it is set, otherwise the installed
+// Google Chrome. yarn test:engines uses Playwright's own Firefox and WebKit, which yarn playwright install fetches.
 const port = 3100;
+const chrome = {
+  launchOptions: {
+    ...(process.env.CHROME ? { executablePath: process.env.CHROME } : { channel: "chrome" }),
+    args: process.env.CI ? ["--no-sandbox"] : [],
+  },
+};
+const desktop = { width: 1440, height: 900 };
 
 export default defineConfig({
   testDir: "tests",
@@ -13,14 +20,12 @@ export default defineConfig({
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     reducedMotion: "reduce",
-    launchOptions: {
-      ...(process.env.CHROME ? { executablePath: process.env.CHROME } : { channel: "chrome" }),
-      args: process.env.CI ? ["--no-sandbox"] : [],
-    },
   },
   projects: [
-    { name: "desktop", use: { viewport: { width: 1440, height: 900 } } },
-    { name: "phone", use: { ...devices["Pixel 7"] } },
+    { name: "desktop", use: { ...chrome, viewport: desktop } },
+    { name: "phone", use: { ...chrome, ...devices["Pixel 7"] } },
+    { name: "firefox", use: { browserName: "firefox", viewport: desktop } },
+    { name: "webkit", use: { browserName: "webkit", viewport: desktop } },
   ],
   webServer: {
     command: `yarn -s next start -H 127.0.0.1 -p ${port}`,
