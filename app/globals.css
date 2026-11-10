@@ -243,11 +243,9 @@ main:focus {
     border-color 0.3s;
 }
 .nav.solid {
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  background: var(--bg);
   color: var(--fg);
   border-color: var(--line);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 /* A shade along the top of the world that keeps the links readable over bright sky, gone once the bar is solid. */
 .nav::before {
