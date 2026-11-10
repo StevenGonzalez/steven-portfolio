@@ -6,15 +6,26 @@ import PostList from "@/components/PostList";
 import ProjectGrid from "@/components/ProjectGrid";
 import World from "@/components/World";
 import { insights, projects } from "@/lib/content";
-import { externalProfiles, worldSourceUrl } from "@/lib/site";
+import { externalProfiles, productionUrl, worldSourceUrl } from "@/lib/site";
+import { SITE_NAME } from "@/lib/meta";
 import { worldKb } from "@/lib/world-size";
 
 // Everything else comes from the layout, which describes the home page.
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: SITE_NAME,
+  url: productionUrl,
+  jobTitle: "Software Engineer",
+  sameAs: Object.values(externalProfiles).map((profile) => profile.href),
+};
+
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
       <World />
       <div className="site">
         <canvas className="seam" id="seam" aria-hidden="true" />

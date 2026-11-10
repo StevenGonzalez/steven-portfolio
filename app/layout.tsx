@@ -104,6 +104,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
+        <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME}: writing`} href="/feed.xml" />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <a className="skip" href="#main">
           Skip to content
