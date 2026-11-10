@@ -1285,8 +1285,9 @@ main:focus {
 .proj.lead-proj {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px 48px;
+  align-items: center;
   background:
     radial-gradient(120% 90% at 100% 0, color-mix(in srgb, var(--glow) 9%, transparent), transparent 60%), var(--panel);
 }
@@ -1934,9 +1935,6 @@ main:focus {
   text-wrap: balance;
   color: var(--muted);
 }
-.lead-proj .plate {
-  grid-column: 1 / -1;
-}
 /* A plate leans toward the pointer and its scene slides the other way inside the frame (SiteEffects). The scene is a
    little larger while it slides, so its edges never show. */
 .plate,
@@ -1951,7 +1949,7 @@ main:focus {
 }
 @media (min-width: 861px) {
   .lead-proj .plate .scene-cv {
-    aspect-ratio: 3 / 1;
+    aspect-ratio: 3 / 2;
   }
 }
 /* A small painted vignette that ends a case study or article, its edges fading into the page like an old print. */
@@ -2374,6 +2372,9 @@ main:focus {
 }
 
 /* Screens from a shipped app, three to a row, or two on a phone. */
+.doc-shots .shots {
+  margin-block: clamp(28px, 4vw, 48px) 0;
+}
 .shots {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2834,6 +2835,10 @@ main:focus {
   .proj.lead-proj,
   .doc {
     grid-template-columns: minmax(0, 1fr);
+  }
+  /* One column: the scene opens the card, as on every other card. */
+  .lead-proj .plate {
+    order: -1;
   }
   .rail {
     display: none;

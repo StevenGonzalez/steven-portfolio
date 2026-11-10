@@ -87,11 +87,18 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </header>
 
             <ViewTransition name={`proj-${project.slug}`}>
-              <figure className="doc-figure plate" data-vt={`proj-${project.slug}`}>
-                <ProjectScene slug={project.slug} label={project.scene} />
-                {/* The scene's label already reads this out, so the caption is for the eye only. */}
-                <figcaption aria-hidden="true">{project.scene}</figcaption>
-              </figure>
+              {/* A project with real screens opens on those, and the rest follow in the approach. */}
+              {project.shots ? (
+                <div className="doc-shots" data-vt={`proj-${project.slug}`}>
+                  <Shots shots={project.shots.slice(0, 3)} eager />
+                </div>
+              ) : (
+                <figure className="doc-figure plate" data-vt={`proj-${project.slug}`}>
+                  <ProjectScene slug={project.slug} label={project.scene} />
+                  {/* The scene's label already reads this out, so the caption is for the eye only. */}
+                  <figcaption aria-hidden="true">{project.scene}</figcaption>
+                </figure>
+              )}
             </ViewTransition>
 
             <div className="prose doc-body">
@@ -99,7 +106,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                 <section key={section.id} id={section.id}>
                   <h2>{section.title}</h2>
                   <p>{section.body}</p>
-                  {section.id === "approach" && project.shots ? <Shots shots={project.shots} /> : null}
+                  {section.id === "approach" && project.shots ? <Shots shots={project.shots.slice(3)} /> : null}
                 </section>
               ))}
               {reading.length ? (
@@ -149,12 +156,19 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
 /** The app's own screens, three to a row. They are phone screenshots already sized for the screen, so they skip the
  *  image optimizer. */
-function Shots({ shots }: { shots: ProjectShot[] }) {
+function Shots({ shots, eager }: { shots: ProjectShot[]; eager?: boolean }) {
   return (
     <div className="shots">
       {shots.map((shot) => (
         <figure key={shot.src}>
-          <Image src={shot.src} alt={shot.alt} width={shot.width} height={shot.height} unoptimized />
+          <Image
+            src={shot.src}
+            alt={shot.alt}
+            width={shot.width}
+            height={shot.height}
+            loading={eager ? "eager" : "lazy"}
+            unoptimized
+          />
           <figcaption>{shot.caption}</figcaption>
         </figure>
       ))}

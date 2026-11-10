@@ -10,7 +10,8 @@ type TitleTag = "h2" | "h3";
  *  left on its own at the end, it runs the full width too. Each card's title is a `titleAs` heading, one level below
  *  the heading the grid sits under, and opens the case study. A card and its title share view-transition names with
  *  the case study's painted scene and heading, so opening one grows the card into the page; data-vt carries the same
- *  names for the way back (see BackCrumb). Each card opens on its project's painted scene, like a plate in a storybook. */
+ *  names for the way back (see BackCrumb). Each card carries its project's painted scene, like a plate in a storybook;
+ *  on a full-width card the scene sits beside the text, so what the project did is on screen when the card arrives. */
 export default function ProjectGrid({ projects, titleAs: Title }: { projects: ProjectDetail[]; titleAs: TitleTag }) {
   const [lead, ...rest] = projects;
   const last = rest.length % 2 ? rest.pop() : undefined;
@@ -40,17 +41,15 @@ function WideCard({ project, titleAs: Title }: { project: ProjectDetail; titleAs
   return (
     <ViewTransition name={`proj-${project.slug}`}>
       <article className="proj lead-proj" data-glow data-rv data-vt={`proj-${project.slug}`}>
-        <Plate project={project} />
         <div className="side">
           {project.role ? <p className="meta">{project.role}</p> : null}
           <CardTitle project={project} titleAs={Title} />
           <p>{project.card.blurb}</p>
-          <ProjectLinks project={project} />
-        </div>
-        <div className="side">
           <Points points={project.card.points} />
           <p className="stack">{project.card.stack.join(" / ")}</p>
+          <ProjectLinks project={project} />
         </div>
+        <Plate project={project} />
       </article>
     </ViewTransition>
   );
