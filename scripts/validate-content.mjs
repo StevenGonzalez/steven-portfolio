@@ -86,6 +86,7 @@ function validateProjects(projects, insights) {
     assertRequiredString(project.title, `Project ${project.slug} title`);
     assertRequiredString(project.summary, `Project ${project.slug} summary`);
     assertRequiredString(project.scene, `Project ${project.slug} scene`);
+    assertRequiredString(project.caption, `Project ${project.slug} caption`);
     assertRequiredString(project.problem, `Project ${project.slug} problem`);
     assertRequiredString(project.approach, `Project ${project.slug} approach`);
     assertRequiredString(project.architecture, `Project ${project.slug} architecture`);

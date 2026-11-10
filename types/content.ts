@@ -19,6 +19,8 @@ export type ProjectDetail = {
   summary: string;
   /** What the case study's painted scene shows, read out in place of the picture. */
   scene: string;
+  /** The one line printed under that scene. */
+  caption: string;
   tags: string[];
   links?: ContentLink[];
   role?: string;

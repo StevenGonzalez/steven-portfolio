@@ -8,6 +8,7 @@ export const projects: ProjectDetail[] = [
       "A fitness app I co-founded and built: React Native on iOS and Android, a .NET API on Azure, and an AI trainer that answers from your own workout history.",
     scene:
       "A barbell resting on a squat rack on a floating island, lifted through its reps by two bunches of balloons.",
+    caption: "A barbell lifted by two bunches of balloons.",
     tags: ["React Native", ".NET Core", "Azure", "SQL Server", "Cosmos DB", "Azure AI"],
     links: [
       {
@@ -103,6 +104,7 @@ export const projects: ProjectDetail[] = [
       "The painted world at the top of this site: plain JavaScript drawing on canvas in two web workers, with no images and no libraries. Moving the drawing off the main thread took mobile Lighthouse from 61 to 94–97.",
     scene:
       "An easel on a floating island, where a brush is finishing a painting of a smaller island with a lantern tree, and the lights in the painting drift up out of it into the sky.",
+    caption: "A brush finishing a painting of an island.",
     tags: ["Canvas 2D", "Web Workers", "OffscreenCanvas", "Web Audio", "View Transitions", "Performance"],
     links: [
       {
@@ -148,6 +150,7 @@ export const projects: ProjectDetail[] = [
       "I led the rewrite of the software that runs industrial saws: a new C# API with the machine-control endpoints, an Angular operator interface, Electron.NET desktop packaging, RabbitMQ messaging and PLC integration. The company cancelled it after a year and a half to put its people on other work.",
     scene:
       "A mill on a floating island whose water wheel is a circular saw blade, turned by a waterfall from the rock above.",
+    caption: "A mill whose water wheel is a saw blade.",
     tags: ["Angular", "C#", "Electron.NET", "RabbitMQ", "PLC", "Desktop"],
     role: "Lead engineer",
     scope: "Architecture, a new API, the Angular front end, and planning across teams",
@@ -182,6 +185,7 @@ export const projects: ProjectDetail[] = [
     summary:
       "Developer on the SaaS platform that runs studios, gyms and multi-location operators. I helped build its new ASP.NET Core API, sped up high-impact queries and pages, and was the link between engineering and product.",
     scene: "Five floating islands, each with a small lit studio, joined by lines that lights travel along.",
+    caption: "Five studios joined by lines of light.",
     tags: ["C#", "ASP.NET Core", "SQL", "LINQ", "SaaS", "Multi-tenancy"],
     role: "Software developer",
     scope: "API, database and requirements, across most of the product",
@@ -216,6 +220,7 @@ export const projects: ProjectDetail[] = [
       "Led the move of a business-critical desktop application from .NET Framework 4.7.1 to .NET 8, fixing runtime and dependency breaks without disrupting the workflows people relied on.",
     scene:
       "An old stone tower on a floating island, with new stone going on top and a crane lifting the next block up.",
+    caption: "An old tower with new stone going on top.",
     tags: ["C#", ".NET 8", ".NET Framework", "Upgrade", "Compatibility", "Security"],
     role: "Lead engineer",
     scope: "Upgrading a legacy .NET desktop application",
@@ -248,6 +253,7 @@ export const projects: ProjectDetail[] = [
     summary:
       "Moved our Azure DevOps pipelines from the classic editor to YAML and built a shared, versioned template repository that teams can adopt without being broken by changes.",
     scene: "An aqueduct of identical arches carrying water from a spring out to three small islands.",
+    caption: "An aqueduct carrying water to three islands.",
     tags: ["Azure DevOps", "YAML", "CI/CD", "DevEx", "Templates", "Automation"],
     role: "Lead engineer",
     scope: "Build pipelines and developer workflow",

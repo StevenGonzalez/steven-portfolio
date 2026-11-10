@@ -96,7 +96,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                 <figure className="doc-figure plate" data-vt={`proj-${project.slug}`}>
                   <ProjectScene slug={project.slug} label={project.scene} />
                   {/* The scene's label already reads this out, so the caption is for the eye only. */}
-                  <figcaption aria-hidden="true">{project.scene}</figcaption>
+                  <figcaption aria-hidden="true">{project.caption}</figcaption>
                 </figure>
               )}
             </ViewTransition>
