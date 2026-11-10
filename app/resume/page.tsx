@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import PrintButton from "@/components/PrintButton";
 import { pageMetadata } from "@/lib/meta";
 import { externalProfiles, productionUrl } from "@/lib/site";
 
@@ -107,7 +106,9 @@ export default function ResumePage() {
               {href.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")}
             </a>
           ))}
-          <PrintButton />
+          <a className="pdf-link" href="/resume.pdf" download="Steven-Gonzalez-Resume.pdf">
+            Download PDF
+          </a>
         </p>
 
         <section aria-labelledby="exp-h">

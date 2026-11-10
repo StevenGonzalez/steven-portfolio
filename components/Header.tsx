@@ -36,7 +36,10 @@ export default function Header() {
           About
         </Link>
         <Link href="/#work">Work</Link>
-        <Link href="/#writing">Writing</Link>
+        <Link href="/#writing" className="hide-sm">
+          Writing
+        </Link>
+        <Link href="/resume">Résumé</Link>
         <Link href="/#contact" className="hide-sm">
           Contact
         </Link>

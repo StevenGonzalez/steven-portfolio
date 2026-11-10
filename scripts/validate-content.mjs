@@ -2,6 +2,7 @@
 // entry. Node strips the types from the data files as it imports them; it warns that it had to work out that they
 // are modules, which the yarn script turns off.
 
+import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -175,7 +176,17 @@ async function getInsightMdxSlugs() {
     .sort((left, right) => left.localeCompare(right));
 }
 
+async function validateResumePdf() {
+  const source = await readFile(path.join(rootDir, "app", "resume", "page.tsx"), "utf8");
+  const hash = createHash("sha256").update(source.replaceAll("\r\n", "\n")).digest("hex");
+  const recorded = (await readFile(path.join(rootDir, "data", "resume-pdf.sha256"), "utf8")).trim();
+  if (hash !== recorded) {
+    throw new Error("The résumé page has changed since its PDF was made: run yarn build && yarn make:resume.");
+  }
+}
+
 async function main() {
+  await validateResumePdf();
   validateProjects(projects, insights);
   await Promise.all(
     projects.flatMap((project) =>

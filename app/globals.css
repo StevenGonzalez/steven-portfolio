@@ -2474,7 +2474,7 @@ main:focus {
   .nav,
   .foot,
   .skip,
-  .print-btn,
+  .pdf-link,
   .resume .label {
     display: none;
   }

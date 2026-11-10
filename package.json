@@ -13,7 +13,10 @@
     "type-check": "tsc --noEmit && tsc -p lib/world",
     "validate:content": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-content.mjs",
     "validate:theme": "node scripts/validate-theme-tokens.mjs",
-    "validate": "yarn lint && yarn format:check && yarn type-check && yarn validate:content && yarn validate:theme",
+    "validate": "yarn lint && yarn format:check && yarn type-check && yarn validate:content && yarn validate:theme && yarn test",
+    "test": "node --test packages/*/index.test.js",
+    "test:site": "playwright test",
+    "make:resume": "node scripts/make-resume-pdf.mjs",
     "bench:world": "node scripts/world-bench.mjs",
     "check:world": "node scripts/world-check.mjs",
     "check:sound": "node scripts/sound-check.mjs",
@@ -27,6 +30,8 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.65.0",
     "@types/mdx": "2.0.14",
     "@types/node": "24.19.1",
     "@types/react": "19.2.14",

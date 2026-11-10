@@ -8,13 +8,10 @@
 // It serves the production build in .next with next start, so build first. Needs Chrome or Chromium: set CHROME to
 // its path if it is not on the PATH.
 
-import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
-import net from "node:net";
-import path from "node:path";
 import lighthouse from "lighthouse";
 import puppeteer from "puppeteer-core";
-import { numberOption, rootDir } from "./world-harness.mjs";
+import { findChrome, startSite } from "./site-server.mjs";
+import { numberOption } from "./world-harness.mjs";
 
 const runs = numberOption("--runs", 3);
 const PAGES = ["/", "/projects/sky-islands"];
@@ -31,46 +28,8 @@ const LIMITS = [
   ["cumulative-layout-shift", "CLS", 0.02, (v) => v.toFixed(3)],
 ];
 
-if (!existsSync(path.join(rootDir, ".next/BUILD_ID"))) {
-  console.error("No production build: run yarn build first.");
-  process.exit(2);
-}
-const chrome =
-  process.env.CHROME ||
-  ["google-chrome-stable", "google-chrome", "chromium", "chromium-browser"]
-    .flatMap((name) => (process.env.PATH ?? "").split(path.delimiter).map((dir) => path.join(dir, name)))
-    .find((file) => existsSync(file));
-if (!chrome) {
-  console.error("Chrome not found: set CHROME to its path.");
-  process.exit(2);
-}
-
-// A free port for the site.
-const port = await new Promise((done) => {
-  const probe = net.createServer().listen(0, "127.0.0.1", () => {
-    const { port } = /** @type {net.AddressInfo} */ (probe.address());
-    probe.close(() => done(port));
-  });
-});
-const origin = `http://127.0.0.1:${port}`;
-const server = spawn(path.join(rootDir, "node_modules/.bin/next"), ["start", "-H", "127.0.0.1", "-p", String(port)], {
-  cwd: rootDir,
-  stdio: "ignore",
-});
-const stop = () => server.kill();
-process.on("exit", stop);
-for (let tries = 0; ; tries++) {
-  try {
-    if ((await fetch(origin)).ok) break;
-  } catch {
-    // Not listening yet.
-  }
-  if (tries > 120) {
-    console.error(`The site did not start at ${origin}.`);
-    process.exit(2);
-  }
-  await new Promise((done) => setTimeout(done, 250));
-}
+const chrome = findChrome();
+const origin = await startSite();
 
 // One load of `url`, in a browser of its own so nothing is cached from the last. Lighthouse's default settings are a
 // mid-range phone on slow 4G with the CPU slowed four times. GitHub's Ubuntu runners don't allow Chrome's sandbox, and
