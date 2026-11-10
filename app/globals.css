@@ -8,14 +8,14 @@
    pair of blocks below rather than repeating it per component. */
 
 /* Light is golden hour over the world, dark is night. The page below the world
-   takes its ground and ink from the same light: a pale cloud grey by day, the
+   takes its ground and ink from the same light: the cream of the lit clouds by day, the
    deep teal of the night sky after dark. */
 :root {
   color-scheme: light;
 
-  --bg: #e9ede8;
-  --panel: #f3f5f1;
-  --line: #c9d3cd;
+  --bg: #f3ecdd;
+  --panel: #faf5ea;
+  --line: #ddd2bd;
   --fg: #13232a;
   --muted: #4c5e61;
   --accent: #8c5a10;
