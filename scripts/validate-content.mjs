@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { insights } from "../data/insights.ts";
 import { projects } from "../data/projects.ts";
 import { slugify } from "../lib/slug.ts";
+import { KEPT } from "./subset-fonts.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -186,8 +187,25 @@ async function validateResumePdf() {
   }
 }
 
+// The fonts only hold the characters in KEPT, so anything else would be drawn in a fallback font.
+async function validateFontCharacters() {
+  for (const dir of ["app", "components", "data", "lib"]) {
+    for (const entry of await readdir(path.join(rootDir, dir), { recursive: true, withFileTypes: true })) {
+      if (!/\.(tsx?|mdx|js)$/.test(entry.name)) continue;
+      const file = path.join(entry.parentPath, entry.name);
+      const missing = [...new Set(await readFile(file, "utf8"))].filter((c) => c > "~" && !KEPT.has(c));
+      if (missing.length) {
+        throw new Error(
+          `${path.relative(rootDir, file)} uses ${missing.join(" ")}, which the fonts leave out. Add to KEPT in scripts/subset-fonts.mjs and run it.`,
+        );
+      }
+    }
+  }
+}
+
 async function main() {
   await validateResumePdf();
+  await validateFontCharacters();
   validateProjects(projects, insights);
   await Promise.all(
     projects.flatMap((project) =>
