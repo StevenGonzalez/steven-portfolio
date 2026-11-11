@@ -1,10 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
-  <!-- Two pressed cherry petals, tucked under a project card in spring (globals.css .work::before). -->
-  <g fill="#ecb3c2" stroke="#d891a6" stroke-width="2">
-    <path d="M-20 60C-70 30 -76 -30 -44 -70L-30 -56L-18 -76C10 -40 14 20 -20 60Z"/>
-    <path d="M30 70C10 30 20 -20 60 -40L64 -22L82 -30C88 10 70 50 30 70Z" opacity="0.9"/>
-  </g>
-  <g fill="none" stroke="#d891a6" stroke-width="1.6" opacity="0.7">
-    <path d="M-20 56C-34 20 -36 -20 -30 -54M30 66C40 30 54 0 70 -26"/>
+  <!-- Two pressed cherry petals, tucked under a project card in spring (globals.css .work::before): thin enough to show
+       one through the other, deepening to pink at the notched tips. -->
+  <defs>
+    <linearGradient id="a" x1="-20" y1="60" x2="-44" y2="-70" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fbeef0"/>
+      <stop offset="1" stop-color="#eda5bb"/>
+    </linearGradient>
+    <linearGradient id="b" x1="30" y1="70" x2="66" y2="-36" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fbeef0"/>
+      <stop offset="1" stop-color="#e996af"/>
+    </linearGradient>
+    <filter id="pressed" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="3" result="crinkle"/>
+      <feDisplacementMap in="SourceGraphic" in2="crinkle" scale="3.5" xChannelSelector="R" yChannelSelector="G" result="leaf"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="11"/>
+      <feColorMatrix values="0 0 0 0 0.85  0 0 0 0 0.55  0 0 0 0 0.62  1.6 0 0 0 -0.62"/>
+      <feComposite in2="leaf" operator="in"/>
+      <feComposite in2="leaf" operator="over"/>
+    </filter>
+  </defs>
+  <g filter="url(#pressed)" stroke-linecap="round">
+    <path d="M-20 60C-70 30 -76 -30 -44 -70L-30 -56L-18 -76C10 -40 14 20 -20 60Z" fill="url(#a)" stroke="#df9cb1" stroke-width="1.6" opacity="0.92"/>
+    <path d="M30 70C10 30 20 -20 60 -40L64 -22L82 -30C88 10 70 50 30 70Z" fill="url(#b)" stroke="#d98aa3" stroke-width="1.6" opacity="0.82"/>
+    <g fill="none" stroke="#d98aa3" stroke-width="1" opacity="0.55">
+      <path d="M-20 56C-34 20 -36 -20 -30 -54M-22 50C-46 24 -54 -14 -46 -50M-18 50C-14 20 -14 -20 -22 -62"/>
+      <path d="M30 66C40 30 54 0 70 -26M30 60C26 30 36 -6 58 -30M32 62C52 40 68 12 76 -20"/>
+    </g>
   </g>
 </svg>

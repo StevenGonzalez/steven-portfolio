@@ -1,6 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
   <!-- A pencil doodle in the home page's margin (globals.css .doodle): a paper plane, and the loop it flew. -->
-  <path d="M6 64C24 62 34 52 40 42C46 30 62 27 63 38C64 50 46 51 46 41C46 31 64 28 82 31" stroke-dasharray="3.4 4.2" stroke-width="1.3"/>
-  <path d="M86 30L114 20L97 41Z"/>
-  <path d="M95 33.5L114 20M95 33.5L93 45L97 41" stroke-width="1.2"/>
+  <defs>
+    <!-- Graphite: the line wanders a little off true, and the paper's tooth breaks it up. -->
+    <filter id="pencil" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="5" result="wobble"/>
+      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="line"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.7 1.3" numOctaves="2" seed="5"/>
+      <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.5 0 0 0 1.55"/>
+      <feComposite in="line" operator="in"/>
+    </filter>
+  </defs>
+  <g filter="url(#pencil)" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 64C24 62 34 52 40 42C46 30 62 27 63 38C64 50 46 51 46 41C46 31 64 28 82 31" stroke-dasharray="3.4 4.2" stroke-width="1.3"/>
+    <path d="M86 30L114 20L97 41Z"/>
+    <path d="M95 33.5L114 20M95 33.5L93 45L97 41" stroke-width="1.2"/>
+  </g>
 </svg>

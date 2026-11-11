@@ -1,8 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
-  <!-- A pressed four-leaf clover, tucked under a project card in summer (globals.css .work::before). -->
-  <path d="M0 0Q10 50 -10 96" fill="none" stroke="#6f8f55" stroke-width="6" stroke-linecap="round"/>
-  <g fill="#86a768" stroke="#6f8f55" stroke-width="2">
-    <path id="h" d="M0 -4C-8 -30 -46 -40 -50 -16C-52 -2 -36 6 -4 2Z"/>
+  <!-- A pressed four-leaf clover, tucked under a project card in summer (globals.css .work::before): each leaflet with
+       the pale chevron a clover carries, dried flat. -->
+  <defs>
+    <radialGradient id="g" cx="0" cy="0" r="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6f9150"/>
+      <stop offset="1" stop-color="#93b06e"/>
+    </radialGradient>
+    <filter id="pressed" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="3" result="crinkle"/>
+      <feDisplacementMap in="SourceGraphic" in2="crinkle" scale="3.5" xChannelSelector="R" yChannelSelector="G" result="leaf"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="11"/>
+      <feColorMatrix values="0 0 0 0 0.38  0 0 0 0 0.45  0 0 0 0 0.22  1.6 0 0 0 -0.62"/>
+      <feComposite in2="leaf" operator="in"/>
+      <feComposite in2="leaf" operator="over"/>
+    </filter>
+  </defs>
+  <g filter="url(#pressed)" stroke-linecap="round">
+    <path d="M0 0Q10 50 -10 96" fill="none" stroke="#6a8750" stroke-width="5.4"/>
+    <g id="h">
+      <path d="M0 -4C-8 -30 -46 -40 -50 -16C-52 -2 -36 6 -4 2Z" fill="url(#g)" stroke="#5f7f46" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M-10 -2C-18 -10 -28 -16 -38 -18C-30 -12 -20 -8 -16 -2Z" fill="#d3e0b2" opacity="0.5"/>
+      <path d="M-3 -1L-44 -16M-16 -4L-26 -26M-28 -9L-38 -28M-20 -3L-34 2" fill="none" stroke="#5f7f46" stroke-width="1" opacity="0.6"/>
+    </g>
     <use href="#h" transform="rotate(90)"/>
     <use href="#h" transform="rotate(180)"/>
     <use href="#h" transform="rotate(270)"/>
