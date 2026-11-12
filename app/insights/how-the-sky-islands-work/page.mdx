@@ -58,7 +58,7 @@ Here it is running, on the same renderer as the top of the home page. Take it ap
 
 ## Getting it off the main thread
 
-The static layers were always painted in a web worker, which sends them back as `ImageBitmap`s that move between threads without being copied. But the first version drew every frame on the page's main thread. Desktop Lighthouse scored it 97. Mobile Lighthouse, which slows the CPU down four times, scored it 61. The cost was the drawing, not the download.
+The static layers were always painted in a web worker, which sends them back as `ImageBitmap`s that move between threads without being copied. On a device with more than two cores there are two paint workers: one paints the island, which is about half the work, and the other paints the rest. With the CPU slowed four times, that brings the world up about 30% sooner on a phone and about 17% sooner on a desktop. But the first version drew every frame on the page's main thread. Desktop Lighthouse scored it 97. Mobile Lighthouse, which slows the CPU down four times, scored it 61. The cost was the drawing, not the download.
 
 A second worker fixed that. The render worker owns the canvases themselves: the page calls `transferControlToOffscreen()` on each one and hands it over, and from then on the worker draws every frame. The main thread reads the pointer and the scroll position, posts them across, and moves the finished layers with CSS transforms.
 
@@ -68,7 +68,7 @@ After the move, mobile Lighthouse scores between 94 and 97 from run to run, desk
 
 ## The theme switch
 
-The world has two palettes: golden hour for the light theme and night for the dark one. My first theme switch repainted the static layers on the spot, which froze the page for about a second. Now the paint worker paints the other theme in the background as soon as the first one is up, so switching only swaps bitmaps. The change spreads out from the sun or the moon, using the View Transitions API with a soft circular mask.
+The world has two palettes: golden hour for the light theme and night for the dark one. My first theme switch repainted the static layers on the spot, which froze the page for about a second. Now the paint workers paint the other theme in the background as soon as the first one is up, so switching only swaps bitmaps. The change spreads out from the sun or the moon, using the View Transitions API with a soft circular mask.
 
 ## When a device can't keep up
 
