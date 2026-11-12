@@ -33,6 +33,7 @@ export default function Home() {
 
         <section className="sec" id="about" aria-labelledby="about-h">
           <span className="doodle island" aria-hidden="true" data-rv />
+          <span className="doodle maple left" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter I &middot; About
           </p>
@@ -78,6 +79,8 @@ export default function Home() {
 
         <section className="sec" id="work" aria-labelledby="work-h">
           <span className="doodle balloon" aria-hidden="true" data-rv />
+          <span className="doodle whale left" aria-hidden="true" data-rv />
+          <span className="doodle kite" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter II &middot; Selected work
           </p>
@@ -89,6 +92,7 @@ export default function Home() {
 
         <section className="sec" id="writing" aria-labelledby="writing-h">
           <span className="doodle plane" aria-hidden="true" data-rv />
+          <span className="doodle lantern left" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Chapter III &middot; Writing
           </p>
@@ -102,6 +106,7 @@ export default function Home() {
         </section>
 
         <section className="sec" id="colophon" aria-labelledby="colophon-h">
+          <span className="doodle telescope" aria-hidden="true" data-rv />
           <p className="chap" data-rv>
             Colophon
           </p>
@@ -135,6 +140,7 @@ export default function Home() {
               <span className="mark" />
             </span>
             <span className="doodle arrow" aria-hidden="true" data-rv />
+            <span className="doodle campfire" aria-hidden="true" data-rv />
             <h2 className="chap" id="contact-h" data-rv>
               Epilogue &middot; Contact
             </h2>

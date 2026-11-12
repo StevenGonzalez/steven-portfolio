@@ -1617,7 +1617,7 @@ main:focus {
   }
 }
 
-/* Pencil doodles in the wide margin beside the home page's sections, and one beside the postcard pointing at it. Each
+/* Pencil doodles in the wide margins beside the home page's sections, and two beside the postcard. Each
    draws itself in, left to right, the first time it scrolls into view (data-rv). Only where the margin has room. */
 .doodle {
   display: none;
@@ -1663,6 +1663,45 @@ main:focus {
 .doodle.plane {
   --img: url("/doodles/plane.svg");
   width: 110px;
+}
+/* The second doodle in a section sits lower, and the ones in the left margin mirror the right's spacing. */
+.doodle.left {
+  left: auto;
+  right: calc(100% + 28px);
+}
+.doodle.maple {
+  --img: url("/doodles/maple.svg");
+  top: 52%;
+  height: 106px;
+}
+.doodle.whale {
+  --img: url("/doodles/whale.svg");
+  top: 30%;
+  width: 120px;
+  height: 84px;
+}
+.doodle.kite {
+  --img: url("/doodles/kite.svg");
+  top: 64%;
+  width: 80px;
+  height: 110px;
+}
+.doodle.lantern {
+  --img: url("/doodles/lantern.svg");
+  top: 42%;
+  width: 74px;
+}
+.doodle.telescope {
+  --img: url("/doodles/telescope.svg");
+  width: 106px;
+}
+.doodle.campfire {
+  --img: url("/doodles/campfire.svg");
+  top: auto;
+  left: calc(100% + 24px);
+  bottom: 30px;
+  width: 90px;
+  height: 90px;
 }
 .doodle.arrow {
   --img: url("/doodles/arrow.svg");

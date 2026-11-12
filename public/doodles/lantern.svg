@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 104">
+  <!-- A pencil doodle in the home page's margin (globals.css .doodle): a paper lantern hanging from a curl of string, glowing. -->
+  <defs>
+    <!-- Graphite: the line wanders a little off true, and the paper's tooth breaks it up. -->
+    <filter id="pencil" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="10" result="wobble"/>
+      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="line"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.7 1.3" numOctaves="2" seed="10"/>
+      <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.5 0 0 0 1.55"/>
+      <feComposite in="line" operator="in"/>
+    </filter>
+  </defs>
+  <g filter="url(#pencil)" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 4C34 10 46 14 40 22" stroke-width="1.1"/>
+    <path d="M33 22H47L45 27H35Z"/>
+    <path d="M35 27C18 33 18 65 35 71H45C62 65 62 33 45 27Z"/>
+    <path d="M40 27V71M35 27C27 37 27 61 35 71M45 27C53 37 53 61 45 71" stroke-width="1"/>
+    <path d="M35 71L36 75H44L45 71"/>
+    <path d="M40 75V86M38 86L37 95M40 86V96M42 86L43 95" stroke-width="1"/>
+    <path d="M14 38l-7-3M12 50H4M14 62l-7 3M66 38l7-3M68 50h8M66 62l7 3" stroke-width="1.1"/>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110">
+  <!-- A pencil doodle in the home page's margin (globals.css .doodle): a maple leaf falling, and the swirl it fell along. -->
+  <defs>
+    <!-- Graphite: the line wanders a little off true, and the paper's tooth breaks it up. -->
+    <filter id="pencil" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7" result="wobble"/>
+      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="line"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.7 1.3" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.5 0 0 0 1.55"/>
+      <feComposite in="line" operator="in"/>
+    </filter>
+  </defs>
+  <g filter="url(#pencil)" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 8C30 2 42 14 33 23C25 31 18 21 27 18C39 14 46 28 47 40" stroke-dasharray="3.4 4.2" stroke-width="1.3"/>
+    <g transform="translate(62 74) rotate(24)">
+      <path d="M0 14L-4 12L-14 15L-12 10L-22 6L-18 3L-24 -6L-15 -5L-14 -10L-8 -6L-9 -18L-4 -15L0 -26L4 -15L9 -18L8 -6L14 -10L15 -5L24 -6L18 3L22 6L12 10L14 15L4 12Z"/>
+      <path d="M0 14V-21M0 5L-17 -2M0 5L17 -2M0 10L-11 12M0 10L11 12" stroke-width="1"/>
+      <path d="M0 14q1 6-2 11"/>
+    </g>
+  </g>
+</svg>
