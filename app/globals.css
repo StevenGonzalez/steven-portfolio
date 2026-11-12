@@ -1721,6 +1721,38 @@ main:focus {
   --img: url("/doodles/telescope.svg");
   width: 106px;
 }
+.doodle.snail {
+  --img: url("/doodles/snail.svg");
+  top: 62%;
+  width: 104px;
+  height: 73px;
+}
+.doodle.sheep {
+  --img: url("/doodles/sheep.svg");
+  width: 120px;
+  height: 86px;
+}
+.doodle.mill {
+  --img: url("/doodles/mill.svg");
+  top: 40%;
+  height: 106px;
+}
+.doodle.lighthouse {
+  --img: url("/doodles/lighthouse.svg");
+  top: 78%;
+  width: 74px;
+  height: 111px;
+}
+.doodle.pencils {
+  --img: url("/doodles/pencils.svg");
+  top: 62%;
+  width: 80px;
+}
+.doodle.planet {
+  --img: url("/doodles/planet.svg");
+  width: 116px;
+  height: 80px;
+}
 .doodle.campfire {
   --img: url("/doodles/campfire.svg");
   top: auto;

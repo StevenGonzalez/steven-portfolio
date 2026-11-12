@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120">
+  <!-- A pencil doodle in the home page's margin (globals.css .doodle): a lighthouse on a rock in the clouds, shining both ways. -->
+  <defs>
+    <!-- Graphite: the line wanders a little off true, and the paper's tooth breaks it up. -->
+    <filter id="pencil" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="15" result="wobble"/>
+      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="line"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.7 1.3" numOctaves="2" seed="15"/>
+      <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.5 0 0 0 1.55"/>
+      <feComposite in="line" operator="in"/>
+    </filter>
+  </defs>
+  <g filter="url(#pencil)" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 100L33 40H47L52 100"/>
+    <path d="M29.5 82H50.5M30.2 74H49.8M31.2 62H48.8M31.8 54H48.2" stroke-width="1"/>
+    <path d="M30 40H50M31 40V36.5H49V40" stroke-width="1.2"/>
+    <path d="M34 36.5V28H46V36.5M40 28V36.5" stroke-width="1.2"/>
+    <path d="M32 28L40 18L48 28ZM40 18V14"/>
+    <path d="M33 30L6 21M33 34.5L6 43M47 30L74 21M47 34.5L74 43" stroke-width="1" stroke-dasharray="2.5 2.5"/>
+    <path d="M37 100v-7q3-3.5 6 0v7" stroke-width="1.1"/>
+    <path d="M22 100H58L62 105H18Z" stroke-width="1.3"/>
+    <path d="M6 113c3-6 11-6 14-1c3-5 11-5 14 0c3-5 11-5 14 0c3-5 11-5 14 1" stroke-width="1.2"/>
+  </g>
+</svg>
