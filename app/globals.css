@@ -548,7 +548,7 @@ main:focus {
   pointer-events: none;
   background: linear-gradient(90deg, rgb(4 11 14 / 0.72), rgb(4 11 14 / 0.5) 36%, transparent 62%);
 }
-/* Smoothstep stops, so the fade lands on the page with no visible band where a linear ramp would stop. */
+/* Smoothstep stops every tenth, so the fade lands on the page with no visible band where a linear ramp would stop. */
 .fade {
   position: absolute;
   left: 0;
@@ -558,9 +558,15 @@ main:focus {
   pointer-events: none;
   background: linear-gradient(
     transparent,
-    color-mix(in srgb, var(--bg) 16%, transparent) 25%,
+    color-mix(in srgb, var(--bg) 2.8%, transparent) 10%,
+    color-mix(in srgb, var(--bg) 10.4%, transparent) 20%,
+    color-mix(in srgb, var(--bg) 21.6%, transparent) 30%,
+    color-mix(in srgb, var(--bg) 35.2%, transparent) 40%,
     color-mix(in srgb, var(--bg) 50%, transparent) 50%,
-    color-mix(in srgb, var(--bg) 84%, transparent) 75%,
+    color-mix(in srgb, var(--bg) 64.8%, transparent) 60%,
+    color-mix(in srgb, var(--bg) 78.4%, transparent) 70%,
+    color-mix(in srgb, var(--bg) 89.6%, transparent) 80%,
+    color-mix(in srgb, var(--bg) 97.2%, transparent) 90%,
     var(--bg)
   );
 }
@@ -1716,6 +1722,18 @@ main:focus {
     pointer-events: none;
     opacity: 0.07;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* Under the world the grain starts inside the hero's bottom fade and comes in with it, so the world lands on paper
+     with no edge where the grain would begin. */
+  .site::before {
+    top: -160px;
+    mask-image: linear-gradient(
+      transparent,
+      rgb(0 0 0 / 0.16) 40px,
+      rgb(0 0 0 / 0.5) 80px,
+      rgb(0 0 0 / 0.84) 120px,
+      #000 160px
+    );
   }
 }
 .site .sec + .sec {
