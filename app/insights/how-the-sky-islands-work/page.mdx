@@ -27,7 +27,7 @@ That kept the download small. The whole engine, with every scene and creature, i
 
 ## Paint once, draw what moves
 
-Most of the scene never changes: the sky, the far mountains, the ridges, the island's rock. Redrawing those every frame would waste nearly all the work. So the world is split into 15 stacked canvases. Ten are painted once for each size and theme, and after that they only slide, while the two that hold the light fade slowly up and down by CSS. The other five hold everything that moves, and only those are redrawn each frame.
+Most of the scene never changes: the sky, the far mountains, the ridges, the island's rock. Redrawing those every frame would waste nearly all the work. So the world is split into 16 stacked canvases. Ten are painted once for each size and theme, and after that they only slide, while the two that hold the light fade slowly up and down by CSS. The other six hold everything that moves, and only those are redrawn each frame.
 
 ```js
 export const LAYERS = [
@@ -37,6 +37,7 @@ export const LAYERS = [
   { d: D_BACK, res: 0.5, paint: "ridge" },
   { d: D_BACK, res: 0.8, draw: "back", half: "odd" },
   { d: 0.3, res: 0.5, paint: "mid" },
+  { d: 0.3, res: 0.25, draw: "hillShade" },
   { d: 0.4, res: 0.5, paint: "flanks" },
   { d: D_ISLE, res: 1, paint: "island" },
   { d: D_ISLE, res: 0.25, draw: "shade" },
@@ -51,7 +52,7 @@ export const LAYERS = [
 
 Each layer has a depth, `d`, which sets how far it slides with the pointer and how much it lags behind the page as you scroll. That alone gives the shadow-box look. Each layer also has its own resolution. The sky is a soft gradient, so it renders at 60% of full resolution. The dark ferns in the foreground are blurred anyway, so 30% is enough. The island, which is what you look at, gets all of it. A layer that only covers a band of the scene, like the wooded ridge, gets a canvas only that tall, so the browser has less to composite.
 
-Here it is running, on the same renderer as the top of the home page. Take it apart to see the canvases: the five edged in gold are drawn every frame, and the rest were painted once. Pick a name to see that canvas alone.
+Here it is running, on the same renderer as the top of the home page. Take it apart to see the canvases: the six edged in gold are drawn every frame, and the rest were painted once. Pick a name to see that canvas alone.
 
 <WorldPeek />
 
