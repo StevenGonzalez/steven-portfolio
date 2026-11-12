@@ -80,11 +80,11 @@ The numbers are MIDI notes, and `hz` turns them into frequencies. A pentatonic s
 
 The lanterns in the tree use the same scale. Drag across them and each one rings the next note up from left to right, so a swipe plays a run, like wind chimes. On Halloween itself both keys switch to a darker Japanese scale on the same roots, and everything, clicks and lanterns and song, turns a little spooky.
 
-The bell is a sine wave plus three quieter overtones that die away faster than it does, which is roughly what a struck metal bar does. The other sounds are made the same way, from a few simple parts. A whale's call is a triangle wave that slides up and back down with a wobble, through a filter that keeps it low. Knocking on the arch is two short sine tones that drop in pitch, each with a tap of noise on top.
+The bell is two sine waves a hair apart in pitch, plus three quieter overtones that die away faster than they do, which is roughly what a struck metal bar does. The two close sines drift in and out of step a few times a second, so the note shimmers as it rings instead of sitting still. The other sounds are made the same way, from a few simple parts. A whale's call is a triangle wave that slides up and back down with a wobble, through a filter that keeps it low. Knocking on the arch is two short sine tones that drop in pitch, each with a tap of noise on top.
 
 ## A hall made of noise
 
-Synthesized sounds on their own sound small and close, as if they are right next to your ear. Reverb gives them a room. Most reverb uses a recording of a real space, called an impulse response. Here the impulse response is 3.4 seconds of random noise, smoothed to take the edge off and faded out over its length. Run through a `ConvolverNode`, that sounds like a big, soft hall, which suits a world in the sky.
+Synthesized sounds on their own sound small and close, as if they are right next to your ear. Reverb gives them a room. Most reverb uses a recording of a real space, called an impulse response. Here the impulse response is 4.2 seconds of random noise, smoothed to take the edge off and faded out over its length. It starts 22 ms after the sound, with a few early echoes off near walls, at different times on each side. Its highs fade twice as fast as its lows, so the tail darkens as it dies, the way it does in a real hall. Run through a `ConvolverNode`, that sounds like a big, soft hall, which suits a world in the sky.
 
 Each sound decides how much of itself goes into the hall. A whale's call is mostly hall, so it seems to come from far off. A knock on the arch is mostly dry, so it sounds close. Everything then goes through a gentle compressor, so when several things happen at once, the output can't clip.
 
@@ -111,6 +111,8 @@ The renderer tells the page where the waterfalls, the campfire and the tree are 
 The field guide lists the things to find in the world, and the song follows it. The first find brings in a low drone and a little tune rung on bells. A quarter of the guide adds a soft chord, half adds plucked notes, and three quarters adds two whales calling to each other. A finished guide adds the far mountains, echoing the tune back from one side and then the other.
 
 The tune uses the same scale as the clicks, so clicking along to it makes a tune of your own over the top.
+
+The chord is a pad: on each side, two sawtooth waves a few cents apart, through a filter that opens slowly over the bar and closes again. The tune and the plucks also feed a short echo that bounces between left and right, an eighth of a bar apart, a little darker on each bounce.
 
 The song is four chords, one bar of four seconds each, taken from the `chords` in the key. The tune is eight bars long and goes round the chords twice. A timer runs every 250 ms and schedules any bar that starts within the next second, at an exact time on the audio clock:
 
