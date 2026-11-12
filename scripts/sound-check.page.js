@@ -63,7 +63,7 @@ try {
 
   // Every sound in turn, from one side and then the other, over the wind and the world's own sounds. Then the song,
   // growing from a quarter of the field guide to all of it, a fire hovered and left, the world dozing off and waking,
-  // the theme switched, the world scrolled away and back, and the sound turned off.
+  // the theme switched, the page scrolled past the world and back, the tab hidden and back, and the sound turned off.
   const script = [
     [
       0.5,
@@ -83,8 +83,10 @@ try {
     [9, "the world asleep", (s) => s.sleep(true)],
     [9, "the world awake", (s) => s.sleep(false)],
     [3, "the theme switched", (s) => s.night(!night)],
-    [6, "the world out of view", (s) => s.active(false)],
-    [3, "the world back", (s) => s.active(true)],
+    [6, "the page scrolled past the world", (s) => s.away?.(true)],
+    [6, "the world back in view", (s) => s.away?.(false)],
+    [3, "the tab hidden", (s) => s.active(false)],
+    [3, "the tab back", (s) => s.active(true)],
     [4, "sound turned off", (s) => s.stop()],
   ])
     script.push([(t += after), label, f]);

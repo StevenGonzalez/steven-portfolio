@@ -64,6 +64,24 @@ test("the world draws into its canvases", async ({ page }) => {
   await expect.poll(() => page.locator(".hero canvas").count()).toBeGreaterThan(5);
 });
 
+test("the sound can be turned off from below the world", async ({ page }) => {
+  await page.goto("/");
+  const near = page.locator(".hero .sound-btn");
+  const far = page.locator(".sound-btn.far");
+  await near.click();
+  await expect(near).toHaveAttribute("aria-pressed", "true");
+  await expect(far).toBeHidden();
+  await page.locator("#contact").scrollIntoViewIfNeeded();
+  await expect(far).toBeVisible();
+  await expect(far).toHaveAttribute("aria-pressed", "true");
+  await far.click();
+  await expect(near).toHaveAttribute("aria-pressed", "false");
+  await expect(far).toHaveAttribute("aria-pressed", "false");
+  await expect(far).toBeVisible();
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect(far).toBeHidden();
+});
+
 test("a project card opens its case study", async ({ page }) => {
   await page.goto("/projects");
   await page.getByRole("link", { name: projects[0].title, exact: true }).click();

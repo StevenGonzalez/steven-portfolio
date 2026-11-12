@@ -23,6 +23,7 @@ export default function World() {
   const guideMail = useRef<HTMLOListElement>(null);
   const postcardBtn = useRef<HTMLButtonElement>(null);
   const soundBtn = useRef<HTMLButtonElement>(null);
+  const farSoundBtn = useRef<HTMLButtonElement>(null);
   const explore = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLSpanElement>(null);
 
@@ -47,6 +48,7 @@ export default function World() {
       guideMail: guideMail.current!,
       postcardBtn: postcardBtn.current!,
       soundBtn: soundBtn.current!,
+      farSoundBtn: farSoundBtn.current!,
       explore: explore.current!,
       ring: ring.current!,
       seamTop,
@@ -55,68 +57,74 @@ export default function World() {
   }, []);
 
   return (
-    <section ref={hero} className="hero" aria-label="Introduction">
-      <div ref={scene} className="scene" aria-hidden="true" />
-      <PaperPlane />
-      <div className="scrim" />
-      <div className="fade" />
-      <div ref={wake} className="wake" />
-      <div className="copy" data-hero-copy>
-        <p className="eyebrow">Software engineer</p>
-        <h1>Steven Gonzalez</h1>
-        <p className="lead">I build web apps and APIs. I co-founded Virtual Trainer, live on iOS and Android.</p>
-        <div className="ctas">
-          <a className="btn solid" href="#work">
-            See the work
-          </a>
-          <a className="btn line" href="#contact">
-            Get in touch
-          </a>
-        </div>
-        <div className="guide-wrap" data-guide>
-          <button ref={guideBtn} type="button" className="guide-btn" aria-expanded="false" aria-controls="guide">
-            Field guide <b ref={guideCount} />
-          </button>
-          <div ref={guide} className="guide" id="guide" hidden>
-            <div className="guide-top">
-              <p className="guide-h">
-                Field guide <span>Things seen in this world</span>
-              </p>
-              <div ref={guideViews} className="guide-views" role="group" aria-label="Show the guide as">
-                <button type="button" data-view="list" aria-pressed="true">
-                  List
-                </button>
-                <button type="button" data-view="map" aria-pressed="false">
-                  Map
-                </button>
-                <button type="button" data-view="mail" aria-pressed="false" hidden>
-                  Mail
-                </button>
-              </div>
-            </div>
-            <button ref={postcardBtn} type="button" className="guide-card">
-              Save a postcard of this view
-            </button>
-            <ol ref={guideList} role="list" />
-            <div ref={guideMap} className="guide-map" hidden />
-            <ol ref={guideMail} className="guide-mail" role="list" hidden />
-            <p ref={guideFoot} className="guide-foot" />
+    <>
+      <section ref={hero} className="hero" aria-label="Introduction">
+        <div ref={scene} className="scene" aria-hidden="true" />
+        <PaperPlane />
+        <div className="scrim" />
+        <div className="fade" />
+        <div ref={wake} className="wake" />
+        <div className="copy" data-hero-copy>
+          <p className="eyebrow">Software engineer</p>
+          <h1>Steven Gonzalez</h1>
+          <p className="lead">I build web apps and APIs. I co-founded Virtual Trainer, live on iOS and Android.</p>
+          <div className="ctas">
+            <a className="btn solid" href="#work">
+              See the work
+            </a>
+            <a className="btn line" href="#contact">
+              Get in touch
+            </a>
           </div>
-          <button ref={soundBtn} type="button" className="sound-btn" aria-pressed="false">
-            Sound
-          </button>
+          <div className="guide-wrap" data-guide>
+            <button ref={guideBtn} type="button" className="guide-btn" aria-expanded="false" aria-controls="guide">
+              Field guide <b ref={guideCount} />
+            </button>
+            <div ref={guide} className="guide" id="guide" hidden>
+              <div className="guide-top">
+                <p className="guide-h">
+                  Field guide <span>Things seen in this world</span>
+                </p>
+                <div ref={guideViews} className="guide-views" role="group" aria-label="Show the guide as">
+                  <button type="button" data-view="list" aria-pressed="true">
+                    List
+                  </button>
+                  <button type="button" data-view="map" aria-pressed="false">
+                    Map
+                  </button>
+                  <button type="button" data-view="mail" aria-pressed="false" hidden>
+                    Mail
+                  </button>
+                </div>
+              </div>
+              <button ref={postcardBtn} type="button" className="guide-card">
+                Save a postcard of this view
+              </button>
+              <ol ref={guideList} role="list" />
+              <div ref={guideMap} className="guide-map" hidden />
+              <ol ref={guideMail} className="guide-mail" role="list" hidden />
+              <p ref={guideFoot} className="guide-foot" />
+            </div>
+            <button ref={soundBtn} type="button" className="sound-btn" aria-pressed="false">
+              Sound
+            </button>
+          </div>
         </div>
-      </div>
-      {/* The world's own stop for the keyboard, out of sight: the ring round whatever it is on shows where focus is. */}
-      <div
-        ref={explore}
-        className="sr-only"
-        tabIndex={0}
-        role="application"
-        aria-label="The world. The arrow keys move between the things in it, and Enter clicks the one you're on."
-      />
-      <span ref={ring} className="aim" hidden />
-      <div ref={tag} className="tag" role="status" aria-live="polite" />
-    </section>
+        {/* The world's own stop for the keyboard, out of sight: the ring round whatever it is on shows where focus is. */}
+        <div
+          ref={explore}
+          className="sr-only"
+          tabIndex={0}
+          role="application"
+          aria-label="The world. The arrow keys move between the things in it, and Enter clicks the one you're on."
+        />
+        <span ref={ring} className="aim" hidden />
+        <div ref={tag} className="tag" role="status" aria-live="polite" />
+      </section>
+      {/* The sound switch again, in the corner of the page, while the sound is on and the world is scrolled away. */}
+      <button ref={farSoundBtn} type="button" className="sound-btn far" aria-pressed="false" hidden>
+        Sound
+      </button>
+    </>
   );
 }

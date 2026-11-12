@@ -792,6 +792,32 @@ main:focus {
       2px 100%;
   }
 }
+/* The same switch in the corner of the page, while the world plays on out of view, in the page's colours. */
+.sound-btn.far {
+  position: fixed;
+  z-index: 20;
+  right: calc(clamp(16px, 4vw, 48px) + env(safe-area-inset-right, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  margin: 0;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  border-color: var(--line);
+  animation: far-in 0.4s ease-out;
+}
+.sound-btn.far:hover {
+  color: var(--fg);
+  border-color: color-mix(in srgb, var(--glow) 50%, var(--line));
+}
+.sound-btn.far[aria-pressed="true"] {
+  color: var(--glow);
+  border-color: color-mix(in srgb, var(--glow) 45%, var(--line));
+}
+@keyframes far-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
 .guide-btn.new {
   animation: found 1.4s ease-out;
 }
@@ -3039,6 +3065,7 @@ html.theming::view-transition-new(root) {
   .copy > *,
   .guide-btn.new,
   .sound-btn[aria-pressed]::before,
+  .sound-btn.far,
   .seam {
     animation: none;
   }

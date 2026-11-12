@@ -130,7 +130,7 @@ The timer itself can run late when the page is busy, and that doesn't matter: it
 
 ## Quiet when you look away
 
-When the world scrolls out of view, or you switch tabs, the sound fades out. About a second later the audio context is suspended, so the browser stops running audio for it at all. It resumes when you come back.
+When you scroll down past the world, the sound keeps playing, but quieter and through a lowpass filter at 550 Hz, so it sounds like music from another room. A second Sound button shows in the corner of the page so you can turn it off from there. When you switch tabs, the sound fades out. About a second later the audio context is suspended, so the browser stops running audio for it at all. It resumes when you come back.
 
 ## Checking levels without listening
 
