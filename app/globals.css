@@ -455,6 +455,11 @@ main:focus {
   inset: 0;
   animation: world-in 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+/* The rise as the world wakes grows the scene and its dark from here (stage.js). */
+.scene,
+.wake {
+  transform-origin: 60% 100%;
+}
 .scene canvas {
   position: absolute;
   left: -72px;
