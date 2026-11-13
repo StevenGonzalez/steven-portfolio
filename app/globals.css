@@ -546,7 +546,10 @@ main:focus {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, rgb(4 11 14 / 0.72), rgb(4 11 14 / 0.5) 36%, transparent 62%);
+  /* A pool of shade behind the words rather than a wall down the left, so the sky still shows round the name. */
+  background:
+    radial-gradient(ellipse 40% 48% at 21% 50%, rgb(4 11 14 / 0.55), rgb(4 11 14 / 0.25) 55%, transparent 100%),
+    linear-gradient(90deg, rgb(4 11 14 / 0.3), transparent 45%);
 }
 /* Smoothstep stops every tenth, so the fade lands on the page with no visible band where a linear ramp would stop. */
 .fade {
@@ -3029,7 +3032,9 @@ main:focus {
     margin-top: 20px;
   }
   .scrim {
-    background: linear-gradient(180deg, rgb(4 11 14 / 0.74), rgb(4 11 14 / 0.5) 50%, transparent 72%);
+    background:
+      radial-gradient(ellipse 90% 30% at 35% 27%, rgb(4 11 14 / 0.55), rgb(4 11 14 / 0.25) 55%, transparent 100%),
+      linear-gradient(180deg, rgb(4 11 14 / 0.35), transparent 50%);
   }
   .guide-wrap {
     margin-top: 16px;
