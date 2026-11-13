@@ -1582,19 +1582,29 @@ main:focus {
   position: absolute;
   inset: 0;
   rotate: 4deg;
-  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.25));
+  isolation: isolate;
 }
 /* The perforations: a row of holes punched round the edge. */
-.stamp::before {
+.stamp::before,
+.stamp::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("/letter/stamp.svg") center / 100% 100%;
   --r: 2.6px;
   mask:
     radial-gradient(var(--r), #0000 97%, #000) round calc(-1.5 * var(--r)) calc(-1.5 * var(--r)) / calc(3 * var(--r))
       calc(3 * var(--r)),
     linear-gradient(#000 0 0) no-repeat 50% / calc(100% - 3 * var(--r)) calc(100% - 3 * var(--r));
+}
+.stamp::before {
+  background: url("/letter/stamp.svg") center / 100% 100%;
+}
+/* Its shadow is the same punched shape in shade, a pixel lower. A drop-shadow filter on the stamp took WebKit over a
+   second to paint the first time the letter came into view, which held up everything else on the page. */
+.stamp::after {
+  z-index: -1;
+  translate: 0 1px;
+  background: rgb(0 0 0 / 0.15);
 }
 /* The stamp follows the season, like the tab icon and the pressed leaf. The plain one, in full summer green, is the
    default, so it shows before SiteEffects sets the season. */

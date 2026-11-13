@@ -16,7 +16,7 @@
     "validate": "yarn lint && yarn format:check && yarn type-check && yarn validate:content && yarn validate:theme && yarn test",
     "test": "node --test packages/*/index.test.js",
     "test:site": "playwright test --project=desktop --project=phone",
-    "test:engines": "playwright test --project=firefox --project=webkit",
+    "test:engines": "playwright test --project=firefox --project=webkit --workers=1",
     "make:resume": "node scripts/make-resume-pdf.mjs",
     "bench:world": "node scripts/world-bench.mjs",
     "check:world": "node scripts/world-check.mjs",

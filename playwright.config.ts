@@ -2,6 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 
 // Runs the built site, so yarn build first. yarn test:site uses Chrome: CHROME if it is set, otherwise the installed
 // Google Chrome. yarn test:engines uses Playwright's own Firefox and WebKit, which yarn playwright install fetches.
+// It runs one page at a time. Each page draws the world in software, and with two side by side on a CI runner, one
+// starved the other so badly that WebKit took 5 to 8 seconds to show a button it shows in under one on its own.
 const port = 3100;
 const chrome = {
   launchOptions: {
